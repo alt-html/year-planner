@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Year Planner">
+    <meta name="author" content="Craig Parravicini">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel='stylesheet' id='google-font-css'  href='https://fonts.googleapis.com/css?family=Roboto%3A300%2C400%2C600%7CRoboto&#038;ver=1.0' type='text/css' media='all' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/typeaheadjs.css">
+
+
+    <title>Year Planner</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://unpkg.com/vue-i18n/dist/vue-i18n.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,Promise,Symbol,Object.setPrototypeOf,Object.getOwnPropertySymbols"></script>
+    <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <script defer src=""></script>
+
+</head>
+<body>
+    <div id="app">
+
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top" >
+            <a class="navbar-brand" href="#">{{$t('label.yearplanner')+' '+year}}</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                <ul class="navbar-nav mr-auto">
+<!--                <li class="nav-item active" ><a class="nav-link" href="#January" >{{$t('month.January')}}</a></li>-->
+<!--                <li class="nav-item active" ><a class="nav-link" href="#February" >{{$t('month.February')}}</a></li>-->
+<!--                <li class="nav-item active" ><a class="nav-link" href="#March" >{{$t('month.March')}}</a></li>-->
+<!--                <li class="nav-item active" ><a class="nav-link" href="#April" >{{$t('month.April')}}</a></li>-->
+<!--                <li class="nav-item active" ><a class="nav-link" href="#May" >{{$t('month.May')}}</a></li>-->
+<!--                <li class="nav-item active" ><a class="nav-link" href="#June" >{{$t('month.June')}}</a></li>-->
+<!--                <li class="nav-item active" ><a class="nav-link" href="#July" >{{$t('month.July')}}</a></li>-->
+<!--                <li class="nav-item active" ><a class="nav-link" href="#August" >{{$t('month.August')}}</a></li>-->
+<!--                <li class="nav-item active" ><a class="nav-link" href="#September" >{{$t('month.September')}}</a></li>-->
+<!--                <li class="nav-item active" ><a class="nav-link" href="#October" >{{$t('month.October')}}</a></li>-->
+<!--                <li class="nav-item active" ><a class="nav-link" href="#November" >{{$t('month.November')}}</a></li>-->
+<!--                <li class="nav-item active" ><a class="nav-link" href="#December" >{{$t('month.December')}}</a></li>-->
+<!--                    <li v-for="(job,index) in jobCrumbList.length" class="nav-item" v-if="(index > jobCrumbList.length - 4)">-->
+<!--                        <a class="nav-link" href="#" v-on:click="selectJob(index)">{{jobCrumbList[index].name}}<span v-if="(index < jobCrumbList.length-1)"> > </span></a>-->
+<!--                    </li>-->
+                </ul>
+
+                <form class="form-inline my-2 my-lg-0">
+                    <button class="btn btn-secondary my-2 my-sm-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#shareModal" title=""><i class="fa fa-share-alt" aria-hidden="true"></i></button>&nbsp;
+                </form>
+
+            </div>
+        </nav>
+
+        <main>
+            <div class="jumbotron">
+                <div class="container">
+
+<!--                    <div class="row no-gutters">-->
+<!--                        <div class="col-xs-12">-->
+<!--                            <div class="row tst-cell d-sm-none">Extra Small (xs) < 576px</div>-->
+<!--                            <div class="row tst-cell d-none d-sm-inline d-md-none">Small (sm) >= 576</div>-->
+<!--                            <div class="row tst-cell d-none d-md-inline d-lg-none">Medium (md) >= 768px</div>-->
+<!--                            <div class="row tst-cell d-none d-lg-inline d-xl-none">Large (lg) >= 992px</div>-->
+<!--                            <div class="row tst-cell d-none d-xl-inline">Extra Large (xl) >= 1200px</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div class="row no-gutters">-->
+<!--                        <div class="col"><h2>{{$t('label.yearplanner')}} {{year}}</h2></div>-->
+<!--                    </div>-->
+
+                    <div id="yp-table" class="row no-gutters">
+                        <div id="yp-weekdays" class="col-4 col-sm-3 col-md-2 col-lg-2 col-xl-1">
+
+                                <div class="row no-gutters yp-header-cell"          ><h5>{{year}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell "          v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters          "          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row no-gutters yp-header-cell d-xl-none"><h5>{{year}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-xl-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-xl-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row no-gutters yp-header-cell d-xl-none"><h5>{{year}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-xl-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-xl-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row no-gutters yp-header-cell d-lg-none"><h5>{{year}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-lg-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-lg-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row no-gutters yp-header-cell d-md-none"><h5>{{year}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-md-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-md-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row no-gutters yp-header-cell d-md-none"><h5>{{year}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-md-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-md-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row no-gutters yp-header-cell d-sm-none"><h5>{{year}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row no-gutters yp-header-cell d-sm-none"><h5>{{year}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row no-gutters yp-header-cell d-sm-none"><h5>{{year}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row no-gutters yp-header-cell d-sm-none"><h5>{{year}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row no-gutters yp-header-cell d-sm-none"><h5>{{year}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row no-gutters yp-header-cell d-sm-none"><h5>{{year}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+
+                            </div>
+                        <div id="yp-months" class="col-8 col-sm-9 col-md-10 col-lg-10 col-xl-11">
+                            <div class="row no-gutters">
+                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-1" v-for="(m,mindex) in monthsOfYear">
+                                    <div class="row no-gutters" v-bind:class="{'yp-header-cell': m != 'December', 'yp-header-cell-right' : m == 'December'}" ><a v-bind:name="m" ></a><h5>{{$t('month.'+m)}}</h5></div>
+                                    <div class="row no-gutters yp-cell"
+                                         v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n-1) % 7 > 4 }"
+                                         v-for="n in firstWeekdayOfMonth[mindex]-1">&nbsp;
+                                    </div>
+                                    <div class="row no-gutters yp-cell"
+                                         v-bind:class="{'yp-cell-bottom': n+firstWeekdayOfMonth[mindex]-1 == 37 && m != 'December','yp-cell-right': n+firstWeekdayOfMonth[mindex]-1 < 37 && m == 'December', 'yp-cell-bottom-right': n+firstWeekdayOfMonth[mindex]-1 == 37 && m == 'December', 'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-1-1) % 7 > 4 }"
+                                         v-for="n in daysInMonth[mindex]" data-toggle="modal" data-target="#entryModal"
+                                         v-on:click="updateEntryState(mindex,n)">
+
+                                        <span class="yp-cell-text" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="getEntryTypeIcon(mindex,n)+' ' +getEntry(mindex,n).trimStart()">{{n}}&nbsp;
+                                        <i v-bind:class="{'d-inline':getEntryType(mindex,n)==1,'d-none':getEntryType(mindex,n)!=1}" class="fas fa-bell"></i>
+                                        <i v-bind:class="{'d-inline':getEntryType(mindex,n)==2,'d-none':getEntryType(mindex,n)!=2}" class="fas fa-birthday-cake"></i>
+                                        <i v-bind:class="{'d-inline':getEntryType(mindex,n)==3,'d-none':getEntryType(mindex,n)!=3}" class="fas fa-glass-martini"></i>
+                                        <i v-bind:class="{'d-inline':getEntryType(mindex,n)==4,'d-none':getEntryType(mindex,n)!=4}" class="fas fa-utensils"></i>
+                                        <i v-bind:class="{'d-inline':getEntryType(mindex,n)==5,'d-none':getEntryType(mindex,n)!=5}" class="fas fa-graduation-cap"></i>
+                                        <i v-bind:class="{'d-inline':getEntryType(mindex,n)==6,'d-none':getEntryType(mindex,n)!=6}" class="fas fa-heartbeat"></i>
+                                            {{getEntry(mindex,n).trimStart()}}</span>
+<!--                                        <span class="yp-cell-text">&nbsp;</span>-->
+                                    </div>
+                                    <div class="row no-gutters yp-cell"
+                                         v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-daysInMonth[mindex]) % 7 > 4 }"
+                                         v-for="n in 37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1">&nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+        </main>
+
+        <div class="modal fade" id="cookieModal" tabindex="-1" role="dialog" aria-labelledby="cookieModalLabel" aria-hidden="true">
+            <div id="cookie-dialog"  class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="notice d-flex justify-content-between align-items-center">
+                            <div class="cookie-text">{{$t('label.cookies')}}</div>
+                            <div class="buttons d-flex flex-column flex-lg-row">
+                                <a href="#a" class="btn btn-secondary btn-sm" data-dismiss="modal" v-on:click="initialise()">{{$t('label.accept')}}</a>
+<!--                                <a href="#a" class="btn btn-secondary btn-sm" data-dismiss="modal">Learn More</a>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="entryModal" tabindex="-1" role="dialog" aria-labelledby="entryModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="entryModalLabel">{{$t('month.'+monthsOfYear[month])+' '+day}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+
+                             <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"  v-model="entryType" value="1">
+                                <label class="form-check-label" for="inlineRadio1"><i class="fas fa-bell"></i></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"  v-model="entryType" value="2">
+                                <label class="form-check-label" for="inlineRadio2"><i class="fas fa-birthday-cake"></i></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3"  v-model="entryType" value="3">
+                                <label class="form-check-label" for="inlineRadio3"><i class='fas fa-glass-martini'></i></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4"  v-model="entryType" value="4">
+                                <label class="form-check-label" for="inlineRadio3"><i class="fas fa-utensils"></i></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5"  v-model="entryType" value="5">
+                                <label class="form-check-label" for="inlineRadio3"><i class="fas fa-graduation-cap"></i></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio6"  v-model="entryType" value="6">
+                                <label class="form-check-label" for="inlineRadio3"><i class="fas fa-heartbeat"></i></label>
+                            </div>
+                            <div class="form-check form-check-inline" v-bind:class="{'d-none':entryType==0}">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio0"  v-model="entryType" value="0">
+                                <label class="form-check-label" for="inlineRadio0">{{$t('label.none')}}</label>
+                            </div>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label"></label>
+                                <textarea type="text" placeholder="On this day ..." class="form-control" v-model="entry" id="target-group" rows="5" maxlength="256"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="updateEntry(month,day,entry,entryType)">{{$t('label.update')}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="shareModalLabel">{{$t('label.yearplanner')+' '+year}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">{{$t('label.sharecopy')}}</label>
+                                <input  type="text" class="form-control" v-model="shareUrl" id="copyUrl">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
+                        <button type="button" class="btn btn-primary"  v-on:click="copyUrl()">{{$t('label.copy')}}</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer fixed-bottom">
+            <div id ="footer-container" class="container">
+                <div class="row">
+                    <div class="col-4">
+                        <p id="footer-text-left" class="text-muted text-left">
+<!--                            <a href="https://github.tabcorp.com.au/TabDigital/bi-etl-job-control-app/tree/develop/1.5-SNAPSHOT/README.md" target="_blank"><i class="fab fa-github"></i> README.md</a>-->
+                        </p>
+                    </div>
+                    <div class="col-4">
+                    </div>
+                    <div class="col-4">
+                        <p id="footer-text-right" class="text-muted text-right">
+                            <a name="created"  target="_blank">▥ {{$t('label.created')}} {{DateTime.fromMillis(uid*1000).setLocale(lang).toLocaleString(DateTime.DATETIME_FULL)}}, {{$t('label.updated')}} {{DateTime.fromMillis(updated).setLocale(lang).toLocaleString(DateTime.TIME_SIMPLE)}}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<!--    <script src="js/moment-with-locales.js"></script>-->
+<!--    <script src="js/moment-timezone-with-data.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0/build/global/luxon.min.js"></script>
+<!--    <script src="js/typeahead.bundle.min.js"></script>-->
+    <script src="js/lodash.min.js"></script>
+    <script src="js/lz-string.min.js"></script>
+
+    <script  src="js/i81n.js"></script>
+    <script  src="js/cookies.js"></script>
+    <script  src="js/storage.js"></script>
+    <script  src="js/main.js"></script>
+
+</body>
+</html>
