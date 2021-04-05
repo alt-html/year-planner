@@ -114,10 +114,15 @@ body {
     border-right: 1px;
     border-style: solid;
     border-color: white;
+    white-space:nowrap;
+    display: inline-block;
+    /*overflow: hidden !important;*/
+    text-overflow: ellipsis !important;
 }
 
 .yp-cell-weekend {
     background-color: lightgray;
+    text-overflow: ellipsis !important;
 }
 
 .yp-cell-bottom{

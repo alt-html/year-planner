@@ -11,7 +11,7 @@ $.urlParam = function (name) {
 
 var DateTime = luxon.DateTime;
 var pageLoadTime = DateTime.now();
-var lang = $.urlParam('lang') || 'en';
+var lang = ($.urlParam('lang') || 'en').substring(0,2);
 var uid = parseInt( $.urlParam('uid') ) || getLocalUid() || Math.floor(pageLoadTime.ts/1000);
 var year = parseInt( $.urlParam('year') )|| pageLoadTime.year;
 var share = $.urlParam('share') || '';
@@ -84,7 +84,7 @@ var copyUrl = function (){
 }
 
 const i18n = new VueI18n({
-    locale: $.urlParam('lang') || 'en', // set locale
+    locale: ($.urlParam('lang') || 'en').substring(0,2), // set locale
     fallbackLocale: 'en',
     messages, // set locale messages
 })
