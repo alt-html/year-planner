@@ -11,7 +11,8 @@ $.urlParam = function (name) {
 
 var DateTime = luxon.DateTime;
 var pageLoadTime = DateTime.now();
-var lang = ($.urlParam('lang') || 'en').substring(0,2);
+var lang = ($.urlParam('lang') || getNavigatorLanguage() ).substring(0,2);
+
 var uid = parseInt( $.urlParam('uid') ) || getLocalUid() || Math.floor(pageLoadTime.ts/1000);
 var year = parseInt( $.urlParam('year') )|| pageLoadTime.year;
 var share = $.urlParam('share') || '';
@@ -106,6 +107,7 @@ var app = new Vue({
 app.refresh();
 
 document.title = app.$t('label.yearplanner');
+document.documentElement.lang = model.lang;
 
 $(function () {
     $('[data-toggle="tooltip"]').tooltip()

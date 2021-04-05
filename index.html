@@ -9,7 +9,6 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel='stylesheet' id='google-font-css'  href='https://fonts.googleapis.com/css?family=Roboto%3A300%2C400%2C600%7CRoboto&#038;ver=1.0' type='text/css' media='all' />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/typeaheadjs.css">
 
@@ -27,7 +26,8 @@
 <body>
     <div id="app">
 
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top" >
+<!--        <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top" >-->
+        <nav class="navbar navbar-expand-md sticky-top" >
             <a class="navbar-brand" href="#">{{$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -115,9 +115,9 @@
                                         <i v-bind:class="{'d-inline':getEntryType(mindex,n)==5,'d-none':getEntryType(mindex,n)!=5}" class="fas fa-graduation-cap"></i>
                                         <i v-bind:class="{'d-inline':getEntryType(mindex,n)==6,'d-none':getEntryType(mindex,n)!=6}" class="fas fa-heartbeat"></i>
                                             {{getEntry(mindex,n).trimStart()}}</span>
-<!--                                 </div>
+                                 </div>
                                     <div class="row no-gutters yp-cell"
-                                         v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-daysInMonth[mindex]) % 7 > 4 }"
+                                         v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]+daysInMonth[mindex]-2) % 7 > 4 }"
                                          v-for="n in 37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1">&nbsp;
                                     </div>
                                 </div>
@@ -234,11 +234,11 @@
                 <div class="row">
                     <div class="col-4">
                         <p id="footer-text-left" class="text-muted text-left">
-                           Copyright  2021 © Craig Parravicini (en_AU) <a href="https://github.com/craigparra/year-planner" target="_blank"><i class="fab fa-github"></i> README.md</a>
+                           Copyright  2021 © Craig Parravicini (en_AU) <a href="https://github.com/craigparra/year-planner" target="_blank"><i class="fab fa-github"></i>&nbsp;README.md</a>
                         </p>
                     </div>
                     <div class="col-4">
-                        <p id="footer-text-left" class="text-muted text-left">
+                        <p id="footer-text-center" class="text-muted text-center">
                                     <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=en'">English</a>&emsp;
                                     <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=zh'">中國人</a>&emsp;
                                     <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=hi'">हिन्दी</a>&emsp;

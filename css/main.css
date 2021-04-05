@@ -1,6 +1,35 @@
 
 @media print { @page {size: auto !important} }
 
+@media (min-width: 576px){
+    .container {
+        max-width: 2600px;
+    }
+}
+
+@media (min-width: 768px){
+    .container {
+        max-width: 2600px;
+    }
+}
+
+@media (min-width: 768px){
+    .container {
+        max-width: 1600px;
+    }
+}
+
+@media (min-width: 992px){
+    .container {
+        max-width: 2600px;
+    }
+}
+
+@media (min-width: 1200px){
+    .container {
+        max-width: 2600px;
+    }
+}
 @media (min-width: 1600px){
     .container {
         max-width: 2600px;
@@ -17,6 +46,16 @@ body {
     padding-left: 2px;
     margin-right: 2px;
     margin-left: 0px;
+}
+
+.navbar {
+    background-color: white;
+}
+
+a.navbar-brand {
+    color: black;
+    text-decoration: none;
+    background-color: transparent;
 }
 
 .jumbotron h1 {
@@ -76,14 +115,14 @@ body {
 .yp-header-cell{
     width: 100%;
     min-width: 95px ;
-    /*background-color: lightgray;*/
+    background-color: white;
     padding-left: 3px;
     border-top: 1px;
     border-left: 0px;
     border-bottom: 1px;
     border-right: 1px;
     border-style: solid;
-    border-color: white;
+    border-color: whitesmoke;
     border-top-color: black;
     /*margin: 1px 1px 1px 1px;*/
 }
@@ -91,14 +130,14 @@ body {
 .yp-header-cell-right{
     width: 100%;
     min-width: 95px ;
-    /*background-color: lightgray;*/
+    background-color: white;
     padding-left: 3px;
     border-top: 1px;
     border-left: 0px;
     border-bottom: 1px;
     border-right: 0px;
     border-style: solid;
-    border-color: white;
+    border-color: whitesmoke;
     border-top-color: black;
     /*margin: 1px 1px 1px 1px;*/
 }
@@ -106,14 +145,14 @@ body {
 .yp-cell{
     width: 100%;
     min-width: 95px ;
-    /*background-color: lightgray;*/
+    background-color: white;
     padding-left: 3px;
     border-top: 0px;
     border-left: 0px;
     border-bottom: 1px;
     border-right: 1px;
     border-style: solid;
-    border-color: white;
+    border-color: whitesmoke;
     white-space:nowrap;
     display: inline-block;
     /*overflow: hidden !important;*/
@@ -121,47 +160,47 @@ body {
 }
 
 .yp-cell-weekend {
-    background-color: lightgray;
+    background-color: lightgray !important;
     text-overflow: ellipsis !important;
 }
 
 .yp-cell-bottom{
     width: 100%;
     min-width: 95px ;
-    /*background-color: lightgray;*/
+    background-color: white;
     padding-left: 3px;
     border-top: 0px;
     border-left: 0px;
     border-bottom: 0px;
     border-right: 1px;
     border-style: solid;
-    border-color: white;
+    border-color: whitesmoke;
 }
 
 .yp-cell-right{
     width: 100%;
     min-width: 95px ;
-    /*background-color: lightgray;*/
+    background-color: white;
     padding-left: 3px;
     border-top: 0px;
     border-left: 0px;
     border-bottom: 1px;
     border-right: 0px;
     border-style: solid;
-    border-color: white;
+    border-color: whitesmoke;
 }
 
 .yp-cell-bottom-right{
     width: 100%;
     min-width: 95px ;
     padding-left: 3px;
-    /*background-color: lightgray;*/
+    background-color: white;
     border-top: 0px;
     border-left: 0px;
     border-bottom: 0px;
     border-right: 0px;
     border-style: solid;
-    border-color: white;
+    border-color: whitesmoke;
 }
 
 .yp-cell-text {
@@ -243,7 +282,7 @@ body {
 }
 
 .footer {
-    background-color: whitesmoke;
+    background-color: white;
     font-size: .8rem;
     z-index: 200;
 }
@@ -261,13 +300,20 @@ body {
 }
 
 #footer-text-left a {
-    color: #2b2d2f;
+    /*color: #2b2d2f;*/
+    color: #6c757d!important;
 }
 
 #footer-text-center{
     color: #2b2d2f;
     padding-top: 1rem;
     padding-right:2rem;
+
+}
+
+#footer-text-center a {
+    /*color: #2b2d2f;*/
+    color: #6c757d!important;
 }
 
 #footer-text-right {
@@ -276,5 +322,6 @@ body {
 }
 
 #footer-text-right a {
-    color: #2b2d2f;
+    /*color: #2b2d2f;*/
+    color: #6c757d!important;
 }
