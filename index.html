@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Year Planner">
     <meta name="author" content="Craig Parravicini">
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel='stylesheet' id='google-font-css'  href='https://fonts.googleapis.com/css?family=Roboto%3A300%2C400%2C600%7CRoboto&#038;ver=1.0' type='text/css' media='all' />
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/typeaheadjs.css">
-
 
     <title>Year Planner</title>
 
@@ -34,21 +34,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
-<!--                <li class="nav-item active" ><a class="nav-link" href="#January" >{{$t('month.January')}}</a></li>-->
-<!--                <li class="nav-item active" ><a class="nav-link" href="#February" >{{$t('month.February')}}</a></li>-->
-<!--                <li class="nav-item active" ><a class="nav-link" href="#March" >{{$t('month.March')}}</a></li>-->
-<!--                <li class="nav-item active" ><a class="nav-link" href="#April" >{{$t('month.April')}}</a></li>-->
-<!--                <li class="nav-item active" ><a class="nav-link" href="#May" >{{$t('month.May')}}</a></li>-->
-<!--                <li class="nav-item active" ><a class="nav-link" href="#June" >{{$t('month.June')}}</a></li>-->
-<!--                <li class="nav-item active" ><a class="nav-link" href="#July" >{{$t('month.July')}}</a></li>-->
-<!--                <li class="nav-item active" ><a class="nav-link" href="#August" >{{$t('month.August')}}</a></li>-->
-<!--                <li class="nav-item active" ><a class="nav-link" href="#September" >{{$t('month.September')}}</a></li>-->
-<!--                <li class="nav-item active" ><a class="nav-link" href="#October" >{{$t('month.October')}}</a></li>-->
-<!--                <li class="nav-item active" ><a class="nav-link" href="#November" >{{$t('month.November')}}</a></li>-->
-<!--                <li class="nav-item active" ><a class="nav-link" href="#December" >{{$t('month.December')}}</a></li>-->
-<!--                    <li v-for="(job,index) in jobCrumbList.length" class="nav-item" v-if="(index > jobCrumbList.length - 4)">-->
-<!--                        <a class="nav-link" href="#" v-on:click="selectJob(index)">{{jobCrumbList[index].name}}<span v-if="(index < jobCrumbList.length-1)"> > </span></a>-->
-<!--                    </li>-->
                 </ul>
 
                 <form class="form-inline my-2 my-lg-0">
@@ -115,9 +100,9 @@
                                         <i v-bind:class="{'d-inline':getEntryType(mindex,n)==5,'d-none':getEntryType(mindex,n)!=5}" class="fas fa-graduation-cap"></i>
                                         <i v-bind:class="{'d-inline':getEntryType(mindex,n)==6,'d-none':getEntryType(mindex,n)!=6}" class="fas fa-heartbeat"></i>
                                             {{getEntry(mindex,n).trimStart()}}</span>
-                                 </div>
+                                    </div>
                                     <div class="row no-gutters yp-cell"
-                                         v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]+daysInMonth[mindex]-2) % 7 > 4 }"
+                                         v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]+daysInMonth[mindex]-2) % 7 > 4, 'yp-cell-bottom': n==37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1 }"
                                          v-for="n in 37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1">&nbsp;
                                     </div>
                                 </div>
@@ -141,7 +126,6 @@
                             <div class="cookie-text">{{$t('label.cookies')}}</div>
                             <div class="buttons d-flex flex-column flex-lg-row">
                                 <a href="#a" class="btn btn-secondary btn-sm" data-dismiss="modal" v-on:click="initialise()">{{$t('label.accept')}}</a>
-<!--                                <a href="#a" class="btn btn-secondary btn-sm" data-dismiss="modal">Learn More</a>-->
                             </div>
                         </div>
                     </div>
@@ -271,10 +255,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-<!--    <script src="js/moment-with-locales.js"></script>-->
-<!--    <script src="js/moment-timezone-with-data.js"></script>-->
+
     <script src="https://cdn.jsdelivr.net/npm/luxon@1.26.0/build/global/luxon.min.js"></script>
-<!--    <script src="js/typeahead.bundle.min.js"></script>-->
     <script src="js/lodash.min.js"></script>
     <script src="js/lz-string.min.js"></script>
 
