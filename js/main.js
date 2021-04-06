@@ -16,6 +16,7 @@ var lang = ($.urlParam('lang') || getNavigatorLanguage() ).substring(0,2);
 var uid = parseInt( $.urlParam('uid') ) || getLocalUid() || Math.floor(pageLoadTime.ts/1000);
 var year = parseInt( $.urlParam('year') )|| pageLoadTime.year;
 var share = $.urlParam('share') || '';
+var theme = $.urlParam('theme') || 'light';
 var preferences = (getLocalPreferences() || {})
 preferences['0'] = lang;
 
@@ -27,6 +28,7 @@ var model = {
     identities: getLocalIdentities() || [{0:uid,1:window.navigator.userAgent}],
     year: year,
     share : share,
+    theme : theme,
     month : 0,
     day : 1,
     entry: '',
@@ -49,7 +51,7 @@ var refresh = function() {
     setLocalPreferences(model.uid,model.preferences)
     acceptCookies();
     if (!window.location.href.includes('?uid=')){
-        window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.year+'&lang='+model.lang;
+        window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.year+'&lang='+model.lang+'&theme='+model.theme;
     }
 }
 
