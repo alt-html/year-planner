@@ -16,7 +16,7 @@
     <title>Year Planner</title>
 
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="https://unpkg.com/vue-i18n/dist/vue-i18n.js"></script>
+    <script src="https://unpkg.com/vue-i18n@8"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,Promise,Symbol,Object.setPrototypeOf,Object.getOwnPropertySymbols"></script>
     <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
@@ -127,6 +127,8 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div id="footer-text-right" class="text-muted text-right">▥ {{$t('label.created')}} {{DateTime.fromMillis(uid*1000).setLocale(lang).toLocaleString(DateTime.DATETIME_FULL)}}, {{$t('label.updated')}} {{DateTime.fromMillis(updated).setLocale(lang).toLocaleString(DateTime.TIME_SIMPLE)}}</a>
                     </div>
                     <div>&nbsp</div>
                 </div>
