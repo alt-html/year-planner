@@ -66,10 +66,16 @@ body {
     font-size: 1.0rem;
 }
 
+.yp-anchor{
+    position: relative;
+    bottom : 42px;
+}
 .yp-dark .navbar {
     background-color: #2B2B2B;
 }
-
+.yp-dark .dropdown a {
+    color: #8C8C8C;
+}
 .yp-dark .navbar .btn-secondary{
     color: #8C8C8C;
 }

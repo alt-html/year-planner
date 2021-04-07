@@ -26,16 +26,40 @@
 <body>
     <div id="app" v-bind:class="{'yp-dark':theme=='dark'}">
 
-<!--        <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top" >-->
-        <nav class="navbar navbar-expand-md sticky-top" >
+        <nav class="navbar navbar-expand sticky-top" >
+
             <a class="navbar-brand" href="#">{{$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
             <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav mr-auto">
-                </ul>
+<!--                <ul class="navbar-nav mr-auto">-->
+<!--                </ul>-->
             </div>
-            <span class="text-right"><form class="form-inline my-2 my-sm-0">
-                <button class="navbar-brand navbar-brand-support btn btn-secondary my-2 my-sm-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#shareModal" title=""><i class="fa fa-share-alt" aria-hidden="true"></i></button>&nbsp;
-            </form></span>
+
+            <ul class="nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Month</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#January" >{{$t('month.January')}}</a>
+                        <a class="dropdown-item" href="#February" >{{$t('month.February')}}</a>
+                        <a class="dropdown-item" href="#March" >{{$t('month.March')}}</a>
+                        <a class="dropdown-item" href="#April" >{{$t('month.April')}}</a>
+                        <a class="dropdown-item" href="#May" >{{$t('month.May')}}</a>
+                        <a class="dropdown-item" href="#June" >{{$t('month.June')}}</a>
+                        <a class="dropdown-item" href="#July" >{{$t('month.July')}}</a>
+                        <a class="dropdown-item" href="#August" >{{$t('month.August')}}</a>
+                        <a class="dropdown-item" href="#September" >{{$t('month.September')}}</a>
+                        <a class="dropdown-item" href="#October" >{{$t('month.October')}}</a>
+                        <a class="dropdown-item" href="#November" >{{$t('month.November')}}</a>
+                        <a class="dropdown-item" href="#December" >{{$t('month.December')}}</a>
+                    </div>
+                </li>
+            </ul>
+            <span class="text-right">
+
+                <form class="form-inline my-0 ">
+                  <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#shareModal" title=""><i class="fa fa-share-alt" aria-hidden="true"></i></button>&nbsp;
+                 </form>
+
+            </span>
         </nav>
 
         <main >
@@ -76,7 +100,7 @@
                         <div id="yp-months" class="col-8 col-sm-9 col-md-10 col-lg-10 col-xl-11">
                             <div class="row no-gutters">
                                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-1" v-for="(m,mindex) in monthsOfYear">
-                                    <div class="row no-gutters" v-bind:class="{'yp-header-cell': m != 'December', 'yp-header-cell-right' : m == 'December'}" ><a v-bind:name="m" ></a><h5>{{$t('month.'+m)}}</h5></div>
+                                    <div class="row no-gutters" v-bind:class="{'yp-header-cell': m != 'December', 'yp-header-cell-right' : m == 'December'}" ><a class="yp-anchor" v-bind:name="m" ></a><h5>{{$t('month.'+m)}}</h5></div>
                                     <div class="row no-gutters yp-cell"
                                          v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n-1) % 7 > 4 }"
                                          v-for="n in firstWeekdayOfMonth[mindex]-1">&nbsp;
