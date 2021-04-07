@@ -211,30 +211,36 @@
         <footer class="footer fixed-bottom">
             <div id ="footer-container" class="container">
                 <div class="row">
-                    <div class="col-4">
-                        <p id="footer-text-left" class="text-muted text-left">
-                           Copyright  2021 © Craig Parravicini (en_AU) <a href="https://github.com/craigparra/year-planner" target="_blank"><i class="fab fa-github"></i>&nbsp;README.md</a>
-                        </p>
-                    </div>
-                    <div class="col-4">
-                        <p id="footer-text-center" class="text-muted text-center">
-                                    <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=en'">English</a>&emsp;
-                                    <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=zh'">中國人</a>&emsp;
-                                    <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=hi'">हिन्दी</a>&emsp;
-                                    <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=es'">español</a>&emsp;
-                                    <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=fr'">français</a>&emsp;
-                                    <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=ar'">عربى</a>&emsp;
-                                    <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=ru'">русский</a>&emsp;
-                                    <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=pt'">português</a>&emsp;
-                                    <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=ja'">日本語</a>&emsp;
-                                    <a v-bind:href="'/?id='+uid+'&year='+year+'&lang=id'">bahasa Indonesia</a>&emsp;
-                        </p>
-                    </div>
-                    <div class="col-4">
+                    <div class="col-1">
 
-                        <p id="footer-text-right" class="text-muted text-right">
-                            <a name="created"  target="_blank">▥ {{$t('label.created')}} {{DateTime.fromMillis(uid*1000).setLocale(lang).toLocaleString(DateTime.DATETIME_FULL)}}, {{$t('label.updated')}} {{DateTime.fromMillis(updated).setLocale(lang).toLocaleString(DateTime.TIME_SIMPLE)}}</a>
-                        </p>
+                        <div id="footer-text-left" class="text-muted text-left">
+                            <div class="dropup show">
+                                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{$t('lang.'+lang)}}
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=en'+'&theme='+theme">English</a>
+                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=zh'+'&theme='+theme">中國人</a>
+                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=hi'+'&theme='+theme">हिन्दी</a>
+                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=es'+'&theme='+theme">español</a>
+                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=fr'+'&theme='+theme">français</a>
+                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=ar'+'&theme='+theme">عربى</a>
+                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=ru'+'&theme='+theme">русский</a>
+                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=pt'+'&theme='+theme">português</a>
+                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=ja'+'&theme='+theme">日本語</a>
+                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=id'+'&theme='+theme">Bahasa Indonesia</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+<!--                    <div class="col-xs-1 col-sm-4">-->
+<!--                        <div id="footer-text-left" class="text-muted text-left"></div>-->
+<!--                    </div>-->
+                    <div class="col-11">
+                        <div id="footer-text-right" class="text-muted text-right">© 2021, Craig Parravicini (en_AU) &nbsp; <a href="https://github.com/craigparra/year-planner" target="_blank"><i class="fab fa-github"></i>&nbsp;README.md</a>
+<!--                            <a name="created"  target="_blank">▥ {{$t('label.created')}} {{DateTime.fromMillis(uid*1000).setLocale(lang).toLocaleString(DateTime.DATETIME_FULL)}}, {{$t('label.updated')}} {{DateTime.fromMillis(updated).setLocale(lang).toLocaleString(DateTime.TIME_SIMPLE)}}</a>-->
+                        </div>
                     </div>
                 </div>
             </div>

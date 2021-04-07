@@ -20,8 +20,7 @@ const messages = {
         day :{
             Monday:'Monday',Tuesday:'Tuesday',Wednesday:'Wednesday',Thursday:'Thursday',Friday:'Friday',Saturday:'Saturday',Sunday:'Sunday'
         },
-
-        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'bahasa Indonesia'}
+        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia'}
     },
     es: {
         label : {
@@ -220,10 +219,8 @@ const messages = {
         },
         day :{
             Monday:'Senin',Tuesday:'Selasa',Wednesday:'Rabu',Thursday:'Kamis',Friday:'Jumat',Saturday:'Sabtu',Sunday:'Minggu'
-        },
-    },
+        }    },
 }
-
 
 var getNavigatorLanguage = () => (navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
 

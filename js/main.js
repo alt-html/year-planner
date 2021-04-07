@@ -53,6 +53,11 @@ var refresh = function() {
     if (!window.location.href.includes('?uid=')){
         window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.year+'&lang='+model.lang+'&theme='+model.theme;
     }
+    if (model.theme =='dark'){
+        document.body.classList.add("yp-dark");
+    }else{
+        document.body.classList.length = 0;
+    }
 }
 
 var  setYear = function (year) {
