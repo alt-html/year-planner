@@ -58,6 +58,12 @@ body {
 
 .navbar {
     background-color: white;
+    padding-top: .2rem;
+    padding-bottom: 0rem;
+}
+
+.navbar-brand{
+    font-size: 1.0rem;
 }
 
 .yp-dark .navbar {
