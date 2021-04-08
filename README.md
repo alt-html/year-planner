@@ -45,7 +45,6 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 ### Backlog
 
 - \[ \] Colourised cells
-- \[ \] Mark past cells, emphasise today
 - \[ \] Settings dropdown menu
 - \[ \] Save theme in preferences
 - \[ \] Current, last and next year nav links
@@ -54,6 +53,8 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 - \[ \] 4x 13 week term view
 
 ### Recent Features Added
+
+- \[x\] Mark past cells, emphasise today
 
 
 
