@@ -44,10 +44,8 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 
 ### Backlog
 
-- \[ \] Colourised cells
 - \[ \] Settings dropdown menu
 - \[ \] Save theme in preferences
-- \[ \] Current, last and next year nav links
 - \[ \] Switches for light and dark themes in settings menu
 - \[ \] 2x 26 week semester view
 - \[ \] 4x 13 week term view
@@ -55,6 +53,8 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 ### Recent Features Added
 
 - \[x\] Mark past cells, emphasise today
+- \[x\] Current, last and next year nav links
+
 
 
 
