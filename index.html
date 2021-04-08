@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel='stylesheet' id='google-font-css'  href='https://fonts.googleapis.com/css?family=Roboto%3A300%2C400%2C600%7CRoboto&#038;ver=1.0' type='text/css' media='all' />
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/yp-dark.css">
     <link rel="stylesheet" href="css/typeaheadjs.css">
 
     <title>Year Planner</title>
@@ -106,7 +107,7 @@
                                          v-for="n in firstWeekdayOfMonth[mindex]-1">&nbsp;
                                     </div>
                                     <div class="row no-gutters yp-cell"
-                                         v-bind:class="{'yp-cell-bottom': n+firstWeekdayOfMonth[mindex]-1 == 37 && m != 'December','yp-cell-right': n+firstWeekdayOfMonth[mindex]-1 < 37 && m == 'December', 'yp-cell-bottom-right': n+firstWeekdayOfMonth[mindex]-1 == 37 && m == 'December', 'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-1-1) % 7 > 4 }"
+                                         v-bind:class="{'yp-cell-bottom': n+firstWeekdayOfMonth[mindex]-1 == 37 && m != 'December','yp-cell-right': n+firstWeekdayOfMonth[mindex]-1 < 37 && m == 'December', 'yp-cell-bottom-right': n+firstWeekdayOfMonth[mindex]-1 == 37 && m == 'December', 'yp-cell-past': DateTime.local(year,mindex+1,n).ts < DateTime.local(cyear,cmonth,cday).ts,'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-1-1) % 7 > 4,'yp-cell-today': cyear == year && cmonth==mindex+1 && cday == n  }"
                                          v-for="n in daysInMonth[mindex]" data-toggle="modal" data-target="#entryModal"
                                          v-on:click="updateEntryState(mindex,n)">
 
@@ -128,7 +129,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="footer-text-right" class="text-muted text-right">▥ {{$t('label.created')}} {{DateTime.fromMillis(uid*1000).setLocale(lang).toLocaleString(DateTime.DATETIME_FULL)}}, {{$t('label.updated')}} {{DateTime.fromMillis(updated).setLocale(lang).toLocaleString(DateTime.TIME_SIMPLE)}}</a>
+                    <div id="yp-table-subscript" class="text-muted text-right">▥ {{$t('label.created')}} {{DateTime.fromMillis(uid*1000).setLocale(lang).toLocaleString(DateTime.DATETIME_FULL)}}, {{$t('label.updated')}} {{DateTime.fromMillis(updated).setLocale(lang).toLocaleString(DateTime.TIME_SIMPLE)}}</a>
                     </div>
                     <div>&nbsp</div>
                 </div>

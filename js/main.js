@@ -41,7 +41,10 @@ var model = {
     firstWeekdayOfMonth : [],
     daysInMonth : [],
     error : '',
-    updated: DateTime.now().ts
+    updated: DateTime.now().ts,
+    cyear : pageLoadTime.year,
+    cmonth : pageLoadTime.month,
+    cday: pageLoadTime.day
 }
 
 setModelFromImportString(share);
