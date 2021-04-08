@@ -40,12 +40,13 @@ The year planner offers configurable light (default) and dark themes.
 ### Translations
 
 The year planner is available in 10 popular languages:  
-English, Chinese (traditional), Hindi, Spanish, Portuguese, French, Russian, Indonesian and Japanese.
+English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russian, Indonesian and Japanese.
 
 ### Backlog
 
 - \[ \] Settings dropdown menu
 - \[ \] Save theme in preferences
+- \[ \] Current, last and next year nav links
 - \[ \] Switches for light and dark themes in settings menu
 - \[ \] 2x 26 week semester view
 - \[ \] 4x 13 week term view
