@@ -44,6 +44,8 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 
 ### Backlog
 
+- \[ \] Colourised cells
+- \[ \] Mark past cells, emphasise today
 - \[ \] Settings dropdown menu
 - \[ \] Save theme in preferences
 - \[ \] Current, last and next year nav links
