@@ -44,14 +44,26 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 
 ### Backlog
 
+- \[ \] Colourise cells
 - \[ \] Settings dropdown menu
 - \[ \] Save theme in preferences
 - \[ \] Switches for light and dark themes in settings menu
+- \[ \] Dark theme dropdowns
+- \[ \] Dark theme modals
+
 - \[ \] 2x 26 week semester view
 - \[ \] 4x 13 week term view
+- \[ \] Export to CSV
+  
+- \[ \] Disable non-current year, dark theme on switch
+- \[ \] Register a user
+- \[ \] Subscribe via payment gateway (Square)
+- \[ \] Save planner to PAYG storage
+- \[ \] Fetch planner from PAYG storage for subcribed user.
+- \[ \] Expire a subscriber
 
 ### Recent Features Added
-
+- \[x \] Year nav (+-1)
 - \[x\] Mark past cells, emphasise today
 - \[x\] Current, last and next year nav links
 
