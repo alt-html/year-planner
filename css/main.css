@@ -77,6 +77,18 @@ a.navbar-brand {
     background-color: transparent;
 }
 
+.navbar .btn-secondary {
+    color: #6c757d!important;
+    background-color: #fff;
+    border-color: #fff;
+}
+
+.yp-dark .navbar .btn-secondary {
+    color: #6c757d!important;
+    background-color: #2B2B2B;
+    border-color: #2B2B2B;
+}
+
 .jumbotron h1 {
     font-size: 3.5rem;
     font-weight: 300;
@@ -248,6 +260,10 @@ a.navbar-brand {
 .yp-cell-c7 {background-color: #FFEEE0;} /* light orange*/
 .yp-cell-c8 {background-color: #F3EDFF; } /* light purple*/
 
+.yp-cell-btn {
+    color: white;
+}
+
 #yp-table-subscript {
     font-size: .8rem;
 }
@@ -384,12 +400,6 @@ a.navbar-brand {
     background-color: #fff;
     border-color: #fff;
 }
-
-/*.yp-dark .btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle {*/
-/*    color: #8C8C8C!important;*/
-/*    background-color: #2B2B2B;*/
-/*    border-color: #2B2B2B;*/
-/*}*/
 
 .btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle:focus {
     box-shadow: 0 0 0 0.0rem rgb(130 138 145 / 50%);

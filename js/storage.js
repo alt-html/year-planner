@@ -106,7 +106,7 @@ var updateEntry = function(mindex,day,entry,entryType,entryColour){
 
 var updateWeekColour = function(mindex,day,entryColour){
     var weekday = DateTime.local(model.year,mindex+1, day).weekday;
-    for (i=1; i < 7 && day+i <= model.daysInMonth[mindex] ;i++){
+    for (i=1; i < (7-weekday+1) && day+i <= model.daysInMonth[mindex] ;i++){
         var entry = getEntry(mindex,day+i);
         updateEntry(mindex,day+i,entry[1],entry[0],entryColour);
     }

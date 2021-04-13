@@ -210,17 +210,17 @@
                                           v-bind:class="'yp-cell-c'+getEntryColour(month,day)"></textarea>
                             </div>
                             <div class="form-select-button">
-                                <button type="button" class="btn yp-cell-c1" v-on:click="updateEntry(month,day,entry,entryType,1)">&nbsp;</button>
-                                <button type="button" class="btn yp-cell-c2" v-on:click="updateEntry(month,day,entry,entryType,2)">&nbsp;</button>
-                                <button type="button" class="btn yp-cell-c3" v-on:click="updateEntry(month,day,entry,entryType,3)">&nbsp;</button>
-                                <button type="button" class="btn yp-cell-c4" v-on:click="updateEntry(month,day,entry,entryType,4)">&nbsp;</button>
-                                <button type="button" class="btn yp-cell-c5" v-on:click="updateEntry(month,day,entry,entryType,5)">&nbsp;</button>
-                                <button type="button" class="btn yp-cell-c6" v-on:click="updateEntry(month,day,entry,entryType,6)">&nbsp;</button>
-                                <button type="button" class="btn yp-cell-c7" v-on:click="updateEntry(month,day,entry,entryType,7)">&nbsp;</button>
-                                <button type="button" class="btn yp-cell-c8" v-on:click="updateEntry(month,day,entry,entryType,8)">&nbsp;</button>
                                 <button type="button" class="btn yp-cell-c0" v-on:click="updateEntry(month,day,entry,entryType,0)">&nbsp;</button>
-                                <button type="button" class="btn yp-cell-c0" v-on:click="updateWeekColour(month,day,entryColour,0)"> > </button>
-                                <button type="button" class="btn yp-cell-c0" v-on:click="updateMonthColour(month,day,entryColour)"> >> </button>
+                                <button type="button" class="btn yp-cell-c1 yp-cell-btn" v-on:click="updateEntry(month,day,entry,entryType,1)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c2 yp-cell-btn" v-on:click="updateEntry(month,day,entry,entryType,2)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c3 yp-cell-btn" v-on:click="updateEntry(month,day,entry,entryType,3)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c4 yp-cell-btn" v-on:click="updateEntry(month,day,entry,entryType,4)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c5 yp-cell-btn" v-on:click="updateEntry(month,day,entry,entryType,5)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c6 yp-cell-btn" v-on:click="updateEntry(month,day,entry,entryType,6)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c7 yp-cell-btn" v-on:click="updateEntry(month,day,entry,entryType,7)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c8 yp-cell-btn" v-on:click="updateEntry(month,day,entry,entryType,8)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c0 " v-on:click="updateWeekColour(month,day,entryColour,0)"> > </button>
+                                <button type="button" class="btn yp-cell-c0 " v-on:click="updateMonthColour(month,day,entryColour)"> >> </button>
 <!--                                <button type="button" class="btn yp-cell-c7" v-on:click="updateEntry(month,day,entry,entryType,7)">&nbsp;</button>-->
                             </div>
                         </form>
