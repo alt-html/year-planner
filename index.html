@@ -117,7 +117,7 @@
                                          v-for="n in firstWeekdayOfMonth[mindex]-1">&nbsp;
                                     </div>
                                     <div class="row no-gutters yp-cell"
-                                         v-bind:class="{'yp-cell-bottom': n+firstWeekdayOfMonth[mindex]-1 == 37 && m != 'December','yp-cell-right': n+firstWeekdayOfMonth[mindex]-1 < 37 && m == 'December', 'yp-cell-bottom-right': n+firstWeekdayOfMonth[mindex]-1 == 37 && m == 'December', 'yp-cell-past': DateTime.local(year,mindex+1,n).ts < DateTime.local(cyear,cmonth,cday).ts,'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-1-1) % 7 > 4,'yp-cell-today': cyear == year && cmonth==mindex+1 && cday == n  }"
+                                         v-bind:class="{'yp-cell-bottom': n+firstWeekdayOfMonth[mindex]-1 == 37 && m != 'December','yp-cell-right': n+firstWeekdayOfMonth[mindex]-1 < 37 && m == 'December', 'yp-cell-bottom-right': n+firstWeekdayOfMonth[mindex]-1 == 37 && m == 'December', 'yp-cell-past': DateTime.local(year,mindex+1,n).ts < DateTime.local(cyear,cmonth,cday).ts,'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-1-1) % 7 > 4,'yp-cell-c1':getEntryColour(mindex,n)==1,'yp-cell-c2':getEntryColour(mindex,n)==2,'yp-cell-c3':getEntryColour(mindex,n)==3,'yp-cell-c4':getEntryColour(mindex,n)==4,'yp-cell-c5':getEntryColour(mindex,n)==5,'yp-cell-c6':getEntryColour(mindex,n)==6,'yp-cell-c7':getEntryColour(mindex,n)==7,'yp-cell-c8':getEntryColour(mindex,n)==8,'yp-cell-today': cyear == year && cmonth==mindex+1 && cday == n  }"
                                          v-for="n in daysInMonth[mindex]" data-toggle="modal" data-target="#entryModal"
                                          v-on:click="updateEntryState(mindex,n)">
 
@@ -176,7 +176,6 @@
                     </div>
                     <div class="modal-body">
                         <form>
-
                              <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"  v-model="entryType" value="1">
                                 <label class="form-check-label" for="inlineRadio1"><i class="fas fa-bell"></i></label>
@@ -207,13 +206,28 @@
                             </div>
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label"></label>
-                                <textarea type="text" placeholder="On this day ..." class="form-control" v-model="entry" id="target-group" rows="5" maxlength="256"></textarea>
+                                <textarea type="text" placeholder="On this day ..." class="form-control" v-model="entry" id="yp-entry-textarea" rows="5" maxlength="256"
+                                          v-bind:class="'yp-cell-c'+getEntryColour(month,day)"></textarea>
+                            </div>
+                            <div class="form-select-button">
+                                <button type="button" class="btn yp-cell-c1" v-on:click="updateEntry(month,day,entry,entryType,1)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c2" v-on:click="updateEntry(month,day,entry,entryType,2)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c3" v-on:click="updateEntry(month,day,entry,entryType,3)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c4" v-on:click="updateEntry(month,day,entry,entryType,4)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c5" v-on:click="updateEntry(month,day,entry,entryType,5)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c6" v-on:click="updateEntry(month,day,entry,entryType,6)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c7" v-on:click="updateEntry(month,day,entry,entryType,7)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c8" v-on:click="updateEntry(month,day,entry,entryType,8)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c0" v-on:click="updateEntry(month,day,entry,entryType,0)">&nbsp;</button>
+                                <button type="button" class="btn yp-cell-c0" v-on:click="updateWeekColour(month,day,entryColour,0)"> > </button>
+                                <button type="button" class="btn yp-cell-c0" v-on:click="updateMonthColour(month,day,entryColour)"> >> </button>
+<!--                                <button type="button" class="btn yp-cell-c7" v-on:click="updateEntry(month,day,entry,entryType,7)">&nbsp;</button>-->
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="updateEntry(month,day,entry,entryType)">{{$t('label.update')}}</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="updateEntry(month,day,entry,entryType,entryColour)">{{$t('label.update')}}</button>
                     </div>
                 </div>
             </div>

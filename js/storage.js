@@ -88,19 +88,38 @@ var setLocalPlanner = function(uid, year, planner) {
     }
 }
 
-var updateEntry = function(mindex,day,entry,entryType){
+var updateEntry = function(mindex,day,entry,entryType,entryColour){
     if (!model.planner[mindex]){
        model.planner[mindex] = {};
     }
     if (!model.planner[mindex][''+day]){
-        model.planner[mindex][''+day] = {0:entryType,1:entry,2:Math.floor(DateTime.now().ts/1000)};
+        model.planner[mindex][''+day] = {0:entryType,1:entry,2:entryColour};
     }
     model.planner[mindex][''+day][''+0] = entryType;
     model.planner[mindex][''+day][''+1] = entry;
+    model.planner[mindex][''+day][''+2] = entryColour;
+    model.entryColour = entryColour;
+
     model.updated = DateTime.now().ts;
     setLocalPlanner(model.uid,model.year,model.planner);
-
 }
+
+var updateWeekColour = function(mindex,day,entryColour){
+    var weekday = DateTime.local(model.year,mindex+1, day).weekday;
+    for (i=1; i < 7 && day+i <= model.daysInMonth[mindex] ;i++){
+        var entry = getEntry(mindex,day+i);
+        updateEntry(mindex,day+i,entry[1],entry[0],entryColour);
+    }
+}
+
+var updateMonthColour = function(mindex,day,entryColour){
+
+    for (i=day+1; i <= model.daysInMonth[mindex];i++ ){
+        var entry = getEntry(mindex,i);
+        updateEntry(mindex,i,entry[1],entry[0],entryColour);
+    }
+}
+
 
 var getEntry = function(mindex,day){
     if (model.planner[mindex] && model.planner[mindex][''+day]){
@@ -113,6 +132,14 @@ var getEntry = function(mindex,day){
 var getEntryType = function(mindex,day){
     if (model.planner[mindex] && model.planner[mindex][''+day]){
         return model.planner[mindex][''+day][''+0] || ''
+    } else {
+        return ''
+    }
+}
+
+var getEntryColour = function(mindex,day){
+    if (model.planner[mindex] && model.planner[mindex][''+day]){
+        return model.planner[mindex][''+day][''+2] || ''
     } else {
         return ''
     }

@@ -33,6 +33,7 @@ var model = {
     day : 1,
     entry: '',
     entryType : 0,
+    entryColour : 0,
     preferences: preferences,
     planner: getLocalPlanner(uid, year),
     shareUrl: window.location.origin,
@@ -77,7 +78,8 @@ var updateEntryState = function (mindex,day){
     model.month = mindex;
     model.day = day;
     model.entry = getEntry(mindex,day);
-    model.entryType = getEntryType(mindex,day)
+    model.entryType = getEntryType(mindex,day);
+    model.entryColour = getEntryColour(mindex,day);
 }
 
 var sharePlanner = function(){
@@ -101,17 +103,14 @@ const i18n = new VueI18n({
 })
 
 var app = new Vue({
-    i18n,
+    i18n : i18n,
     el: '#app',
     data: model,
     methods: {
         refresh: function (event) {
             refresh();
         }
-    }//,
-    // components: {
-    //     jobTreeComponent
-    // }
+    },
 })
 
 app.refresh();

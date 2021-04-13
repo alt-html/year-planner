@@ -68,8 +68,15 @@
     background-color: #373a3c;
 }
 .yp-dark .yp-cell-today {
-    background-color: darkslategrey;
+    background-color: darkslategrey !important;
 }
+
+.yp-dark .yp-cell-c1 {background-color: aliceblue;}
+.yp-dark .yp-cell-c2 {background-color: #546959;}
+.yp-dark .yp-cell-c3 {background-color: #704545;}
+.yp-dark .yp-cell-c4 {background-color: #98633F;}
+.yp-dark .yp-cell-c5 {background-color: #3E4A5D;}
+.yp-dark .yp-cell-c6 {background-color: #64496B;}
 
 .yp-dark .footer {
     background-color: #2B2B2B;
