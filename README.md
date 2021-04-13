@@ -44,7 +44,6 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 
 ### Backlog
 
-- \[ \] Colourise cells
 - \[ \] Settings dropdown menu
 - \[ \] Save theme in preferences
 - \[ \] Switches for light and dark themes in settings menu
@@ -63,7 +62,8 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 - \[ \] Expire a subscriber
 
 ### Recent Features Added
-- \[x \] Year nav (+-1)
+- \[x\] Colourise cells
+- \[x\] Year nav (+-1)
 - \[x\] Mark past cells, emphasise today
 - \[x\] Current, last and next year nav links
 

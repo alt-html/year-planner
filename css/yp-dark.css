@@ -71,12 +71,15 @@
     background-color: darkslategrey !important;
 }
 
-.yp-dark .yp-cell-c1 {background-color: aliceblue;}
-.yp-dark .yp-cell-c2 {background-color: #546959;}
-.yp-dark .yp-cell-c3 {background-color: #704545;}
-.yp-dark .yp-cell-c4 {background-color: #98633F;}
-.yp-dark .yp-cell-c5 {background-color: #3E4A5D;}
-.yp-dark .yp-cell-c6 {background-color: #64496B;}
+.yp-dark .yp-cell-c0 {border-color: whitesmoke;}
+.yp-dark .yp-cell-c1 {background-color: #620000;} /* light red */
+.yp-dark .yp-cell-c2 {background-color: #006200;} /* light green */
+.yp-dark .yp-cell-c3 {background-color: #0000B0;} /* light blue */
+.yp-dark .yp-cell-c4 {background-color: #003E3E;} /* light cyan */
+.yp-dark .yp-cell-c5 {background-color: #545400;} /* light yellow */
+.yp-dark .yp-cell-c6 {background-color: #4A004A;} /* light magenta */
+.yp-dark .yp-cell-c7 {background-color: #603300;} /* light orange*/
+.yp-dark .yp-cell-c8 {background-color: #200075; } /* light purple*/
 
 .yp-dark .footer {
     background-color: #2B2B2B;
