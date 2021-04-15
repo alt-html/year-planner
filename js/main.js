@@ -25,17 +25,27 @@ var model = {
     pageLoadTime : pageLoadTime,
     lang: lang,
     uid : uid,
-    identities: getLocalIdentities() || [{0:uid,1:window.navigator.userAgent}],
     year: year,
-    share : share,
     theme : theme,
+    share : share,
+
+    uuid : '',
+    username : '',
+    email : '',
+    emailverified : 0,
+    mobile : '',
+    mobileverified : 0,
+    subscription : -1,
+
+    identities: getLocalIdentities() || [{0:uid,1:window.navigator.userAgent}],
+    preferences: preferences,
+    planner: getLocalPlanner(uid, year),
+
     month : 0,
     day : 1,
     entry: '',
     entryType : 0,
     entryColour : 0,
-    preferences: preferences,
-    planner: getLocalPlanner(uid, year),
     shareUrl: window.location.origin,
     daysOfWeek : ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
     monthsOfYear : ['January','February','March','April','May','June','July','August','September','October','November','December'],
@@ -45,7 +55,9 @@ var model = {
     updated: DateTime.now().ts,
     cyear : pageLoadTime.year,
     cmonth : pageLoadTime.month,
-    cday: pageLoadTime.day
+    cday: pageLoadTime.day,
+
+    feature : {subscribe : false}
 }
 
 setModelFromImportString(share);

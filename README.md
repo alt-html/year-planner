@@ -49,7 +49,9 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 - \[ \] Switches for light and dark themes in settings menu
 - \[ \] Dark theme dropdowns
 - \[ \] Dark theme modals
-
+- \[ \] Theme i81n
+- \[ \] Expand entry icon set with select dropdown
+  
 - \[ \] 2x 26 week semester view
 - \[ \] 4x 13 week term view
 - \[ \] Export to CSV

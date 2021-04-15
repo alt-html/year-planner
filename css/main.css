@@ -83,6 +83,14 @@ a.navbar-brand {
     border-color: #fff;
 }
 
+.navbar .btn-secondary.focus, .btn-secondary:focus {
+     box-shadow:none;
+}
+
+.navbar.btn.focus, .btn:focus {
+    box-shadow:none;
+}
+
 .yp-dark .navbar .btn-secondary {
     color: #6c757d!important;
     background-color: #2B2B2B;
