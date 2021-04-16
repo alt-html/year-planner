@@ -51,6 +51,7 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 - \[ \] Dark theme modals
 - \[ \] Theme i81n
 - \[ \] Expand entry icon set with select dropdown
+- \[ \] Twemoji support (https://kevinfaguiar.github.io/vue-twemoji-picker/ + https://codesandbox.io/s/vue-twemoji-picker-umdiife-example-we3co?from-embed=&file=/index.html)
   
 - \[ \] 2x 26 week semester view
 - \[ \] 4x 13 week term view
@@ -60,7 +61,7 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 - \[ \] Register a user
 - \[ \] Subscribe via payment gateway (Square)
 - \[ \] Save planner to PAYG storage
-- \[ \] Fetch planner from PAYG storage for subcribed user.
+- \[ \] Fetch planner from PAYG storage for subscribed user.
 - \[ \] Expire a subscriber
 
 ### Recent Features Added

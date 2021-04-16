@@ -57,7 +57,7 @@ var model = {
     cmonth : pageLoadTime.month,
     cday: pageLoadTime.day,
 
-    feature : {subscribe : false}
+    feature : feature
 }
 
 setModelFromImportString(share);

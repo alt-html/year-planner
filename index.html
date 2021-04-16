@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/yp-dark.css">
     <link rel="stylesheet" href="css/typeaheadjs.css">
+    <link rel="stylesheet" type="text/css" href="css/sqpaymentform.css">
 
     <title>Year Planner</title>
 
@@ -21,7 +22,8 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,Promise,Symbol,Object.setPrototypeOf,Object.getOwnPropertySymbols"></script>
     <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
-    <script defer src=""></script>
+    <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>
+
 
 </head>
 <body>
@@ -79,6 +81,7 @@
                 <form class="form-inline my-0 ">
                     <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#shareModal" title=""><i class="fa fa-share-alt" aria-hidden="true"></i></button>&nbsp;
 <!--                     <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#shareModal" title=""><i class="fas fa-sign-in-alt"></i></button>&nbsp;-->
+                    <button v-if="feature.subscribe" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#payModal" title="">Subscribe</button>&nbsp;
                </form>
 
             </span>
@@ -271,6 +274,137 @@
             </div>
         </div>
 
+        <div v-if="feature.pay" class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="payModalLabel">Subscribe</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div id="form-container">
+                            <div id="sq-card-number"></div>
+                            <div class="third" id="sq-expiration-date"></div>
+                            <div class="third" id="sq-cvv"></div>
+                            <div class="third" id="sq-postal-code"></div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
+                        <button id="sq-creditcard" type="button" class="btn btn-primary button-credit-card"  v-on:click="onGetCardNonce(event)">Pay $1.00</button>
+                    </div>
+                    <script type="text/javascript">
+
+                        const idempotency_key = uuidv4();
+
+                        // Create and initialize a payment form object
+                        const paymentForm = new SqPaymentForm({
+                            // Initialize the payment form elements
+
+                           // applicationId: "REPLACE_WITH_APPLICATION_ID";
+                            applicationId: "sandbox-sq0idb-ZaOa3uAuhkRfgVmR2xHQyA",
+                            inputClass: 'sq-input',
+                            autoBuild: false,
+                            // Customize the CSS for SqPaymentForm iframe elements
+                            inputStyles: [{
+                                fontSize: '16px',
+                                lineHeight: '24px',
+                                padding: '16px',
+                                placeholderColor: '#a0a0a0',
+                                backgroundColor: 'transparent',
+                            }],
+                            // Initialize the credit card placeholders
+                            cardNumber: {
+                                elementId: 'sq-card-number',
+                                placeholder: 'Card Number'
+                            },
+                            cvv: {
+                                elementId: 'sq-cvv',
+                                placeholder: 'CVV'
+                            },
+                            expirationDate: {
+                                elementId: 'sq-expiration-date',
+                                placeholder: 'MM/YY'
+                            },
+                            postalCode: {
+                                elementId: 'sq-postal-code',
+                                placeholder: 'Postal'
+                            },
+                            // SqPaymentForm callback functions
+                            callbacks: {
+                                /*
+                                * callback function: cardNonceResponseReceived
+                                * Triggered when: SqPaymentForm completes a card nonce request
+                                */
+                                cardNonceResponseReceived: function (errors, nonce, cardData) {
+                                    if (errors) {
+                                        // Log errors from nonce generation to the browser developer console.
+                                        console.error('Encountered errors:');
+                                        errors.forEach(function (error) {
+                                            console.error('  ' + error.message);
+                                        });
+                                        alert('Encountered errors, check browser developer console for more details');
+                                        return;
+                                    }
+
+                                    // alert(`The generated nonce is:\n${nonce}`);
+                                    fetch('process-payment', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            nonce: nonce,
+                                            idempotency_key: idempotency_key,
+                                            // location_id: "REPLACE_WITH_LOCATION_ID"
+                                            location_id: "LDF5NP9BZJ0CP"
+                                        })
+                                    })
+                                        .catch(err => {
+                                            alert('Network error: ' + err);
+                                        })
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                return response.json().then(
+                                                    errorInfo => Promise.reject(errorInfo));
+                                            }
+                                            return response.json();
+                                        })
+                                        .then(data => {
+                                            console.log(data);
+                                            alert('Payment complete successfully!\nCheck browser developer console for more details');
+                                        })
+                                        .catch(err => {
+                                            console.error(err);
+                                            alert('Payment failed to complete!\nCheck browser developer console for more details');
+                                        });
+
+                                }
+                            }
+                        });
+
+                        paymentForm.build();
+
+                        //TODO: paste code from step 2.1.2
+
+                        // onGetCardNonce is triggered when the "Pay $1.00" button is clicked
+                        function onGetCardNonce(event) {
+
+                            // Don't submit the form until SqPaymentForm returns with a nonce
+                            event.preventDefault();
+                            // Request a nonce from the SqPaymentForm object
+                            paymentForm.requestCardNonce();
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+
         <footer class="footer fixed-bottom">
             <div id ="footer-container" class="container">
                 <div class="row">
@@ -323,10 +457,12 @@
     <script src="js/lodash.min.js"></script>
     <script src="js/lz-string.min.js"></script>
 
+    <script  src="js/features.js"></script>
     <script  src="js/i81n.js"></script>
     <script  src="js/cookies.js"></script>
     <script  src="js/storage.js"></script>
     <script  src="js/api.js"></script>
+    <script  src="js/uuid.js"></script>
     <script  src="js/main.js"></script>
 
 </body>
