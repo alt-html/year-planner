@@ -23,6 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
     <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>
+    <script  src="js/uuid.js"></script>
 
 
 </head>
@@ -79,8 +80,11 @@
             <span class="text-right">
 
                 <form class="form-inline my-0 ">
-                    <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#shareModal" title=""><i class="fa fa-share-alt" aria-hidden="true"></i></button>&nbsp;
-<!--                     <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#shareModal" title=""><i class="fas fa-sign-in-alt"></i></button>&nbsp;-->
+                    <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fa fa-share-alt" aria-hidden="true"></i></button>
+<!--                     <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-sign-in-alt"></i></button>&nbsp;-->
+                    <button v-if="feature.settings" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-cog" aria-hidden="true"></i></button>&nbsp;
+                    <button v-if="feature.register" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#registerModal" title="">Register</button>&nbsp;
+                    <button v-if="feature.donate" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showDonate()" data-toggle="modal" data-target="#donateModal" title="">Donate</button>&nbsp;
                     <button v-if="feature.subscribe" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#payModal" title="">Subscribe</button>&nbsp;
                </form>
 
@@ -91,20 +95,23 @@
         <main >
             <div class="jumbotron">
                 <div class="container">
-<!--                    <div>&nbsp</div>-->
-<!--                    <div class="row no-gutters">-->
-<!--                        <div class="col-xs-12">-->
-<!--                            <div class="row tst-cell d-sm-none">Extra Small (xs) < 576px</div>-->
-<!--                            <div class="row tst-cell d-none d-sm-inline d-md-none">Small (sm) >= 576</div>-->
-<!--                            <div class="row tst-cell d-none d-md-inline d-lg-none">Medium (md) >= 768px</div>-->
-<!--                            <div class="row tst-cell d-none d-lg-inline d-xl-none">Large (lg) >= 992px</div>-->
-<!--                            <div class="row tst-cell d-none d-xl-inline">Extra Large (xl) >= 1200px</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <div v-if="feature.debug">
+                            <div>&nbsp</div>
+                            <div class="row no-gutters">
+                                <div class="col-xs-12">
+                                    <div class="row tst-cell d-sm-none">Extra Small (xs) < 576px</div>
+                                    <div class="row tst-cell d-none d-sm-inline d-md-none">Small (sm) >= 576</div>
+                                    <div class="row tst-cell d-none d-md-inline d-lg-none">Medium (md) >= 768px</div>
+                                    <div class="row tst-cell d-none d-lg-inline d-xl-none">Large (lg) >= 992px</div>
+                                    <div class="row tst-cell d-none d-xl-inline">Extra Large (xl) >= 1200px</div>
+                                </div>
+                            </div>
 
-<!--                    <div class="row no-gutters">-->
-<!--                        <div class="col"><h2>{{$t('label.yearplanner')}} {{year}}</h2></div>-->
-<!--                    </div>-->
+                            <div class="row no-gutters">
+                                <div class="col"><h2>{{$t('label.yearplanner')}} {{year}}</h2></div>
+                            </div>
+                    </div>
+
 
                     <div id="yp-table" class="row no-gutters">
                         <div id="yp-weekdays" class="col-4 col-sm-3 col-md-2 col-lg-2 col-xl-1">
@@ -236,7 +243,6 @@
                                 <button type="button" class="btn yp-cell-c8 yp-cell-btn" v-on:click="updateEntry(month,day,entry,entryType,8)">&nbsp;</button>
                                 <button type="button" class="btn yp-cell-c0 " v-on:click="updateWeekColour(month,day,entryColour,0)"> > </button>
                                 <button type="button" class="btn yp-cell-c0 " v-on:click="updateMonthColour(month,day,entryColour)"> >> </button>
-<!--                                <button type="button" class="btn yp-cell-c7" v-on:click="updateEntry(month,day,entry,entryType,7)">&nbsp;</button>-->
                             </div>
                         </form>
                     </div>
@@ -268,13 +274,62 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
                         <button type="button" class="btn btn-primary"  v-on:click="copyUrl()">{{$t('label.copy')}}</button>
-
                     </div>
                 </div>
             </div>
         </div>
 
-        <div v-if="feature.pay" class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
+        <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="settingsModalLabel">{{$t('label.settings')}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">{{$t('label.sharecopy')}}</label>
+                                <input  type="text" class="form-control" v-model="shareUrl" id="copyUrl">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
+                        <button type="button" class="btn btn-primary"  v-on:click="saveSettings()">{{$t('label.update')}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="registerModalLabel">{{$t('label.register')}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">{{$t('label.sharecopy')}}</label>
+                                <input  type="text" class="form-control" v-model="shareUrl" id="copyUrl">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
+                        <button type="button" class="btn btn-primary"  v-on:click="saveSettings()">{{$t('label.update')}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div v-if="feature.pay" class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -352,7 +407,9 @@
                                     }
 
                                     // alert(`The generated nonce is:\n${nonce}`);
-                                    fetch('process-payment', {
+                                    console.log(nonce);
+                                    console.log(idempotency_key);
+                                    fetch('/api/payment', {
                                         method: 'POST',
                                         headers: {
                                             'Accept': 'application/json',
@@ -462,7 +519,6 @@
     <script  src="js/cookies.js"></script>
     <script  src="js/storage.js"></script>
     <script  src="js/api.js"></script>
-    <script  src="js/uuid.js"></script>
     <script  src="js/main.js"></script>
 
 </body>

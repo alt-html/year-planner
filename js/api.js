@@ -1,4 +1,4 @@
-var subscribe = function(username,password,email,mobile){
+var register = function(username,password,email,mobile){
     request
         .put('/api/planner')
         .send({username:username,password:password,email:email,mobile:mobile})
@@ -12,7 +12,6 @@ var subscribe = function(username,password,email,mobile){
         .catch(err => {
             model.error = err;
         });//400 - bad request (name exists), 200 success returns uuid and subscription
-
 }
 
 var login = function(username,password){
@@ -33,7 +32,7 @@ var login = function(username,password){
 }
 
 
-var deleteSubscriber = function(uuid){
+var deleteRegistration = function(uuid){
     request
         .delete('/api/planner/'+uuid)
         .send({})
