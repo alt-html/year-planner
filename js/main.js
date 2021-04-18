@@ -74,7 +74,6 @@ var refresh = function() {
     }else{
         document.body.classList.length = 0;
     }
-   twemoji.parse(document.body);
 }
 
 var  setYear = function (year) {
