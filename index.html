@@ -25,7 +25,6 @@
     <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>
     <script  src="js/uuid.js"></script>
 
-
 </head>
 <body>
     <div id="app" v-bind:class="{'yp-dark':theme=='dark'}">
@@ -143,7 +142,7 @@
                                          v-for="n in daysInMonth[mindex]" data-toggle="modal" data-target="#entryModal"
                                          v-on:click="updateEntryState(mindex,n)">
 
-                                        <span class="yp-cell-text">{{DateTime.local(year, mindex+1, n).setLocale(lang).toLocaleString({day:'numeric'})}}&nbsp;</span>
+                                        <span class="yp-cell-text" >{{DateTime.local(year, mindex+1, n).setLocale(lang).toLocaleString({day:'numeric'})}}&nbsp;</span>
                                         <span class="yp-cell-text" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="getEntryTypeIcon(mindex,n)+' ' +getEntry(mindex,n).trimStart()">
                                         <i v-bind:class="{'d-inline':getEntryType(mindex,n)==1,'d-none':getEntryType(mindex,n)!=1}" class="fas fa-bell"></i>
                                         <i v-bind:class="{'d-inline':getEntryType(mindex,n)==2,'d-none':getEntryType(mindex,n)!=2}" class="fas fa-birthday-cake"></i>
@@ -151,7 +150,8 @@
                                         <i v-bind:class="{'d-inline':getEntryType(mindex,n)==4,'d-none':getEntryType(mindex,n)!=4}" class="fas fa-utensils"></i>
                                         <i v-bind:class="{'d-inline':getEntryType(mindex,n)==5,'d-none':getEntryType(mindex,n)!=5}" class="fas fa-graduation-cap"></i>
                                         <i v-bind:class="{'d-inline':getEntryType(mindex,n)==6,'d-none':getEntryType(mindex,n)!=6}" class="fas fa-heartbeat"></i>
-                                            {{getEntry(mindex,n).trimStart()}}</span>
+                                            {{getEntry(mindex,n).trimStart().substr(0,20)}}</span><span class="yp-cell-text">{{getEntry(mindex,n).trimStart().substr(20)}}</span>
+
                                     </div>
                                     <div class="row no-gutters yp-cell"
                                          v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]+daysInMonth[mindex]-2) % 7 > 4, 'yp-cell-bottom': n==37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1 }"

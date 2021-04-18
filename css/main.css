@@ -251,6 +251,8 @@ a.navbar-brand {
 
 }
 
+#twemoji-picker { display : inline}
+
 .yp-cell-past {
     background-color: #f0f0f0;
 }

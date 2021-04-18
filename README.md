@@ -51,24 +51,27 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 - \[ \] Dark theme modals
 - \[ \] Theme i81n
 - \[ \] Expand entry icon set with select dropdown
-- \[ \] Twemoji support (https://kevinfaguiar.github.io/vue-twemoji-picker/ + https://codesandbox.io/s/vue-twemoji-picker-umdiife-example-we3co?from-embed=&file=/index.html)
   
 - \[ \] 2x 26 week semester view
 - \[ \] 4x 13 week term view
 - \[ \] Export to CSV
   
-- \[ \] Disable non-current year, dark theme on switch
 - \[ \] Register a user
-- \[ \] Subscribe via payment gateway (Square)
-- \[ \] Save planner to PAYG storage
-- \[ \] Fetch planner from PAYG storage for subscribed user.
-- \[ \] Expire a subscriber
+- \[ \] Save planner to server storage
+- \[ \] Fetch planner from server storage for registered user.
+- \[ \] Donate via payment gateway (Square)
+- \[ \] Expire a donation
+
 
 ### Recent Features Added
 - \[x\] Colourise cells
 - \[x\] Year nav (+-1)
 - \[x\] Mark past cells, emphasise today
 - \[x\] Current, last and next year nav links
+
+### Parking Lot
+- \[ \] Twemoji support (https://kevinfaguiar.github.io/vue-twemoji-picker/ + https://codesandbox.io/s/vue-twemoji-picker-umdiife-example-we3co?from-embed=&file=/index.html)
+- \[ \] Disable non-current year, dark theme on switch
 
 
 
