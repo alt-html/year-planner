@@ -50,7 +50,7 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 - \[ \] Dark theme dropdowns
 - \[ \] Dark theme modals
 - \[ \] Theme i81n
-- \[ \] Expand entry icon set with select dropdown
+- \[ \] Expand entry icon set with select dropdown, or remove
   
 - \[ \] 2x 26 week semester view
 - \[ \] 4x 13 week term view
