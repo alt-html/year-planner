@@ -1,24 +1,9 @@
-/*
-
-var string = "This is my compression test.";
-alert("Size of sample is: " + string.length);
-var compressed = LZString.compressToBase64(string);
-alert("Size of compressed sample is: " + compressed.length);
-string = LZString.decompressFromBase64(compressed);
-alert("Sample is: " + string);
-
-var string = "This is my compression test.";
-alert("Size of sample is: " + string.length);
-var compressed = LZString.compressToBase64ToEncodedURIComponent(string);
-alert("Size of compressed sample is: " + compressed.length);
-string = LZString.decompressFromBase64FromEncodedURIComponent(compressed);
-alert("Sample is: " + string);
- */
 
 var initialise = function (){
     setLocalIdentities (model.identities);
     setLocalPreferences(model.uid,{0:lang});
     setLocalPlanner(model.uid,model.year,model.planner);
+    refresh();
 }
 
 var setLocalIdentities = function(identities) {
@@ -49,7 +34,7 @@ var getLocalIdentity = function(){
 var getLocalIdentity = function(uid){
     var localIdentities =  getLocalIdentities();
     if (localIdentities){
-        for (var i = 0; i <= localIdentities.length; i++) {
+        for (var i = 0; i < localIdentities.length; i++) {
             if (localIdentities[i]['0']==uid){
                 return localIdentities[i]
             }
@@ -60,6 +45,20 @@ var getLocalIdentity = function(uid){
 
 var getLocalIdentities = function(){
     return JSON.parse(LZString.decompressFromBase64(getCookie('0')));
+}
+
+var getLocalPlannerYears = function(){
+    let localPlannerYears = {};
+    let cookies = Object.keys(getCookies());
+    var localIdentities =  getLocalIdentities();
+    if (localIdentities){
+        for (var i = 0; i < localIdentities.length; i++) {
+            let uid = localIdentities[i][0];
+            localPlannerYears[uid] =
+            _.uniq(_.map(_.filter(cookies,function(key){ return key.includes(uid+'-');}),function(key) {return key.substr(11,4);}),true);
+        }
+    }
+    return localPlannerYears;
 }
 
 var getLocalPreferences = function() {
@@ -176,7 +175,7 @@ var setModelFromImportString = function (importUrlParam){
     if (''!= importUrlParam){
         var importer = JSON.parse(LZString.decompressFromEncodedURIComponent(importUrlParam));
         model.uid = importer[0]['0'];
-        if (!getLocalIdentity(uid)){
+        if (!getLocalIdentity(model.uid)){
             model.identities.push(importer[0]);
         }
         model.preferences = importer[1]
@@ -187,7 +186,9 @@ var setModelFromImportString = function (importUrlParam){
 }
 
 var setLocalFromModel = function (){
+    if (cookiesAccepted()){
         setLocalIdentities (model.identities)
         setLocalPreferences(model.uid,model.preferences)
         setLocalPlanner(model.uid,model.year,model.planner);
+    }
 }

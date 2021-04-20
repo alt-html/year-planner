@@ -5,6 +5,13 @@ var setCookie = function (cname, cvalue, exdays) {
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
+var deleteCookie = function (cname) {
+    var d = new Date();
+    d.setTime(0);
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=;" + expires + ";path=/";
+}
+
 var getCookie = function (cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
@@ -20,9 +27,23 @@ var getCookie = function (cname) {
     return "";
 }
 
+var getCookies = function(){
+    return document.cookie.split(';').reduce((cookies, cookie) => {
+        const [ name, value ] = cookie.split('=').map(c => c.trim());
+        cookies[name] = value;
+        return cookies;
+    }, {});
+}
+
+
+var cookiesAccepted = function(){
+    return !(getCookie('0') == '');
+}
+
 var acceptCookies = function (){
-    if (getCookie('0') == ''){
+    if (!cookiesAccepted()){
         $('#cookieModal').modal('show');
     }
     setLocalFromModel(model.share);
+
 }

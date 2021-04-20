@@ -22,7 +22,7 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,Promise,Symbol,Object.setPrototypeOf,Object.getOwnPropertySymbols"></script>
     <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
-    <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>
+<!--    <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>-->
     <script  src="js/uuid.js"></script>
 
 </head>
@@ -79,9 +79,9 @@
             <span class="text-right">
 
                 <form class="form-inline my-0 ">
-                    <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fa fa-share-alt" aria-hidden="true"></i></button>
+                    <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#shareModal" title=""><i class="fa fa-share-alt" aria-hidden="true"></i></button>
 <!--                     <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-sign-in-alt"></i></button>&nbsp;-->
-                    <button v-if="feature.settings" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-cog" aria-hidden="true"></i></button>&nbsp;
+                    <button v-if="feature.settings" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-cog" aria-hidden="true"></i></button>&nbsp;
                     <button v-if="feature.register" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#registerModal" title="">Register</button>&nbsp;
                     <button v-if="feature.donate" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showDonate()" data-toggle="modal" data-target="#donateModal" title="">Donate</button>&nbsp;
                     <button v-if="feature.subscribe" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#payModal" title="">Subscribe</button>&nbsp;
@@ -133,30 +133,34 @@
                             <div class="row no-gutters">
                                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-1" v-for="(m,mindex) in monthsOfYear">
                                     <div class="row no-gutters" v-bind:class="{'yp-header-cell': m != 'December', 'yp-header-cell-right' : m == 'December'}" ><a class="yp-anchor" v-bind:name="m" ></a><h5>{{$t('month.'+m)}}</h5></div>
-                                    <div class="row no-gutters yp-cell"
-                                         v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n-1) % 7 > 4 }"
-                                         v-for="n in firstWeekdayOfMonth[mindex]-1">&nbsp;
-                                    </div>
-                                    <div class="row no-gutters yp-cell"
-                                         v-bind:class="{'yp-cell-bottom': n+firstWeekdayOfMonth[mindex]-1 == 37 && m != 'December','yp-cell-right': n+firstWeekdayOfMonth[mindex]-1 < 37 && m == 'December', 'yp-cell-bottom-right': n+firstWeekdayOfMonth[mindex]-1 == 37 && m == 'December', 'yp-cell-past': DateTime.local(year,mindex+1,n).ts < DateTime.local(cyear,cmonth,cday).ts,'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-1-1) % 7 > 4,'yp-cell-c1':getEntryColour(mindex,n)==1,'yp-cell-c2':getEntryColour(mindex,n)==2,'yp-cell-c3':getEntryColour(mindex,n)==3,'yp-cell-c4':getEntryColour(mindex,n)==4,'yp-cell-c5':getEntryColour(mindex,n)==5,'yp-cell-c6':getEntryColour(mindex,n)==6,'yp-cell-c7':getEntryColour(mindex,n)==7,'yp-cell-c8':getEntryColour(mindex,n)==8,'yp-cell-today': cyear == year && cmonth==mindex+1 && cday == n  }"
-                                         v-for="n in daysInMonth[mindex]" data-toggle="modal" data-target="#entryModal"
-                                         v-on:click="updateEntryState(mindex,n)">
+                                        <template v-if="firstWeekdayOfMonth[mindex]>1">
+                                            <div class="row no-gutters yp-cell"
+                                                 v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n-1) % 7 > 4 }"
+                                                  v-for="n in firstWeekdayOfMonth[mindex]-1">&nbsp;
+                                            </div>
+                                        </template>
+                                        <div class="row no-gutters yp-cell"
+                                             v-bind:class="{'yp-cell-bottom': n+firstWeekdayOfMonth[mindex]-1 == 37 && m != 'December','yp-cell-right': n+firstWeekdayOfMonth[mindex]-1 < 37 && m == 'December', 'yp-cell-bottom-right': n+firstWeekdayOfMonth[mindex]-1 == 37 && m == 'December', 'yp-cell-past': DateTime.local(year,mindex+1,n).ts < DateTime.local(cyear,cmonth,cday).ts,'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-1-1) % 7 > 4,'yp-cell-c1':getEntryColour(mindex,n)==1,'yp-cell-c2':getEntryColour(mindex,n)==2,'yp-cell-c3':getEntryColour(mindex,n)==3,'yp-cell-c4':getEntryColour(mindex,n)==4,'yp-cell-c5':getEntryColour(mindex,n)==5,'yp-cell-c6':getEntryColour(mindex,n)==6,'yp-cell-c7':getEntryColour(mindex,n)==7,'yp-cell-c8':getEntryColour(mindex,n)==8,'yp-cell-today': cyear == year && cmonth==mindex+1 && cday == n  }"
+                                             v-for="n in daysInMonth[mindex]" data-toggle="modal" data-target="#entryModal"
+                                             v-on:click="updateEntryState(mindex,n)">
 
-                                        <span class="yp-cell-text" >{{DateTime.local(year, mindex+1, n).setLocale(lang).toLocaleString({day:'numeric'})}}&nbsp;</span>
-                                        <span class="yp-cell-text" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="getEntryTypeIcon(mindex,n)+' ' +getEntry(mindex,n).trimStart()">
-                                        <i v-bind:class="{'d-inline':getEntryType(mindex,n)==1,'d-none':getEntryType(mindex,n)!=1}" class="fas fa-bell"></i>
-                                        <i v-bind:class="{'d-inline':getEntryType(mindex,n)==2,'d-none':getEntryType(mindex,n)!=2}" class="fas fa-birthday-cake"></i>
-                                        <i v-bind:class="{'d-inline':getEntryType(mindex,n)==3,'d-none':getEntryType(mindex,n)!=3}" class="fas fa-glass-martini"></i>
-                                        <i v-bind:class="{'d-inline':getEntryType(mindex,n)==4,'d-none':getEntryType(mindex,n)!=4}" class="fas fa-utensils"></i>
-                                        <i v-bind:class="{'d-inline':getEntryType(mindex,n)==5,'d-none':getEntryType(mindex,n)!=5}" class="fas fa-graduation-cap"></i>
-                                        <i v-bind:class="{'d-inline':getEntryType(mindex,n)==6,'d-none':getEntryType(mindex,n)!=6}" class="fas fa-heartbeat"></i>
-                                            {{getEntry(mindex,n).trimStart().substr(0,20)}}</span><span class="yp-cell-text">{{getEntry(mindex,n).trimStart().substr(20)}}</span>
+                                            <span class="yp-cell-text" >{{DateTime.local(year, mindex+1, n).setLocale(lang).toLocaleString({day:'numeric'})}}&nbsp;</span>
+                                            <span class="yp-cell-text" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="getEntryTypeIcon(mindex,n)+' ' +getEntry(mindex,n).trimStart()">
+                                            <i v-bind:class="{'d-inline':getEntryType(mindex,n)==1,'d-none':getEntryType(mindex,n)!=1}" class="fas fa-bell"></i>
+                                            <i v-bind:class="{'d-inline':getEntryType(mindex,n)==2,'d-none':getEntryType(mindex,n)!=2}" class="fas fa-birthday-cake"></i>
+                                            <i v-bind:class="{'d-inline':getEntryType(mindex,n)==3,'d-none':getEntryType(mindex,n)!=3}" class="fas fa-glass-martini"></i>
+                                            <i v-bind:class="{'d-inline':getEntryType(mindex,n)==4,'d-none':getEntryType(mindex,n)!=4}" class="fas fa-utensils"></i>
+                                            <i v-bind:class="{'d-inline':getEntryType(mindex,n)==5,'d-none':getEntryType(mindex,n)!=5}" class="fas fa-graduation-cap"></i>
+                                            <i v-bind:class="{'d-inline':getEntryType(mindex,n)==6,'d-none':getEntryType(mindex,n)!=6}" class="fas fa-heartbeat"></i>
+                                                {{getEntry(mindex,n).trimStart().substr(0,20)}}</span><span class="yp-cell-text">{{getEntry(mindex,n).trimStart().substr(20)}}</span>
 
-                                    </div>
-                                    <div class="row no-gutters yp-cell"
-                                         v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]+daysInMonth[mindex]-2) % 7 > 4, 'yp-cell-bottom': n==37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1 }"
-                                         v-for="n in 37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1">&nbsp;
-                                    </div>
+                                        </div>
+                                        <template v-if="37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1 > 0">
+                                            <div class="row no-gutters yp-cell"
+                                                 v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]+daysInMonth[mindex]-2) % 7 > 4, 'yp-cell-bottom': n==37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1 }"
+                                                 v-for="n in 37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1">&nbsp;
+                                            </div>
+                                        </template>
                                 </div>
                             </div>
                         </div>
@@ -290,11 +294,33 @@
                     </div>
                     <div class="modal-body">
                         <form>
+                            <h5 class="" >{{$t('label.profile')}}</h5>
+                                <div class="form-group">
+                                    <label for="username" class="col-form-label">{{$t('label.username')}}</label>
+                                    <input  type="text" class="form-control " v-model="username" id="username-settings" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email" class="col-form-label">{{$t('label.email')}}</label>
+                                    <input  type="text" class="form-control readonly" v-model="email" id="email">
+                                </div>
                             <div class="form-group">
-                                <label for="recipient-name" class="col-form-label">{{$t('label.sharecopy')}}</label>
-                                <input  type="text" class="form-control" v-model="shareUrl" id="copyUrl">
+                                <label for="mobile" class="col-form-label">{{$t('label.mobile')}}</label>
+                                <input  type="text" class="form-control readonly" v-model="mobile" id="mobile">
                             </div>
+
+
+                            <h5 class="" >{{$t('label.theme')}}</h5>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="themeOptions" id="inlineRadio0"  v-model="theme" value="light">
+                                <label class="form-check-label" for="themeOptions1">{{$t('label.light')}}</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="themeOptions" id="inlineRadio0"  v-model="theme" value="dark">
+                                <label class="form-check-label" for="themeOptions2">{{$t('label.dark')}}</label>
+                            </div>
+                            <br/>
                         </form>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
@@ -350,114 +376,114 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
-                        <button id="sq-creditcard" type="button" class="btn btn-primary button-credit-card"  v-on:click="onGetCardNonce(event)">Pay $1.00</button>
+<!--                        <button id="sq-creditcard" type="button" class="btn btn-primary button-credit-card"  v-on:click="onGetCardNonce(event)">Pay $1.00</button>-->
                     </div>
-                    <script type="text/javascript">
+<!--                    <script type="text/javascript">-->
 
-                        const idempotency_key = uuidv4();
+<!--                        const idempotency_key = uuidv4();-->
 
-                        // Create and initialize a payment form object
-                        const paymentForm = new SqPaymentForm({
-                            // Initialize the payment form elements
+<!--                        // Create and initialize a payment form object-->
+<!--                        const paymentForm = new SqPaymentForm({-->
+<!--                            // Initialize the payment form elements-->
 
-                           // applicationId: "REPLACE_WITH_APPLICATION_ID";
-                            applicationId: "sandbox-sq0idb-ZaOa3uAuhkRfgVmR2xHQyA",
-                            inputClass: 'sq-input',
-                            autoBuild: false,
-                            // Customize the CSS for SqPaymentForm iframe elements
-                            inputStyles: [{
-                                fontSize: '16px',
-                                lineHeight: '24px',
-                                padding: '16px',
-                                placeholderColor: '#a0a0a0',
-                                backgroundColor: 'transparent',
-                            }],
-                            // Initialize the credit card placeholders
-                            cardNumber: {
-                                elementId: 'sq-card-number',
-                                placeholder: 'Card Number'
-                            },
-                            cvv: {
-                                elementId: 'sq-cvv',
-                                placeholder: 'CVV'
-                            },
-                            expirationDate: {
-                                elementId: 'sq-expiration-date',
-                                placeholder: 'MM/YY'
-                            },
-                            postalCode: {
-                                elementId: 'sq-postal-code',
-                                placeholder: 'Postal'
-                            },
-                            // SqPaymentForm callback functions
-                            callbacks: {
-                                /*
-                                * callback function: cardNonceResponseReceived
-                                * Triggered when: SqPaymentForm completes a card nonce request
-                                */
-                                cardNonceResponseReceived: function (errors, nonce, cardData) {
-                                    if (errors) {
-                                        // Log errors from nonce generation to the browser developer console.
-                                        console.error('Encountered errors:');
-                                        errors.forEach(function (error) {
-                                            console.error('  ' + error.message);
-                                        });
-                                        alert('Encountered errors, check browser developer console for more details');
-                                        return;
-                                    }
+<!--                           // applicationId: "REPLACE_WITH_APPLICATION_ID";-->
+<!--                            applicationId: "sandbox-sq0idb-ZaOa3uAuhkRfgVmR2xHQyA",-->
+<!--                            inputClass: 'sq-input',-->
+<!--                            autoBuild: false,-->
+<!--                            // Customize the CSS for SqPaymentForm iframe elements-->
+<!--                            inputStyles: [{-->
+<!--                                fontSize: '16px',-->
+<!--                                lineHeight: '24px',-->
+<!--                                padding: '16px',-->
+<!--                                placeholderColor: '#a0a0a0',-->
+<!--                                backgroundColor: 'transparent',-->
+<!--                            }],-->
+<!--                            // Initialize the credit card placeholders-->
+<!--                            cardNumber: {-->
+<!--                                elementId: 'sq-card-number',-->
+<!--                                placeholder: 'Card Number'-->
+<!--                            },-->
+<!--                            cvv: {-->
+<!--                                elementId: 'sq-cvv',-->
+<!--                                placeholder: 'CVV'-->
+<!--                            },-->
+<!--                            expirationDate: {-->
+<!--                                elementId: 'sq-expiration-date',-->
+<!--                                placeholder: 'MM/YY'-->
+<!--                            },-->
+<!--                            postalCode: {-->
+<!--                                elementId: 'sq-postal-code',-->
+<!--                                placeholder: 'Postal'-->
+<!--                            },-->
+<!--                            // SqPaymentForm callback functions-->
+<!--                            callbacks: {-->
+<!--                                /*-->
+<!--                                * callback function: cardNonceResponseReceived-->
+<!--                                * Triggered when: SqPaymentForm completes a card nonce request-->
+<!--                                */-->
+<!--                                cardNonceResponseReceived: function (errors, nonce, cardData) {-->
+<!--                                    if (errors) {-->
+<!--                                        // Log errors from nonce generation to the browser developer console.-->
+<!--                                        console.error('Encountered errors:');-->
+<!--                                        errors.forEach(function (error) {-->
+<!--                                            console.error('  ' + error.message);-->
+<!--                                        });-->
+<!--                                        alert('Encountered errors, check browser developer console for more details');-->
+<!--                                        return;-->
+<!--                                    }-->
 
-                                    // alert(`The generated nonce is:\n${nonce}`);
-                                    console.log(nonce);
-                                    console.log(idempotency_key);
-                                    fetch('/api/payment', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Accept': 'application/json',
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({
-                                            nonce: nonce,
-                                            idempotency_key: idempotency_key,
-                                            // location_id: "REPLACE_WITH_LOCATION_ID"
-                                            location_id: "LDF5NP9BZJ0CP"
-                                        })
-                                    })
-                                        .catch(err => {
-                                            alert('Network error: ' + err);
-                                        })
-                                        .then(response => {
-                                            if (!response.ok) {
-                                                return response.json().then(
-                                                    errorInfo => Promise.reject(errorInfo));
-                                            }
-                                            return response.json();
-                                        })
-                                        .then(data => {
-                                            console.log(data);
-                                            alert('Payment complete successfully!\nCheck browser developer console for more details');
-                                        })
-                                        .catch(err => {
-                                            console.error(err);
-                                            alert('Payment failed to complete!\nCheck browser developer console for more details');
-                                        });
+<!--                                    // alert(`The generated nonce is:\n${nonce}`);-->
+<!--                                    console.log(nonce);-->
+<!--                                    console.log(idempotency_key);-->
+<!--                                    fetch('/api/payment', {-->
+<!--                                        method: 'POST',-->
+<!--                                        headers: {-->
+<!--                                            'Accept': 'application/json',-->
+<!--                                            'Content-Type': 'application/json'-->
+<!--                                        },-->
+<!--                                        body: JSON.stringify({-->
+<!--                                            nonce: nonce,-->
+<!--                                            idempotency_key: idempotency_key,-->
+<!--                                            // location_id: "REPLACE_WITH_LOCATION_ID"-->
+<!--                                            location_id: "LDF5NP9BZJ0CP"-->
+<!--                                        })-->
+<!--                                    })-->
+<!--                                        .catch(err => {-->
+<!--                                            alert('Network error: ' + err);-->
+<!--                                        })-->
+<!--                                        .then(response => {-->
+<!--                                            if (!response.ok) {-->
+<!--                                                return response.json().then(-->
+<!--                                                    errorInfo => Promise.reject(errorInfo));-->
+<!--                                            }-->
+<!--                                            return response.json();-->
+<!--                                        })-->
+<!--                                        .then(data => {-->
+<!--                                            console.log(data);-->
+<!--                                            alert('Payment complete successfully!\nCheck browser developer console for more details');-->
+<!--                                        })-->
+<!--                                        .catch(err => {-->
+<!--                                            console.error(err);-->
+<!--                                            alert('Payment failed to complete!\nCheck browser developer console for more details');-->
+<!--                                        });-->
 
-                                }
-                            }
-                        });
+<!--                                }-->
+<!--                            }-->
+<!--                        });-->
 
-                        paymentForm.build();
+<!--                        paymentForm.build();-->
 
-                        //TODO: paste code from step 2.1.2
+<!--                        //TODO: paste code from step 2.1.2-->
 
-                        // onGetCardNonce is triggered when the "Pay $1.00" button is clicked
-                        function onGetCardNonce(event) {
+<!--                        // onGetCardNonce is triggered when the "Pay $1.00" button is clicked-->
+<!--                        function onGetCardNonce(event) {-->
 
-                            // Don't submit the form until SqPaymentForm returns with a nonce
-                            event.preventDefault();
-                            // Request a nonce from the SqPaymentForm object
-                            paymentForm.requestCardNonce();
-                        }
-                    </script>
+<!--                            // Don't submit the form until SqPaymentForm returns with a nonce-->
+<!--                            event.preventDefault();-->
+<!--                            // Request a nonce from the SqPaymentForm object-->
+<!--                            paymentForm.requestCardNonce();-->
+<!--                        }-->
+<!--                    </script>-->
                 </div>
             </div>
         </div>

@@ -64,15 +64,17 @@ setModelFromImportString(share);
 
 var refresh = function() {
     setYear(model.year);
-    setLocalPreferences(model.uid,model.preferences)
     acceptCookies();
-    if (!window.location.href.includes('?uid=')){
-        window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.year+'&lang='+model.lang+'&theme='+model.theme;
-    }
-    if (model.theme =='dark'){
-        document.body.classList.add("yp-dark");
-    }else{
-        document.body.classList.length = 0;
+    if (cookiesAccepted()){
+        setLocalFromModel();
+        if (!window.location.href.includes('?uid=')){
+            window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.year+'&lang='+model.lang+'&theme='+model.theme;
+        }
+        if (model.theme =='dark'){
+            document.body.classList.add("yp-dark");
+        }else{
+            document.body.classList.length = 0;
+        }
     }
 }
 
@@ -106,6 +108,18 @@ var copyUrl = function (){
     copyText.select();
     copyText.setSelectionRange(0, 99999);
     document.execCommand("copy")
+}
+
+var showSettings = function () {
+
+}
+
+var saveSettings = function () {
+
+}
+
+var showRegister = function (){
+
 }
 
 const i18n = new VueI18n({

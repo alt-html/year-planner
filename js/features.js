@@ -6,7 +6,7 @@ var feature = {
     register : false,
     donate : false,
     subscribe : false,
-    pay : true
+    pay : false
 };
 
 var ftoggle = function (fname){

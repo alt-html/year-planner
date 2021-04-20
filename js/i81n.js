@@ -14,7 +14,11 @@ const messages = {
             updated : 'Updated',
             none : 'None',
             month:'Month',year:'Year',week:'Week',semester:'Semester',term:'Term',
-            theme:'Theme',light:'Light',dark:'Dark'
+            register: 'Register', username: 'Username', Password : 'Password', email: 'Email', mobile :'Mobile',
+            settings: 'Settings', profile: 'Profile', verify : 'Verify', theme:'Theme',light:'Light',dark:'Dark',
+            signin:  'Sign In', signout: 'Sign Out', forgotpass :'Forgot my password', forgotuser : 'Forgot my username',
+            donate: 'Donate'
+
 
     },
         month : {

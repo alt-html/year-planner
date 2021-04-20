@@ -2,6 +2,10 @@
 
 Find the live year planner at Amazon CloudFront [Year Planner](https://d1uamxeylh4qir.cloudfront.net/ "Year Planner")
 
+Example planners:
+
+- [2021 Moon Phases](http://127.0.0.1:8080?share=NobwRADGBcCMBssAcSDsAmdEAsAaMsMYAsgPYBeAlgDbUCGA9AKwB0EABABQDqlAdgBNSAdwDO7AHIAVdrAhsA3O15942JQA81SgE4A3aEnkQAlOwDiAUwDGAa1IMsciHNjsAYpR2WAZqQ0MRmxgAL644FDQYJZ8obhY6LC4oGDwMBFEYPiEUYA8G4Do+1lg6JlhBADM6ZCZ2US5gIj7RSVRccWRGS21eYDI+02l+OhIVZFgRTlguYCo+8qk1D7sZKSxA6Vh4NjDNQR1hSstZbA5HaNdE417owcAnJud2z19+wOotyf3E9MAynwiC6RLj0ua1SrzGO0BrVglWgxzBeXOxX6xSO1Tu41yvQurUGoNOUxmOgAtn8AViQsCNjDUW90btEU8CM1YXiEc1LgN2tS4RNMfT2cU0lSRtz8QAFfi2EnLPmhYHQ5nvAoQg4o4Us5XZIZCrbjDUEG7atF1Xls7GChXo6buagiSw6KXK4FMrl4ummg6ctWK1lI2AvQ00rbuzW4xUmpHoSkWupfAAuOjowgARnadABPB1k4GqnXgsnZT25+F62BMUO6-MEf3Rh6V9Dyl2K6YAIQArnZMzKyuUc0a8m7VuEwFqa2cSw2vRWu9kywGReGGZhyzH2J9Y62dABzSxLTvBsDlQt9iYDhk95d3d3A6uN9E+hlQi88vVYJ-4gDCpB0fD3EYNo6VStDyfR0h3NW86nvflHznPEF35V9YKbdgAAk6H0SxRFjX9FxHCD+1A9Y3ygyFe0DWtp31N8W0sOg9DtHCEJvSc8y7CliJLMj5xLPCWLyaZP2oARGOxZiixPR0AF1JKAA)
+
 ## How it works
 
 The Year planner is a responsive (mobile-first) single-page HTML application that uses browser storage (cookies) to store, navigate and display clickable tweet sized Western (Gregorian) calendar diary entries.  
