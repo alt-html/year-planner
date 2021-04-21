@@ -31,7 +31,12 @@
 
         <nav class="navbar navbar-expand sticky-top" >
 
-            <a class="navbar-brand" href="#">{{$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
+            <a class="navbar-brand" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="rename=true" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
+
+            <form class="form-inline"  v-bind:class="{'d-none':rename==false}">
+                <div class=""><input id="title" maxlength="64" class="form-control form-control-sm" type="text" placeholder="Untitled" aria-label="Name" v-model="name" v-on:keyup="" v-on:focusout="renamePlanner()"></div>
+            </form>
+
             <div class="collapse navbar-collapse" id="navbarCollapse">
 <!--                <ul class="navbar-nav mr-auto">-->
 <!--                </ul>-->

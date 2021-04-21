@@ -81,6 +81,27 @@ var getLocalPlanner = function(uid, year) {
     return planner;
 }
 
+var deleteLocalPlanner = function(uid, year){
+    let localPlannerYears = {};
+    let cookies = Object.keys(getCookies());
+    let cookiesToDelete = _.filter(cookies,function(key){ return key.includes(uid+'-'+year);});
+
+    for (var i = 0; i < cookiesToDelete.length; i++) {
+        deleteCookie(cookiesToDelete[i])
+    }
+}
+
+var deleteLocalPlanner = function(uid){
+    let localPlannerYears = {};
+    let cookies = Object.keys(getCookies());
+    let cookiesToDelete = _.filter(cookies,function(key){ return key.includes(uid);});
+
+    for (var i = 0; i < cookiesToDelete.length; i++) {
+        deleteCookie(cookiesToDelete[i])
+    }
+    setLocalIdentities(_.remove(getLocalIdentities(), function (id) {return id['0'] == uid}));
+}
+
 var setLocalPlanner = function(uid, year, planner) {
     for (var m = 1; m <= 12; m++) {
         setCookie(uid+'-'+year+m,LZString.compressToBase64(JSON.stringify(planner[m-1])),4384)

@@ -11,14 +11,28 @@ $.urlParam = function (name) {
 
 var DateTime = luxon.DateTime;
 var pageLoadTime = DateTime.now();
-var lang = ($.urlParam('lang') || getNavigatorLanguage() ).substring(0,2);
 
 var uid = parseInt( $.urlParam('uid') ) || getLocalUid() || Math.floor(pageLoadTime.ts/1000);
-var year = parseInt( $.urlParam('year') )|| pageLoadTime.year;
+var preferences = (getLocalPreferences(uid) || {})
+
+var year = parseInt( $.urlParam('year') ) || preferences['0'] || pageLoadTime.year;
+var lang = ($.urlParam('lang') || preferences['1'] || getNavigatorLanguage() ).substring(0,2);
+var theme = $.urlParam('theme') || (preferences['2'] == 1 ? 'dark' : 'light');
+var name = $.urlParam('name') || (preferences['3']?.[''+year]?.[lang]) || '';
+
 var share = $.urlParam('share') || '';
-var theme = $.urlParam('theme') || 'light';
-var preferences = (getLocalPreferences() || {})
-preferences['0'] = lang;
+
+preferences['0'] = year;
+preferences['1'] = lang;
+preferences['2'] = (theme == 'light' ? 0:1);
+if (!preferences['3']){
+    preferences['3'] = {};
+}
+if (!preferences['3'][''+year]){
+    preferences['3'][''+year] = {}
+}
+preferences['3'][''+year][lang]=name;
+messages[lang]['label']['name_'+year] = name;
 
 var model = {
     DateTime : DateTime,
@@ -28,6 +42,8 @@ var model = {
     year: year,
     theme : theme,
     share : share,
+    name : name,
+    rename : false,
 
     uuid : '',
     username : '',
@@ -94,6 +110,37 @@ var updateEntryState = function (mindex,day){
     model.entry = getEntry(mindex,day);
     model.entryType = getEntryType(mindex,day);
     model.entryColour = getEntryColour(mindex,day);
+}
+
+var createPlanner = function(){
+    uid =  Math.floor(DateTime.now().ts/1000);
+    preferences = {};
+
+    preferences['0'] = year;
+    preferences['1'] = lang;
+    preferences['2'] = (theme == 'light' ? 0:1);
+
+    model.uid = uid;
+    model.preferences = preferences;
+    model.identities.push({0:uid,1:window.navigator.userAgent});
+    setLocalIdentities(model.identities);
+    model.planner = getLocalPlanner(uid, year);
+    refresh();
+}
+
+var renamePlanner = function() {
+    preferences['3'][''+year][lang]=model.name;
+    messages[lang]['label']['name_'+year] = model.name;
+    model.rename=false;
+    setLocalPreferences(model.uid,model.preferences);
+}
+
+var getPlannerName = function() {
+    let n = messages[lang]['label']['name_'+year];
+    if (n) {
+        return n;
+    }
+    return null;
 }
 
 var sharePlanner = function(){

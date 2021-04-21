@@ -13,6 +13,7 @@ const messages = {
             created:'Created',
             updated : 'Updated',
             none : 'None',
+            rename : 'Rename',
             month:'Month',year:'Year',week:'Week',semester:'Semester',term:'Term',
             register: 'Register', username: 'Username', Password : 'Password', email: 'Email', mobile :'Mobile',
             settings: 'Settings', profile: 'Profile', verify : 'Verify', theme:'Theme',light:'Light',dark:'Dark',
