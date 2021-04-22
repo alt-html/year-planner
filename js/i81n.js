@@ -15,8 +15,9 @@ const messages = {
             none : 'None',
             rename : 'Rename',untitled : 'Untitled',
             month:'Month',year:'Year',week:'Week',semester:'Semester',term:'Term',
+            theme:'Theme',light:'Light',dark:'Dark',
             register: 'Register', username: 'Username', Password : 'Password', email: 'Email', mobile :'Mobile',
-            settings: 'Settings', profile: 'Profile', verify : 'Verify', theme:'Theme',light:'Light',dark:'Dark',
+            settings: 'Settings…', profile: 'Profile', verify : 'Verify',
             signin:  'Sign In', signout: 'Sign Out', forgotpass :'Forgot my password', forgotuser : 'Forgot my username',
             donate: 'Donate'
 
@@ -44,7 +45,8 @@ const messages = {
             created :'Creado',
             updated : 'Actualizado',
             none : 'Ninguno',
-            month:'Mes',year:'Año',week:'Semana',semester:'Semestre',term:'Término'
+            month:'Mes',year:'Año',week:'Semana',semester:'Semestre',term:'Término',
+            theme:'Tema',light:'Luz',dark:'Oscuro'
         },
         month : {
             January: 'enero', February: 'febrero', March : 'marzo', April:'abril', May:'mayo',June:'junio',July:'julio',August:'agosto',September:'septiembre',October:'octubre',November:'noviembre',December:'diciembre'
@@ -67,7 +69,8 @@ const messages = {
             created:'Created',
             updated : 'Criado',
             none : 'Nenhum',
-            month:'Mês',year:'Ano',week:'Semana',semester:'Semestre',term:'Prazo'
+            month:'Mês',year:'Ano',week:'Semana',semester:'Semestre',term:'Prazo',
+           theme:'Tema',light:'Luz',dark:'Escuro'
         },
         month : {
             January: 'janeiro', February: 'fevereiro', March : 'marcha', April:'abril', May:'maio',June:'junho',July:'julho',August:'agosto',September:'setembro',October:'outubro',November:'novembro',December:'dezembro'
@@ -91,7 +94,8 @@ const messages = {
             created:'已建立',
             updated : '更新',
             none : '沒有任何',
-            month:'月',year:'年',week:'星期',semester:'學期',term:'學期'
+            month:'月',year:'年',week:'星期',semester:'學期',term:'學期',
+            theme:'主題',light:'光',dark:'黑暗的'
         },
         month : {
             January: '一月', February: '二月', March : '行進', April:'四月', May:'可能',June:'六月',July:'七月',August:'八月',September:'九月',October:'十月',November:'十一月',December:'十二月'
@@ -114,7 +118,8 @@ const messages = {
             created:'बनाया था',
             updated : 'अद्यतन',
             none : 'कोई नहीं',
-            month:'महीना',year:'साल',week:'सप्ताह',semester:'छमाही',term:'अवधि'
+            month:'महीना',year:'साल',week:'सप्ताह',semester:'छमाही',term:'अवधि',
+            theme:'विषय',light:'रोशनी',dark:'अंधेरा'
         },
         month : {
             January: 'जनवरी', February: 'फ़रवरी', March : 'जुलूस', April:'अप्रैल', May:'मई',June:'जून',July:'जुलाई',August:'अगस्त',September:'सितंबर',October:'अक्टूबर',November:'नवंबर',December:'दिसंबर'
@@ -137,7 +142,8 @@ const messages = {
             created:'Établi',
             updated : 'Actualisé',
             none : 'Rien',
-            month:'Mois',year:'An',week:'Semaine',semester:'Semestre',term:'Terme'
+            month:'Mois',year:'An',week:'Semaine',semester:'Semestre',term:'Terme',
+            theme:'Thème',light:'Lumière',dark:'Sombre'
         },
         month : {
             January: 'janvier', February: 'février', March : 'mars', April:'avril', May:'peut',June:'juin',July:'juillet',August:'août',September:'septembre',October:'octobre',November:'novembre',December:'décembre'
@@ -160,7 +166,8 @@ const messages = {
             created:'مخلوق',
             updated : 'محدث',
             none : 'لا أحد',
-            month:'شهر',year:'سنة',week:'أسبوع',semester:'نصف السنة',term:'شرط'
+            month:'شهر',year:'سنة',week:'أسبوع',semester:'نصف السنة',term:'شرط',
+            theme:'سمة',light:'ضوء',dark:'داكن'
         },
         month : {
             January: 'كانون الثاني', February: 'شهر فبراير', March : 'مارس', April:'أبريل', May:'يمكن',June:'يونيو',July:'يوليو',August:'شهر اغسطس',September:'سبتمبر',October:'اكتوبر',November:'شهر نوفمبر',December:'ديسمبر'
@@ -183,7 +190,8 @@ const messages = {
             created:'Созданный',
             updated : 'Обновлено',
             none : 'Никто',
-            month:'Месяц',year:'Год',week:'Неделя',semester:'Семестр',term:'Срок'
+            month:'Месяц',year:'Год',week:'Неделя',semester:'Семестр',term:'Срок',
+            theme:'Thème',light:'Lumière',dark:'Sombre'
         },
         month : {
             January: 'январь', February: 'февраль', March : 'марш', April:'апрель', May:'май',June:'июнь',July:'июль',August:'август',September:'сентябрь',October:'октябрь',November:'ноябрь',December:'Декабрь'
@@ -206,7 +214,8 @@ const messages = {
             created:'作成した',
             updated : '更新しました',
             none : '無し',
-           month:'月',year:'年',week:'週間',semester:'学期',term:'期間'
+           month:'月',year:'年',week:'週間',semester:'学期',term:'期間',
+           theme:'テーマ',light:'光',dark:'闇'
         },
         month : {
             January: '一月', February: '二月', March : '三月', April:'四月', May:'五月',June:'六月',July:'七月',August:'八月',September:'九月',October:'十月',November:'十一月',December:'十二月'
@@ -229,7 +238,8 @@ const messages = {
             created:'Dibuat',
             updated : 'Diperbarui',
             none : 'Tidak ada',
-            month:'Bulan',year:'Tahun',week:'Minggu',semester:'Semester',term:'Istilah'
+            month:'Bulan',year:'Tahun',week:'Minggu',semester:'Semester',term:'Istilah',
+            theme:'Tema',light:'Cahaya',dark:'Gelap'
         },
         month : {
             January: 'Januari', February: 'Februari', March : 'Maret', April:'April', May:'Mungkin',June:'Juni',July:'Juli',August:'Agustus',September:'September',October:'Oktober',November:'November',December:'Desember'

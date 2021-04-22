@@ -79,26 +79,29 @@
                     </div>
                 </li>
             </ul>
-<!--            <ul class="nav">-->
-<!--                <li class="nav-item dropdown">-->
-<!--                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-cog" aria-hidden="true"></i></a>-->
-<!--                    <div class="dropdown-menu">-->
-<!--                        <h6 class="dropdown-header">{{$t('label.theme')}}</h6>-->
-<!--                        <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang='+lang+'&theme=light'" >{{$t('label.light')}}</a>-->
-<!--                        <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang='+lang+'&theme=dark'" >{{$t('label.dark')}}</a>-->
-<!--                    </div>-->
-<!--                </li>-->
-<!--            </ul>-->
+
             <span class="text-right">
 
                 <form class="form-inline my-0 ">
+
                     <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#shareModal" title=""><i class="fa fa-share-alt" aria-hidden="true"></i></button>
 <!--                     <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-sign-in-alt"></i></button>&nbsp;-->
 <!--                    <button v-if="feature.settings" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-cog" aria-hidden="true"></i></button>&nbsp;-->
-                    <button v-if="feature.settings" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-bars"></i></button>&nbsp;
+                    <div  class="btn-group">
+                          <button type="button" class="navbar-brand navbar-brand-support btn btn-secondary my-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-bars"></i>
+                          </button>
+<!--                          <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-bars"></i></button>&nbsp;-->
+                          <div class="dropdown-menu dropdown-menu-right">
+                              <h6 class="dropdown-header">{{$t('label.theme')}}</h6>
+                                <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':theme=='light'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=light'">{{$t('label.light')}}</a>
+                                <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':theme=='dark'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=dark'">{{$t('label.dark')}}</a>
+                                <div v-if="feature.settings" class="dropdown-divider"></div>
+                                <a v-if="feature.settings" class="dropdown-item" href="#" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal">{{$t('label.settings')}}</a>
+                          </div>
+                        </div>
                     <button v-if="feature.register" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#registerModal" title="">Register</button>&nbsp;
                     <button v-if="feature.donate" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showDonate()" data-toggle="modal" data-target="#donateModal" title="">Donate</button>&nbsp;
-                    <button v-if="feature.subscribe" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#payModal" title="">Subscribe</button>&nbsp;
                </form>
 
             </span>

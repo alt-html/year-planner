@@ -48,12 +48,9 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 
 ### Backlog
 
-- \[ \] Settings dropdown menu
 
-- \[ \] Switches for light and dark themes in settings menu
 - \[ \] Dark theme dropdowns
 - \[ \] Dark theme modals
-- \[ \] Theme i81n
 - \[ \] Expand entry icon set with select dropdown, or remove
   
 - \[ \] 2x 26 week semester view
@@ -73,6 +70,10 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 - \[x\] Mark past cells, emphasise today
 - \[x\] Current, last and next year nav links
 - \[x\] Save theme in preferences
+- \[x\] Named planners, with i81n nuance
+- \[x\] Settings dropdown menu
+- \[x\] Switches for light and dark themes in settings menu
+- \[x\] Theme i81n
 
 ### Parking Lot
 - \[ \] Twemoji support (https://kevinfaguiar.github.io/vue-twemoji-picker/ + https://codesandbox.io/s/vue-twemoji-picker-umdiife-example-we3co?from-embed=&file=/index.html)
