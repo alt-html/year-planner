@@ -49,7 +49,7 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 ### Backlog
 
 - \[ \] Settings dropdown menu
-- \[ \] Save theme in preferences
+
 - \[ \] Switches for light and dark themes in settings menu
 - \[ \] Dark theme dropdowns
 - \[ \] Dark theme modals
@@ -72,6 +72,7 @@ English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russ
 - \[x\] Year nav (+-1)
 - \[x\] Mark past cells, emphasise today
 - \[x\] Current, last and next year nav links
+- \[x\] Save theme in preferences
 
 ### Parking Lot
 - \[ \] Twemoji support (https://kevinfaguiar.github.io/vue-twemoji-picker/ + https://codesandbox.io/s/vue-twemoji-picker-umdiife-example-we3co?from-embed=&file=/index.html)

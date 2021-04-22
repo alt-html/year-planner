@@ -40,6 +40,7 @@ var model = {
     lang: lang,
     uid : uid,
     year: year,
+    nyear : null,
     theme : theme,
     share : share,
     name : name,
@@ -101,6 +102,14 @@ var  setYear = function (year) {
     for (var m = 1; m <= 12; m++) {
         model.firstWeekdayOfMonth.push(DateTime.local(year,m, 1).weekday);
         model.daysInMonth.push(DateTime.local(year,m).daysInMonth);
+    }
+}
+
+var navigateToYear = function(){
+    if (!isNaN(parseInt(model.nyear))){
+        model.year = parseInt(model.nyear.substr(0,4));
+        model.nyear = '';
+        window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.year;
     }
 }
 

@@ -34,7 +34,7 @@
             <a class="navbar-brand" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="rename=true" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
 
             <form class="form-inline"  v-bind:class="{'d-none':rename==false}">
-                <div class=""><input id="title" maxlength="64" class="form-control form-control-sm" type="text" placeholder="Untitled" aria-label="Name" v-model="name" v-on:keyup="" v-on:focusout="renamePlanner()"></div>
+                <div class=""><input id="title" maxlength="64" class="form-control form-control-sm" type="text" v-bind:placeholder="$t('label.untitled')" aria-label="Name" v-model="name" v-on:keyup="" v-on:focusout="renamePlanner()"></div>
             </form>
 
             <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -46,9 +46,17 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$t('label.year')}}</a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+(cyear-1)+'&lang='+lang+'&theme='+theme">{{cyear-1}}</a>
-                        <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+cyear+'&lang='+lang+'&theme='+theme">{{cyear}}</a>
-                        <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+(cyear+1)+'&lang='+lang+'&theme='+theme">{{cyear+1}}</a>
+                        <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear-1}" v-bind:href="'/?uid='+uid+'&year='+(cyear-1)+'&lang='+lang+'&theme='+theme">{{cyear-1}}</a>
+                        <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear}" v-bind:href="'/?uid='+uid+'&year='+cyear+'&lang='+lang+'&theme='+theme">{{cyear}}</a>
+                        <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear+1}"v-bind:href="'/?uid='+uid+'&year='+(cyear+1)+'&lang='+lang+'&theme='+theme">{{cyear+1}}</a>
+                        <div class="dropdown-divider"></div>
+                        <form class="px-4 py-3">
+                            <div class="form-group">
+                                <label for="exampleDropdownFormEmail1" class="sr-only">Email address</label>
+                                <input type="text" maxlength=4 class="form-control form-control-sm" id="nyear" v-model="nyear" v-on:focusout="navigateToYear()" v-bind:placeholder="$t('label.year')">
+                            </div>
+
+                        </form>
                     </div>
                 </li>
             </ul>
@@ -86,7 +94,8 @@
                 <form class="form-inline my-0 ">
                     <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#shareModal" title=""><i class="fa fa-share-alt" aria-hidden="true"></i></button>
 <!--                     <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-sign-in-alt"></i></button>&nbsp;-->
-                    <button v-if="feature.settings" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-cog" aria-hidden="true"></i></button>&nbsp;
+<!--                    <button v-if="feature.settings" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-cog" aria-hidden="true"></i></button>&nbsp;-->
+                    <button v-if="feature.settings" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-bars"></i></button>&nbsp;
                     <button v-if="feature.register" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#registerModal" title="">Register</button>&nbsp;
                     <button v-if="feature.donate" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showDonate()" data-toggle="modal" data-target="#donateModal" title="">Donate</button>&nbsp;
                     <button v-if="feature.subscribe" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#payModal" title="">Subscribe</button>&nbsp;
@@ -151,13 +160,7 @@
 
                                             <span class="yp-cell-text" >{{DateTime.local(year, mindex+1, n).setLocale(lang).toLocaleString({day:'numeric'})}}&nbsp;</span>
                                             <span class="yp-cell-text" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="getEntryTypeIcon(mindex,n)+' ' +getEntry(mindex,n).trimStart()">
-                                            <i v-bind:class="{'d-inline':getEntryType(mindex,n)==1,'d-none':getEntryType(mindex,n)!=1}" class="fas fa-bell"></i>
-                                            <i v-bind:class="{'d-inline':getEntryType(mindex,n)==2,'d-none':getEntryType(mindex,n)!=2}" class="fas fa-birthday-cake"></i>
-                                            <i v-bind:class="{'d-inline':getEntryType(mindex,n)==3,'d-none':getEntryType(mindex,n)!=3}" class="fas fa-glass-martini"></i>
-                                            <i v-bind:class="{'d-inline':getEntryType(mindex,n)==4,'d-none':getEntryType(mindex,n)!=4}" class="fas fa-utensils"></i>
-                                            <i v-bind:class="{'d-inline':getEntryType(mindex,n)==5,'d-none':getEntryType(mindex,n)!=5}" class="fas fa-graduation-cap"></i>
-                                            <i v-bind:class="{'d-inline':getEntryType(mindex,n)==6,'d-none':getEntryType(mindex,n)!=6}" class="fas fa-heartbeat"></i>
-                                                {{getEntry(mindex,n).trimStart().substr(0,20)}}</span><span class="yp-cell-text">{{getEntry(mindex,n).trimStart().substr(20)}}</span>
+                                                    {{getEntry(mindex,n).trimStart().substr(0,20)}}</span><span class="yp-cell-text">{{getEntry(mindex,n).trimStart().substr(20)}}</span>
 
                                         </div>
                                         <template v-if="37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1 > 0">
@@ -207,35 +210,7 @@
                     </div>
                     <div class="modal-body">
                         <form>
-                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"  v-model="entryType" value="1">
-                                <label class="form-check-label" for="inlineRadio1"><i class="fas fa-bell"></i></label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"  v-model="entryType" value="2">
-                                <label class="form-check-label" for="inlineRadio2"><i class="fas fa-birthday-cake"></i></label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3"  v-model="entryType" value="3">
-                                <label class="form-check-label" for="inlineRadio3"><i class='fas fa-glass-martini'></i></label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4"  v-model="entryType" value="4">
-                                <label class="form-check-label" for="inlineRadio3"><i class="fas fa-utensils"></i></label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5"  v-model="entryType" value="5">
-                                <label class="form-check-label" for="inlineRadio3"><i class="fas fa-graduation-cap"></i></label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio6"  v-model="entryType" value="6">
-                                <label class="form-check-label" for="inlineRadio3"><i class="fas fa-heartbeat"></i></label>
-                            </div>
-                            <div class="form-check form-check-inline" v-bind:class="{'d-none':entryType==0}">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio0"  v-model="entryType" value="0">
-                                <label class="form-check-label" for="inlineRadio0">{{$t('label.none')}}</label>
-                            </div>
-                            <div class="form-group">
+                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label"></label>
                                 <textarea type="text" placeholder="On this day ..." class="form-control" v-model="entry" id="yp-entry-textarea" rows="5" maxlength="256"
                                           v-bind:class="'yp-cell-c'+getEntryColour(month,day)"></textarea>
@@ -504,16 +479,16 @@
                                     {{$t('lang.'+lang)}}
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=en'+'&theme='+theme">English</a>
-                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=zh'+'&theme='+theme">中國人</a>
-                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=hi'+'&theme='+theme">हिन्दी</a>
-                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=es'+'&theme='+theme">español</a>
-                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=fr'+'&theme='+theme">français</a>
-                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=ar'+'&theme='+theme">عربى</a>
-                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=ru'+'&theme='+theme">русский</a>
-                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=pt'+'&theme='+theme">português</a>
-                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=ja'+'&theme='+theme">日本語</a>
-                                    <a class="dropdown-item" v-bind:href="'/?id='+uid+'&year='+year+'&lang=id'+'&theme='+theme">Bahasa Indonesia</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='en'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=en'+'&theme='+theme">English</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='zh'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=zh'+'&theme='+theme">中國人</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='hi'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=hi'+'&theme='+theme">हिन्दी</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='es'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=es'+'&theme='+theme">español</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='fr'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=fr'+'&theme='+theme">français</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ar'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=ar'+'&theme='+theme">عربى</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ru'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=ru'+'&theme='+theme">русский</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='pt'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=pt'+'&theme='+theme">português</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ja'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=ja'+'&theme='+theme">日本語</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='id'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=id'+'&theme='+theme">Bahasa Indonesia</a>
                                 </div>
                             </div>
                         </div>
