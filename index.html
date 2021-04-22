@@ -21,7 +21,8 @@
     <script src="https://unpkg.com/vue-i18n@8"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,Promise,Symbol,Object.setPrototypeOf,Object.getOwnPropertySymbols"></script>
     <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+<!--    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>-->
+    <script src="https://kit.fontawesome.com/10808f8e76.js" crossorigin="anonymous"></script>
 <!--    <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>-->
     <script  src="js/uuid.js"></script>
 
@@ -49,21 +50,14 @@
                         <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear-1}" v-bind:href="'/?uid='+uid+'&year='+(cyear-1)+'&lang='+lang+'&theme='+theme">{{cyear-1}}</a>
                         <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear}" v-bind:href="'/?uid='+uid+'&year='+cyear+'&lang='+lang+'&theme='+theme">{{cyear}}</a>
                         <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear+1}"v-bind:href="'/?uid='+uid+'&year='+(cyear+1)+'&lang='+lang+'&theme='+theme">{{cyear+1}}</a>
-                        <div class="dropdown-divider"></div>
-                        <form class="px-4 py-3">
-                            <div class="form-group">
+<!--                        <div class="dropdown-divider"></div>-->
+                        <form class="nav-form px-4 py-3 pb-0">
+                            <div class="form-group form-group-sm">
                                 <label for="exampleDropdownFormEmail1" class="sr-only">Email address</label>
                                 <input type="text" maxlength=4 class="form-control form-control-sm" id="nyear" v-model="nyear" v-on:focusout="navigateToYear()" v-bind:placeholder="$t('label.year')">
                             </div>
-
                         </form>
-                    </div>
-                </li>
-            </ul>
-            <ul class="nav">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$t('label.month')}}</a>
-                    <div class="dropdown-menu">
+                        <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#January" >{{$t('month.January')}}</a>
                         <a class="dropdown-item" href="#February" >{{$t('month.February')}}</a>
                         <a class="dropdown-item" href="#March" >{{$t('month.March')}}</a>
@@ -76,9 +70,31 @@
                         <a class="dropdown-item" href="#October" >{{$t('month.October')}}</a>
                         <a class="dropdown-item" href="#November" >{{$t('month.November')}}</a>
                         <a class="dropdown-item" href="#December" >{{$t('month.December')}}</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#today" >{{$t('label.today')}}</a>
+
                     </div>
                 </li>
             </ul>
+<!--            <ul class="nav">-->
+<!--                <li class="nav-item dropdown">-->
+<!--                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$t('label.month')}}</a>-->
+<!--                    <div class="dropdown-menu">-->
+<!--                        <a class="dropdown-item" href="#January" >{{$t('month.January')}}</a>-->
+<!--                        <a class="dropdown-item" href="#February" >{{$t('month.February')}}</a>-->
+<!--                        <a class="dropdown-item" href="#March" >{{$t('month.March')}}</a>-->
+<!--                        <a class="dropdown-item" href="#April" >{{$t('month.April')}}</a>-->
+<!--                        <a class="dropdown-item" href="#May" >{{$t('month.May')}}</a>-->
+<!--                        <a class="dropdown-item" href="#June" >{{$t('month.June')}}</a>-->
+<!--                        <a class="dropdown-item" href="#July" >{{$t('month.July')}}</a>-->
+<!--                        <a class="dropdown-item" href="#August" >{{$t('month.August')}}</a>-->
+<!--                        <a class="dropdown-item" href="#September" >{{$t('month.September')}}</a>-->
+<!--                        <a class="dropdown-item" href="#October" >{{$t('month.October')}}</a>-->
+<!--                        <a class="dropdown-item" href="#November" >{{$t('month.November')}}</a>-->
+<!--                        <a class="dropdown-item" href="#December" >{{$t('month.December')}}</a>-->
+<!--                    </div>-->
+<!--                </li>-->
+<!--            </ul>-->
 
             <span class="text-right">
 
@@ -92,7 +108,7 @@
                             <i class="fas fa-bars"></i>
                           </button>
 <!--                          <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-bars"></i></button>&nbsp;-->
-                          <div class="dropdown-menu dropdown-menu-right">
+                          <div class="nav-settings dropdown-menu dropdown-menu-right">
                               <h6 class="dropdown-header">{{$t('label.theme')}}</h6>
                                 <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':theme=='light'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=light'">{{$t('label.light')}}</a>
                                 <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':theme=='dark'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=dark'">{{$t('label.dark')}}</a>
@@ -160,7 +176,7 @@
                                              v-bind:class="{'yp-cell-bottom': n+firstWeekdayOfMonth[mindex]-1 == 37 && m != 'December','yp-cell-right': n+firstWeekdayOfMonth[mindex]-1 < 37 && m == 'December', 'yp-cell-bottom-right': n+firstWeekdayOfMonth[mindex]-1 == 37 && m == 'December', 'yp-cell-past': DateTime.local(year,mindex+1,n).ts < DateTime.local(cyear,cmonth,cday).ts,'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-1-1) % 7 > 4,'yp-cell-c1':getEntryColour(mindex,n)==1,'yp-cell-c2':getEntryColour(mindex,n)==2,'yp-cell-c3':getEntryColour(mindex,n)==3,'yp-cell-c4':getEntryColour(mindex,n)==4,'yp-cell-c5':getEntryColour(mindex,n)==5,'yp-cell-c6':getEntryColour(mindex,n)==6,'yp-cell-c7':getEntryColour(mindex,n)==7,'yp-cell-c8':getEntryColour(mindex,n)==8,'yp-cell-today': cyear == year && cmonth==mindex+1 && cday == n  }"
                                              v-for="n in daysInMonth[mindex]" data-toggle="modal" data-target="#entryModal"
                                              v-on:click="updateEntryState(mindex,n)">
-
+                                            <a v-if="cyear == year && cmonth==mindex+1 && cday == n" class="yp-anchor" name="today" ></a>
                                             <span class="yp-cell-text" >{{DateTime.local(year, mindex+1, n).setLocale(lang).toLocaleString({day:'numeric'})}}&nbsp;</span>
                                             <span class="yp-cell-text" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="getEntryTypeIcon(mindex,n)+' ' +getEntry(mindex,n).trimStart()">
                                                     {{getEntry(mindex,n).trimStart().substr(0,20)}}</span><span class="yp-cell-text">{{getEntry(mindex,n).trimStart().substr(20)}}</span>
@@ -502,7 +518,10 @@
 <!--                    </div>-->
                     <div class="col-10">
 
-                        <div id="footer-text-right" class="text-muted text-right">© 2021, Craig Parravicini&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a> <a href="https://github.com/craigparra/year-planner" target="_blank"><i class="fab fa-github"></i>&nbsp;README.md</a>
+                        <div id="footer-text-right" class="text-muted text-right">© 2021, C<span class="d-none d-sm-inline">raig</span><span class="d-sm-none">.</span> Parravicini&nbsp;&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
+                            <!--img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /-->
+                            <i class="fab fa-creative-commons"></i>-<i class="fab fa-creative-commons-by"></i>-<i class="fab fa-creative-commons-sa"></i>
+                        </a>&nbsp;&nbsp; <a href="https://github.com/craigparra/year-planner" target="_blank"><i class="fab fa-github"></i><span class="d-none d-sm-inline">&nbsp;README.md</span></a>
                         </div>
                     </div>
                 </div>

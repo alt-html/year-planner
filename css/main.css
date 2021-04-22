@@ -110,6 +110,21 @@ a.navbar-brand {
     box-shadow:none;
 }
 
+.nav .dropdown-menu {
+    font-size: .8rem;
+    /*min-width: 110px;*/
+}
+
+.nav-settings .dropdown-item {
+    font-size: .8rem;
+    /*min-width: 110px;*/
+}
+
+.nav-form {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
 .yp-dark .navbar .btn-secondary {
     color: #6c757d!important;
     background-color: #2B2B2B;
@@ -269,8 +284,6 @@ a.navbar-brand {
     text-overflow: ellipsis !important;
 
 }
-
-#twemoji-picker { display : inline}
 
 .yp-cell-past {
     background-color: #f0f0f0;
