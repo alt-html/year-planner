@@ -117,6 +117,8 @@ a.navbar-brand {
 
 .nav-settings .dropdown-item {
     font-size: .8rem;
+    left: 1rem;
+
     /*min-width: 110px;*/
 }
 

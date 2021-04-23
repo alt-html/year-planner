@@ -52,7 +52,8 @@ var model = {
     emailverified : 0,
     mobile : '',
     mobileverified : 0,
-    subscription : -1,
+    password: '',
+    donation : -1,
 
     identities: getLocalIdentities() || [{0:uid,1:window.navigator.userAgent}],
     preferences: preferences,
@@ -74,7 +75,12 @@ var model = {
     cmonth : pageLoadTime.month,
     cday: pageLoadTime.day,
 
-    feature : feature
+    feature : feature,
+    error : '',
+    warning : '',
+    modalError : '',
+    modalErrorTarget : null,
+    modalWarning : ''
 }
 
 setModelFromImportString(share);
@@ -175,6 +181,28 @@ var saveSettings = function () {
 }
 
 var showRegister = function (){
+    clearModalAlert();
+    model.username = '';
+    model.password='';
+}
+
+var showSignin = function (){
+    clearModalAlert();
+    model.username = '';
+    model.password='';
+}
+
+var modalErr = function (target,err) {
+    if (!model.modalErrorTarget){
+        model.modalErrorTarget = {};
+    }
+    model.modalErrorTarget[target] =  err;
+}
+
+var clearModalAlert = function (){
+ model.modalError = '';
+ model.modalErrorTarget = null;
+ model.modalWarning = '';
 
 }
 

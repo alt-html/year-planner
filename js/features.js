@@ -2,8 +2,7 @@ var feature = {
     debug : false,
     settings : false,
     signin : false,
-    signout : false,
-    register : false,
+    register : true,
     donate : false,
     subscribe : false,
     pay : false

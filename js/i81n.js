@@ -16,13 +16,20 @@ const messages = {
             rename : 'Rename',untitled : 'Untitled',
             month:'Month',year:'Year',week:'Week',semester:'Semester',term:'Term',today:'Today',
             theme:'Theme',light:'Light',dark:'Dark',
-            register: 'Register', username: 'Username', Password : 'Password', email: 'Email', mobile :'Mobile',
+            register: 'Register', username: 'Username', password : 'Password', email: 'Email', mobile :'Mobile',
             settings: 'Settings…', profile: 'Profile', verify : 'Verify',
             signin:  'Sign In', signout: 'Sign Out', forgotpass :'Forgot my password', forgotuser : 'Forgot my username',
             donate: 'Donate'
-
-
     },
+        warn: {
+            usernamenotprovided:'A username must be provided',
+            passwordnotprovided:'A password must be provided'
+        },
+        error: {
+            apinotavailable: 'The remote year planner API is not available',
+            usernotavailable: 'The username is not available',
+            unauthorized: 'Username or password is not correct'
+        },
         month : {
             January: 'January', February: 'February', March : 'March', April:'April', May:'May',June:'June',July:'July',August:'August',September:'September',October:'October',November:'November',December:'December'
         },
