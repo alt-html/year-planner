@@ -54,6 +54,7 @@ var model = {
     mobileverified : 0,
     password: '',
     donation : -1,
+    rememberme : false,
 
     identities: getLocalIdentities() || [{0:uid,1:window.navigator.userAgent}],
     preferences: preferences,
@@ -188,8 +189,10 @@ var showRegister = function (){
 
 var showSignin = function (){
     clearModalAlert();
-    model.username = '';
-    model.password='';
+    model.username = null;
+    model.password = null;
+    $('#signinModal').modal('show');
+    refresh();
 }
 
 var modalErr = function (target,err) {

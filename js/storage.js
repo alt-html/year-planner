@@ -213,3 +213,26 @@ var setLocalFromModel = function (){
         setLocalPlanner(model.uid,model.year,model.planner);
     }
 }
+
+var extendLocalSession = function (){
+    setLocalSession(model.uuid,DateTime.local().plus({minutes:30}).ts);
+}
+
+var setLocalSession = function (uuid,expires){
+    setCookie('1',LZString.compressToBase64(JSON.stringify({0:uuid,1:expires})),4384);
+    refresh();
+}
+
+var getLocalSession = function (){
+    return JSON.parse(LZString.decompressFromBase64(getCookie('1')));
+}
+
+var expireLocalSession = function (){
+    setCookie('1',LZString.compressToBase64(JSON.stringify({0:model.uuid,1:1})),4384);
+    refresh();
+}
+
+var deleteLocalSession = function (){
+    deleteCookie('1');
+    refresh();
+}

@@ -2,7 +2,7 @@ var feature = {
     debug : false,
     settings : false,
     signin : false,
-    register : true,
+    register : false,
     donate : false,
     subscribe : false,
     pay : false

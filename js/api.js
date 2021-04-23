@@ -20,6 +20,8 @@ var register = function(username,password,email,mobile){
         .then(response => {
                 model.uuid = response.body.uuid;
                 model.donation = response.body.donation;
+                extendLocalSession();
+                $('#registerModal').modal('hide');
             }
 
         )
@@ -31,7 +33,7 @@ var register = function(username,password,email,mobile){
         });//400 - bad request (name exists), 200 success returns uuid and subscription
 }
 
-var signin = function(username,password){
+var signin = function(username,password,rememberme){
     clearModalAlert();
     if (!model.username){
         // model.modalWarning = 'warn.usernamenotprovided'
@@ -55,6 +57,12 @@ var signin = function(username,password){
                 model.emailverified = response.body.emailverified;
                 model.mobile = response.body.mobile;
                 model.mobileverified = response.body.mobileverified;
+                $('#signinModal').modal('hide');
+                if (rememberme){
+                    setLocalSession(model.uuid,0);
+                }else {
+                    extendLocalSession();
+                }
             }
 
         )
@@ -66,6 +74,19 @@ var signin = function(username,password){
             }) //401 - unauthorised, 200 success returns uuid and subscription
 }
 
+var signout = function(){
+    model.uuid = '';
+    expireLocalSession();
+}
+
+var signedin = function (){
+    expires = getLocalSession()?.['1'];
+    return expires != null && (expires > 0 && expires >= DateTime.now().ts) || expires == 0;
+}
+
+var registered = function (){
+    return (!!getLocalSession());
+}
 
 var deleteRegistration = function(uuid){
     request

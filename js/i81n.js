@@ -18,7 +18,7 @@ const messages = {
             theme:'Theme',light:'Light',dark:'Dark',
             register: 'Register', username: 'Username', password : 'Password', email: 'Email', mobile :'Mobile',
             settings: 'Settings…', profile: 'Profile', verify : 'Verify',
-            signin:  'Sign In', signout: 'Sign Out', forgotpass :'Forgot my password', forgotuser : 'Forgot my username',
+            signin:  'Sign In', signout: 'Sign Out', rememberme: 'Keep me signed in',forgotpass :'Forgot my password', forgotuser : 'Forgot my username',
             donate: 'Donate'
     },
         warn: {
