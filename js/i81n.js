@@ -45,7 +45,7 @@ const messages = {
             created :'Creado',
             updated : 'Actualizado',
             none : 'Ninguno',
-            month:'Mes',year:'Año',week:'Semana',semester:'Semestre',term:'Término',
+            month:'Mes',year:'Año',week:'Semana',semester:'Semestre',term:'Término',today:'Hoy',
             theme:'Tema',light:'Luz',dark:'Oscuro'
         },
         month : {
@@ -69,7 +69,7 @@ const messages = {
             created:'Created',
             updated : 'Criado',
             none : 'Nenhum',
-            month:'Mês',year:'Ano',week:'Semana',semester:'Semestre',term:'Prazo',
+            month:'Mês',year:'Ano',week:'Semana',semester:'Semestre',term:'Prazo',today:'Hoje',
            theme:'Tema',light:'Luz',dark:'Escuro'
         },
         month : {
@@ -94,7 +94,7 @@ const messages = {
             created:'已建立',
             updated : '更新',
             none : '沒有任何',
-            month:'月',year:'年',week:'星期',semester:'學期',term:'學期',
+            month:'月',year:'年',week:'星期',semester:'學期',term:'學期',today:'今天',
             theme:'主題',light:'光',dark:'黑暗的'
         },
         month : {
@@ -118,7 +118,7 @@ const messages = {
             created:'बनाया था',
             updated : 'अद्यतन',
             none : 'कोई नहीं',
-            month:'महीना',year:'साल',week:'सप्ताह',semester:'छमाही',term:'अवधि',
+            month:'महीना',year:'साल',week:'सप्ताह',semester:'छमाही',term:'अवधि',today:'आज',
             theme:'विषय',light:'रोशनी',dark:'अंधेरा'
         },
         month : {
@@ -142,7 +142,7 @@ const messages = {
             created:'Établi',
             updated : 'Actualisé',
             none : 'Rien',
-            month:'Mois',year:'An',week:'Semaine',semester:'Semestre',term:'Terme',
+            month:'Mois',year:'An',week:'Semaine',semester:'Semestre',term:'Terme',today:'Aujourd\'hui',
             theme:'Thème',light:'Lumière',dark:'Sombre'
         },
         month : {
@@ -166,7 +166,7 @@ const messages = {
             created:'مخلوق',
             updated : 'محدث',
             none : 'لا أحد',
-            month:'شهر',year:'سنة',week:'أسبوع',semester:'نصف السنة',term:'شرط',
+            month:'شهر',year:'سنة',week:'أسبوع',semester:'نصف السنة',term:'شرط',today:'اليوم',
             theme:'سمة',light:'ضوء',dark:'داكن'
         },
         month : {
@@ -190,7 +190,7 @@ const messages = {
             created:'Созданный',
             updated : 'Обновлено',
             none : 'Никто',
-            month:'Месяц',year:'Год',week:'Неделя',semester:'Семестр',term:'Срок',
+            month:'Месяц',year:'Год',week:'Неделя',semester:'Семестр',term:'Срок',today:'Сегодня',
             theme:'Thème',light:'Lumière',dark:'Sombre'
         },
         month : {
@@ -214,7 +214,7 @@ const messages = {
             created:'作成した',
             updated : '更新しました',
             none : '無し',
-           month:'月',year:'年',week:'週間',semester:'学期',term:'期間',
+           month:'月',year:'年',week:'週間',semester:'学期',term:'期間',today:'今日',
            theme:'テーマ',light:'光',dark:'闇'
         },
         month : {
@@ -238,7 +238,7 @@ const messages = {
             created:'Dibuat',
             updated : 'Diperbarui',
             none : 'Tidak ada',
-            month:'Bulan',year:'Tahun',week:'Minggu',semester:'Semester',term:'Istilah',
+            month:'Bulan',year:'Tahun',week:'Minggu',semester:'Semester',term:'Istilah',today:'Hari ini',
             theme:'Tema',light:'Cahaya',dark:'Gelap'
         },
         month : {
