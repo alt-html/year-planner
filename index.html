@@ -118,12 +118,12 @@
                                 <a v-if="feature.signin && !signedin()" class="dropdown-item" href="#" v-on:click="showSignin()" data-toggle="modal" data-target="#signinModal">{{$t('label.signin')}}…</a>
                                 <a v-if="feature.signin && signedin()" class="dropdown-item" href="#" v-on:click="signout()">{{$t('label.signout')}}…</a>
                           </div>
-                            <button v-if="feature.register && !registered()" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#registerModal" title="">{{$t('label.register')}}</button>
-                            <button v-if="feature.signin && !signedin() && registered()" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showSignin()">{{$t('label.signin')}}</button>
-                            <button v-if="feature.signin && signedin()" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="signout()" data-toggle="modal" data-target="#" title="">{{$t('label.signout')}}</button>
-                            <button v-if="feature.donate" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" v-on:click="showDonate()" data-toggle="modal" data-target="#donateModal" title="">Donate</button>
-                            <button v-if="!feature.register && !feature.signin" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
                         </div>
+                        <button v-if="feature.register && !registered()" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#registerModal" title="">{{$t('label.register')}}</button>
+                        <button v-if="feature.signin && !signedin() && registered()" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showSignin()">{{$t('label.signin')}}</button>
+                        <button v-if="feature.signin && signedin()" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="signout()" data-toggle="modal" data-target="#" title="">{{$t('label.signout')}}</button>
+                        <button v-if="feature.donate" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" v-on:click="showDonate()" data-toggle="modal" data-target="#donateModal" title="">Donate</button>
+                        <button v-if="!feature.register && !feature.signin" id="no-feature-button" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" >&nbsp;</button>
                </form>
 
             </span>
@@ -568,6 +568,38 @@
             </div>
         </div>
 
+        <div class="modal fade" id="featureModal" tabindex="-1" role="dialog" aria-labelledby="featureModalLabel" aria-hidden="true">
+            <div id="feature-dialog"  class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="featureModalLabel">Feature Toggles</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"  id="debug" v-model="feature['debug']">
+                                <label class="form-check-label" for="debug">Debug</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"  id="register" v-model="feature['register']">
+                                <label class="form-check-label" for="register">{{$t('label.register')}}</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"  id="signin" v-model="feature['signin']">
+                                <label class="form-check-label" for="signin">{{$t('label.signin')}}</label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <footer class="footer fixed-bottom">
             <div id ="footer-container" class="container">
                 <div class="row">
@@ -599,7 +631,7 @@
 <!--                    </div>-->
                     <div class="col-10">
 
-                        <div id="footer-text-right" class="text-muted text-right">© 2021, C<span class="d-none d-sm-inline">raig</span><span class="d-sm-none">.</span> Parravicini&nbsp;&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
+                        <div id="footer-text-right" class="text-muted text-right">© 2021, C<span class="d-none d-sm-inline">raig </span><span class="d-sm-none" data-toggle="modal" data-target="#featureModal">. </span>Parravicini&nbsp;&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
                             <!--img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /-->
                             <i class="fab fa-creative-commons"></i>-<i class="fab fa-creative-commons-by"></i>-<i class="fab fa-creative-commons-sa"></i>
                         </a>&nbsp;&nbsp; <a href="https://github.com/craigparra/year-planner" target="_blank"><i class="fab fa-github"></i><span class="d-none d-sm-inline">&nbsp;README.md</span></a>

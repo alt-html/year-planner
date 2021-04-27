@@ -58,7 +58,7 @@ var model = {
 
     identities: getLocalIdentities() || [{0:uid,1:window.navigator.userAgent}],
     preferences: preferences,
-    planner: getLocalPlanner(uid, year),
+    planner: getPlanner(uid, year),
 
     month : 0,
     day : 1,
@@ -140,7 +140,7 @@ var createPlanner = function(){
     model.preferences = preferences;
     model.identities.push({0:uid,1:window.navigator.userAgent});
     setLocalIdentities(model.identities);
-    model.planner = getLocalPlanner(uid, year);
+    model.planner = getPlanner(uid, year);
     refresh();
 }
 

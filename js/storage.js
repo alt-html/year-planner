@@ -23,7 +23,7 @@ var getLocalUid = function(){
     return null;
 }
 
-var getLocalIdentity = function(){
+var getDefaultLocalIdentity = function(){
     var localIdentities =  getLocalIdentities();
     if (localIdentities){
         return localIdentities[0]['0']
@@ -47,6 +47,7 @@ var getLocalIdentities = function(){
     return JSON.parse(LZString.decompressFromBase64(getCookie('0')));
 }
 
+
 var getLocalPlannerYears = function(){
     let localPlannerYears = {};
     let cookies = Object.keys(getCookies());
@@ -61,7 +62,8 @@ var getLocalPlannerYears = function(){
     return localPlannerYears;
 }
 
-var getLocalPreferences = function() {
+
+var getDefaultLocalPreferences = function() {
     return JSON.parse(LZString.decompressFromBase64(getCookie(getLocalIdentities()[0]['0']+'')));
 }
 
@@ -69,7 +71,7 @@ var getLocalPreferences = function(uid) {
     return JSON.parse(LZString.decompressFromBase64(getCookie(uid+'')));
 }
 
-var getLocalPlanner = function() {
+var getDefaultLocalPlanner = function() {
     return getLocalPlanner(getLocalIdentities(),model.year)
 }
 
@@ -81,7 +83,12 @@ var getLocalPlanner = function(uid, year) {
     return planner;
 }
 
-var deleteLocalPlanner = function(uid, year){
+var getPlanner = function (uid,year){
+    //if signed in get remote planner otherwise local
+    return getLocalPlanner(uid, year);
+}
+
+var deleteLocalPlannerByYear = function(uid, year){
     let localPlannerYears = {};
     let cookies = Object.keys(getCookies());
     let cookiesToDelete = _.filter(cookies,function(key){ return key.includes(uid+'-'+year);});
@@ -102,10 +109,55 @@ var deleteLocalPlanner = function(uid){
     setLocalIdentities(_.remove(getLocalIdentities(), function (id) {return id['0'] == uid}));
 }
 
+
 var setLocalPlanner = function(uid, year, planner) {
     for (var m = 1; m <= 12; m++) {
         setCookie(uid+'-'+year+m,LZString.compressToBase64(JSON.stringify(planner[m-1])),4384)
     }
+}
+
+var setLocalPlannerLastUpdated = function(uid, year, lastUpdated) {
+    setCookie(uid+'-'+year,LZString.compressToBase64(JSON.stringify(lastUpdated)),4384)
+}
+
+var exportPlannerToJSON = function() {
+    return JSON.stringify(model.planner);
+}
+var exportPlannerToBase64 = function() {
+        return LZString.compressToBase64(exportPlannerToJSON());
+}
+
+var importPlannerFromJSON = function(planner) {
+    importPlanner(JSON.parse(planner));
+}
+
+var importPlannerFromBase64 = function(planner) {
+    importPlanner(JSON.parse(LZString.decompressFromBase64(planner)));
+}
+
+var importPlanner = function(planner) {
+    for (var m = 0; m < 12; m++) {
+        for (var d = 0; d < model.daysInMonth[m-1];d ++){
+            if (planner[m][''+d]){
+                if (model.planner[m][''+d][''+0] == 0) {
+                    model.planner[m][''+d][''+0] = planner[m][''+d][''+0];
+                }
+                if (planner[m][''+d][''+1]){
+                    if (model.planner[m][''+d][''+1] && model.planner[m][''+d][''+1] != planner[m][''+d][''+1] ){
+                        model.planner[m][''+d][''+1] = model.planner[m][''+d][''+1]+'\n'+planner[m][''+d][''+1];
+                    }else {
+                        model.planner[m][''+d][''+1] = planner[m][''+d][''+1];
+                    }
+                }
+            }
+        }
+    }
+    setLocalPlanner(model.uid,model.year,model.planner);
+    setLocalPlannerLastUpdated(model.uid,model.year,Math.floor(DateTime.now().ts/1000));
+}
+
+var setPlanner = function (uid, year, planner){
+    setLocalPlanner(uid, year, planner);
 }
 
 var updateEntry = function(mindex,day,entry,entryType,entryColour){
@@ -122,6 +174,8 @@ var updateEntry = function(mindex,day,entry,entryType,entryColour){
 
     model.updated = DateTime.now().ts;
     setLocalPlanner(model.uid,model.year,model.planner);
+    setLocalPlannerLastUpdated(model.uid,model.year,Math.floor(DateTime.now().ts/1000));
+
 }
 
 var updateWeekColour = function(mindex,day,entryColour){
@@ -210,7 +264,7 @@ var setLocalFromModel = function (){
     if (cookiesAccepted()){
         setLocalIdentities (model.identities)
         setLocalPreferences(model.uid,model.preferences)
-        setLocalPlanner(model.uid,model.year,model.planner);
+        setPlanner(model.uid,model.year,model.planner);
     }
 }
 
