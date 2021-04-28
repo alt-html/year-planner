@@ -1,3 +1,14 @@
+var synchronise = function (){
+
+     // for each remote uid-year
+      // get the the local uid-year last updated
+      // get the the remote uid-year last updated
+      // if the remote uid-year is more recent 9 (default 0 for no local uid) then
+          // set the local uid-year from the remote
+     // if the remote default uid [index 0] is different
+         // set the local default to the remote
+}
+
 var register = function(username,password,email,mobile){
 
     clearModalAlert();
@@ -18,6 +29,7 @@ var register = function(username,password,email,mobile){
         .send({username:username,password:password,email:email,mobile:mobile})
         .set('Accept','application/json')
         .then(response => {
+                model.response = response;
                 model.uuid = response.body.uuid;
                 model.donation = response.body.donation;
                 extendLocalSession();
@@ -51,6 +63,7 @@ var signin = function(username,password,rememberme){
         .get('/api/planner')
         .auth(username, password)
         .then(response => {
+                model.response = response;
                 model.uuid = response.body.uuid;
                 model.donation = response.body.donation;
                 model.email = response.body.email;
@@ -94,6 +107,7 @@ var deleteRegistration = function(uuid){
         .send({})
         .set('Accept','application/json')
         .then(response => {
+                model.response = response;
                 model.uuid = '';
                 model.subscription = -1
             }
