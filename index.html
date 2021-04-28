@@ -21,7 +21,6 @@
     <script src="https://unpkg.com/vue-i18n@8"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,Promise,Symbol,Object.setPrototypeOf,Object.getOwnPropertySymbols"></script>
     <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
-<!--    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>-->
     <script src="https://kit.fontawesome.com/10808f8e76.js" crossorigin="anonymous"></script>
 <!--    <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>-->
     <script  src="js/uuid.js"></script>
@@ -39,8 +38,7 @@
             </form>
 
             <div class="collapse navbar-collapse" id="navbarCollapse">
-<!--                <ul class="navbar-nav mr-auto">-->
-<!--                </ul>-->
+
             </div>
 
             <ul class="nav">
@@ -76,38 +74,16 @@
                     </div>
                 </li>
             </ul>
-<!--            <ul class="nav">-->
-<!--                <li class="nav-item dropdown">-->
-<!--                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$t('label.month')}}</a>-->
-<!--                    <div class="dropdown-menu">-->
-<!--                        <a class="dropdown-item" href="#January" >{{$t('month.January')}}</a>-->
-<!--                        <a class="dropdown-item" href="#February" >{{$t('month.February')}}</a>-->
-<!--                        <a class="dropdown-item" href="#March" >{{$t('month.March')}}</a>-->
-<!--                        <a class="dropdown-item" href="#April" >{{$t('month.April')}}</a>-->
-<!--                        <a class="dropdown-item" href="#May" >{{$t('month.May')}}</a>-->
-<!--                        <a class="dropdown-item" href="#June" >{{$t('month.June')}}</a>-->
-<!--                        <a class="dropdown-item" href="#July" >{{$t('month.July')}}</a>-->
-<!--                        <a class="dropdown-item" href="#August" >{{$t('month.August')}}</a>-->
-<!--                        <a class="dropdown-item" href="#September" >{{$t('month.September')}}</a>-->
-<!--                        <a class="dropdown-item" href="#October" >{{$t('month.October')}}</a>-->
-<!--                        <a class="dropdown-item" href="#November" >{{$t('month.November')}}</a>-->
-<!--                        <a class="dropdown-item" href="#December" >{{$t('month.December')}}</a>-->
-<!--                    </div>-->
-<!--                </li>-->
-<!--            </ul>-->
 
             <span class="text-right">
 
                 <form class="form-inline my-0 ">
 
                     <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#shareModal" title=""><i class="fa fa-share-alt" aria-hidden="true"></i></button>
-<!--                     <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-sign-in-alt"></i></button>&nbsp;-->
-<!--                    <button v-if="feature.settings" class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-cog" aria-hidden="true"></i></button>&nbsp;-->
                     <div  class="btn-group">
                           <button type="button" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-bars"></i>
                           </button>
-<!--                          <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal" title=""><i class="fas fa-bars"></i></button>&nbsp;-->
                           <div class="nav-settings dropdown-menu dropdown-menu-right">
                               <h6 class="dropdown-header">{{$t('label.theme')}}</h6>
                                 <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':theme=='light'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=light'">{{$t('label.light')}}</a>
@@ -626,13 +602,10 @@
                         </div>
 
                     </div>
-<!--                    <div class="col-xs-1 col-sm-4">-->
-<!--                        <div id="footer-text-left" class="text-muted text-left"></div>-->
-<!--                    </div>-->
+
                     <div class="col-10">
 
                         <div id="footer-text-right" class="text-muted text-right">© 2021, C<span class="d-none d-sm-inline">raig </span><span class="d-sm-none" data-toggle="modal" data-target="#featureModal">. </span>Parravicini&nbsp;&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
-                            <!--img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /-->
                             <i class="fab fa-creative-commons"></i>-<i class="fab fa-creative-commons-by"></i>-<i class="fab fa-creative-commons-sa"></i>
                         </a>&nbsp;&nbsp; <a href="https://github.com/craigparra/year-planner" target="_blank"><i class="fab fa-github"></i><span class="d-none d-sm-inline">&nbsp;README.md</span></a>
                         </div>

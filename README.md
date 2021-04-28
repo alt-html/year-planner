@@ -14,7 +14,7 @@ Entries are <em>not</em> sent to or stored in the "cloud" by design.  Each brows
 
 Shared planners maintain a "unique" timestamp identifier for the instant that they were created (to second precision).  Within a small set, any given planner's shared identifier is probably unique, however they are not universal and a shared planner will over-write a planner with the same identifier if opened in the same browser.
 
-Multiple planners with different "unique" identifiers can be stored in a given browser, allowing for different use cases (home, work, study).
+Multiple planners with different "unique" identifiers can be named and stored in a given browser, allowing for different use cases (home, work, study).
 
 ## Features
 
@@ -38,17 +38,26 @@ The planner table will responsively collapse and repeat as the browser window na
 
 ### Themes (Light & Dark)
 
-The year planner offers configurable light (default) and dark themes.  
-<em>Currently requires the url parameter theme=[light|dark]</em>
+The year planner offers configurable light (default) and dark themes.
 
 ### Translations
 
 The year planner is available in 10 popular languages:  
-English, Chinese (traditional), Hindi, Arabic, Spanish, Portuguese, French, Russian, Indonesian and Japanese.
+- English 
+- Chinese (traditional)
+- Hindi
+- Arabic
+- Spanish
+- Portuguese
+- French
+- Russian
+- Indonesian
+- Japanese
 
 ### Backlog
 
-
+- \[ \] Trigger rename in settings menu
+- \[ \] i81n rename
 - \[ \] Dark theme dropdowns
 - \[ \] Dark theme modals
 - \[ \] Expand entry icon set with select dropdown, or remove

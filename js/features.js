@@ -1,10 +1,12 @@
 var feature = {
     debug : false,
     settings : false,
-    signin : false,
     register : false,
+    signin : false,
+    switch : false,
+    import : false,
+    export : false,
     donate : false,
-    subscribe : false,
     pay : false
 };
 
