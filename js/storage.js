@@ -101,6 +101,7 @@ var deleteLocalPlannerByYear = function(uid, year){
     }
     model.year = model.cyear;
     window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.cyear;
+    location.reload();
 }
 
 var deleteLocalPlanner = function(uid){
