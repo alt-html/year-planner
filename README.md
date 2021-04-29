@@ -56,8 +56,6 @@ The year planner is available in 10 popular languages:
 
 ### Backlog
 
-- \[ \] Trigger rename in settings menu
-- \[ \] i81n rename
 - \[ \] Dark theme dropdowns
 - \[ \] Dark theme modals
 - \[ \] Expand entry icon set with select dropdown, or remove
@@ -74,6 +72,8 @@ The year planner is available in 10 popular languages:
 
 
 ### Recent Features Added
+- \[x\] Trigger rename in settings menu
+- \[x\] i81n rename
 - \[x\] Colourise cells
 - \[x\] Year nav (+-1)
 - \[x\] Mark past cells, emphasise today

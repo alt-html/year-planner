@@ -3,7 +3,6 @@ var feature = {
     settings : false,
     register : false,
     signin : false,
-    switch : false,
     import : false,
     export : false,
     donate : false,

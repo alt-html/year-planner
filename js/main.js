@@ -144,7 +144,14 @@ var createPlanner = function(){
     refresh();
 }
 
+var showRenamePlanner = function() {
+    model.rename=true;
+     $('#rename').show();
+     $('#title').focus();
+}
+
 var renamePlanner = function() {
+    $('#rename').hide();
     preferences['3'][''+year][lang]=model.name;
     messages[lang]['label']['name_'+year] = model.name;
     model.rename=false;

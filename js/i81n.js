@@ -6,6 +6,7 @@ const messages = {
             cookies : 'This website uses cookies.',
             close:'Close',
             update:'Update',
+            delete:'Delete',
             share:'Share',
             sharecopy:'Share a copy',
             copy:'Copy',
@@ -45,6 +46,7 @@ const messages = {
             cookies : 'Este sitio web utiliza cookies.',
             close:'Cerrar',
             update:'Actualizar',
+            delete:'Borrar',
             share:'Compartir',
             sharecopy:'Comparte una copia',
             copy:'Copiar',
@@ -52,6 +54,7 @@ const messages = {
             created :'Creado',
             updated : 'Actualizado',
             none : 'Ninguno',
+            rename : 'Rebautizar',untitled : 'Intitulado',
             month:'Mes',year:'Año',week:'Semana',semester:'Semestre',term:'Término',today:'Hoy',
             theme:'Tema',light:'Luz',dark:'Oscuro'
         },
@@ -69,6 +72,7 @@ const messages = {
             cookies : 'Este site usa cookies.',
             close:'Fechar',
             update:'Atualizar',
+            delete:'Excluir',
             share:'Ação',
             sharecopy:'Compartilhe uma cópia',
             copy:'Cópie',
@@ -76,6 +80,7 @@ const messages = {
             created:'Created',
             updated : 'Criado',
             none : 'Nenhum',
+            rename : 'Renomear',untitled : 'Sem título',
             month:'Mês',year:'Ano',week:'Semana',semester:'Semestre',term:'Prazo',today:'Hoje',
            theme:'Tema',light:'Luz',dark:'Escuro'
         },
@@ -94,6 +99,7 @@ const messages = {
             cookies : '本網站使用cookie。',
             close:'關閉',
             update:'更新',
+            delete:'刪除',
             share:'分享',
             sharecopy:'分享副本',
             copy:'复制',
@@ -101,6 +107,7 @@ const messages = {
             created:'已建立',
             updated : '更新',
             none : '沒有任何',
+            rename : '改名',untitled : '無標題',
             month:'月',year:'年',week:'星期',semester:'學期',term:'學期',today:'今天',
             theme:'主題',light:'光',dark:'黑暗的'
         },
@@ -118,6 +125,7 @@ const messages = {
             cookies : 'यह वेबसाइट कुकीज़ का उपयोग करती है।',
             close:'बंद करे',
             update:'अपडेट करें',
+            delete:'हटाएं',
             share:'शेयर',
             sharecopy:'एक प्रति साझा करें',
             copy:'कॉपी',
@@ -125,6 +133,7 @@ const messages = {
             created:'बनाया था',
             updated : 'अद्यतन',
             none : 'कोई नहीं',
+            rename : 'नाम बदलें',untitled : 'शीर्षकहीन',
             month:'महीना',year:'साल',week:'सप्ताह',semester:'छमाही',term:'अवधि',today:'आज',
             theme:'विषय',light:'रोशनी',dark:'अंधेरा'
         },
@@ -142,6 +151,7 @@ const messages = {
             cookies : 'Ce site web utilise des cookies.',
             close:'Fermer',
             update:'Mettre à jour',
+            delete:'Effacer',
             share:'Partager',
             sharecopy:'Partager une copie',
             copy:'Copiez',
@@ -149,6 +159,7 @@ const messages = {
             created:'Établi',
             updated : 'Actualisé',
             none : 'Rien',
+            rename : 'Renommer',untitled : 'Sans titre',
             month:'Mois',year:'An',week:'Semaine',semester:'Semestre',term:'Terme',today:'Aujourd\'hui',
             theme:'Thème',light:'Lumière',dark:'Sombre'
         },
@@ -166,6 +177,7 @@ const messages = {
             cookies : 'هذا الموقع يستخدم الكوكيز.',
             close:'يغلق',
             update:'تحديث',
+            delete:'حذف',
             share:'يشارك',
             sharecopy:'مشاركة نسخة',
             copy:'انسخه',
@@ -173,6 +185,7 @@ const messages = {
             created:'مخلوق',
             updated : 'محدث',
             none : 'لا أحد',
+            rename : 'إعادة تسمية',untitled : 'بدون عنوان',
             month:'شهر',year:'سنة',week:'أسبوع',semester:'نصف السنة',term:'شرط',today:'اليوم',
             theme:'سمة',light:'ضوء',dark:'داكن'
         },
@@ -190,6 +203,7 @@ const messages = {
             cookies : 'Этот веб-сайт использует файлы cookie.',
             close:'Закрывать',
             update:'Обновлять',
+            delete:'Удалить',
             share:'Делиться',
             sharecopy:'Поделиться копией',
             copy:'Скопируйте',
@@ -197,6 +211,7 @@ const messages = {
             created:'Созданный',
             updated : 'Обновлено',
             none : 'Никто',
+            rename : 'Переименовать',untitled : 'Без названия',
             month:'Месяц',year:'Год',week:'Неделя',semester:'Семестр',term:'Срок',today:'Сегодня',
             theme:'Thème',light:'Lumière',dark:'Sombre'
         },
@@ -214,6 +229,7 @@ const messages = {
             cookies : 'このウェブサイトはクッキーを使用しています。',
             close:'閉じる',
             update:'更新',
+            delete:'削除',
             share:'共有',
             sharecopy:'コピーを共有する',
             copy:'コピー',
@@ -221,8 +237,9 @@ const messages = {
             created:'作成した',
             updated : '更新しました',
             none : '無し',
-           month:'月',year:'年',week:'週間',semester:'学期',term:'期間',today:'今日',
-           theme:'テーマ',light:'光',dark:'闇'
+            rename : '名前を変更',untitled : '無題',
+            month:'月',year:'年',week:'週間',semester:'学期',term:'期間',today:'今日',
+            theme:'テーマ',light:'光',dark:'闇'
         },
         month : {
             January: '一月', February: '二月', March : '三月', April:'四月', May:'五月',June:'六月',July:'七月',August:'八月',September:'九月',October:'十月',November:'十一月',December:'十二月'
@@ -238,6 +255,7 @@ const messages = {
             cookies : 'Situs web ini menggunakan cookie.',
             close:'Menutup',
             update:'Memperbarui',
+            delete:'Menghapus',
             share:'Bagikan',
             sharecopy:'Bagikan salinan',
             copy:'Salin',
@@ -245,6 +263,7 @@ const messages = {
             created:'Dibuat',
             updated : 'Diperbarui',
             none : 'Tidak ada',
+            rename : 'Ganti nama',untitled : 'Tanpa judul',
             month:'Bulan',year:'Tahun',week:'Minggu',semester:'Semester',term:'Istilah',today:'Hari ini',
             theme:'Tema',light:'Cahaya',dark:'Gelap'
         },

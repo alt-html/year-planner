@@ -31,10 +31,15 @@
 
         <nav class="navbar navbar-expand sticky-top" >
 
-            <a class="navbar-brand" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="rename=true" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
+            <a class="navbar-brand" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
 
-            <form class="form-inline"  v-bind:class="{'d-none':rename==false}">
-                <div class=""><input id="title" maxlength="64" class="form-control form-control-sm" type="text" v-bind:placeholder="$t('label.untitled')" aria-label="Name" v-model="name" v-on:keyup="" v-on:focusout="renamePlanner()"></div>
+            <form id="rename" class="form-inline" >
+                <div class="input-group"><input id="title" maxlength="64" class="form-control form-control-sm" type="text" v-bind:placeholder="$t('label.untitled')" aria-label="Name" v-model="name" v-on:keyup="" v-on:focusout="renamePlanner()">
+                    <div class="input-group-append">
+                        <button class="navbar-brand navbar-brand-support btn btn-outline-secondary py-0 my-0" type="button" v-on:click="renamePlanner()" ><i class="fas fa-save" aria-hidden="true"></i></button>
+
+                    </div>
+                </div>
             </form>
 
             <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -85,13 +90,15 @@
                             <i class="fas fa-bars"></i>
                           </button>
                           <div class="nav-settings dropdown-menu dropdown-menu-right">
-                              <h6 class="dropdown-header">{{$t('label.theme')}}</h6>
+                                <a  class="dropdown-item" href="#" v-on:click="showRenamePlanner()">{{$t('label.rename')}}</a>
+                                <div class="dropdown-divider"></div>
+                                <h6 class="dropdown-header">{{$t('label.theme')}}</h6>
                                 <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':theme=='light'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=light'">{{$t('label.light')}}</a>
                                 <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':theme=='dark'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=dark'">{{$t('label.dark')}}</a>
                                 <div v-if="feature.settings" class="dropdown-divider"></div>
                                 <a v-if="feature.settings" class="dropdown-item" href="#" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal">{{$t('label.settings')}}</a>
                                 <div v-if="feature.signin" class="dropdown-divider"></div>
-                                <a v-if="feature.signin && !signedin()" class="dropdown-item" href="#" v-on:click="showSignin()" data-toggle="modal" data-target="#signinModal">{{$t('label.signin')}}…</a>
+                                <a v-if="feature.signin && !signedin()" class="dropdown-item" href="#" v-on:click="showSignin()">{{$t('label.signin')}}…</a>
                                 <a v-if="feature.signin && signedin()" class="dropdown-item" href="#" v-on:click="signout()">{{$t('label.signout')}}…</a>
                           </div>
                         </div>
