@@ -47,6 +47,9 @@ var getLocalIdentities = function(){
     return JSON.parse(LZString.decompressFromBase64(getCookie('0')));
 }
 
+var getPlannerYears = function() {
+    return getLocalPlannerYears();
+}
 
 var getLocalPlannerYears = function(){
     let localPlannerYears = {};

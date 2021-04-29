@@ -166,6 +166,11 @@ var getPlannerName = function() {
     return null;
 }
 
+var getPlannerNameByUidYear = function (uid,year){
+    let prefs = getLocalPreferences(uid) || {};
+    return prefs['3'][''+year][lang];
+}
+
 var sharePlanner = function(){
     model.shareUrl = window.location.origin+'?share='+getExportString();
     var copyText = document.getElementById("copyUrl");

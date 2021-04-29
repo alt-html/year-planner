@@ -72,6 +72,7 @@ The year planner is available in 10 popular languages:
 
 
 ### Recent Features Added
+- \[x\] Nav between stored planner years
 - \[x\] Trigger rename in settings menu
 - \[x\] i81n rename
 - \[x\] Colourise cells
