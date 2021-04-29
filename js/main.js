@@ -156,6 +156,7 @@ var renamePlanner = function() {
     messages[lang]['label']['name_'+year] = model.name;
     model.rename=false;
     setLocalPreferences(model.uid,model.preferences);
+    model.updated = DateTime.now().ts;
 }
 
 var getPlannerName = function() {

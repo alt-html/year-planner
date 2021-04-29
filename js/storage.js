@@ -99,6 +99,8 @@ var deleteLocalPlannerByYear = function(uid, year){
     for (var i = 0; i < cookiesToDelete.length; i++) {
         deleteCookie(cookiesToDelete[i])
     }
+    model.year = model.cyear;
+    window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.cyear;
 }
 
 var deleteLocalPlanner = function(uid){

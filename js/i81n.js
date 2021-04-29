@@ -6,7 +6,7 @@ const messages = {
             cookies : 'This website uses cookies.',
             close:'Close',
             update:'Update',
-            delete:'Delete',
+            delete:'Delete', deleteplanner:'Confirm delete of the current planner?',
             share:'Share',
             sharecopy:'Share a copy',
             copy:'Copy',
