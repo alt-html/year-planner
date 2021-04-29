@@ -61,7 +61,7 @@
                             </div>
                         </form>
                         <div class="dropdown-divider"></div>
-                        <template v-if="Object.keys(getPlannerYears()).length > 1 || getPlannerYears()[uid].length > 1 ">
+                        <template v-if="Object.keys(getPlannerYears()).length > 1 || getPlannerYears() && getPlannerYears()[uid]?.length > 1 ">
                             <template v-for="p in Object.keys(getPlannerYears())">
                             <a v-if="!(uid == p && parseInt(y) == year)" v-for="y in getPlannerYears()[p]" class="dropdown-item" v-bind:href="'/?uid='+p+'&year='+y+'&lang='+lang+'&theme='+theme">{{getPlannerNameByUidYear(p,y)||$t('label.yearplanner')+' '+DateTime.local(parseInt(y), 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
                             </template>

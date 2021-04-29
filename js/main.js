@@ -15,6 +15,7 @@ var pageLoadTime = DateTime.now();
 var uid = parseInt( $.urlParam('uid') ) || getLocalUid() || Math.floor(pageLoadTime.ts/1000);
 var preferences = (getLocalPreferences(uid) || {})
 
+
 var year = parseInt( $.urlParam('year') ) || preferences['0'] || pageLoadTime.year;
 var lang = ($.urlParam('lang') || preferences['1'] || getNavigatorLanguage() ).substring(0,2);
 var theme = $.urlParam('theme') || (preferences['2'] == 1 ? 'dark' : 'light');
@@ -169,7 +170,7 @@ var getPlannerName = function() {
 
 var getPlannerNameByUidYear = function (uid,year){
     let prefs = getLocalPreferences(uid) || {};
-    return prefs['3'][''+year][lang];
+    return prefs['3']?.[''+year]?.[lang] || null;
 }
 
 var sharePlanner = function(){

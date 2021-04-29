@@ -44,6 +44,6 @@ var acceptCookies = function (){
     if (!cookiesAccepted()){
         $('#cookieModal').modal('show');
     }
-    setLocalFromModel(model.share);
+    setLocalFromModel();
 
 }
