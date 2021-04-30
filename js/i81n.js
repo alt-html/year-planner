@@ -3,9 +3,10 @@ const messages = {
         label : {
             yearplanner : 'Year Planner',
             accept : 'Accept',
-            cookies : 'This website uses cookies.',
+            cookies : 'This website uses cookies.',reset:'Reset',
             close:'Close',
             update:'Update',
+            new:'New',
             delete:'Delete', deleteplanner:'Confirm delete of the current planner?',
             share:'Share',
             sharecopy:'Share a copy',

@@ -129,7 +129,11 @@ var updateEntryState = function (mindex,day){
     model.entryColour = getEntryColour(mindex,day);
 }
 
-var createPlanner = function(){
+var createPlanner = function (){
+    createLocalPlanner();
+}
+
+var createLocalPlanner = function(){
     uid =  Math.floor(DateTime.now().ts/1000);
     preferences = {};
 
@@ -139,10 +143,11 @@ var createPlanner = function(){
 
     model.uid = uid;
     model.preferences = preferences;
-    model.identities.push({0:uid,1:window.navigator.userAgent});
+    model.identities.unshift({0:uid,1:window.navigator.userAgent});
     setLocalIdentities(model.identities);
     model.planner = getPlanner(uid, year);
     refresh();
+    window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.year+'&lang='+model.lang+'&theme='+model.theme;
 }
 
 var showRenamePlanner = function() {

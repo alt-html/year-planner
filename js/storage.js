@@ -296,3 +296,10 @@ var deleteLocalSession = function (){
     deleteCookie('1');
     refresh();
 }
+
+var reset = function (){
+    let cookies = Object.keys(getCookies());
+    for ( c in cookies){
+        deleteCookie(c);
+    }
+}

@@ -97,6 +97,7 @@
                           </button>
                           <div class="nav-settings dropdown-menu dropdown-menu-right">
                                 <a  class="dropdown-item" href="#" v-on:click="showRenamePlanner()">{{$t('label.rename')}}</a>
+                                <a  class="dropdown-item" href="#" v-on:click="createPlanner()">{{$t('label.new')}}</a>
                                 <a  class="dropdown-item" href="#"  data-toggle="modal" data-target="#deleteModal">{{$t('label.delete')}}…</a>
                                 <div class="dropdown-divider"></div>
                                 <h6 class="dropdown-header">{{$t('label.theme')}}</h6>
@@ -605,6 +606,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="reset()">{{$t('label.reset')}}</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
                     </div>
                 </div>

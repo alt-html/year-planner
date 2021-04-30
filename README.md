@@ -72,6 +72,7 @@ The year planner is available in 10 popular languages:
 
 
 ### Recent Features Added
+- \[x\] New planner 
 - \[x\] Delete planner 
 - \[x\] Navigation between stored planner years
 - \[x\] Trigger rename in settings menu
