@@ -38,16 +38,17 @@ const messages = {
         day :{
             Monday:'Monday',Tuesday:'Tuesday',Wednesday:'Wednesday',Thursday:'Thursday',Friday:'Friday',Saturday:'Saturday',Sunday:'Sunday'
         },
-        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia'}
+        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia',tp:'Tok Pisin'}
     },
     es: {
         label : {
             yearplanner : 'Planificador anual',
             accept : 'Aceptar',
-            cookies : 'Este sitio web utiliza cookies.',
+            cookies : 'Este sitio web utiliza cookies.',reset:'Reiniciar',
             close:'Cerrar',
             update:'Actualizar',
-            delete:'Borrar',
+            new:'Nuevo',
+            delete:'Borrar',deleteplanner:'¿Confirmar la eliminación del planificador actual?',
             share:'Compartir',
             sharecopy:'Comparte una copia',
             copy:'Copiar',
@@ -70,10 +71,11 @@ const messages = {
        label : {
             yearplanner : 'Planejador do ano',
             accept : 'Aceitar',
-            cookies : 'Este site usa cookies.',
+            cookies : 'Este site usa cookies.',reset:'Redefinir',
             close:'Fechar',
             update:'Atualizar',
-            delete:'Excluir',
+            new:'Novo',
+            delete:'Excluir',deleteplanner:'Confirma a exclusão do planejador atual?',
             share:'Ação',
             sharecopy:'Compartilhe uma cópia',
             copy:'Cópie',
@@ -97,10 +99,11 @@ const messages = {
         label : {
             yearplanner : '年度策劃人',
             accept : '接受',
-            cookies : '本網站使用cookie。',
+            cookies : '本網站使用cookie。',reset:'重啟',
             close:'關閉',
             update:'更新',
-            delete:'刪除',
+            new:'新的',
+            delete:'刪除',deleteplanner:'確認刪除當前的計劃者？',
             share:'分享',
             sharecopy:'分享副本',
             copy:'复制',
@@ -123,10 +126,11 @@ const messages = {
            label : {
             yearplanner : 'वर्ष नियोजक',
             accept : 'स्वीकार करना',
-            cookies : 'यह वेबसाइट कुकीज़ का उपयोग करती है।',
+            cookies : 'यह वेबसाइट कुकीज़ का उपयोग करती है।',reset:'रीसेट',
             close:'बंद करे',
             update:'अपडेट करें',
-            delete:'हटाएं',
+            new:'नवीन व',
+            delete:'हटाएं',deleteplanner:'वर्तमान योजनाकार को हटाने की पुष्टि करें?',
             share:'शेयर',
             sharecopy:'एक प्रति साझा करें',
             copy:'कॉपी',
@@ -149,10 +153,11 @@ const messages = {
         label : {
             yearplanner : 'Planificateur d\'année',
             accept : 'J\'accepte',
-            cookies : 'Ce site web utilise des cookies.',
+            cookies : 'Ce site web utilise des cookies.',reset:'Réinitialiser',
             close:'Fermer',
             update:'Mettre à jour',
-            delete:'Effacer',
+            new:'Nouveau',
+            delete:'Effacer',deleteplanner:'Confirmer la suppression du planning actuel?',
             share:'Partager',
             sharecopy:'Partager une copie',
             copy:'Copiez',
@@ -175,10 +180,11 @@ const messages = {
         label : {
             yearplanner : 'مخطط العام',
             accept : 'قبول',
-            cookies : 'هذا الموقع يستخدم الكوكيز.',
+            cookies : 'هذا الموقع يستخدم الكوكيز.',reset:'إعادة ضبط',
             close:'يغلق',
+            new:'جديد',
             update:'تحديث',
-            delete:'حذف',
+            delete:'حذف',deleteplanner:'تأكيد حذف المخطط الحالي؟',
             share:'يشارك',
             sharecopy:'مشاركة نسخة',
             copy:'انسخه',
@@ -201,10 +207,11 @@ const messages = {
        label : {
             yearplanner : 'Планировщик года',
             accept : 'Принимать',
-            cookies : 'Этот веб-сайт использует файлы cookie.',
+            cookies : 'Этот веб-сайт использует файлы cookie.',reset:'Сброс настроек',
             close:'Закрывать',
             update:'Обновлять',
-            delete:'Удалить',
+            new:'Новый',
+            delete:'Удалить',deleteplanner:'Подтвердить удаление текущего планировщика?',
             share:'Делиться',
             sharecopy:'Поделиться копией',
             copy:'Скопируйте',
@@ -227,10 +234,11 @@ const messages = {
        label : {
             yearplanner : 'イヤープランナー',
             accept : '受け入れる',
-            cookies : 'このウェブサイトはクッキーを使用しています。',
+            cookies : 'このウェブサイトはクッキーを使用しています。',reset:'リセット',
             close:'閉じる',
             update:'更新',
-            delete:'削除',
+            new:'新着',
+            delete:'削除',deleteplanner:'現在のプランナーの削除を確認しますか？',
             share:'共有',
             sharecopy:'コピーを共有する',
             copy:'コピー',
@@ -253,10 +261,11 @@ const messages = {
        label : {
             yearplanner : 'Perencana Tahun',
             accept : 'Menerima',
-            cookies : 'Situs web ini menggunakan cookie.',
+            cookies : 'Situs web ini menggunakan cookie.',reset:'Reset',
             close:'Menutup',
             update:'Memperbarui',
-            delete:'Menghapus',
+            new:'New',
+            delete:'Menghapus',deleteplanner:'Confirm delete of the current planner?',
             share:'Bagikan',
             sharecopy:'Bagikan salinan',
             copy:'Salin',
@@ -274,6 +283,46 @@ const messages = {
         day :{
             Monday:'Senin',Tuesday:'Selasa',Wednesday:'Rabu',Thursday:'Kamis',Friday:'Jumat',Saturday:'Sabtu',Sunday:'Minggu'
         }    },
+    tp: {
+        label : {
+            yearplanner : 'Toktok bilong yia',
+            accept : 'Kisim',
+            cookies : 'Dispela sait yusim switbiskit bilong kompyuta.',reset:'Rausim pinis',
+            close:'Pas',
+            update:'Savim',
+            new:'Nupela',
+            delete:'Rausim', deleteplanner:'Ruasim dispela yia?',
+            share:'Dilim',
+            sharecopy:'Dilim olsem narapela',
+            copy:'Narapela ',
+            text:'Onim dispela de …',
+            created:'Ol mekim hap',
+            updated : 'Ol savim hap',
+            none : 'Nogat samting',
+            rename : 'Senisim nem',untitled : 'Nogat nem',
+            month:'Mun',year:'Yia',week:'Wik',semester:'Semester',term:'Term',today:'Tude',
+            theme:'Kala',light:'Wait',dark:'Bilak',
+            register: 'Givim nem', username: 'Nem bilong yusim', password : ' Wod bilong hait', email: 'E-mel', mobile :'Telefon',
+            settings: 'Putim ol samting…', profile: 'Pes', verify : 'Truim',
+            signin:  'Mak hia', signout: 'Mak stap', rememberme: 'Kisim mi mak hia',forgotpass :'Lusim ol wod bilong hait', forgotuser : 'Lusim ol wod bilong yusim',
+            donate: 'Helpim ol mani'
+        },
+        warn: {
+            usernamenotprovided:'A username must be provided',
+            passwordnotprovided:'A password must be provided'
+        },
+        error: {
+            apinotavailable: 'The remote year planner API is not available',
+            usernotavailable: 'The username is not available',
+            unauthorized: 'Username or password is not correct'
+        },
+        month : {
+            January: 'Jenueri', February: 'Februeri', March : 'Mars', April:'Epril', May:'Me',June:'Jun',July:'Julai',August:'Ogas',September:'Septemba',October:'Oktoba',November:'Novemba',December:'Disemba'
+        },
+        day :{
+            Monday:'Mande',Tuesday:'Tunde',Wednesday:'Trinde',Thursday:'Fonde',Friday:'Fraide',Saturday:'Sarere',Sunday:'Sande'
+        },
+    },
 }
 
 var getNavigatorLanguage = () => (navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
