@@ -192,6 +192,9 @@ var copyUrl = function (){
     document.execCommand("copy")
 }
 
+
+
+
 var showSettings = function () {
 
 }
