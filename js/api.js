@@ -24,6 +24,8 @@ var register = function(username,password,email,mobile){
         return;
     }
 
+    registerRemoteIdentities();
+
     request
         .put('/api/planner')
         .send({username:username,password:password,email:email,mobile:mobile})

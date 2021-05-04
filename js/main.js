@@ -57,7 +57,7 @@ var model = {
     donation : -1,
     rememberme : false,
 
-    identities: getLocalIdentities() || [{0:uid,1:window.navigator.userAgent}],
+    identities: getLocalIdentities() || [{0:uid,1:window.navigator.userAgent,2:0,3:0}],
     preferences: preferences,
     planner: getPlanner(uid, year),
 
@@ -143,7 +143,7 @@ var createLocalPlanner = function(){
 
     model.uid = uid;
     model.preferences = preferences;
-    model.identities.unshift({0:uid,1:window.navigator.userAgent});
+    model.identities.unshift({0:uid,1:window.navigator.userAgent,2:signedin()?1:0,3:0});
     setLocalIdentities(model.identities);
     model.planner = getPlanner(uid, year);
     refresh();

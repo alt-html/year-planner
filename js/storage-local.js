@@ -89,6 +89,13 @@ var deleteLocalPlannerByYear = function(uid, year){
     for (var i = 0; i < cookiesToDelete.length; i++) {
         deleteCookie(cookiesToDelete[i])
     }
+
+    //Mark remote planner-year as deleted locally
+    let isRemote = _.find(getLocalIdentities(), function (id) {return id['0'] == uid})?.[2]==1;
+    if (isRemote){
+        setLocalPlannerLastUpdated(uid,year,0);
+    }
+
     model.year = model.cyear;
     window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.cyear;
     location.reload();
@@ -109,6 +116,10 @@ var setLocalPlanner = function(uid, year, planner) {
     for (var m = 1; m <= 12; m++) {
         setCookie(uid+'-'+year+m,LZString.compressToBase64(JSON.stringify(planner[m-1])),4384)
     }
+}
+
+var synchroniseLocalPlanners = function(plannerData){
+
 }
 
 var setLocalPlannerLastUpdated = function(uid, year, lastUpdated) {
@@ -190,5 +201,33 @@ var expireLocalSession = function (){
 
 var deleteLocalSession = function (){
     deleteCookie('1');
+    refresh();
+}
+
+var reset = function (){
+    let cookies = Object.keys(getCookies());
+    for (i = 0; i <cookies.length; i++){
+        deleteCookie(''+cookies[i]);
+    }
+    window.location.href = window.location.origin;
+}
+
+var registerRemoteIdentities = function (){
+    let ids = getLocalIdentities();
+    for (i = 0; i < ids.length;i++){
+        ids[i]['2']=1;
+    }
+    setLocalIdentities(ids);
+}
+
+var getRemoteIdentities = function (){
+    return _.filter(getLocalIdentities(), function (id) {return id?.[2]==1});
+}
+
+var wipe = function (){
+    let remoteIdentities = getRemoteIdentities();
+    for (i=0;i <  remoteIdentities.length;i++){
+        deleteLocalPlanner(remoteIdentities[i]['0']);
+    }
     refresh();
 }

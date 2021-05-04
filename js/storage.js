@@ -112,7 +112,7 @@ var setModelFromImportString = function (importUrlParam){
 }
 
 
-function download(filename, contentType,text) {
+function download(filename, contentType, text) {
     var element = document.createElement('a');
     element.setAttribute('href','data:'+contentType+';charset=utf-8,' + encodeURIComponent(text));
     element.setAttribute('download', filename);
