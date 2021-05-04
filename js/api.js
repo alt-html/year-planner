@@ -92,6 +92,7 @@ var signin = function(username,password,rememberme){
 var signout = function(){
     model.uuid = '';
     expireLocalSession();
+    wipe();
 }
 
 var signedin = function (){

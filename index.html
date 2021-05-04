@@ -29,7 +29,7 @@
 <body>
     <div id="app" v-bind:class="{'yp-dark':theme=='dark'}">
 
-        <nav class="navbar navbar-expand sticky-top" >
+        <nav class="navbar navbar-expand fixed-top" >
 
             <a class="navbar-brand" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
 
@@ -134,10 +134,6 @@
                                     <div class="row tst-cell d-none d-lg-inline d-xl-none">Large (lg) >= 992px</div>
                                     <div class="row tst-cell d-none d-xl-inline">Extra Large (xl) >= 1200px</div>
                                 </div>
-                            </div>
-
-                            <div class="row no-gutters">
-                                <div class="col"><h2>{{$t('label.yearplanner')}} {{year}}</h2></div>
                             </div>
                     </div>
 

@@ -109,7 +109,11 @@ var deleteLocalPlanner = function(uid){
     for (var i = 0; i < cookiesToDelete.length; i++) {
         deleteCookie(cookiesToDelete[i])
     }
-    setLocalIdentities(_.remove(getLocalIdentities(), function (id) {return id['0'] == uid}));
+     _.remove(model.identities, function (id) {return id['0'] == uid})
+    if (model.identities.length == 0){
+        model.identities = [{0:Math.floor(DateTime.now().ts/1000),1:window.navigator.userAgent,2:0,3:0}]
+    }
+    setLocalIdentities(model.identities);
 }
 
 var setLocalPlanner = function(uid, year, planner) {
@@ -217,6 +221,7 @@ var registerRemoteIdentities = function (){
     for (i = 0; i < ids.length;i++){
         ids[i]['2']=1;
     }
+    model.identities = ids;
     setLocalIdentities(ids);
 }
 
@@ -229,5 +234,5 @@ var wipe = function (){
     for (i=0;i <  remoteIdentities.length;i++){
         deleteLocalPlanner(remoteIdentities[i]['0']);
     }
-    refresh();
+    window.location.href = window.location.origin;
 }
