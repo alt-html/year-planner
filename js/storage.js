@@ -15,6 +15,11 @@ var getPlanner = function (uid,year){
     return getLocalPlanner(uid, year);
 }
 
+var deletePlannerByYear = function(uid, year){
+    deleteLocalPlannerByYear(uid,year);
+    synchroniseToRemote();
+}
+
 var exportPlannerToJSON = function() {
     return JSON.stringify(model.planner);
 }
@@ -29,6 +34,7 @@ var setPlanner = function (uid, year, planner){
 
 var updateEntry = function(mindex,day,entry,entryType,entryColour) {
     updateLocalEntry(mindex,day,entry,entryType,entryColour);
+    synchroniseToRemote();
 }
 
 var updateWeekColour = function(mindex,day,entryColour){

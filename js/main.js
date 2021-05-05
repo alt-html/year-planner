@@ -47,7 +47,7 @@ var model = {
     name : name,
     rename : false,
 
-    uuid : '',
+    uuid : getLocalSession()?.['0']||'',
     username : '',
     email : '',
     emailverified : 0,
@@ -77,6 +77,8 @@ var model = {
     cmonth : pageLoadTime.month,
     cday: pageLoadTime.day,
 
+    registered : registered(),
+    signedin : signedin(),
     feature : feature,
     error : '',
     warning : '',
@@ -91,6 +93,7 @@ var refresh = function() {
     setYear(model.year);
     acceptCookies();
     if (cookiesAccepted()){
+        synchroniseToLocal();
         setLocalFromModel();
         if (!window.location.href.includes('?uid=')){
             window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.year+'&lang='+model.lang+'&theme='+model.theme;
@@ -122,6 +125,7 @@ var navigateToYear = function(){
 }
 
 var updateEntryState = function (mindex,day){
+    synchroniseToLocal();
     model.month = mindex;
     model.day = day;
     model.entry = getEntry(mindex,day);
@@ -130,7 +134,9 @@ var updateEntryState = function (mindex,day){
 }
 
 var createPlanner = function (){
+    synchroniseToLocal();
     createLocalPlanner();
+    synchroniseToRemote();
 }
 
 var createLocalPlanner = function(){
@@ -151,6 +157,7 @@ var createLocalPlanner = function(){
 }
 
 var showRenamePlanner = function() {
+    synchroniseToLocal();
     model.rename=true;
      $('#rename').show();
      $('#title').focus();
@@ -161,8 +168,9 @@ var renamePlanner = function() {
     preferences['3'][''+year][lang]=model.name;
     messages[lang]['label']['name_'+year] = model.name;
     model.rename=false;
-    setLocalPreferences(model.uid,model.preferences);
+    setLocalPreferences(model.uid,preferences);
     model.updated = DateTime.now().ts;
+    synchroniseToRemote();
 }
 
 var getPlannerName = function() {
@@ -179,6 +187,7 @@ var getPlannerNameByUidYear = function (uid,year){
 }
 
 var sharePlanner = function(){
+    $('#shareModal').modal('show');
     model.shareUrl = window.location.origin+'?share='+getExportString();
     var copyText = document.getElementById("copyUrl");
     copyText.select();
@@ -215,6 +224,10 @@ var showSignin = function (){
     model.password = null;
     $('#signinModal').modal('show');
     refresh();
+}
+
+var clearError = function() {
+    model.error = '';
 }
 
 var modalErr = function (target,err) {

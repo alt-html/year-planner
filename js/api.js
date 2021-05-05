@@ -1,12 +1,53 @@
-var synchronise = function (){
+var synchroniseToRemote = function (){
 
-     // for each remote uid-year
-      // get the the local uid-year last updated
-      // get the the remote uid-year last updated
-      // if the remote uid-year is more recent 9 (default 0 for no local uid) then
-          // set the local uid-year from the remote
-     // if the remote default uid [index 0] is different
-         // set the local default to the remote
+    if (signedin()){
+
+        registerRemoteIdentity(model.uid);
+
+        request
+            .post('/api/planner/'+getLocalSession()?.['0'])
+            .send({})
+            .then(response => {
+                    extendLocalSession();
+                }
+            )
+            .catch(err => {
+                if (err.status == 404)
+                    model.error = 'error.apinotavailable';
+                if (err.status == 401)
+                    model.error = 'error.unauthorized';
+            }) //401 - unauthorised, 200 success returns uuid and subscription
+        }
+
+}
+
+var synchroniseToLocal = function (){
+
+    if (signedin()){
+        request
+            .get('/api/planner/'+getLocalSession()?.['0'])
+            .set('Accept','application/json')
+            .then(response => {
+                    model.response = response;
+                    model.uuid = response.body.uuid;
+                    model.donation = response.body.donation;
+                    model.email = response.body.email;
+                    model.emailverified = response.body.emailverified;
+                    model.mobile = response.body.mobile;
+                    model.mobileverified = response.body.mobileverified;
+                    extendLocalSession();
+                    synchroniseLocalPlanners(response.body.data);
+                }
+
+            )
+            .catch(err => {
+                if (err.status == 405)
+                    model.modalError = 'error.apinotavailable';
+                if (err.status == 400)
+                    model.modalError = 'error.usernotavailable';
+            });//400 - bad request (name exists), 200 success returns uuid and subscription
+    }
+
 }
 
 var register = function(username,password,email,mobile){
@@ -35,6 +76,8 @@ var register = function(username,password,email,mobile){
                 model.uuid = response.body.uuid;
                 model.donation = response.body.donation;
                 extendLocalSession();
+                model.signedin = signedin();
+                model.registered = registered();
                 $('#registerModal').modal('hide');
             }
 
@@ -78,6 +121,9 @@ var signin = function(username,password,rememberme){
                 }else {
                     extendLocalSession();
                 }
+                model.signedin = signedin();
+                model.registered = registered();
+                synchroniseLocalPlanners(response.body.data);
             }
 
         )
@@ -92,6 +138,8 @@ var signin = function(username,password,rememberme){
 var signout = function(){
     model.uuid = '';
     expireLocalSession();
+    model.signedin = signedin();
+    model.registered = registered();
     wipe();
 }
 
@@ -104,9 +152,9 @@ var registered = function (){
     return (!!getLocalSession());
 }
 
-var deleteRegistration = function(uuid){
+var deleteRegistration = function(){
     request
-        .delete('/api/planner/'+uuid)
+        .delete('/api/planner/'+getLocalSession()?.['0'])
         .send({})
         .set('Accept','application/json')
         .then(response => {

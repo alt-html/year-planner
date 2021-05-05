@@ -29,7 +29,7 @@
 <body>
     <div id="app" v-bind:class="{'yp-dark':theme=='dark'}">
 
-        <nav class="navbar navbar-expand fixed-top" >
+        <nav class="navbar navbar-expand sticky-top" >
 
             <a class="navbar-brand" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
 
@@ -90,12 +90,13 @@
 
                 <form class="form-inline my-0 ">
 
-                    <button class="navbar-brand navbar-brand-support btn btn-secondary my-0" type="button" v-on:click="sharePlanner()" data-toggle="modal" data-target="#shareModal" title=""><i class="fa fa-share-alt" aria-hidden="true"></i></button>
+                    <button class="navbar-brand navbar-brand-support btn btn-secondary my-0  d-none d-sm-inline" type="button" v-on:click="sharePlanner()" data-toggle="tooltip" data-placement="bottom" v-bind:title="$t('label.share')"><i class="fa fa-share-alt" aria-hidden="true"></i></button>
                     <div  class="btn-group">
                           <button type="button" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-bars"></i>
                           </button>
                           <div class="nav-settings dropdown-menu dropdown-menu-right">
+                                <a  class="dropdown-item d-sm-none" href="#" v-on:click="sharePlanner()">{{$t('label.share')}}…</a>
                                 <a  class="dropdown-item" href="#" v-on:click="showRenamePlanner()">{{$t('label.rename')}}</a>
                                 <a  class="dropdown-item" href="#" v-on:click="createPlanner()">{{$t('label.new')}}</a>
                                 <a  class="dropdown-item" href="#"  data-toggle="modal" data-target="#deleteModal">{{$t('label.delete')}}…</a>
@@ -106,13 +107,13 @@
                                 <div v-if="feature.settings" class="dropdown-divider"></div>
                                 <a v-if="feature.settings" class="dropdown-item" href="#" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal">{{$t('label.settings')}}</a>
                                 <div v-if="feature.signin" class="dropdown-divider"></div>
-                                <a v-if="feature.signin && !signedin()" class="dropdown-item" href="#" v-on:click="showSignin()">{{$t('label.signin')}}…</a>
-                                <a v-if="feature.signin && signedin()" class="dropdown-item" href="#" v-on:click="signout()">{{$t('label.signout')}}…</a>
+                                <a v-if="feature.signin && !signedin" class="dropdown-item" href="#" v-on:click="showSignin()">{{$t('label.signin')}}…</a>
+                                <a v-if="feature.signin && signedin" class="dropdown-item" href="#" v-on:click="signout()">{{$t('label.signout')}}…</a>
                           </div>
                         </div>
-                        <button v-if="feature.register && !registered()" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#registerModal" title="">{{$t('label.register')}}</button>
-                        <button v-if="feature.signin && !signedin() && registered()" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showSignin()">{{$t('label.signin')}}</button>
-                        <button v-if="feature.signin && signedin()" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="signout()" data-toggle="modal" data-target="#" title="">{{$t('label.signout')}}</button>
+                        <button v-if="feature.register && !registered" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#registerModal" title="">{{$t('label.register')}}</button>
+                        <button v-if="feature.signin && !signedin && registered" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showSignin()">{{$t('label.signin')}}</button>
+                        <button v-if="feature.signin && signedin" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="signout()" data-toggle="modal" data-target="#" title="">{{$t('label.signout')}}</button>
                         <button v-if="feature.donate" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" v-on:click="showDonate()" data-toggle="modal" data-target="#donateModal" title="">Donate</button>
                         <button v-if="!feature.register && !feature.signin" id="no-feature-button" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" >&nbsp;</button>
                </form>
@@ -124,6 +125,13 @@
         <main >
             <div class="jumbotron">
                 <div class="container">
+                    <div class="fade" v-if="error" v-bind:class="{'alert alert-danger alert-dismissible show': error != ''}" role="alert" >
+                        <p>{{t$(model.error)}}</p>
+                        <button type="button" class="close" v-on:click="clearError"aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
                     <div v-if="feature.debug">
                             <div>&nbsp</div>
                             <div class="row no-gutters">
@@ -290,7 +298,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
-                        <button type="button" class="btn btn-primary"  v-on:click="deleteLocalPlannerByYear(uid,year)">{{$t('label.delete')}}</button>
+                        <button type="button" class="btn btn-primary"  v-on:click="deletePlannerByYear(uid,year)">{{$t('label.delete')}}</button>
                     </div>
                 </div>
             </div>

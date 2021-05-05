@@ -2,15 +2,18 @@
 var synchroniseLocalPlanners = function(data){
 
     let localIdentities = getLocalIdentities();
-    let remoteIdentities = getRemoteIdentities(data);
+    let remoteIdentities = getRemoteIdentitiesFromData(data);
     for (i = remoteIdentities.length-1; i >= 0;i--){
-        let index = _.findIndex(localIdentities, function(id){id['0'] == remoteIdentities[i]['0'] })
+        let index = _.findIndex(localIdentities, function(id){ return id['0'] == remoteIdentities[i]['0']; })
         if (index < 0){
             localIdentities.unshift(remoteIdentities[i]);
         } else {
             localIdentities[index] = remoteIdentities[i];
         }
     }
+
+    model.identities = localIdentities;
+    setLocalIdentities(model.identities);
 
     let remotePlannerYears = getRemotePlannerYears(data);
 
@@ -35,16 +38,18 @@ var synchroniseLocalPlanners = function(data){
             }
         }
     }
+
+    model.planner = getPlanner(model.uid,model.year);
 }
 
-var getRemoteIdentities = function (data){
+var getRemoteIdentitiesFromData = function (data){
     return data['0'];
 }
 
 var getRemotePlannerYears = function(data){
     let remotePlannerYears = {};
     let keys = Object.keys(data);
-    var remoteIdentities =  getRemoteIdentities(data);
+    var remoteIdentities =  getRemoteIdentitiesFromData(data);
     if (remoteIdentities){
         for (var i = 0; i < remoteIdentities.length; i++) {
             let uid = remoteIdentities[i][0];
