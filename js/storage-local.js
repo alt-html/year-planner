@@ -187,7 +187,7 @@ var extendLocalSession = function (){
 }
 
 var setLocalSession = function (uuid,expires){
-    setCookie('1',LZString.compressToBase64(JSON.stringify({0:uuid,1:expires})),4384);
+    setCookie('1',LZString.compressToBase64(JSON.stringify({0:uuid,1:expires,2:model.uid,3:model.year})),4384);
 }
 var getLocalSession = function (){
     return JSON.parse(LZString.decompressFromBase64(getCookie('1')));

@@ -13,6 +13,7 @@ var synchroniseLocalPlanners = function(data){
     }
 
     model.identities = localIdentities;
+
     setLocalIdentities(model.identities);
 
     let remotePlannerYears = getRemotePlannerYears(data);

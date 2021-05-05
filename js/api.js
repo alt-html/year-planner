@@ -123,7 +123,12 @@ var signin = function(username,password,rememberme){
                 }
                 model.signedin = signedin();
                 model.registered = registered();
+
                 synchroniseLocalPlanners(response.body.data);
+                model.uid = response.body.data['1']?.['2'] || model.uid;
+                model.year = response.body.data['1']?.['3'] || model.year;
+
+                window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.year;
             }
 
         )
