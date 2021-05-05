@@ -122,10 +122,6 @@ var setLocalPlanner = function(uid, year, planner) {
     }
 }
 
-var synchroniseLocalPlanners = function(plannerData){
-
-}
-
 var setLocalPlannerLastUpdated = function(uid, year, lastUpdated) {
     setCookie(uid+'-'+year,LZString.compressToBase64(JSON.stringify(lastUpdated)),4384)
 }
@@ -200,7 +196,7 @@ var getLocalSession = function (){
 
 var expireLocalSession = function (){
     setCookie('1',LZString.compressToBase64(JSON.stringify({0:model.uuid,1:1})),4384);
-    refresh();
+    wipe();
 }
 
 var deleteLocalSession = function (){
