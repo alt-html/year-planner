@@ -116,7 +116,7 @@ var signin = function(username,password,rememberme){
                 model.mobile = response.body.mobile;
                 model.mobileverified = response.body.mobileverified;
                 $('#signinModal').modal('hide');
-                if (rememberme){
+                if (model.rememberme){
                     setLocalSession(model.uuid,0);
                 }else {
                     extendLocalSession();

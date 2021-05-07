@@ -43,6 +43,9 @@ var synchroniseLocalPlanners = function(data, syncPrefs){
     }
 
     model.planner = getPlanner(model.uid,model.year);
+    model.entry = getEntry(model.month,model.day);
+    model.entryType = getEntryType(model.month,model.day);
+    model.entryColour = getEntryColour(model.month,model.day);
 }
 
 var getRemoteIdentitiesFromData = function (data){
