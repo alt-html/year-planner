@@ -107,6 +107,7 @@
                                 <div v-if="feature.settings" class="dropdown-divider"></div>
                                 <a v-if="feature.settings" class="dropdown-item" href="#" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal">{{$t('label.settings')}}</a>
                                 <div v-if="feature.signin" class="dropdown-divider"></div>
+                                <a v-if="feature.register" class="dropdown-item" v-bind:class="{disabled:signedin}" href="#" v-on:click="showRegister()">{{$t('label.register')}}…</a>
                                 <a v-if="feature.signin && !signedin" class="dropdown-item" href="#" v-on:click="showSignin()">{{$t('label.signin')}}…</a>
                                 <a v-if="feature.signin && signedin" class="dropdown-item" href="#" v-on:click="signout()">{{$t('label.signout')}}…</a>
                           </div>

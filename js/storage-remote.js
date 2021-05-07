@@ -1,5 +1,5 @@
 
-var synchroniseLocalPlanners = function(data){
+var synchroniseLocalPlanners = function(data, syncPrefs){
 
     let localIdentities = getLocalIdentities();
     let remoteIdentities = getRemoteIdentitiesFromData(data);
@@ -21,7 +21,9 @@ var synchroniseLocalPlanners = function(data){
     let uids = Object.keys(remotePlannerYears);
     for (p = 0; p < uids.length;p++){
         let uid = uids[p]
-        setLocalPreferences(uid,data[uid]); // preferences
+        if (syncPrefs) {
+            setLocalPreferences(uid,data[uid]);
+        } // preferences
         for (y=0; y<  remotePlannerYears[uid].length;y++){
             let year = remotePlannerYears[uid][y];
             if (data[uid+'-'+year] == 0){
@@ -30,7 +32,7 @@ var synchroniseLocalPlanners = function(data){
                     deleteCookie(uid+'-'+year+m);
                 }
             }
-            if ( data[uid+'-'+year] > parseInt(getCookie(uid+'-'+year)||0)){
+            if ( data[uid+'-'+year] > parseInt(LZString.decompressFromBase64(getCookie(uid+'-'+year)))||0){
                 setCookie(uid+'-'+year,  LZString.compressToBase64(JSON.stringify( data [uid+'-'+year])));
                 // set uid-year+1-12
                 for (var m = 1; m <= 12; m++) {

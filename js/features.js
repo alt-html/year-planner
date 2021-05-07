@@ -1,8 +1,8 @@
 var feature = {
     debug : false,
     settings : false,
-    register : false,
-    signin : false,
+    register : true,
+    signin : true,
     import : false,
     export : false,
     donate : false,

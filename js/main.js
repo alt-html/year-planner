@@ -93,7 +93,7 @@ var refresh = function() {
     setYear(model.year);
     acceptCookies();
     if (cookiesAccepted()){
-        synchroniseToLocal();
+        synchroniseToLocal(false);
         setLocalFromModel();
         if (!window.location.href.includes('?uid=')){
             window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.year+'&lang='+model.lang+'&theme='+model.theme;
@@ -125,7 +125,7 @@ var navigateToYear = function(){
 }
 
 var updateEntryState = function (mindex,day){
-    synchroniseToLocal();
+    synchroniseToLocal(false);
     model.month = mindex;
     model.day = day;
     model.entry = getEntry(mindex,day);
@@ -134,7 +134,7 @@ var updateEntryState = function (mindex,day){
 }
 
 var createPlanner = function (){
-    synchroniseToLocal();
+    synchroniseToLocal(false);
     createLocalPlanner();
     synchroniseToRemote();
 }
@@ -157,7 +157,7 @@ var createLocalPlanner = function(){
 }
 
 var showRenamePlanner = function() {
-    synchroniseToLocal();
+    synchroniseToLocal(false);
     model.rename=true;
      $('#rename').show();
      $('#title').focus();
@@ -218,14 +218,6 @@ var showRegister = function (){
     model.password='';
 }
 
-var showSignin = function (){
-    clearModalAlert();
-    model.username = null;
-    model.password = null;
-    $('#signinModal').modal('show');
-    refresh();
-}
-
 var clearError = function() {
     model.error = '';
 }
@@ -235,6 +227,15 @@ var modalErr = function (target,err) {
         model.modalErrorTarget = {};
     }
     model.modalErrorTarget[target] =  err;
+}
+
+
+var showSignin = function (){
+    clearModalAlert();
+    model.username = null;
+    model.password = null;
+    $('#signinModal').modal('show');
+    refresh();
 }
 
 var clearModalAlert = function (){

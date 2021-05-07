@@ -11,7 +11,12 @@ var setLocalIdentities = function(identities) {
 }
 
 var setLocalPreferences = function(uid,preferences) {
+
+    this.preferences = preferences;
     model.preferences = preferences;
+    model.lang = preferences['1'];
+    model.theme = (preferences['2'] == 1 ? 'dark' : 'light');
+
     setCookie(uid+'',LZString.compressToBase64(JSON.stringify(preferences)),4384);
 }
 

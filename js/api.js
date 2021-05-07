@@ -21,7 +21,7 @@ var synchroniseToRemote = function (){
 
 }
 
-var synchroniseToLocal = function (){
+var synchroniseToLocal = function (syncPrefs){
 
     if (signedin()){
         request
@@ -36,7 +36,7 @@ var synchroniseToLocal = function (){
                     model.mobile = response.body.mobile;
                     model.mobileverified = response.body.mobileverified;
                     extendLocalSession();
-                    synchroniseLocalPlanners(response.body.data);
+                    synchroniseLocalPlanners(response.body.data, syncPrefs);
                 }
 
             )
@@ -124,7 +124,7 @@ var signin = function(username,password,rememberme){
                 model.signedin = signedin();
                 model.registered = registered();
 
-                synchroniseLocalPlanners(response.body.data);
+                synchroniseLocalPlanners(response.body.data,true);
                 model.uid = response.body.data['1']?.['2'] || model.uid;
                 model.year = response.body.data['1']?.['3'] || model.year;
 
@@ -142,7 +142,7 @@ var signin = function(username,password,rememberme){
 
 var signout = function(){
     model.uuid = '';
-    expireLocalSession();
+    deleteLocalSession();
     model.signedin = signedin();
     model.registered = registered();
     wipe();
@@ -150,7 +150,11 @@ var signout = function(){
 
 var signedin = function (){
     expires = getLocalSession()?.['1'];
-    return expires != null && (expires > 0 && expires >= DateTime.now().ts) || expires == 0;
+    let isSignedIn = (expires != null && (expires > 0 && expires >= DateTime.now().ts) || expires == 0);
+    // if (showSignin && !isSignedIn){
+    //     showSignin();
+    // }
+    return isSignedIn;
 }
 
 var registered = function (){
