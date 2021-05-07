@@ -119,7 +119,7 @@ var signin = function(username,password,rememberme){
                 if (model.rememberme){
                     setLocalSession(model.uuid,0);
                 }else {
-                    extendLocalSession();
+                    setLocalSession(model.uuid,DateTime.local().plus({minutes:30}).ts);
                 }
                 model.signedin = signedin();
                 model.registered = registered();

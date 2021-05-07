@@ -188,7 +188,9 @@ var setLocalFromModel = function (){
 }
 
 var extendLocalSession = function (){
-    setLocalSession(model.uuid,DateTime.local().plus({minutes:30}).ts);
+   if (signedin() && getLocalSession()['1'] > 0){
+       setLocalSession(model.uuid,DateTime.local().plus({minutes:30}).ts);
+   }
 }
 
 var setLocalSession = function (uuid,expires){

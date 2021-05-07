@@ -32,7 +32,7 @@ var synchroniseLocalPlanners = function(data, syncPrefs){
                     deleteCookie(uid+'-'+year+m);
                 }
             }
-            if ( data[uid+'-'+year] > parseInt(LZString.decompressFromBase64(getCookie(uid+'-'+year)))||0){
+            if ( data[uid+'-'+year] > (parseInt(LZString.decompressFromBase64(getCookie(uid+'-'+year)))||0)){
                 setCookie(uid+'-'+year,  LZString.compressToBase64(JSON.stringify( data [uid+'-'+year])));
                 // set uid-year+1-12
                 for (var m = 1; m <= 12; m++) {
