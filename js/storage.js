@@ -42,18 +42,22 @@ var updateEntry = function(mindex,day,entry,entryType,entryColour,syncToRemote) 
 var updateWeekColour = function(mindex,day,entryColour){
     var weekday = DateTime.local(model.year,mindex+1, day).weekday;
     for (let i=1; i < (7-weekday+1) && day+i <= model.daysInMonth[mindex] ;i++){
-        var entry = getEntry(mindex,day+i);
+        let entry = getEntry(mindex,day+i);
+        let entryType = getEntryType(mindex,day+i);
         let syncToRemote = (i == (7-weekday) || day+i == model.daysInMonth[mindex]);
-        updateEntry(mindex,day+i,entry[1],entry[0],entryColour,syncToRemote);
+        updateEntry(mindex,day+i,entry,entryType,entryColour,syncToRemote);
     }
 }
 
 var updateMonthColour = function(mindex,day,entryColour){
 
     for (let i=day+1; i <= model.daysInMonth[mindex];i++ ){
-        var entry = getEntry(mindex,i);
+        let entry = getEntry(mindex,i);
+        let entryType = getEntryType(mindex,i);
         let syncToRemote = (i == model.daysInMonth[mindex]);
-        updateEntry(mindex,i,entry[1],entry[0],entryColour,syncToRemote);
+        updateEntry(mindex,i,entry,entryType,entryColour,syncToRemote);
+        //(mindex,day,entry,entryType,entryColour,syncToRemote)
+        //function(mindex,day,entry,entryType,entryColour)
     }
 }
 
