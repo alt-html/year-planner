@@ -4,7 +4,7 @@ Find the live year planner at Amazon CloudFront [Year Planner](https://d1uamxeyl
 
 Example planners:
 
-- [2021 Moon Phases](https://d1uamxeylh4qir.cloudfront.net?share=NobwRADGBcCMBssAcSDsAmdEAsAaMsMYAsgPYBeAlgDbUCGA9AKwB0EABABQDqlAdgBNSAdwDO7AHIAVdrAhsA3O15942JQA81SgE4A3aEnkQAlOwDiAUwDGAa1IMsciHNjsAYpR2WAZqQ0MRmxgAL644FDQYJZ8obhY6LC4oGDwMBFEYPiEUYA8G4Do+1lg6JlhBADM6ZCZ2US5gIj7RSVRccWRGS21eYDI+02l+OhIVZFgRTlguYCo+8qk1D7sZKSxA6Vh4NjDNQR1hSstZbA5HaNdE417owcAnJud2z19+wOotyf3E9MAynwiC6RLj0ua1SrzGO0BrVglWgxzBeXOxX6xSO1Tu41yvQurUGoNOUxmOgAtn8AViQsCNjDUW90btEU8CM1YXiEc1LgN2tS4RNMfT2cU0lSRtz8QAFfi2EnLPmhYHQ5nvAoQg4o4Us5XZIZCrbjDUEG7atF1Xls7GChXo6buagiSw6KXK4FMrl4ummg6ctWK1lI2AvQ00rbuzW4xUmpHoSkWupfAAuOjowgARnadABPB1k4GqnXgsnZT25+F62BMUO6-MEf3Rh6V9Dyl2K6YAIQArnZMzKyuUc0a8m7VuEwFqa2cSw2vRWu9kywGReGGZhyzH2J9Y62dABzSxLTvBsDlQt9iYDhk95d3d3A6uN9E+hlQi88vVYJ-4gDCpB0fD3EYNo6VStDyfR0h3NW86nvflHznPEF35V9YKbdgAAk6H0SxRFjX9FxHCD+1A9Y3ygyFe0DWtp31N8W0sOg9DtHCEJvSc8y7CliJLMj5xLPCWLyaZP2oARGOxZiixPR0AF1JKAA)
+- [2021 Moon Phases](https://d1uamxeylh4qir.cloudfront.net?share=NobwRADGBcCMBssAcSDsAmdEAsAaMsMYAsgPYBeAlgDbUCGA9AKwB0EABABQDqlAdgBNSAdwDO7AHIAVdrAhsA3O15942JQA81SgE4A3aEnkQAlOwDiAUwDGAa1IMsciHNjsAYpR2WAZqQ0MRmxgAL644FDQWOiw+ITQYJZ8YPjoMBD4AMww4NHx4ElEZKR87AAKABZ0opbieSmJokTu1bXsApbs9F0Arnx07PX4AA4ALs2t4gID1D0DQ2B0OkSAomCAjGCA5GCAtGCAImDsGzuAQmDr7IBGYIAGYKeAhmANPssJlZPtnd2zfJ0LFZREgFiQgECQgDJIQCykIAGSEAdJCAPkh2D8QYBiSEGEBiDUoAgmNXYACEevRSgsAFZ0IiAA4ZAD8MgGeGQCrDIByhkAJQyALoYETFAC56DR0PSIgBIQQAMIIB2EEA0iDsQDYIIBhEEAvCAChbkCpEQAQ5oAPt0ZsBZIRVuDyuFAYHgOUgRAa8TAgB4NwDo+w00glQnFstAInq4kRDYBEfbNerCYCwOsiYH1DsAyPsui1u9BIT12ggOwCo+8pSNQfOxislUq6wuBsKGLfaEiaA963bB8rqM+Gs86k4G4gBOdPezNG-1l3OpVDVn1ZqMAZT4InjpBKOdCKa1Ldr2YbloI1ttRYNTv7QYLXtbdbnqRDNsLNeLRqj3FIOgAtj2+2PVanh1vR+7XXFzVPNzPS1fy+7Inel4b60-G+7tevFyOozKfhbCPRMvwHcIwEnDd31NE84gXMMHxXAg1zfWsUNgKs-yQv0UPQX90IvKN3GoERLB0UC50HW8YJHODwLzV86IvR9zW-WBmxw6cw3Y8dkHPGdPz4oM024+9I3YdtRh0OhhAAIwonQAE8qJPQdEJ4rMGJEuJmP-VjMKYQTeOvAguKIoT8OggyZyjLE7DUxisk0iTtOoyC0JY5D4InEyi10ghjPE99hLMzB-O3KTRh6HQAHNLBKJzAsyfTcPc3zMlcpcPPACzvIdNizNgGz0uXXyPRCgD2AAYT3UoE3w7DLIdHSzNSyLcqHKrDN8krIo-fC0q0qKAAklj0WpRmS8KvNs1qurElqS0w7KRzC58sIG+zLDoSbKMair8vmjLGMHJaCpWvq1ovDaOLmsrDSjOrqAEGbn3QY7HrawMQgAXT+oA)
 
 ## How it works
 
@@ -64,14 +64,14 @@ The year planner is available in 10 popular languages:
 - \[ \] 4x 13 week term view
 - \[ \] Export to CSV
   
-- \[ \] Register a user
-- \[ \] Save planner to server storage
-- \[ \] Fetch planner from server storage for registered user.
 - \[ \] Donate via payment gateway (Square)
 - \[ \] Expire a donation
 
 
 ### Recent Features Added
+- \[x\] Register a user
+- \[x\] Save planner to server storage
+- \[x\] Fetch planner from server storage for registered user.
 - \[x\] New planner 
 - \[x\] Delete planner 
 - \[x\] Navigation between stored planner years
