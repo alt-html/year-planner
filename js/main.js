@@ -110,7 +110,7 @@ var  setYear = function (year) {
     model.year = year;
     model.firstWeekdayOfMonth = []
     model.daysInMonth = []
-    for (var m = 1; m <= 12; m++) {
+    for (let m = 1; m <= 12; m++) {
         model.firstWeekdayOfMonth.push(DateTime.local(year,m, 1).weekday);
         model.daysInMonth.push(DateTime.local(year,m).daysInMonth);
     }

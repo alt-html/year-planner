@@ -3,7 +3,7 @@ var synchroniseLocalPlanners = function(data, syncPrefs){
 
     let localIdentities = getLocalIdentities();
     let remoteIdentities = getRemoteIdentitiesFromData(data);
-    for (i = remoteIdentities.length-1; i >= 0;i--){
+    for (let i = remoteIdentities.length-1; i >= 0;i--){
         let index = _.findIndex(localIdentities, function(id){ return id['0'] == remoteIdentities[i]['0']; })
         if (index < 0){
             localIdentities.unshift(remoteIdentities[i]);
@@ -19,23 +19,23 @@ var synchroniseLocalPlanners = function(data, syncPrefs){
     let remotePlannerYears = getRemotePlannerYears(data);
 
     let uids = Object.keys(remotePlannerYears);
-    for (p = 0; p < uids.length;p++){
+    for (let p = 0; p < uids.length;p++){
         let uid = uids[p]
         if (syncPrefs) {
             setLocalPreferences(uid,data[uid]);
         } // preferences
-        for (y=0; y<  remotePlannerYears[uid].length;y++){
+        for (let y=0; y<  remotePlannerYears[uid].length;y++){
             let year = remotePlannerYears[uid][y];
             if (data[uid+'-'+year] == 0){
                 deleteCookie(uid+'-'+year);
-                for (var m = 1; m <= 12; m++) {
+                for (let m = 1; m <= 12; m++) {
                     deleteCookie(uid+'-'+year+m);
                 }
             }
             if ( data[uid+'-'+year] > (parseInt(LZString.decompressFromBase64(getCookie(uid+'-'+year)))||0)){
                 setCookie(uid+'-'+year,  LZString.compressToBase64(JSON.stringify( data [uid+'-'+year])));
                 // set uid-year+1-12
-                for (var m = 1; m <= 12; m++) {
+                for (let m = 1; m <= 12; m++) {
                     setCookie(uid+'-'+year+m,  LZString.compressToBase64(JSON.stringify( data[uid+'-'+year+m])));
                 }
             }
@@ -57,7 +57,7 @@ var getRemotePlannerYears = function(data){
     let keys = Object.keys(data);
     var remoteIdentities =  getRemoteIdentitiesFromData(data);
     if (remoteIdentities){
-        for (var i = 0; i < remoteIdentities.length; i++) {
+        for (let i = 0; i < remoteIdentities.length; i++) {
             let uid = remoteIdentities[i][0];
             remotePlannerYears[uid] =
                 _.uniq(_.map(_.filter(keys,function(key){ return key.includes(uid+'-');}),function(key) {return key.substr(11,4);}),true);

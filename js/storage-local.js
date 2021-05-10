@@ -39,7 +39,7 @@ var getDefaultLocalIdentity = function(){
 var getLocalIdentity = function(uid){
     var localIdentities =  getLocalIdentities();
     if (localIdentities){
-        for (var i = 0; i < localIdentities.length; i++) {
+        for (let i = 0; i < localIdentities.length; i++) {
             if (localIdentities[i]['0']==uid){
                 return localIdentities[i]
             }
@@ -57,7 +57,7 @@ var getLocalPlannerYears = function(){
     let cookies = Object.keys(getCookies());
     var localIdentities =  getLocalIdentities();
     if (localIdentities){
-        for (var i = 0; i < localIdentities.length; i++) {
+        for (let i = 0; i < localIdentities.length; i++) {
             let uid = localIdentities[i][0];
             localPlannerYears[uid] =
                 _.uniq(_.map(_.filter(cookies,function(key){ return key.includes(uid+'-');}),function(key) {return key.substr(11,4);}),true);
@@ -80,7 +80,7 @@ var getDefaultLocalPlanner = function() {
 
 var getLocalPlanner = function(uid, year) {
     var planner = []
-    for (var m = 1; m <= 12; m++) {
+    for (let m = 1; m <= 12; m++) {
         planner.push(JSON.parse(LZString.decompressFromBase64(getCookie(uid+'-'+year+m))));
     }
     return planner;
@@ -91,7 +91,7 @@ var deletePlannerByYear = function(uid, year){
     let cookies = Object.keys(getCookies());
     let cookiesToDelete = _.filter(cookies,function(key){ return key.includes(uid+'-'+year);});
 
-    for (var i = 0; i < cookiesToDelete.length; i++) {
+    for (let i = 0; i < cookiesToDelete.length; i++) {
         deleteCookie(cookiesToDelete[i])
     }
 
@@ -111,7 +111,7 @@ var deleteLocalPlanner = function(uid){
     let cookies = Object.keys(getCookies());
     let cookiesToDelete = _.filter(cookies,function(key){ return key.includes(uid);});
 
-    for (var i = 0; i < cookiesToDelete.length; i++) {
+    for (let i = 0; i < cookiesToDelete.length; i++) {
         deleteCookie(cookiesToDelete[i])
     }
      _.remove(model.identities, function (id) {return id['0'] == uid})
@@ -122,7 +122,7 @@ var deleteLocalPlanner = function(uid){
 }
 
 var setLocalPlanner = function(uid, year, planner) {
-    for (var m = 1; m <= 12; m++) {
+    for (let m = 1; m <= 12; m++) {
         setCookie(uid+'-'+year+m,LZString.compressToBase64(JSON.stringify(planner[m-1])),4384)
     }
 }
@@ -140,8 +140,8 @@ var importLocalPlannerFromBase64 = function(planner) {
 }
 
 var importLocalPlanner = function(planner) {
-    for (var m = 0; m < 12; m++) {
-        for (var d = 0; d < model.daysInMonth[m-1];d ++){
+    for (let m = 0; m < 12; m++) {
+        for (let d = 0; d < model.daysInMonth[m-1];d ++){
             if (planner[m][''+d]){
                 if (model.planner[m][''+d][''+0] == 0) {
                     model.planner[m][''+d][''+0] = planner[m][''+d][''+0];
@@ -210,7 +210,7 @@ var deleteLocalSession = function (){
 
 var reset = function (){
     let cookies = Object.keys(getCookies());
-    for (i = 0; i <cookies.length; i++){
+    for (let i = 0; i <cookies.length; i++){
         deleteCookie(''+cookies[i]);
     }
     window.location.href = window.location.origin;
@@ -218,7 +218,7 @@ var reset = function (){
 
 var registerRemoteIdentity = function (uid){
     let ids = getLocalIdentities();
-    for (i = 0; i < ids.length;i++){
+    for (let i = 0; i < ids.length;i++){
         if (uid == ids[i]['0']){
             ids[i]['2']=1;
         }
@@ -229,7 +229,7 @@ var registerRemoteIdentity = function (uid){
 
 var registerRemoteIdentities = function (){
     let ids = getLocalIdentities();
-    for (i = 0; i < ids.length;i++){
+    for (let i = 0; i < ids.length;i++){
         ids[i]['2']=1;
     }
     model.identities = ids;
@@ -242,7 +242,7 @@ var getRemoteIdentities = function (){
 
 var wipe = function (){
     let remoteIdentities = getRemoteIdentities();
-    for (i=0;i <  remoteIdentities.length;i++){
+    for (let i=0;i <  remoteIdentities.length;i++){
         deleteLocalPlanner(remoteIdentities[i]['0']);
     }
     window.location.href = window.location.origin;
