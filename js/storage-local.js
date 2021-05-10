@@ -142,14 +142,18 @@ var importLocalPlannerFromBase64 = function(planner) {
 var importLocalPlanner = function(planner) {
     for (let m = 0; m < 12; m++) {
         for (let d = 0; d < model.daysInMonth[m-1];d ++){
-            if (planner[m][''+d]){
-                if (model.planner[m][''+d][''+0] == 0) {
+            if (planner[m]?.[''+d]){
+                if (model.planner[m]?.[''+d]?.[''+0] == 0) {
                     model.planner[m][''+d][''+0] = planner[m][''+d][''+0];
                 }
-                if (planner[m][''+d][''+1]){
-                    if (model.planner[m][''+d][''+1] && model.planner[m][''+d][''+1] != planner[m][''+d][''+1] ){
+                if (planner[m]?.[''+d]?.[''+1]){
+                    if (model.planner[m]?.[''+d]?.[''+1] && model.planner[m]?.[''+d]?.[''+1] != planner[m][''+d][''+1] ){
+                        if (!model.planner[m]){model.planner[m] = {}}
+                        if (!model.planner[m]?.[''+d]){model.planner[m][''+d] = {}}
                         model.planner[m][''+d][''+1] = model.planner[m][''+d][''+1]+'\n'+planner[m][''+d][''+1];
                     }else {
+                        if (!model.planner[m]){model.planner[m] = {}}
+                        if (!model.planner[m]?.[''+d]){model.planner[m][''+d] = {}}
                         model.planner[m][''+d][''+1] = planner[m][''+d][''+1];
                     }
                 }
