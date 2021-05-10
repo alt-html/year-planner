@@ -216,6 +216,7 @@ var showRegister = function (){
     clearModalAlert();
     model.username = '';
     model.password='';
+    $('#registerModal').modal('show');
 }
 
 var clearError = function() {

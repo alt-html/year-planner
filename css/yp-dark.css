@@ -72,14 +72,14 @@
 }
 
 .yp-dark .yp-cell-c0 {border-color: whitesmoke;}
-.yp-dark .yp-cell-c1 {background-color: #620000;} /* light red */
-.yp-dark .yp-cell-c2 {background-color: #006200;} /* light green */
-.yp-dark .yp-cell-c3 {background-color: #0000B0;} /* light blue */
-.yp-dark .yp-cell-c4 {background-color: #003E3E;} /* light cyan */
-.yp-dark .yp-cell-c5 {background-color: #545400;} /* light yellow */
-.yp-dark .yp-cell-c6 {background-color: #4A004A;} /* light magenta */
-.yp-dark .yp-cell-c7 {background-color: #603300;} /* light orange*/
-.yp-dark .yp-cell-c8 {background-color: #200075; } /* light purple*/
+.yp-dark .yp-cell-c1 {background-color: #3A3A3A; } /* weekend*/
+.yp-dark .yp-cell-c2 {background-color: #620000;} /* dark red */
+.yp-dark .yp-cell-c3 {background-color: #006200;} /* dark green */
+.yp-dark .yp-cell-c4 {background-color: #0000B0;} /* dark blue */
+.yp-dark .yp-cell-c5 {background-color: #003E3E;} /* dark cyan */
+.yp-dark .yp-cell-c6 {background-color: #545400;} /* dark yellow */
+.yp-dark .yp-cell-c7 {background-color: #4A004A;} /* dark magenta */
+.yp-dark .yp-cell-c8 {background-color: #603300;} /* dark orange*/
 
 .yp-dark .footer {
     background-color: #2B2B2B;

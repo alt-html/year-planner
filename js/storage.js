@@ -32,16 +32,19 @@ var setPlanner = function (uid, year, planner){
     setLocalPlanner(uid, year, planner);
 }
 
-var updateEntry = function(mindex,day,entry,entryType,entryColour) {
+var updateEntry = function(mindex,day,entry,entryType,entryColour,syncToRemote) {
     updateLocalEntry(mindex,day,entry,entryType,entryColour);
-    synchroniseToRemote();
+    if (syncToRemote){
+        synchroniseToRemote();
+    }
 }
 
 var updateWeekColour = function(mindex,day,entryColour){
     var weekday = DateTime.local(model.year,mindex+1, day).weekday;
     for (i=1; i < (7-weekday+1) && day+i <= model.daysInMonth[mindex] ;i++){
         var entry = getEntry(mindex,day+i);
-        updateEntry(mindex,day+i,entry[1],entry[0],entryColour);
+        let syncToRemote = (i == (7-weekday) || day+i == model.daysInMonth[mindex]);
+        updateEntry(mindex,day+i,entry[1],entry[0],entryColour,syncToRemote);
     }
 }
 
@@ -49,7 +52,8 @@ var updateMonthColour = function(mindex,day,entryColour){
 
     for (i=day+1; i <= model.daysInMonth[mindex];i++ ){
         var entry = getEntry(mindex,i);
-        updateEntry(mindex,i,entry[1],entry[0],entryColour);
+        let syncToRemote = (i == model.daysInMonth[mindex]);
+        updateEntry(mindex,i,entry[1],entry[0],entryColour,syncToRemote);
     }
 }
 

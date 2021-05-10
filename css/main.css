@@ -308,14 +308,14 @@ a.navbar-brand {
 }
 
 .yp-cell-c0 {border-color: whitesmoke;}
-.yp-cell-c1 {background-color: #FFDDDD;} /* light red */
-.yp-cell-c2 {background-color: #DDFFDD;} /* light green */
-.yp-cell-c3 {background-color: #EEEEFF;} /* light blue */
-.yp-cell-c4 {background-color: #EEFFFF;} /* light cyan */
-.yp-cell-c5 {background-color: #FFFFEE;} /* light yellow */
-.yp-cell-c6 {background-color: #ffeeff;} /* light magenta */
-.yp-cell-c7 {background-color: #FFEEE0;} /* light orange*/
-.yp-cell-c8 {background-color: #F3EDFF; } /* light purple*/
+.yp-cell-c1 {background-color: aliceblue; } /* weekend*/
+.yp-cell-c2 {background-color: #FFDDDD;} /* light red */
+.yp-cell-c3 {background-color: #DDFFDD;} /* light green */
+.yp-cell-c4 {background-color: #EEEEFF;} /* light blue */
+.yp-cell-c5 {background-color: #EEFFFF;} /* light cyan */
+.yp-cell-c6 {background-color: #FFFFEE;} /* light yellow */
+.yp-cell-c7 {background-color: #ffeeff;} /* light magenta */
+.yp-cell-c8 {background-color: #FFEEE0;} /* light orange*/
 
 .yp-cell-btn {
     color: white;
