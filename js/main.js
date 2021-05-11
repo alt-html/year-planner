@@ -218,6 +218,7 @@ var showRegister = function (){
     clearModalAlert();
     model.username = '';
     model.password='';
+    model.peek = false;
     $('#registerModal').modal('show');
 }
 
@@ -237,6 +238,7 @@ var showSignin = function (){
     clearModalAlert();
     model.username = null;
     model.password = null;
+    model.peek = false;
     $('#signinModal').modal('show');
     refresh();
 }
