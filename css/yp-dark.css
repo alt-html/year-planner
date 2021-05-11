@@ -108,3 +108,44 @@
     background-color: #2B2B2B;
     border-color: #2B2B2B;
 }
+
+.yp-dark .dropdown-menu {
+    color: #6c757d;
+    background-color: #2B2B2B;
+}
+
+.yp-dark .dropdown-item {
+    color: #6c757d;
+    background-color: #2B2B2B;
+}
+
+.yp-dark .dropdown-header {
+    color: #c1c6ca;
+}
+
+.yp-dark .dropdown-divider {
+    border-top: 1px solid #6c757d;
+}
+
+.yp-dark .close {
+    color: #6c757d;
+    text-shadow: 0 1px 0 #000;
+}
+.yp-dark .modal-header {
+    border-bottom: 1px solid #6c757d;
+}
+
+.yp-dark .modal-content {
+    color: #6c757d;
+    background-color: #2B2B2B;
+}
+
+.yp-dark .form-control {
+    color: #6c757d;
+    background-color: #2B2B2B;
+    border: 1px solid #6c757d;
+}
+
+.yp-dark .modal-footer {
+    border-top: 1px solid #6c757d;
+}

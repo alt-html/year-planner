@@ -56,9 +56,11 @@ The year planner is available in 10 popular languages:
 
 ### Backlog
 
-- \[ \] Dark theme dropdowns
-- \[ \] Dark theme modals
-- \[ \] Expand entry icon set with select dropdown, or remove
+- \[ \] Profile Edit
+- \[ \] Change username
+- \[ \] Change password
+- \[ \] Add / Verify email
+- \[ \] Add / Verify mobile
   
 - \[ \] 2x 26 week semester view
 - \[ \] 4x 13 week term view
@@ -69,6 +71,8 @@ The year planner is available in 10 popular languages:
 
 
 ### Recent Features Added
+- \[x\] Dark theme dropdowns
+- \[x\] Dark theme modals
 - \[x\] Register a user
 - \[x\] Save planner to server storage
 - \[x\] Fetch planner from server storage for registered user.
@@ -90,7 +94,7 @@ The year planner is available in 10 popular languages:
 ### Parking Lot
 - \[ \] Twemoji support (https://kevinfaguiar.github.io/vue-twemoji-picker/ + https://codesandbox.io/s/vue-twemoji-picker-umdiife-example-we3co?from-embed=&file=/index.html)
 - \[ \] Disable non-current year, dark theme on switch
-
+- \[ \] Expand entry icon set with select dropdown, or remove
 
 
 
