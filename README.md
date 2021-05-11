@@ -71,6 +71,7 @@ The year planner is available in 10 popular languages:
 
 
 ### Recent Features Added
+- \[x\] Peek / unpeek passwords
 - \[x\] Dark theme dropdowns
 - \[x\] Dark theme modals
 - \[x\] Register a user

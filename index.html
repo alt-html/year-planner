@@ -382,9 +382,14 @@
                                     {{$t(modalErrorTarget?.['username'])}}
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="password" class="col-form-label">{{$t('label.password')}}</label>
-                                <input  type="password" class="form-control readonly" v-bind:class="{'is-invalid':modalErrorTarget?.['password']}" v-model="password" id="passsword-register" >
+                            <label for="password" class="col-form-label">{{$t('label.password')}}</label>
+                            <div class="input-group">
+
+                                <input  v-bind:type="peek?'text':'password'" class="form-control readonly" v-bind:class="{'is-invalid':modalErrorTarget?.['password']}" v-model="password" id="password-register" >
+                                <div class="input-group-append">
+                                    <button v-if="!peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="peekPass()" ><i class="fas fa-eye"></i></button>
+                                    <button v-if="peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="unpeekPass()" ><i class="fas fa-eye-slash"></i></button>
+                                </div>
                                 <div v-if="modalErrorTarget" v-bind:class="{'valid-feedback': !modalErrorTarget?.['password'] ,'invalid-feedback':modalErrorTarget?.['password']}">
                                     {{$t(modalErrorTarget?.['password'])}}
                                 </div>
@@ -430,9 +435,13 @@
                                     {{$t(modalErrorTarget?.['username'])}}
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="password" class="col-form-label">{{$t('label.password')}}</label>
-                                <input  type="password" class="form-control readonly" v-bind:class="{'is-invalid':modalErrorTarget?.['password']}" v-model="password" id="passsword-signin">
+                            <label for="password" class="col-form-label">{{$t('label.password')}}</label>
+                            <div class="input-group">
+                                <input  v-bind:type="peek?'text':'password'" class="form-control readonly" v-bind:class="{'is-invalid':modalErrorTarget?.['password']}" v-model="password" id="password-signin">
+                                <div class="input-group-append">
+                                    <button v-if="!peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="peekPass()" ><i class="fas fa-eye"></i></button>
+                                    <button v-if="peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="unpeekPass()" ><i class="fas fa-eye-slash"></i></button>
+                                </div>
                                 <div v-if="modalErrorTarget" v-bind:class="{'valid-feedback': !modalErrorTarget?.['password'] ,'invalid-feedback':modalErrorTarget?.['password']}">
                                     {{$t(modalErrorTarget?.['password'])}}
                                 </div>

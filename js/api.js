@@ -178,3 +178,101 @@ var deleteRegistration = function(){
         });//404 - (uuid not found)), 200 success returns no data
 
 }
+
+var setUsername = function (username){
+    request
+        .post('/api/profile/'+model.uuid+'/username')
+        .send({username:username})
+        .set('Accept','application/json')
+        .then(response => {
+                model.response = response;
+                model.uuid = response.body.uuid;
+                model.donation = response.body.donation;
+                model.email = response.body.email;
+                model.emailverified = response.body.emailverified;
+                model.mobile = response.body.mobile;
+                model.mobileverified = response.body.mobileverified;
+            }
+
+        )
+        .catch(err => {
+            if (err.status == 404)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 401)
+                model.modalError = 'error.unauthorized';
+            if (err.status == 400)
+                model.modalError = 'error.usernotavailable';
+        })
+}
+
+var setPassword = function (password,newpassword){
+    request
+        .post('/api/profile/'+model.uuid+'/password')
+        .send({password:password, newpassword:newpassword})
+        .set('Accept','application/json')
+        .then(response => {
+                model.response = response;
+                model.uuid = response.body.uuid;
+                model.donation = response.body.donation;
+                model.email = response.body.email;
+                model.emailverified = response.body.emailverified;
+                model.mobile = response.body.mobile;
+                model.mobileverified = response.body.mobileverified;
+            }
+
+        )
+        .catch(err => {
+            if (err.status == 404)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 401)
+                model.modalError = 'error.unauthorized';
+        })
+}
+
+var setEmail = function (email){
+    request
+        .post('/api/profile/'+model.uuid+'/email')
+        .send({email:email})
+        .set('Accept','application/json')
+        .then(response => {
+                model.response = response;
+                model.uuid = response.body.uuid;
+                model.donation = response.body.donation;
+                model.email = response.body.email;
+                model.emailverified = response.body.emailverified;
+                model.mobile = response.body.mobile;
+                model.mobileverified = response.body.mobileverified;
+            }
+
+        )
+        .catch(err => {
+            if (err.status == 404)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 401)
+                model.modalError = 'error.unauthorized';
+        })
+}
+
+var setMobile = function (email){
+    request
+        .post('/api/profile/'+model.uuid+'/mobile')
+        .send({mobile:mobile})
+        .set('Accept','application/json')
+        .then(response => {
+                model.response = response;
+                model.uuid = response.body.uuid;
+                model.donation = response.body.donation;
+                model.email = response.body.email;
+                model.emailverified = response.body.emailverified;
+                model.mobile = response.body.mobile;
+                model.mobileverified = response.body.mobileverified;
+            }
+
+        )
+        .catch(err => {
+            if (err.status == 404)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 401)
+                model.modalError = 'error.unauthorized';
+        })
+}

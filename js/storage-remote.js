@@ -65,4 +65,3 @@ var getRemotePlannerYears = function(data){
     }
     return remotePlannerYears;
 }
-

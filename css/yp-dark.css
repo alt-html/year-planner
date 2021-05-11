@@ -109,6 +109,9 @@
     border-color: #2B2B2B;
 }
 
+.yp-dark .btn {
+    color: #c1c6ca;
+}
 .yp-dark .dropdown-menu {
     color: #6c757d;
     background-color: #2B2B2B;
@@ -149,3 +152,13 @@
 .yp-dark .modal-footer {
     border-top: 1px solid #6c757d;
 }
+
+.yp-dark .modal-content .btn {
+    border: 1px solid transparent;
+    border-top-color:  #6c757d;
+    border-right-color:  #6c757d;
+    border-bottom-color:  #6c757d;
+    border-left-color:  #6c757d;
+}
+
+

@@ -54,6 +54,8 @@ var model = {
     mobile : '',
     mobileverified : 0,
     password: '',
+    peek : false,
+    peeknp :false,
     donation : -1,
     rememberme : false,
 
@@ -244,6 +246,22 @@ var clearModalAlert = function (){
  model.modalErrorTarget = null;
  model.modalWarning = '';
 
+}
+
+var peekPass = function(){
+    model.peek = true;
+}
+
+var unpeekPass = function(){
+    model.peek = false;
+}
+
+var peekNewPass = function(){
+    model.peeknp = true;
+}
+
+var unpeekNewPass = function(){
+    model.peeknp = false;
 }
 
 const i18n = new VueI18n({
