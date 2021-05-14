@@ -276,3 +276,21 @@ var setMobile = function (email){
                 model.modalError = 'error.unauthorized';
         })
 }
+
+var email = function (to,subject,bodyText){
+    request
+        .post('/api/email')
+        .send({to:[to],subject:subject,bodyText:bodyText})
+        .set('Accept','application/json')
+        .then(response => {
+                model.response = response;
+            }
+
+        )
+        .catch(err => {
+            if (err.status == 404)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 500)
+                model.modalError = 'error.general';
+        })
+}

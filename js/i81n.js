@@ -28,6 +28,7 @@ const messages = {
             passwordnotprovided:'A password must be provided'
         },
         error: {
+            general: 'An error occurred',
             apinotavailable: 'The remote year planner API is not available',
             usernotavailable: 'The username is not available',
             unauthorized: 'Username or password is not correct'
