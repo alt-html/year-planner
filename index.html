@@ -22,7 +22,7 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,Promise,Symbol,Object.setPrototypeOf,Object.getOwnPropertySymbols"></script>
     <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
     <script src="https://kit.fontawesome.com/10808f8e76.js" crossorigin="anonymous"></script>
-<!--    <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>-->
+    <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>
     <script  src="js/uuid.js"></script>
 
 </head>
@@ -104,11 +104,10 @@
                                 <h6 class="dropdown-header">{{$t('label.theme')}}</h6>
                                 <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':theme=='light'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=light'">{{$t('label.light')}}</a>
                                 <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':theme=='dark'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=dark'">{{$t('label.dark')}}</a>
-                                <div v-if="feature.settings" class="dropdown-divider"></div>
-                                <a v-if="feature.settings" class="dropdown-item" href="#" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal">{{$t('label.settings')}}</a>
                                 <div v-if="feature.signin" class="dropdown-divider"></div>
                                 <a v-if="feature.register" class="dropdown-item" v-bind:class="{disabled:signedin}" href="#" v-on:click="showRegister()">{{$t('label.register')}}…</a>
                                 <a v-if="feature.signin && !signedin" class="dropdown-item" href="#" v-on:click="showSignin()">{{$t('label.signin')}}…</a>
+                                <a v-if="feature.profile && signedin" class="dropdown-item" href="#" v-on:click="showSettings()" data-toggle="modal" data-target="#settingsModal">{{$t('label.profile')}}…</a>
                                 <a v-if="feature.signin && signedin" class="dropdown-item" href="#" v-on:click="signout()">{{$t('label.signout')}}…</a>
                           </div>
                         </div>
@@ -309,37 +308,87 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="settingsModalLabel">{{$t('label.settings')}}</h5>
+                        <h5 class="modal-title" id="settingsModalLabel">{{$t('label.profile')}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
+                        <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
+                            <p>{{$t(modalError)}}</p>
+                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="fade" v-if="modalWarning" v-bind:class="{'alert alert-warning alert-dismissible show': modalWarning != ''}" role="alert">
+                            <p>{{$t(modalWarning)}}</p>
+                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                         <form>
-                            <h5 class="" >{{$t('label.profile')}}</h5>
-                                <div class="form-group">
-                                    <label for="username" class="col-form-label">{{$t('label.username')}}</label>
-                                    <input  type="text" class="form-control " v-model="username" id="username-settings" readonly>
+                            <label for="username-settings" class="col-form-label">{{$t('label.username')}}{{touch}}</label>
+                            <div class="input-group">
+                                <input  type="text" class="form-control" v-model="username" id="username-settings" v-bind:class="{'is-invalid':modalErrorTarget?.['username']}" v-bind:readonly="!changeuser">
+                                <div v-if="modalErrorTarget" class="order-last" v-bind:class="{'d-block':modalErrorTarget?.['username'], 'valid-feedback': !modalErrorTarget?.['username'] ,'invalid-feedback':modalErrorTarget?.['username']}">
+                                    {{$t(modalErrorTarget?.['username'])}}
                                 </div>
-                                <div class="form-group">
-                                    <label for="email" class="col-form-label">{{$t('label.email')}}</label>
-                                    <input  type="text" class="form-control readonly" v-model="email" id="email">
+                                <div class="input-group-append">
+                                    <button v-if="!changeuser" class="btn btn-primary py-0 my-0" type="button" v-on:click="changeuser=!changeuser" ><i class="fas fa-edit"></i></button>
+                                    <button v-if="changeuser" class="btn btn-primary py-0 my-0" type="button" v-on:click="setUsername(username)"><i class="fas fa-save"></i></button>
                                 </div>
+                            </div>
                             <div class="form-group">
-                                <label for="mobile" class="col-form-label">{{$t('label.mobile')}}</label>
-                                <input  type="text" class="form-control readonly" v-model="mobile" id="mobile">
+                            </div>
+                            <label for="password-profile" class="col-form-label">{{$t('label.password')}}</label>
+                            <div class="input-group">
+                                <input v-bind:type="peek?'text':'password'" class="form-control" v-bind:readonly="!changepass" v-bind:class="{'is-invalid':modalErrorTarget?.['password']}" v-model="password" id="password-profile" v-bind:placeholder="changepass ? $t('label.oldpassword') : $t('label.changepass')">
+                                <div v-if="modalErrorTarget" class="order-last" v-bind:class="{'d-block':modalErrorTarget?.['password'], 'valid-feedback': !modalErrorTarget?.['password'] ,'invalid-feedback':modalErrorTarget?.['password']}">
+                                    {{$t(modalErrorTarget?.['password'])}}
+                                </div>
+                                <div class="input-group-append">
+                                    <button v-if="!changepass" class="btn btn-primary py-0 my-0" type="button" v-on:click="changepass=!changepass" ><i class="fas fa-edit"></i></button>
+                                    <button v-if="changepass && !peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="peekPass()" ><i class="fas fa-eye"></i></button>
+                                    <button v-if="changepass && peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="unpeekPass()" ><i class="fas fa-eye-slash"></i></button>
+                                </div>
+
                             </div>
 
+                            <label v-if="changepass" for="newpassword-profile" class="col-form-label">{{$t('label.newpassword')}}</label>
+                            <div class="input-group">
+                                <input  v-if="changepass" v-bind:type="peeknp?'text':'password'" class="form-control readonly" v-bind:class="{'is-invalid':modalErrorTarget?.['newpassword']}" v-model="newpassword" id="newpassword-profile" v-bind:placeholder="$t('label.newpassword')">
+                                <div v-if="modalErrorTarget" class="order-last" v-bind:class="{'d-block':modalErrorTarget?.['newpassword'], 'valid-feedback': !modalErrorTarget?.['newpassword'] ,'invalid-feedback':modalErrorTarget?.['newpassword']}">
+                                    {{$t(modalErrorTarget?.['newpassword'])}}
+                                </div>
+                                <div v-if="changepass" class="input-group-append">
+                                    <button v-if="!peeknp" class="btn btn-primary py-0 my-0" type="button" v-on:click="peekNewPass()" ><i class="fas fa-eye"></i></button>
+                                    <button v-if="peeknp" class="btn btn-primary py-0 my-0" type="button" v-on:click="unpeekNewPass()" ><i class="fas fa-eye-slash"></i></button>
+                                </div>
 
-                            <h5 class="" >{{$t('label.theme')}}</h5>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="themeOptions" id="inlineRadio0"  v-model="theme" value="light">
-                                <label class="form-check-label" for="themeOptions1">{{$t('label.light')}}</label>
+
                             </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="themeOptions" id="inlineRadio0"  v-model="theme" value="dark">
-                                <label class="form-check-label" for="themeOptions2">{{$t('label.dark')}}</label>
+                            <div class="form-group">
                             </div>
+                            <div class="form-group">
+                                <button v-if="changepass" class="btn btn-primary py-0 my-0" type="button" v-on:click="setPassword(password, newpassword)">{{$t('label.changepass')}}</button>
+                            </div>
+
+                            <label for="email" class="col-form-label">{{$t('label.email')}}</label>
+                                <div class="input-group">
+                                    <input  type="text" class="form-control readonly" v-bind:class="{'is-valid':!changeemail && emailverified ,'is-invalid':!(emailverified || changeemail) || modalErrorTarget?.['email']}" v-on:click="changeemail=true" v-model="email" id="email">
+                                    <div class="d-block order-last" v-bind:class="{'d-block':modalErrorTarget?.['email'], 'valid-feedback': emailverified ,'invalid-feedback':!(emailverified || changeemail) || modalErrorTarget?.['email']}">
+                                        {{(!changeemail && emailverified) ? $t('label.verified') : (modalErrorTarget?.['email'] ? $t(modalErrorTarget?.['email']) : changeemail ? '' : ($t('label.unverified'))) }}
+                                    </div>
+                                    <div class="input-group-append">
+                                        <button v-if="!changeemail && !emailverified" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="$t('label.verify')" class="btn btn-danger py-0 my-0" type="button" v-on:click="sendVerificationEmail()" ><i class="far fa-paper-plane"></i></button>
+                                        <button v-if="!changeemail && emailverified" class="btn btn-primary py-0 my-0" v-on:click="changeemail=!changeemail" type="button"><i class="fas fa-edit"></i></button>
+                                        <button v-if="changeemail" class="btn btn-primary py-0 my-0" v-on:click="setEmail(email)" type="button"><i class="fas fa-save"></i></button>
+                                    </div>
+                                </div>
+<!--                            <div class="form-group">-->
+<!--                                <label for="mobile" class="col-form-label">{{$t('label.mobile')}}</label>-->
+<!--                                <input  type="text" class="form-control readonly" v-model="mobile" id="mobile">-->
+<!--                            </div>-->
                             <br/>
                         </form>
 
@@ -386,12 +435,12 @@
                             <div class="input-group">
 
                                 <input  v-bind:type="peek?'text':'password'" class="form-control readonly" v-bind:class="{'is-invalid':modalErrorTarget?.['password']}" v-model="password" id="password-register" >
+                                <div v-if="modalErrorTarget" class="order-last" v-bind:class="{'valid-feedback': !modalErrorTarget?.['password'] ,'invalid-feedback':modalErrorTarget?.['password']}">
+                                    {{$t(modalErrorTarget?.['password'])}}
+                                </div>
                                 <div class="input-group-append">
                                     <button v-if="!peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="peekPass()" ><i class="fas fa-eye"></i></button>
                                     <button v-if="peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="unpeekPass()" ><i class="fas fa-eye-slash"></i></button>
-                                </div>
-                                <div v-if="modalErrorTarget" v-bind:class="{'valid-feedback': !modalErrorTarget?.['password'] ,'invalid-feedback':modalErrorTarget?.['password']}">
-                                    {{$t(modalErrorTarget?.['password'])}}
                                 </div>
                             </div>
 
@@ -438,13 +487,14 @@
                             <label for="password" class="col-form-label">{{$t('label.password')}}</label>
                             <div class="input-group">
                                 <input  v-bind:type="peek?'text':'password'" class="form-control readonly" v-bind:class="{'is-invalid':modalErrorTarget?.['password']}" v-model="password" id="password-signin">
+                                <div v-if="modalErrorTarget" class="order-last" v-bind:class="{'valid-feedback': !modalErrorTarget?.['password'] ,'invalid-feedback':modalErrorTarget?.['password']}">
+                                    {{$t(modalErrorTarget?.['password'])}}
+                                </div>
                                 <div class="input-group-append">
                                     <button v-if="!peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="peekPass()" ><i class="fas fa-eye"></i></button>
                                     <button v-if="peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="unpeekPass()" ><i class="fas fa-eye-slash"></i></button>
                                 </div>
-                                <div v-if="modalErrorTarget" v-bind:class="{'valid-feedback': !modalErrorTarget?.['password'] ,'invalid-feedback':modalErrorTarget?.['password']}">
-                                    {{$t(modalErrorTarget?.['password'])}}
-                                </div>
+
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox"  id="rememberme" v-model="rememberme">
@@ -461,7 +511,7 @@
             </div>
         </div>
         
-        <div v-if="feature.pay" class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
+        <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -482,114 +532,114 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
-<!--                        <button id="sq-creditcard" type="button" class="btn btn-primary button-credit-card"  v-on:click="onGetCardNonce(event)">Pay $1.00</button>-->
+                        <button id="sq-creditcard" type="button" class="btn btn-primary button-credit-card"  v-on:click="onGetCardNonce(event)">Pay $1.00</button>
                     </div>
-<!--                    <script type="text/javascript">-->
+                    <script type="text/javascript">
 
-<!--                        const idempotency_key = uuidv4();-->
+                        const idempotency_key = uuidv4();
 
-<!--                        // Create and initialize a payment form object-->
-<!--                        const paymentForm = new SqPaymentForm({-->
-<!--                            // Initialize the payment form elements-->
+                        // Create and initialize a payment form object
+                        const paymentForm = new SqPaymentForm({
+                            // Initialize the payment form elements
 
-<!--                           // applicationId: "REPLACE_WITH_APPLICATION_ID";-->
-<!--                            applicationId: "sandbox-sq0idb-ZaOa3uAuhkRfgVmR2xHQyA",-->
-<!--                            inputClass: 'sq-input',-->
-<!--                            autoBuild: false,-->
-<!--                            // Customize the CSS for SqPaymentForm iframe elements-->
-<!--                            inputStyles: [{-->
-<!--                                fontSize: '16px',-->
-<!--                                lineHeight: '24px',-->
-<!--                                padding: '16px',-->
-<!--                                placeholderColor: '#a0a0a0',-->
-<!--                                backgroundColor: 'transparent',-->
-<!--                            }],-->
-<!--                            // Initialize the credit card placeholders-->
-<!--                            cardNumber: {-->
-<!--                                elementId: 'sq-card-number',-->
-<!--                                placeholder: 'Card Number'-->
-<!--                            },-->
-<!--                            cvv: {-->
-<!--                                elementId: 'sq-cvv',-->
-<!--                                placeholder: 'CVV'-->
-<!--                            },-->
-<!--                            expirationDate: {-->
-<!--                                elementId: 'sq-expiration-date',-->
-<!--                                placeholder: 'MM/YY'-->
-<!--                            },-->
-<!--                            postalCode: {-->
-<!--                                elementId: 'sq-postal-code',-->
-<!--                                placeholder: 'Postal'-->
-<!--                            },-->
-<!--                            // SqPaymentForm callback functions-->
-<!--                            callbacks: {-->
-<!--                                /*-->
-<!--                                * callback function: cardNonceResponseReceived-->
-<!--                                * Triggered when: SqPaymentForm completes a card nonce request-->
-<!--                                */-->
-<!--                                cardNonceResponseReceived: function (errors, nonce, cardData) {-->
-<!--                                    if (errors) {-->
-<!--                                        // Log errors from nonce generation to the browser developer console.-->
-<!--                                        console.error('Encountered errors:');-->
-<!--                                        errors.forEach(function (error) {-->
-<!--                                            console.error('  ' + error.message);-->
-<!--                                        });-->
-<!--                                        alert('Encountered errors, check browser developer console for more details');-->
-<!--                                        return;-->
-<!--                                    }-->
+                           // applicationId: "REPLACE_WITH_APPLICATION_ID";
+                            applicationId: "sandbox-sq0idb-ZaOa3uAuhkRfgVmR2xHQyA",
+                            inputClass: 'sq-input',
+                            autoBuild: false,
+                            // Customize the CSS for SqPaymentForm iframe elements
+                            inputStyles: [{
+                                fontSize: '16px',
+                                lineHeight: '24px',
+                                padding: '16px',
+                                placeholderColor: '#a0a0a0',
+                                backgroundColor: 'transparent',
+                            }],
+                            // Initialize the credit card placeholders
+                            cardNumber: {
+                                elementId: 'sq-card-number',
+                                placeholder: 'Card Number'
+                            },
+                            cvv: {
+                                elementId: 'sq-cvv',
+                                placeholder: 'CVV'
+                            },
+                            expirationDate: {
+                                elementId: 'sq-expiration-date',
+                                placeholder: 'MM/YY'
+                            },
+                            postalCode: {
+                                elementId: 'sq-postal-code',
+                                placeholder: 'Postal'
+                            },
+                            // SqPaymentForm callback functions
+                            callbacks: {
+                                /*
+                                * callback function: cardNonceResponseReceived
+                                * Triggered when: SqPaymentForm completes a card nonce request
+                                */
+                                cardNonceResponseReceived: function (errors, nonce, cardData) {
+                                    if (errors) {
+                                        // Log errors from nonce generation to the browser developer console.
+                                        console.error('Encountered errors:');
+                                        errors.forEach(function (error) {
+                                            console.error('  ' + error.message);
+                                        });
+                                        alert('Encountered errors, check browser developer console for more details');
+                                        return;
+                                    }
 
-<!--                                    // alert(`The generated nonce is:\n${nonce}`);-->
-<!--                                    console.log(nonce);-->
-<!--                                    console.log(idempotency_key);-->
-<!--                                    fetch('/api/payment', {-->
-<!--                                        method: 'POST',-->
-<!--                                        headers: {-->
-<!--                                            'Accept': 'application/json',-->
-<!--                                            'Content-Type': 'application/json'-->
-<!--                                        },-->
-<!--                                        body: JSON.stringify({-->
-<!--                                            nonce: nonce,-->
-<!--                                            idempotency_key: idempotency_key,-->
-<!--                                            // location_id: "REPLACE_WITH_LOCATION_ID"-->
-<!--                                            location_id: "LDF5NP9BZJ0CP"-->
-<!--                                        })-->
-<!--                                    })-->
-<!--                                        .catch(err => {-->
-<!--                                            alert('Network error: ' + err);-->
-<!--                                        })-->
-<!--                                        .then(response => {-->
-<!--                                            if (!response.ok) {-->
-<!--                                                return response.json().then(-->
-<!--                                                    errorInfo => Promise.reject(errorInfo));-->
-<!--                                            }-->
-<!--                                            return response.json();-->
-<!--                                        })-->
-<!--                                        .then(data => {-->
-<!--                                            console.log(data);-->
-<!--                                            alert('Payment complete successfully!\nCheck browser developer console for more details');-->
-<!--                                        })-->
-<!--                                        .catch(err => {-->
-<!--                                            console.error(err);-->
-<!--                                            alert('Payment failed to complete!\nCheck browser developer console for more details');-->
-<!--                                        });-->
+                                    // alert(`The generated nonce is:\n${nonce}`);
+                                    console.log(nonce);
+                                    console.log(idempotency_key);
+                                    fetch('/api/payment', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            nonce: nonce,
+                                            idempotency_key: idempotency_key,
+                                            // location_id: "REPLACE_WITH_LOCATION_ID"
+                                            location_id: "LDF5NP9BZJ0CP"
+                                        })
+                                    })
+                                        .catch(err => {
+                                            alert('Network error: ' + err);
+                                        })
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                return response.json().then(
+                                                    errorInfo => Promise.reject(errorInfo));
+                                            }
+                                            return response.json();
+                                        })
+                                        .then(data => {
+                                            console.log(data);
+                                            alert('Payment complete successfully!\nCheck browser developer console for more details');
+                                        })
+                                        .catch(err => {
+                                            console.error(err);
+                                            alert('Payment failed to complete!\nCheck browser developer console for more details');
+                                        });
 
-<!--                                }-->
-<!--                            }-->
-<!--                        });-->
+                                }
+                            }
+                        });
 
-<!--                        paymentForm.build();-->
+                        paymentForm.build();
 
-<!--                        //TODO: paste code from step 2.1.2-->
+                        //TODO: paste code from step 2.1.2
 
-<!--                        // onGetCardNonce is triggered when the "Pay $1.00" button is clicked-->
-<!--                        function onGetCardNonce(event) {-->
+                        // onGetCardNonce is triggered when the "Pay $1.00" button is clicked
+                        function onGetCardNonce(event) {
 
-<!--                            // Don't submit the form until SqPaymentForm returns with a nonce-->
-<!--                            event.preventDefault();-->
-<!--                            // Request a nonce from the SqPaymentForm object-->
-<!--                            paymentForm.requestCardNonce();-->
-<!--                        }-->
-<!--                    </script>-->
+                            // Don't submit the form until SqPaymentForm returns with a nonce
+                            event.preventDefault();
+                            // Request a nonce from the SqPaymentForm object
+                            paymentForm.requestCardNonce();
+                        }
+                    </script>
                 </div>
             </div>
         </div>
@@ -610,12 +660,12 @@
                                 <label class="form-check-label" for="debug">Debug</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox"  id="register" v-model="feature['register']">
-                                <label class="form-check-label" for="register">{{$t('label.register')}}</label>
+                                <input class="form-check-input" type="checkbox"  id="signin" v-model="feature['profile']">
+                                <label class="form-check-label" for="signin">{{$t('label.profile')}}</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox"  id="signin" v-model="feature['signin']">
-                                <label class="form-check-label" for="signin">{{$t('label.signin')}}</label>
+                                <input class="form-check-input" type="checkbox"  id="pay" v-model="feature['pay']">
+                                <label class="form-check-label" for="pay">Pay</label>
                             </div>
                         </form>
                     </div>

@@ -20,12 +20,15 @@ const messages = {
             theme:'Theme',light:'Light',dark:'Dark',
             register: 'Register', username: 'Username', password : 'Password', email: 'Email', mobile :'Mobile',
             signin:  'Sign In', signout: 'Sign Out', rememberme: 'Keep me signed in',forgotpass :'Forgot my password', forgotuser : 'Forgot my username',
-            settings: 'Settings…', profile: 'Profile', verify : 'Verify',
+            settings: 'Settings…', profile: 'Profile', verify : 'Verify', verified : 'Verified', unverified : 'Unverified', changepass : 'Change Password', oldpassword : 'Old Password', newpassword : 'New Password',
+            verifySubject: 'Year Planner: Email Verification', verifyBody: 'Please verify your email address by clicking the link below:\n\n\t',
             donate: 'Donate'
     },
         warn: {
             usernamenotprovided:'A username must be provided',
-            passwordnotprovided:'A password must be provided'
+            passwordnotprovided:'A password must be provided',
+            emailnotprovided:'An email address must be provided',
+            mobilenotprovided:'A mobile number must be provided'
         },
         error: {
             general: 'An error occurred',
@@ -61,7 +64,9 @@ const messages = {
             month:'Mes',year:'Año',week:'Semana',semester:'Semestre',term:'Término',today:'Hoy',
             theme:'Tema',light:'Luz',dark:'Oscuro',
             register: 'Registrarse', username: 'Nombre de usuario', password : 'Contraseña', email: 'Correo electrónico', mobile :'Móvil',
-            signin:  'Iniciar sesión', signout: 'Desconectar', rememberme: 'Mantenerme registrado',forgotpass :'Olvidé mi contraseña', forgotuser : 'Olvidé mi nombre de usuario'
+            signin:  'Iniciar sesión', signout: 'Desconectar', rememberme: 'Mantenerme registrado',forgotpass :'Olvidé mi contraseña', forgotuser : 'Olvidé mi nombre de usuario',
+            settings: 'Settings…', profile: 'Profile', verify : 'Verify',
+            verifySubject: 'Planificador anual: verificación por correo electrónico', verifyBody: 'Verifique su dirección de correo electrónico haciendo clic en el enlace siguiente:\n\n\t',
         },
         warn: {
             usernamenotprovided:'Debe proporcionarse un nombre de usuario',
@@ -99,7 +104,9 @@ const messages = {
             month:'Mês',year:'Ano',week:'Semana',semester:'Semestre',term:'Prazo',today:'Hoje',
            theme:'Tema',light:'Luz',dark:'Escuro',
            register: 'Registro', username: 'Nome do usuário', password : 'Senha', email: 'E-mail', mobile :'Celular',
-           signin:  'Entrar', signout: 'Sair', rememberme: 'Mantenha-me conectado',forgotpass :'Esqueci minha senha', forgotuser : 'Esqueci meu nome de usuário'
+           signin:  'Entrar', signout: 'Sair', rememberme: 'Mantenha-me conectado',forgotpass :'Esqueci minha senha', forgotuser : 'Esqueci meu nome de usuário',
+           settings: 'Settings…', profile: 'Profile', verify : 'Verify',
+           verifySubject: 'Planejador do ano: verificação de e-mail', verifyBody: 'Verifique o seu endereço de e-mail clicando no link abaixo:\n\n\t',
         },
         warn: {
             usernamenotprovided:'Um nome de usuário deve ser fornecido',
@@ -138,7 +145,9 @@ const messages = {
             month:'月',year:'年',week:'星期',semester:'學期',term:'學期',today:'今天',
             theme:'主題',light:'光',dark:'黑暗的',
             register: '登記', username: '用戶名', password : '密碼', email: '電子郵件', mobile :'手機',
-            signin:  '登入', signout: '登出', rememberme: '保持登錄狀態',forgotpass :'忘了我的密碼', forgotuser : '忘記我的用戶名'
+            signin:  '登入', signout: '登出', rememberme: '保持登錄狀態',forgotpass :'忘了我的密碼', forgotuser : '忘記我的用戶名',
+            settings: 'Settings…', profile: 'Profile', verify : 'Verify',
+            verifySubject: '年計劃電子郵件驗證', verifyBody: '請通過點擊以下鏈接來驗證您的電子郵件地址\n\n\t',
         },
         warn: {
             usernamenotprovided:'必須提供用戶名',
@@ -176,7 +185,9 @@ const messages = {
             month:'महीना',year:'साल',week:'सप्ताह',semester:'छमाही',term:'अवधि',today:'आज',
             theme:'विषय',light:'रोशनी',dark:'अंधेरा',
             register: 'रजिस्टर करें', username: 'उपयोगकर्ता नाम', password : 'कुंजिका', email: 'ईमेल', mobile :'मोबाइल फोन',
-            signin:  'दाखिल करना', signout: 'प्रस्थान करें', rememberme: 'मुझे सिग्ने ईन में रखना',forgotpass :'अपना पासवर्ड भूल गया', forgotuser : 'मेरा उपयोगकर्ता नाम भूल गए'
+            signin:  'दाखिल करना', signout: 'प्रस्थान करें', rememberme: 'मुझे सिग्ने ईन में रखना',forgotpass :'अपना पासवर्ड भूल गया', forgotuser : 'मेरा उपयोगकर्ता नाम भूल गए',
+               settings: 'Settings…', profile: 'Profile', verify : 'Verify',
+               verifySubject: 'वर्ष योजनाकार ईमेल सत्यापन', verifyBody: 'कृपया नीचे दिए गए लिंक पर क्लिक करके अपना ईमेल पता सत्यापित करें\n\n\t',
            },
         warn: {
             usernamenotprovided:'एक उपयोगकर्ता नाम प्रदान किया जाना चाहिए',
@@ -214,7 +225,9 @@ const messages = {
             month:'Mois',year:'An',week:'Semaine',semester:'Semestre',term:'Terme',today:'Aujourd\'hui',
             theme:'Thème',light:'Lumière',dark:'Sombre',
             register: 'S\'inscrire', username: 'Nom d\'utilisateur', password : 'Mot de passe', email: 'E-mail', mobile :'Mobile',
-            signin:  'S\'identifier', signout: 'Se déconnecter', rememberme: 'Gardez-moi connecté',forgotpass :'J\'ai oublié mon mot de passe', forgotuser : 'J\'ai oublié mon nom d\'utilisateur'
+            signin:  'S\'identifier', signout: 'Se déconnecter', rememberme: 'Gardez-moi connecté',forgotpass :'J\'ai oublié mon mot de passe', forgotuser : 'J\'ai oublié mon nom d\'utilisateur',
+            settings: 'Settings…', profile: 'Profile', verify : 'Verify',
+            verifySubject: 'Planificateur annuel: vérification des e-mails', verifyBody: 'Veuillez vérifier votre adresse e-mail en cliquant sur le lien ci-dessous:\n\n\t',
 
         },
         warn: {
@@ -253,7 +266,9 @@ const messages = {
             month:'شهر',year:'سنة',week:'أسبوع',semester:'نصف السنة',term:'شرط',today:'اليوم',
             theme:'سمة',light:'ضوء',dark:'داكن',
             register: 'يسجل', username: 'اسم المستخدم', password : 'كلمه السر', email: 'بريد إلكتروني', mobile :'تليفون محمول',
-            signin:  'تسجيل الدخول', signout: 'خروج', rememberme: 'ابقني مسجل',forgotpass :'نسيت كلمة المرور الخاصة بي', forgotuser : 'نسيت اسم المستخدم الخاص بي'
+            signin:  'تسجيل الدخول', signout: 'خروج', rememberme: 'ابقني مسجل',forgotpass :'نسيت كلمة المرور الخاصة بي', forgotuser : 'نسيت اسم المستخدم الخاص بي',
+            settings: 'Settings…', profile: 'Profile', verify : 'Verify',
+            verifySubject: 'مخطط العام التحقق من البريد الإلكتروني', verifyBody: 'يرجى التحقق من عنوان بريدك الإلكتروني من خلال النقر على الرابط أدناه',
 
         },
       warn: {
@@ -292,7 +307,9 @@ const messages = {
             month:'Месяц',year:'Год',week:'Неделя',semester:'Семестр',term:'Срок',today:'Сегодня',
             theme:'Тема',light:'Свет',dark:'Темный',
             register: 'регистр', username: 'Имя пользователя', password : 'Пароль', email: 'Электронное письмо', mobile :'Мобильный',
-            signin:  'Войти', signout: 'Выход', rememberme: 'Держать меня в системе',forgotpass :'Забыл мой пароль', forgotuser : 'Я забыл свое имя пользователя'
+            signin:  'Войти', signout: 'Выход', rememberme: 'Держать меня в системе',forgotpass :'Забыл мой пароль', forgotuser : 'Я забыл свое имя пользователя',
+           settings: 'Settings…', profile: 'Profile', verify : 'Verify',
+           verifySubject: 'Планировщик года: подтверждение адреса электронной почты', verifyBody: 'Подтвердите свой адрес электронной почты, щелкнув ссылку ниже:\n\n\t',
 
        },
         warn: {
@@ -331,7 +348,9 @@ const messages = {
             month:'月',year:'年',week:'週間',semester:'学期',term:'期間',today:'今日',
             theme:'テーマ',light:'光',dark:'闇',
             register: '登録', username: 'ユーザー名', password : 'パスワード', email: 'Eメール', mobile :'携帯電話',
-            signin:  'サインイン', signout: 'サインアウト', rememberme: 'ログイン状態を保持する',forgotpass :'自分のパスワードを忘れてしまいました', forgotuser : 'ユーザー名を忘れた'
+            signin:  'サインイン', signout: 'サインアウト', rememberme: 'ログイン状態を保持する',forgotpass :'自分のパスワードを忘れてしまいました', forgotuser : 'ユーザー名を忘れた',
+           settings: 'Settings…', profile: 'Profile', verify : 'Verify',
+           verifySubject: 'イヤープランナーメール検証', verifyBody: '以下のリンクをクリックして、メールアドレスを確認してください。\n\n\t',
 
        },
         warn: {
@@ -370,7 +389,9 @@ const messages = {
             month:'Bulan',year:'Tahun',week:'Minggu',semester:'Semester',term:'Istilah',today:'Hari ini',
             theme:'Tema',light:'Cahaya',dark:'Gelap',
             register: 'Daftar', username: 'Nama pengguna', password : 'Kata sandi', email: 'Surel', mobile :'Telepon genggam',
-            signin:  'Masuk', signout: 'Keluar', rememberme: 'Biarkan saya tetap masuk',forgotpass :'Lupa kata sandi ku', forgotuser : 'Lupa nama pengguna saya'
+            signin:  'Masuk', signout: 'Keluar', rememberme: 'Biarkan saya tetap masuk',forgotpass :'Lupa kata sandi ku', forgotuser : 'Lupa nama pengguna saya',
+           settings: 'Settings…', profile: 'Profile', verify : 'Verify',
+           verifySubject: 'Perencana Tahun: Verifikasi Email', verifyBody: 'Harap verifikasi alamat email Anda dengan mengklik link di bawah ini:\n\n\t',
 
        },
         warn: {
@@ -410,7 +431,8 @@ const messages = {
             register: 'Givim nem', username: 'Nem bilong yusim', password : 'Haitim wod', email: 'E-mel', mobile :'Telefon',
             signin:  'Mak hia', signout: 'Mak stap', rememberme: 'Kisim mi mak hia',forgotpass :'Lusim ol wod bilong hait', forgotuser : 'Lusim ol wod bilong yusim',
             settings: 'Putim ol samting…', profile: 'Pes', verify : 'Truim',
-            donate: 'Helpim ol mani'
+            verifySubject: 'Toktok bilong yia: E-mel Truim', verifyBody: 'Plis truim e-mel bilong yiu:\n\n\t',
+            donate: 'Givim ol mani'
         },
         warn: {
             usernamenotprovided:'Mas givim nem bilong yusim',

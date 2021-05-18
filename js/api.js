@@ -30,6 +30,7 @@ var synchroniseToLocal = function (syncPrefs){
             .then(response => {
                     model.response = response;
                     model.uuid = response.body.uuid;
+                    model.username = response.body.username;
                     model.donation = response.body.donation;
                     model.email = response.body.email;
                     model.emailverified = response.body.emailverified;
@@ -110,6 +111,7 @@ var signin = function(username,password,rememberme){
         .then(response => {
                 model.response = response;
                 model.uuid = response.body.uuid;
+                model.username = response.body.username;
                 model.donation = response.body.donation;
                 model.email = response.body.email;
                 model.emailverified = response.body.emailverified;
@@ -180,6 +182,14 @@ var deleteRegistration = function(){
 }
 
 var setUsername = function (username){
+    modalErr('username',null);
+    if (!model.username){
+        // model.modalWarning = 'warn.usernamenotprovided'
+        modalErr('username','warn.usernamenotprovided')
+    }
+    if (model.modalErrorTarget['username']){
+        return;
+    }
     request
         .post('/api/profile/'+model.uuid+'/username')
         .send({username:username})
@@ -187,15 +197,19 @@ var setUsername = function (username){
         .then(response => {
                 model.response = response;
                 model.uuid = response.body.uuid;
+                model.username = response.body.username;
                 model.donation = response.body.donation;
                 model.email = response.body.email;
                 model.emailverified = response.body.emailverified;
                 model.mobile = response.body.mobile;
                 model.mobileverified = response.body.mobileverified;
+                model.changeuser = false;
             }
 
         )
         .catch(err => {
+            if (err.status == 405)
+                model.modalError = 'error.apinotavailable';
             if (err.status == 404)
                 model.modalError = 'error.apinotavailable';
             if (err.status == 401)
@@ -206,6 +220,20 @@ var setUsername = function (username){
 }
 
 var setPassword = function (password,newpassword){
+    modalErr('password',null);
+    modalErr('newpassword',null);
+    if (!model.password){
+        // model.modalWarning = 'warn.passwordnotprovided'
+        modalErr('password','warn.passwordnotprovided')
+    }
+    if (!model.newpassword){
+        // model.modalWarning = 'warn.passwordnotprovided'
+        modalErr('newpassword','warn.passwordnotprovided')
+    }
+    if (model.modalErrorTarget['password'] || model.modalErrorTarget['newpassword']){
+        return;
+    }
+
     request
         .post('/api/profile/'+model.uuid+'/password')
         .send({password:password, newpassword:newpassword})
@@ -218,10 +246,15 @@ var setPassword = function (password,newpassword){
                 model.emailverified = response.body.emailverified;
                 model.mobile = response.body.mobile;
                 model.mobileverified = response.body.mobileverified;
+                model.password = '';
+                model.newpassword = '';
+                model.changepass = false;
             }
 
         )
         .catch(err => {
+            if (err.status == 405)
+                model.modalError = 'error.apinotavailable';
             if (err.status == 404)
                 model.modalError = 'error.apinotavailable';
             if (err.status == 401)
@@ -230,6 +263,14 @@ var setPassword = function (password,newpassword){
 }
 
 var setEmail = function (email){
+    modalErr('email',null);
+    if (!model.email){
+        // model.modalWarning = 'warn.usernamenotprovided'
+        modalErr('email','warn.emailnotprovided')
+    }
+    if (model.modalErrorTarget['email']){
+        return;
+    }
     request
         .post('/api/profile/'+model.uuid+'/email')
         .send({email:email})
@@ -246,6 +287,8 @@ var setEmail = function (email){
 
         )
         .catch(err => {
+            if (err.status == 405)
+                model.modalError = 'error.apinotavailable';
             if (err.status == 404)
                 model.modalError = 'error.apinotavailable';
             if (err.status == 401)
@@ -253,7 +296,7 @@ var setEmail = function (email){
         })
 }
 
-var setMobile = function (email){
+var setMobile = function (mobile){
     request
         .post('/api/profile/'+model.uuid+'/mobile')
         .send({mobile:mobile})
@@ -270,6 +313,34 @@ var setMobile = function (email){
 
         )
         .catch(err => {
+            if (err.status == 405)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 404)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 401)
+                model.modalError = 'error.unauthorized';
+        })
+}
+
+var sendVerificationEmail = function () {
+    request
+        .post('/api/verify/'+model.uuid)
+        .send({subject:i18n.t('label.verifySubject'),bodyText:i18n.t('label.verifyBodyText')})
+        .set('Accept','application/json')
+        .then(response => {
+                model.response = response;
+                model.uuid = response.body.uuid;
+                model.donation = response.body.donation;
+                model.email = response.body.email;
+                model.emailverified = response.body.emailverified;
+                model.mobile = response.body.mobile;
+                model.mobileverified = response.body.mobileverified;
+            }
+
+        )
+        .catch(err => {
+            if (err.status == 405)
+                model.modalError = 'error.apinotavailable';
             if (err.status == 404)
                 model.modalError = 'error.apinotavailable';
             if (err.status == 401)

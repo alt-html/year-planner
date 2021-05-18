@@ -46,14 +46,18 @@ var model = {
     share : share,
     name : name,
     rename : false,
+    changepass : false,
 
     uuid : getLocalSession()?.['0']||'',
     username : '',
+    changeuser : false,
     email : '',
     emailverified : 0,
+    changeemail: false,
     mobile : '',
     mobileverified : 0,
     password: '',
+    newpassword :'',
     peek : false,
     peeknp :false,
     donation : -1,
@@ -86,7 +90,8 @@ var model = {
     warning : '',
     modalError : '',
     modalErrorTarget : null,
-    modalWarning : ''
+    modalWarning : '',
+    touch : ''
 }
 
 setModelFromImportString(share);
@@ -231,6 +236,7 @@ var modalErr = function (target,err) {
         model.modalErrorTarget = {};
     }
     model.modalErrorTarget[target] =  err;
+    model.touch = model.touch ? '': ' ';
 }
 
 
