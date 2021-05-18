@@ -211,11 +211,7 @@ var copyUrl = function (){
 
 
 
-var showSettings = function () {
-
-}
-
-var saveSettings = function () {
+var showProfile = function () {
 
 }
 
