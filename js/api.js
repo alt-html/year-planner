@@ -204,6 +204,7 @@ var setUsername = function (username){
                 model.mobile = response.body.mobile;
                 model.mobileverified = response.body.mobileverified;
                 model.changeuser = false;
+                model.modalSuccess = i18n.t('success.usernamechanged');
             }
 
         )
@@ -249,6 +250,7 @@ var setPassword = function (password,newpassword){
                 model.password = '';
                 model.newpassword = '';
                 model.changepass = false;
+                model.modalSuccess = i18n.t('success.passwordchanged');
             }
 
         )
@@ -258,7 +260,7 @@ var setPassword = function (password,newpassword){
             if (err.status == 404)
                 model.modalError = 'error.apinotavailable';
             if (err.status == 401)
-                model.modalError = 'error.unauthorized';
+                model.modalError = 'error.passwordincorrect';
         })
 }
 
@@ -283,6 +285,8 @@ var setEmail = function (email){
                 model.emailverified = response.body.emailverified;
                 model.mobile = response.body.mobile;
                 model.mobileverified = response.body.mobileverified;
+                model.changeemail = false;
+                model.modalSuccess = i18n.t('success.emailchanged');
             }
 
         )
@@ -325,16 +329,10 @@ var setMobile = function (mobile){
 var sendVerificationEmail = function () {
     request
         .post('/api/verify/'+model.uuid)
-        .send({subject:i18n.t('label.verifySubject'),bodyText:i18n.t('label.verifyBodyText')})
+        .send({subject:i18n.t('label.verifySubject'),bodyText:i18n.t('label.verifyBody')})
         .set('Accept','application/json')
         .then(response => {
-                model.response = response;
-                model.uuid = response.body.uuid;
-                model.donation = response.body.donation;
-                model.email = response.body.email;
-                model.emailverified = response.body.emailverified;
-                model.mobile = response.body.mobile;
-                model.mobileverified = response.body.mobileverified;
+                model.modalSuccess = i18n.t('success.verifySent')
             }
 
         )
@@ -346,6 +344,30 @@ var sendVerificationEmail = function () {
             if (err.status == 401)
                 model.modalError = 'error.unauthorized';
         })
+}
+
+var verifyEmailToken = function (token) {
+    if (token){
+        request
+            .post('/api/verify/email/'+token)
+            .send({})
+            .set('Accept','application/json')
+            .then(response => {
+                    model.response = response;
+                    model.emailverified = response.body.emailverified;
+                }
+            )
+            .catch(err => {
+                if (err.status == 405)
+                    model.error = 'error.apinotavailable';
+                if (err.status == 404)
+                    model.error = 'error.apinotavailable';
+                if (err.status == 401)
+                    model.error = 'error.unauthorized';
+            })
+
+    }
+
 }
 
 var email = function (to,subject,bodyText){

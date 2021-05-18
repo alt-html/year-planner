@@ -22,6 +22,7 @@ var theme = $.urlParam('theme') || (preferences['2'] == 1 ? 'dark' : 'light');
 var name = $.urlParam('name') || (preferences['3']?.[''+year]?.[lang]) || '';
 
 var share = $.urlParam('share') || '';
+var verify = $.urlParam('verify') || '';
 
 preferences['0'] = year;
 preferences['1'] = lang;
@@ -91,10 +92,12 @@ var model = {
     modalError : '',
     modalErrorTarget : null,
     modalWarning : '',
+    modalSuccess : '',
     touch : ''
 }
 
 setModelFromImportString(share);
+verifyEmailToken(verify);
 
 var refresh = function() {
     setYear(model.year);
@@ -249,6 +252,7 @@ var clearModalAlert = function (){
  model.modalError = '';
  model.modalErrorTarget = null;
  model.modalWarning = '';
+ model.modalSuccess = '';
 
 }
 

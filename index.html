@@ -326,6 +326,12 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
+                        <div class="fade" v-if="modalSuccess" v-bind:class="{'alert alert-success alert-dismissible show': modalSuccess != ''}" role="alert">
+                            <p>{{$t(modalSuccess)}}</p>
+                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                         <form>
                             <label for="username-settings" class="col-form-label">{{$t('label.username')}}{{touch}}</label>
                             <div class="input-group">
@@ -395,7 +401,6 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
-                        <button type="button" class="btn btn-primary"  v-on:click="saveSettings()">{{$t('label.update')}}</button>
                     </div>
                 </div>
             </div>

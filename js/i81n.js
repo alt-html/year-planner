@@ -24,6 +24,12 @@ const messages = {
             verifySubject: 'Year Planner: Email Verification', verifyBody: 'Please verify your email address by clicking the link below:\n\n\t',
             donate: 'Donate'
     },
+        success: {
+            verifySent : 'A verification email has been sent.',
+            usernamechanged : 'Username has been changed.',
+            passwordchanged : 'Password has been changed.',
+            emailchanged : 'Email has been changed. Click the send button to send a verification email.'
+        },
         warn: {
             usernamenotprovided:'A username must be provided',
             passwordnotprovided:'A password must be provided',
@@ -34,7 +40,8 @@ const messages = {
             general: 'An error occurred',
             apinotavailable: 'The remote year planner API is not available',
             usernotavailable: 'The username is not available',
-            unauthorized: 'Username or password is not correct'
+            unauthorized: 'Username or password is not correct',
+            passwordincorrect: 'Password is not correct',
         },
         month : {
             January: 'January', February: 'February', March : 'March', April:'April', May:'May',June:'June',July:'July',August:'August',September:'September',October:'October',November:'November',December:'December'
@@ -106,7 +113,7 @@ const messages = {
            register: 'Registro', username: 'Nome do usuário', password : 'Senha', email: 'E-mail', mobile :'Celular',
            signin:  'Entrar', signout: 'Sair', rememberme: 'Mantenha-me conectado',forgotpass :'Esqueci minha senha', forgotuser : 'Esqueci meu nome de usuário',
            settings: 'Settings…', profile: 'Profile', verify : 'Verify',
-           verifySubject: 'Planejador do ano: verificação de e-mail', verifyBody: 'Verifique o seu endereço de e-mail clicando no link abaixo:\n\n\t',
+           verifySubject: 'Planejador do ano: verificação de e-mail', verifyBody: 'Verifique o seu endereço de e-mail clicando no link abaixo:\n\n\t'
         },
         warn: {
             usernamenotprovided:'Um nome de usuário deve ser fornecido',
