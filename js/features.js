@@ -1,6 +1,6 @@
 var feature = {
     debug : false,
-    profile : false,
+    profile : true,
     register : true,
     signin : true,
     import : false,
