@@ -93,6 +93,7 @@ var model = {
     modalErrorTarget : null,
     modalWarning : '',
     modalSuccess : '',
+    loaded : false,
     touch : ''
 }
 
@@ -114,6 +115,7 @@ var refresh = function() {
             document.body.classList.length = 0;
         }
     }
+    model.loaded=true;
 }
 
 var  setYear = function (year) {
