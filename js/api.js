@@ -70,7 +70,7 @@ var register = function(username,password,email,mobile){
 
     request
         .put('/api/planner')
-        .send({username:username,password:password,email:email,mobile:mobile})
+        .send({username:username,password:password,email:email,mobile:mobile,subject:i18n.t('label.verifySubject'),bodyText:i18n.t('label.verifyBody')})
         .set('Accept','application/json')
         .then(response => {
                 model.response = response;
