@@ -55,11 +55,9 @@ The year planner is available in 10 popular languages:
 - Japanese
 
 ### Backlog
+- \[ \] Recover password
+- \[ \] Recover username
 
-- \[ \] Profile Edit
-- \[ \] Change username
-- \[ \] Change password
-- \[ \] Add / Verify email
 - \[ \] Add / Verify mobile
   
 - \[ \] 2x 26 week semester view
@@ -69,8 +67,11 @@ The year planner is available in 10 popular languages:
 - \[ \] Donate via payment gateway (Square)
 - \[ \] Expire a donation
 
-
 ### Recent Features Added
+- \[x\] Profile Edit
+- \[x\] Change username
+- \[x\] Change password
+- \[x\] Add / Verify email
 - \[x\] Peek / unpeek passwords
 - \[x\] Dark theme dropdowns
 - \[x\] Dark theme modals

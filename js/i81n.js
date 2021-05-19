@@ -22,10 +22,14 @@ const messages = {
             signin:  'Sign In', signout: 'Sign Out', rememberme: 'Keep me signed in',forgotpass :'Forgot my password', forgotuser : 'Forgot my username',
             settings: 'Settings…', profile: 'Profile', verify : 'Verify', verified : 'Verified', unverified : 'Unverified', changepass : 'Change Password', oldpassword : 'Old Password', newpassword : 'New Password',
             verifySubject: 'Year Planner: Email Verification', verifyBody: 'Please verify your email address by clicking the link below:\n\n\t',
+            recoverPassSubject: 'Year Planner: Reset Password', recoverPassBody: 'Your reset Year Planner account password is:\n\n\t',
+            recoverUserSubject: 'Year Planner: Recover Username', recoverUserBody: 'Your Year Planner account name is:\n\n\t',
             donate: 'Donate'
     },
         success: {
             verifySent : 'A verification email has been sent.',
+            recoverPassSent : 'A new password has been sent to your verified account email address.',
+            recoverUserSent : 'Your username has been sent to your verified account email address.',
             usernamechanged : 'Username has been changed.',
             passwordchanged : 'Password has been changed.',
             emailchanged : 'Email has been changed. Click the send button to send a verification email.'

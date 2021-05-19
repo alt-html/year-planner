@@ -370,6 +370,47 @@ var verifyEmailToken = function (token) {
 
 }
 
+var sendRecoverPasswordEmail = function (username) {
+    request
+        .post('/api/verify/'+model.uuid)
+        .send({subject:i18n.t('label.recoverPassSubject'),bodyText:i18n.t('label.recoverPassBody')})
+        .set('Accept','application/json')
+        .then(response => {
+                model.modalSuccess = i18n.t('success.recoverPassSent')
+            }
+
+        )
+        .catch(err => {
+            if (err.status == 405)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 404)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 401)
+                model.modalError = 'error.unauthorized';
+        })
+}
+
+var sendRecoverUsernameEmail = function (email) {
+    request
+        .post('/api/verify/'+model.uuid)
+        .send({subject:i18n.t('label.recoverUserSubject'),bodyText:i18n.t('label.recoverUserBody')})
+        .set('Accept','application/json')
+        .then(response => {
+                model.modalSuccess = i18n.t('success.recoverUserSent')
+            }
+
+        )
+        .catch(err => {
+            if (err.status == 405)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 404)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 401)
+                model.modalError = 'error.unauthorized';
+        })
+}
+
+
 var email = function (to,subject,bodyText){
     request
         .post('/api/email')
