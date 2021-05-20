@@ -74,13 +74,18 @@ const messages = {
             rename : 'Rebautizar',untitled : 'Intitulado',
             month:'Mes',year:'Año',week:'Semana',semester:'Semestre',term:'Término',today:'Hoy',
             theme:'Tema',light:'Luz',dark:'Oscuro',
-            register: 'Registrarse', username: 'Nombre de usuario', password : 'Contraseña', email: 'Correo electrónico', mobile :'Móvil',haveaccount:'Already have an account?',
-            signin:  'Iniciar sesión', signout: 'Desconectar', rememberme: 'Mantenerme registrado',forgotpass :'Olvidé mi contraseña', forgotuser : 'Olvidé mi nombre de usuario',noaccount:'Don\'t have an account?',
+            register: 'Registrarse', username: 'Nombre de usuario', password : 'Contraseña', email: 'Correo electrónico', mobile :'Móvil',haveaccount:'¿Ya tienes una cuenta?',
+            signin:  'Iniciar sesión', signout: 'Desconectar', rememberme: 'Mantenerme registrado',forgotpass :'Olvidé mi contraseña', forgotuser : 'Olvidé mi nombre de usuario',noaccount:'¿No tienes una cuenta?',
             settings: 'Settings…', profile: 'Perfil', verify : 'Verificar', verified : 'Verificado', unverified : 'Inconfirmado', changepass : 'Cambiar la contraseña', oldpassword : 'Contraseña anterior', newpassword : 'Nueva contraseña',
             verifySubject: 'Planificador anual: verificación por correo electrónico', verifyBody: 'Verifique su dirección de correo electrónico haciendo clic en el enlace siguiente:\n\n\t',
+            resetPassword: 'Restablecer la contraseña', recoverPassSubject: 'Planificador anual: restablecer contraseña', recoverPassBody: 'Su contraseña de cuenta de Year Planner restablecida es:\n\n\t',
+            recover:'Recuperar', recoverUsername: 'Recuperar nombre de usuario', recoverUserSubject: 'Planificador anual: recuperar nombre de usuario', recoverUserBody: 'El nombre de su cuenta del planificador anual es:\n\n\t',
+            donate: 'Donate'
         },
         success: {
-            verifySent : 'Se ha enviado un correo electrónico de verificación.',
+            verifySent : 'Se ha enviado un correo electrónico de verificación',
+            recoverPassSent : 'Se ha enviado una nueva contraseña a la dirección de correo electrónico de su cuenta verificada',
+            recoverUserSent : 'Su nombre de usuario ha sido enviado a la dirección de correo electrónico de su cuenta verificada',
             usernamechanged : 'Se ha cambiado el nombre de usuario',
             passwordchanged : 'La contraseña ha sido cambiada',
             emailchanged : 'Se ha cambiado el correo electrónico. Haga clic en el botón enviar para enviar un correo electrónico de verificación'
@@ -121,13 +126,18 @@ const messages = {
             rename : 'Renomear',untitled : 'Sem título',
             month:'Mês',year:'Ano',week:'Semana',semester:'Semestre',term:'Prazo',today:'Hoje',
            theme:'Tema',light:'Luz',dark:'Escuro',
-           register: 'Registro', username: 'Nome do usuário', password : 'Senha', email: 'E-mail', mobile :'Celular',haveaccount:'Already have an account?',
-           signin:  'Entrar', signout: 'Sair', rememberme: 'Mantenha-me conectado',forgotpass :'Esqueci minha senha', forgotuser : 'Esqueci meu nome de usuário',noaccount:'Don\'t have an account?',
+           register: 'Registro', username: 'Nome do usuário', password : 'Senha', email: 'E-mail', mobile :'Celular',haveaccount:'Já tem uma conta?',
+           signin:  'Entrar', signout: 'Sair', rememberme: 'Mantenha-me conectado',forgotpass :'Esqueci minha senha', forgotuser : 'Esqueci meu nome de usuário',noaccount:'Não tem conta?',
            settings: 'Settings…', profile: 'Perfil', verify : 'Verificar', verified : 'Verificado', unverified : 'Não verificado', changepass : 'Alterar a senha', oldpassword : 'Senha Antiga', newpassword : 'Nova Senha',
-           verifySubject: 'Planejador do ano: verificação de e-mail', verifyBody: 'Verifique o seu endereço de e-mail clicando no link abaixo:\n\n\t'
+           verifySubject: 'Planejador do ano: verificação de e-mail', verifyBody: 'Verifique o seu endereço de e-mail clicando no link abaixo:\n\n\t',
+           resetPassword: 'Redefinir senha', recoverPassSubject: 'Planejador do ano: redefinir senha', recoverPassBody: 'A senha redefinida da sua conta do planejador anual é:\n\n\t',
+           recover:'Recuperar', recoverUsername: 'Recuperar nome de usuário', recoverUserSubject: 'Planejador do ano: recuperar nome de usuário', recoverUserBody: 'O nome da sua conta do planejador anual é:\n\n\t',
+           donate: 'Donate'
         },
         success: {
             verifySent : 'Um e-mail de verificação foi enviado',
+            recoverPassSent : 'Uma nova senha foi enviada para o endereço de e-mail da sua conta verificada',
+            recoverUserSent : 'Seu nome de usuário foi enviado para o endereço de e-mail verificado da sua conta',
             usernamechanged : 'O nome de usuário foi alterado',
             passwordchanged : 'A senha foi alterada',
             emailchanged : 'Email foi alterado. Clique no botão enviar para enviar um e-mail de verificação'
@@ -169,13 +179,18 @@ const messages = {
             rename : '改名',untitled : '無標題',
             month:'月',year:'年',week:'星期',semester:'學期',term:'學期',today:'今天',
             theme:'主題',light:'光',dark:'黑暗的',
-            register: '登記', username: '用戶名', password : '密碼', email: '電子郵件', mobile :'手機',haveaccount:'Already have an account?',
-            signin:  '登入', signout: '登出', rememberme: '保持登錄狀態',forgotpass :'忘了我的密碼', forgotuser : '忘記我的用戶名',noaccount:'Don\'t have an account?',
+            register: '登記', username: '用戶名', password : '密碼', email: '電子郵件', mobile :'手機',haveaccount:'已經有帳號了',
+            signin:  '登入', signout: '登出', rememberme: '保持登錄狀態',forgotpass :'忘了我的密碼', forgotuser : '忘記我的用戶名',noaccount:'還沒有帳號',
             settings: 'Settings…', profile: '輪廓', verify : '核實', verified : '已驗證', unverified : '未驗證', changepass : '更改密碼', oldpassword : '舊密碼', newpassword : '新密碼',
             verifySubject: '年計劃電子郵件驗證', verifyBody: '請通過點擊以下鏈接來驗證您的電子郵件地址\n\n\t',
+            resetPassword: '重設密碼', recoverPassSubject: '年計劃員重置密碼', recoverPassBody: '您的重置年計劃者帳戶密碼為\n\n\t',
+            recover:'恢復', recoverUsername: '恢復用戶名', recoverUserSubject: '年計劃員恢復用戶名', recoverUserBody: '您的年度計劃者帳戶名稱為\n\n\t',
+            donate: 'Donate'
         },
         success: {
             verifySent : '驗證郵件已發送',
+            recoverPassSent : '新密碼已發送到您已驗證的帳戶電子郵件地址',
+            recoverUserSent : '您的用戶名已發送到您已驗證的帳戶電子郵件地址',
             usernamechanged : '用戶名已更改',
             passwordchanged : '密碼已被更改',
             emailchanged : '電子郵件已被更改。點擊發送按鈕發送驗證郵件'
@@ -216,13 +231,18 @@ const messages = {
             rename : 'नाम बदलें',untitled : 'शीर्षकहीन',
             month:'महीना',year:'साल',week:'सप्ताह',semester:'छमाही',term:'अवधि',today:'आज',
             theme:'विषय',light:'रोशनी',dark:'अंधेरा',
-            register: 'रजिस्टर करें', username: 'उपयोगकर्ता नाम', password : 'कुंजिका', email: 'ईमेल', mobile :'मोबाइल फोन',haveaccount:'Already have an account?',
-            signin:  'दाखिल करना', signout: 'प्रस्थान करें', rememberme: 'मुझे सिग्ने ईन में रखना',forgotpass :'अपना पासवर्ड भूल गया', forgotuser : 'मेरा उपयोगकर्ता नाम भूल गए',noaccount:'Don\'t have an account?',
+            register: 'रजिस्टर करें', username: 'उपयोगकर्ता नाम', password : 'कुंजिका', email: 'ईमेल', mobile :'मोबाइल फोन',haveaccount:'पहले से ही एक खाता है',
+            signin:  'दाखिल करना', signout: 'प्रस्थान करें', rememberme: 'मुझे सिग्ने ईन में रखना',forgotpass :'अपना पासवर्ड भूल गया', forgotuser : 'मेरा उपयोगकर्ता नाम भूल गए',noaccount:'खाता नहीं है?',
                settings: 'Settings…', profile: 'प्रोफ़ाइल', verify : 'सत्यापित करें', verified : 'सत्यापित', unverified : 'असत्यापित', changepass : 'पासवर्ड बदलें', oldpassword : 'पुराना पासवर्ड', newpassword : 'नया पासवर्ड',
                verifySubject: 'वर्ष योजनाकार ईमेल सत्यापन', verifyBody: 'कृपया नीचे दिए गए लिंक पर क्लिक करके अपना ईमेल पता सत्यापित करें\n\n\t',
+               resetPassword: 'पासवर्ड रीसेट', recoverPassSubject: 'वर्ष योजनाकार पासवर्ड रीसेट करें', recoverPassBody: 'आपका रीसेट वर्ष योजनाकार खाता पासवर्ड है\n\n\t',
+               recover:'वसूली', recoverUsername: 'उपयोगकर्ता नाम पुनर्प्राप्त करें', recoverUserSubject: 'वर्ष योजनाकार उपयोगकर्ता नाम पुनर्प्राप्त करें', recoverUserBody: 'आपके वर्ष योजनाकार खाते का नाम है\n\n\t',
+               donate: 'Donate'
            },
         success: {
             verifySent : 'एक सत्यापन ईमेल भेजा गया है',
+            recoverPassSent : 'आपके सत्यापित खाते के ईमेल पते पर एक नया पासवर्ड भेज दिया गया है।',
+            recoverUserSent : 'आपका उपयोगकर्ता नाम आपके सत्यापित खाते के ईमेल पते पर भेज दिया गया है',
             usernamechanged : 'उपयोगकर्ता नाम बदल दिया गया है',
             passwordchanged : 'पासवर्ड बदला जा चुका है',
             emailchanged : 'ईमेल बदल दिया गया है। सत्यापन ईमेल भेजने के लिए भेजें बटन पर क्लिक करें'
@@ -263,14 +283,18 @@ const messages = {
             rename : 'Renommer',untitled : 'Sans titre',
             month:'Mois',year:'An',week:'Semaine',semester:'Semestre',term:'Terme',today:'Aujourd\'hui',
             theme:'Thème',light:'Lumière',dark:'Sombre',
-            register: 'S\'inscrire', username: 'Nom d\'utilisateur', password : 'Mot de passe', email: 'E-mail', mobile :'Mobile',haveaccount:'Already have an account?',
-            signin:  'S\'identifier', signout: 'Se déconnecter', rememberme: 'Gardez-moi connecté',forgotpass :'J\'ai oublié mon mot de passe', forgotuser : 'J\'ai oublié mon nom d\'utilisateur',noaccount:'Don\'t have an account?',
+            register: 'S\'inscrire', username: 'Nom d\'utilisateur', password : 'Mot de passe', email: 'E-mail', mobile :'Mobile',haveaccount:'Vous avez déjà un compte?',
+            signin:  'S\'identifier', signout: 'Se déconnecter', rememberme: 'Gardez-moi connecté',forgotpass :'J\'ai oublié mon mot de passe', forgotuser : 'J\'ai oublié mon nom d\'utilisateur',noaccount:'Vous n\'avez pas de compte?',
             settings: 'Settings…', profile: 'Profil', verify : 'Vérifier', verified : 'Vérifié', unverified : 'Non vérifié', changepass : 'Changer le mot de passe', oldpassword : 'Ancien mot de passe', newpassword : 'Nouveau mot de passe',
             verifySubject: 'Planificateur annuel: vérification des e-mails', verifyBody: 'Veuillez vérifier votre adresse e-mail en cliquant sur le lien ci-dessous:\n\n\t',
-
+            resetPassword: 'Réinitialiser le mot de passe', recoverPassSubject: 'Planificateur annuel: réinitialiser le mot de passe', recoverPassBody: 'Le mot de passe de votre compte de planificateur d\'année de réinitialisation est:\n\n\t',
+            recover:'Se remettre', recoverUsername: 'Récupérer le nom d\'utilisateur', recoverUserSubject: 'Planificateur d\'année: récupérer le nom d\'utilisateur', recoverUserBody: 'Le nom de votre compte de planificateur annuel est:\n\n\t',
+            donate: 'Donate'
         },
         success: {
             verifySent : 'Un e-mail de vérification a été envoyé',
+            recoverPassSent : 'Un nouveau mot de passe a été envoyé à l\'adresse e-mail de votre compte vérifié',
+            recoverUserSent : 'Votre nom d\'utilisateur a été envoyé à l\'adresse e-mail de votre compte vérifié',
             usernamechanged : 'Le nom d\'utilisateur a été modifié',
             passwordchanged : 'Le mot de passe a été changé',
             emailchanged : 'L\'adresse e-mail a été modifiée. Cliquez sur le bouton d\'envoi pour envoyer un e-mail de vérification'
@@ -311,14 +335,19 @@ const messages = {
             rename : 'إعادة تسمية',untitled : 'بدون عنوان',
             month:'شهر',year:'سنة',week:'أسبوع',semester:'نصف السنة',term:'شرط',today:'اليوم',
             theme:'سمة',light:'ضوء',dark:'داكن',
-            register: 'يسجل', username: 'اسم المستخدم', password : 'كلمه السر', email: 'بريد إلكتروني', mobile :'تليفون محمول',haveaccount:'Already have an account?',
-            signin:  'تسجيل الدخول', signout: 'خروج', rememberme: 'ابقني مسجل',forgotpass :'نسيت كلمة المرور الخاصة بي', forgotuser : 'نسيت اسم المستخدم الخاص بي',noaccount:'Don\'t have an account?',
+            register: 'يسجل', username: 'اسم المستخدم', password : 'كلمه السر', email: 'بريد إلكتروني', mobile :'تليفون محمول',haveaccount:'هل لديك حساب',
+            signin:  'تسجيل الدخول', signout: 'خروج', rememberme: 'ابقني مسجل',forgotpass :'نسيت كلمة المرور الخاصة بي', forgotuser : 'نسيت اسم المستخدم الخاص بي',noaccount:'ليس لديك حساب',
             settings: 'Settings…', profile: 'الملف الشخصي', verify : 'تحقق', verified : 'تم التحقق', unverified : 'لم يتم التحقق منه', changepass : 'تغيير كلمة المرور', oldpassword : 'كلمة سر قديمة', newpassword : 'كلمة السر الجديدة',
             verifySubject: 'مخطط العام التحقق من البريد الإلكتروني', verifyBody: 'يرجى التحقق من عنوان بريدك الإلكتروني من خلال النقر على الرابط أدناه',
+            resetPassword: 'إعادة تعيين كلمة المرور', recoverPassSubject: 'مخطط العام إعادة تعيين كلمة المرور', recoverPassBody: 'إعادة تعيين كلمة مرور حساب مخطط العام الخاص بك هي\n\n\t',
+            recover:'استعادة', recoverUsername: 'استعادة اسم المستخدم', recoverUserSubject: 'مخطط العام استرداد اسم المستخدم', recoverUserBody: 'اسم حساب مخطط العام الخاص بك هو\n\n\t',
+            donate: 'Donate'
 
         },
       success: {
           verifySent : 'تم إرسال بريد إلكتروني للتحقق',
+          recoverPassSent : 'تم إرسال كلمة مرور جديدة إلى عنوان البريد الإلكتروني الخاص بحسابك الذي تم التحقق منه',
+          recoverUserSent : 'تم إرسال اسم المستخدم الخاص بك إلى عنوان البريد الإلكتروني لحسابك الذي تم التحقق منه',
           usernamechanged : 'تم تغيير اسم المستخدم',
           passwordchanged : 'تم تغيير كلمة المرور',
           emailchanged : 'تم تغيير البريد الإلكتروني. انقر فوق الزر إرسال لإرسال بريد إلكتروني للتحقق'
@@ -359,14 +388,18 @@ const messages = {
             rename : 'Переименовать',untitled : 'Без названия',
             month:'Месяц',year:'Год',week:'Неделя',semester:'Семестр',term:'Срок',today:'Сегодня',
             theme:'Тема',light:'Свет',dark:'Темный',
-            register: 'регистр', username: 'Имя пользователя', password : 'Пароль', email: 'Электронное письмо', mobile :'Мобильный',haveaccount:'Already have an account?',
-            signin:  'Войти', signout: 'Выход', rememberme: 'Держать меня в системе',forgotpass :'Забыл мой пароль', forgotuser : 'Я забыл свое имя пользователя',noaccount:'Don\'t have an account?',
+            register: 'регистр', username: 'Имя пользователя', password : 'Пароль', email: 'Электронное письмо', mobile :'Мобильный',haveaccount:'Уже есть аккаунт?',
+            signin:  'Войти', signout: 'Выход', rememberme: 'Держать меня в системе',forgotpass :'Забыл мой пароль', forgotuser : 'Я забыл свое имя пользователя',noaccount:'Нет учетной записи?',
            settings: 'Settings…', profile: 'Профиль', verify : 'Проверять', verified : 'Проверено', unverified : 'Непроверенный', changepass : 'Измени пароль', oldpassword : 'Прежний пароль', newpassword : 'Новый пароль',
            verifySubject: 'Планировщик года: подтверждение адреса электронной почты', verifyBody: 'Подтвердите свой адрес электронной почты, щелкнув ссылку ниже:\n\n\t',
-
+           resetPassword: 'Сброс пароля', recoverPassSubject: 'Планировщик года сбросить пароль', recoverPassBody: 'Пароль вашей учетной записи планировщика на год для сброса\n\n\t',
+           recover:'Восстанавливаться', recoverUsername: 'Восстановить имя пользователя', recoverUserSubject: 'Планировщик года восстановить имя пользователя', recoverUserBody: 'Имя вашей учетной записи планировщика года\n\n\t',
+           donate: 'Donate'
        },
         success: {
             verifySent : 'Письмо с подтверждением отправлено',
+            recoverPassSent : 'На ваш подтвержденный адрес электронной почты был отправлен новый пароль',
+            recoverUserSent : 'Ваше имя пользователя было отправлено на адрес электронной почты вашего подтвержденного аккаунта',
             usernamechanged : 'Имя пользователя было изменено',
             passwordchanged : 'пароль был изменен',
             emailchanged : 'Электронная почта была изменена. Нажмите кнопку «Отправить», чтобы отправить письмо с подтверждением'
@@ -407,14 +440,18 @@ const messages = {
             rename : '名前を変更',untitled : '無題',
             month:'月',year:'年',week:'週間',semester:'学期',term:'期間',today:'今日',
             theme:'テーマ',light:'光',dark:'闇',
-            register: '登録', username: 'ユーザー名', password : 'パスワード', email: 'Eメール', mobile :'携帯電話',haveaccount:'Already have an account?',
-            signin:  'サインイン', signout: 'サインアウト', rememberme: 'ログイン状態を保持する',forgotpass :'自分のパスワードを忘れてしまいました', forgotuser : 'ユーザー名を忘れた',noaccount:'Don\'t have an account?',
+            register: '登録', username: 'ユーザー名', password : 'パスワード', email: 'Eメール', mobile :'携帯電話',haveaccount:'すでにアカウントをお持ちですか',
+            signin:  'サインイン', signout: 'サインアウト', rememberme: 'ログイン状態を保持する',forgotpass :'自分のパスワードを忘れてしまいました', forgotuser : 'ユーザー名を忘れた',noaccount:'アカウントをお持ちではありませんか',
            settings: 'Settings…', profile: 'プロフィール', verify : '確認', verified : '確認済み', unverified : '未確認', changepass : 'パスワードを変更する', oldpassword : '以前のパスワード', newpassword : '新しいパスワード',
            verifySubject: 'イヤープランナーメール検証', verifyBody: '以下のリンクをクリックして、メールアドレスを確認してください。\n\n\t',
-
+           resetPassword: 'パスワードを再設定する', recoverPassSubject: 'イヤープランナーパスワードをリセット', recoverPassBody: 'リセットされたイヤープランナーアカウントのパスワードは\n\n\t',
+           recover:'回復します', recoverUsername: 'ユーザー名を回復する', recoverUserSubject: 'イヤープランナーユーザー名を回復する', recoverUserBody: 'イヤープランナーのアカウント名は\n\n\t',
+           donate: 'Donate'
        },
         success: {
             verifySent : '確認メールが送信されました',
+            recoverPassSent : '確認済みのアカウントのメールアドレスに新しいパスワードが送信されました',
+            recoverUserSent : 'ユーザー名が確認済みのアカウントのメールアドレスに送信されました',
             usernamechanged : 'ユーザー名が変更されました',
             passwordchanged : 'パスワードが変更されました',
             emailchanged : 'メールが変更されました。送信ボタンをクリックして、確認メールを送信します'
@@ -455,14 +492,18 @@ const messages = {
             rename : 'Ganti nama',untitled : 'Tanpa judul',
             month:'Bulan',year:'Tahun',week:'Minggu',semester:'Semester',term:'Istilah',today:'Hari ini',
             theme:'Tema',light:'Cahaya',dark:'Gelap',
-            register: 'Daftar', username: 'Nama pengguna', password : 'Kata sandi', email: 'Surel', mobile :'Telepon genggam',haveaccount:'Already have an account?',
-            signin:  'Masuk', signout: 'Keluar', rememberme: 'Biarkan saya tetap masuk',forgotpass :'Lupa kata sandi ku', forgotuser : 'Lupa nama pengguna saya',noaccount:'Don\'t have an account?',
+            register: 'Daftar', username: 'Nama pengguna', password : 'Kata sandi', email: 'Surel', mobile :'Telepon genggam',haveaccount:'Sudah memiliki akun?',
+            signin:  'Masuk', signout: 'Keluar', rememberme: 'Biarkan saya tetap masuk',forgotpass :'Lupa kata sandi ku', forgotuser : 'Lupa nama pengguna saya',noaccount:'Belum punya akun?',
            settings: 'Settings…', profile: 'Profil', verify : 'Memeriksa', verified : 'Diverifikasi', unverified : 'Tidak diverifikasi', changepass : 'Ganti kata sandi', oldpassword : 'Kata sandi baru', newpassword : 'Kata sandi lama',
            verifySubject: 'Perencana Tahun: Verifikasi Email', verifyBody: 'Harap verifikasi alamat email Anda dengan mengklik link di bawah ini:\n\n\t',
-
+           resetPassword: 'Atur Ulang Kata Sandi', recoverPassSubject: 'Perencana Tahun: Atur Ulang Kata Sandi', recoverPassBody: 'Kata sandi akun perencana tahun penyetelan ulang Anda adalah:\n\n\t',
+           recover:'Memulihkan', recoverUsername: 'Pulihkan Nama Pengguna', recoverUserSubject: 'Perencana Tahun: Pulihkan Nama Pengguna', recoverUserBody: 'Nama akun perencana tahun Anda adalah\n\n\t',
+           donate: 'Donate'
        },
         success: {
             verifySent : 'Email verifikasi telah dikirim',
+            recoverPassSent : 'Kata sandi baru telah dikirim ke alamat email akun terverifikasi Anda',
+            recoverUserSent : 'Nama pengguna Anda telah dikirim ke alamat email akun terverifikasi Anda',
             usernamechanged : 'Nama pengguna telah diubah',
             passwordchanged : 'Kata sandi telah diubah',
             emailchanged : 'Email telah diubah. Klik tombol kirim untuk mengirim email verifikasi'
@@ -502,14 +543,18 @@ const messages = {
             rename : 'Senisim nem',untitled : 'Nogat nem',
             month:'Mun',year:'Yia',week:'Wik',semester:'Semester',term:'Term',today:'Tude',
             theme:'Kala',light:'Wait',dark:'Bilak',
-            register: 'Givim nem', username: 'Nem bilong yusim', password : 'Haitim wod', email: 'E-mel', mobile :'Telefon',haveaccount:'Already have an account?',
-            signin:  'Mak hia', signout: 'Mak stap', rememberme: 'Kisim mi mak hia',forgotpass :'Lusim ol wod bilong hait', forgotuser : 'Lusim ol wod bilong yusim',noaccount:'Don\'t have an account?',
-            settings: 'Putim ol samting…', profile: 'Pes', verify : 'Truim', verified : 'Verified', unverified : 'Unverified', changepass : 'Change Password', oldpassword : 'Old Password', newpassword : 'New Password',
+            register: 'Givim nem', username: 'Nem bilong yusim', password : 'Haitim wod', email: 'E-mel', mobile :'Telefon',haveaccount:'Ol yusim behain?',
+            signin:  'Mak hia', signout: 'Mak stap', rememberme: 'Kisim mi mak hia',forgotpass :'Lusim ol wod bilong hait', forgotuser : 'Lusim ol wod bilong yusim',noaccount:'No yusim behain?',
+            settings: 'Putim ol samting…', profile: 'Pes', verify : 'Truim', verified : 'Ol truim', unverified : 'Truim nogut', changepass : 'Senisim wod bilong hait', oldpassword : 'wod bilong hait long behain', newpassword : 'Nupela wod bilong hait',
             verifySubject: 'Toktok bilong yia: E-mel Truim', verifyBody: 'Plis truim e-mel bilong yiu:\n\n\t',
+            resetPassword: 'Reset Password', recoverPassSubject: 'Year Planner: Reset Password', recoverPassBody: 'Your reset Year Planner account password is:\n\n\t',
+            recover:'Recover', recoverUsername: 'Recover Username', recoverUserSubject: 'Year Planner: Recover Username', recoverUserBody: 'Your Year Planner account name is:\n\n\t',
             donate: 'Givim ol mani'
         },
         success: {
             verifySent : 'A verification email has been sent.',
+            recoverPassSent : 'A new password has been sent to your verified account email address.',
+            recoverUserSent : 'Your username has been sent to your verified account email address.',
             usernamechanged : 'Username has been changed.',
             passwordchanged : 'Password has been changed.',
             emailchanged : 'Email has been changed. Click the send button to send a verification email.'
