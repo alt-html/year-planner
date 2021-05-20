@@ -10,11 +10,15 @@ Example planners:
 
 The Year planner is a responsive (mobile-first) single-page HTML application that uses browser storage (cookies) to store, navigate and display clickable tweet sized Western (Gregorian) calendar diary entries.  
 
-Entries are <em>not</em> sent to or stored in the "cloud" by design.  Each browser instance stores and maintains an independent instance (copy) of your planner, but can be <em>shared</em> across browsers by using the share icon in the navigation header.
+Unregistered entries are <em>not</em> sent to or stored in the "cloud" by design.  Each unregistered browser instance stores and maintains an independent instance (copy) of your planner, but can be <em>shared</em> across browsers by using the share icon in the navigation header.
 
 Shared planners maintain a "unique" timestamp identifier for the instant that they were created (to second precision).  Within a small set, any given planner's shared identifier is probably unique, however they are not universal and a shared planner will over-write a planner with the same identifier if opened in the same browser.
 
 Multiple planners with different "unique" identifiers can be named and stored in a given browser, allowing for different use cases (home, work, study).
+
+## Registering
+
+Registering an account creates a universally unique copy of the local cookie storage in the "cloud" that will synchronise across browser instances and devices.
 
 ## Features
 
@@ -55,19 +59,16 @@ The year planner is available in 10 popular languages:
 - Japanese
 
 ### Backlog
-- \[ \] Recover password
-- \[ \] Recover username
-
-- \[ \] Add / Verify mobile
-  
+- \[ \] Donate via payment gateway (Square)
+- \[ \] Expire a donation
 - \[ \] 2x 26 week semester view
 - \[ \] 4x 13 week term view
 - \[ \] Export to CSV
-  
-- \[ \] Donate via payment gateway (Square)
-- \[ \] Expire a donation
+- \[ \] Add / Verify mobile
 
 ### Recent Features Added
+- \[x\] Recover password
+- \[x\] Recover username
 - \[x\] Profile Edit
 - \[x\] Change username
 - \[x\] Change password
