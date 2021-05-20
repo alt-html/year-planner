@@ -118,6 +118,7 @@
                           </div>
                         </div>
                         <button v-if="feature.register && !registered" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#registerModal" title="">{{$t('label.register')}}</button>
+                        <button v-if="feature.signin && !signedin && !registered" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showSignin()"  data-toggle="tooltip" data-placement="bottom" v-bind:title="$t('label.signin')"><i class="fas fa-sign-in-alt"></i></button>
                         <button v-if="feature.signin && !signedin && registered" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showSignin()">{{$t('label.signin')}}</button>
                         <button v-if="feature.signin && signedin" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="signout()" data-toggle="modal" data-target="#" title="">{{$t('label.signout')}}</button>
                         <button v-if="feature.donate" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" v-on:click="showDonate()" data-toggle="modal" data-target="#donateModal" title="">Donate</button>
