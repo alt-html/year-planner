@@ -24,7 +24,8 @@ const messages = {
             verifySubject: 'Year Planner: Email Verification', verifyBody: 'Please verify your email address by clicking the link below:\n\n\t',
             resetPassword: 'Reset Password', recoverPassSubject: 'Year Planner: Reset Password', recoverPassBody: 'Your reset Year Planner account password is:\n\n\t',
             recover:'Recover', recoverUsername: 'Recover Username', recoverUserSubject: 'Year Planner: Recover Username', recoverUserBody: 'Your Year Planner account name is:\n\n\t',
-            donate: 'Donate'
+            donate: 'Donate', give :'Give AUD 1.00', donatespiel: 'A donation hides the Donate button for one year.'
+            , donationaccepted:'Donation Accepted.'
     },
         success: {
             verifySent : 'A verification email has been sent.',
@@ -498,7 +499,8 @@ const messages = {
            verifySubject: 'Perencana Tahun: Verifikasi Email', verifyBody: 'Harap verifikasi alamat email Anda dengan mengklik link di bawah ini:\n\n\t',
            resetPassword: 'Atur Ulang Kata Sandi', recoverPassSubject: 'Perencana Tahun: Atur Ulang Kata Sandi', recoverPassBody: 'Kata sandi akun perencana tahun penyetelan ulang Anda adalah:\n\n\t',
            recover:'Memulihkan', recoverUsername: 'Pulihkan Nama Pengguna', recoverUserSubject: 'Perencana Tahun: Pulihkan Nama Pengguna', recoverUserBody: 'Nama akun perencana tahun Anda adalah\n\n\t',
-           donate: 'Donate'
+           donate: 'Donate', give :'Give AUD 1.00', donatespiel: 'If you would like to show your appreciation for the year planner micro-application, a small donation of one Australian Dollar helps cover hosting charges and removes the Donate button for one year.  Thank you.'
+           , donationaccepted:'Donation Accepted.'
        },
         success: {
             verifySent : 'Email verifikasi telah dikirim',

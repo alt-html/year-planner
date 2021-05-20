@@ -629,13 +629,13 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="payModalLabel">Subscribe</h5>
+                        <h5 class="modal-title" id="payModalLabel">{{$t('label.donate')}}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-
+                        <p>{{$t('label.donatespiel')}}</p>
                         <div id="form-container">
                             <div id="sq-card-number"></div>
                             <div class="third" id="sq-expiration-date"></div>
@@ -646,7 +646,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
-                        <button id="sq-creditcard" type="button" class="btn btn-primary button-credit-card"  v-on:click="onGetCardNonce(event)">Pay $1.00</button>
+                        <button id="sq-creditcard" type="button" class="btn btn-primary button-credit-card"  v-on:click="onGetCardNonce(event)">{{$t('label.give')}}</button>
                     </div>
                     <script type="text/javascript">
 
