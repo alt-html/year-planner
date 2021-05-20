@@ -321,19 +321,19 @@
                     </div>
                     <div class="modal-body">
                         <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
-                            <p>{{$t(modalError)}}</p>
+                            <p class="mb-0">{{$t(modalError)}}</p>
                             <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="fade" v-if="modalWarning" v-bind:class="{'alert alert-warning alert-dismissible show': modalWarning != ''}" role="alert">
-                            <p>{{$t(modalWarning)}}</p>
+                            <p class="mb-0">{{$t(modalWarning)}}</p>
                             <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="fade" v-if="modalSuccess" v-bind:class="{'alert alert-success alert-dismissible show': modalSuccess != ''}" role="alert">
-                            <p>{{$t(modalSuccess)}}</p>
+                            <p class="mb-0">{{$t(modalSuccess)}}</p>
                             <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -423,26 +423,26 @@
                     </div>
                     <div class="modal-body">
                         <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
-                            <p>{{$t(modalError)}}</p>
+                            <p class="mb-0">{{$t(modalError)}}</p>
                             <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="fade" v-if="modalWarning" v-bind:class="{'alert alert-warning alert-dismissible show': modalWarning != ''}" role="alert">
-                            <p>{{$t(modalWarning)}}</p>
+                            <p class="mb-0">{{$t(modalWarning)}}</p>
                             <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <form>
                             <div class="form-group">
-                                <label for="username" class="col-form-label">{{$t('label.username')}}</label>
+                                <label for="username-register" class="col-form-label">{{$t('label.username')}}</label>
                                 <input  type="text" class="form-control " v-bind:class="{'is-invalid':modalErrorTarget?.['username']}" v-model="username" id="username-register" >
                                 <div v-if="modalErrorTarget" v-bind:class="{'valid-feedback': !modalErrorTarget?.['username'] ,'invalid-feedback':modalErrorTarget?.['username']}">
                                     {{$t(modalErrorTarget?.['username'])}}
                                 </div>
                             </div>
-                            <label for="password" class="col-form-label">{{$t('label.password')}}</label>
+                            <label for="password-register" class="col-form-label">{{$t('label.password')}}</label>
                             <div class="input-group">
 
                                 <input  v-bind:type="peek?'text':'password'" class="form-control readonly" v-bind:class="{'is-invalid':modalErrorTarget?.['password']}" v-model="password" id="password-register" >
@@ -454,7 +454,18 @@
                                     <button v-if="peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="unpeekPass()" ><i class="fas fa-eye-slash"></i></button>
                                 </div>
                             </div>
-
+                            <div class="form-group"></div>
+                            <div class="form-group">
+                                <label for="email-register" class="col-form-label">{{$t('label.email')}}</label>
+                                <input  type="text" class="form-control " v-bind:class="{'is-invalid':modalErrorTarget?.['email']}" v-model="username" id="email-register" >
+                                <div v-if="modalErrorTarget" v-bind:class="{'valid-feedback': !modalErrorTarget?.['email'] ,'invalid-feedback':modalErrorTarget?.['email']}">
+                                    {{$t(modalErrorTarget?.['email'])}}
+                                </div>
+                            </div>
+                            <div class="form-group"></div>
+                            <div class="form-group">
+                                <label>{{$t('label.haveaccount')}}&nbsp;&nbsp;&nbsp;<a href="#" v-on:click="showSignin()">{{$t('label.signin')}}</a></label>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -476,13 +487,13 @@
                     </div>
                     <div class="modal-body">
                         <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
-                            <p>{{$t(modalError)}}</p>
+                            <p class="mb-0">{{$t(modalError)}}</p>
                             <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="fade" v-if="modalWarning" v-bind:class="{'alert alert-warning alert-dismissible show': modalWarning != ''}" role="alert">
-                            <p>{{$t(modalWarning)}}</p>
+                            <p class="mb-0">{{$t(modalWarning)}}</p>
                             <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -494,10 +505,14 @@
                                 <div v-if="modalErrorTarget" v-bind:class="{'valid-feedback': !modalErrorTarget?.['username'] ,'invalid-feedback':modalErrorTarget?.['username']}">
                                     {{$t(modalErrorTarget?.['username'])}}
                                 </div>
+                                <div v-if="!(modalErrorTarget?.['username'])" class="text-muted font-italic small order-last order-last">
+                                    <a href="#" v-on:click="showRecoverUser()">{{$t('label.forgotuser')}}</a>
+                                </div>
                             </div>
                             <label for="password" class="col-form-label">{{$t('label.password')}}</label>
                             <div class="input-group">
                                 <input  v-bind:type="peek?'text':'password'" class="form-control readonly" v-bind:class="{'is-invalid':modalErrorTarget?.['password']}" v-model="password" id="password-signin">
+
                                 <div v-if="modalErrorTarget" class="order-last" v-bind:class="{'valid-feedback': !modalErrorTarget?.['password'] ,'invalid-feedback':modalErrorTarget?.['password']}">
                                     {{$t(modalErrorTarget?.['password'])}}
                                 </div>
@@ -505,11 +520,18 @@
                                     <button v-if="!peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="peekPass()" ><i class="fas fa-eye"></i></button>
                                     <button v-if="peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="unpeekPass()" ><i class="fas fa-eye-slash"></i></button>
                                 </div>
-
                             </div>
+                            <div v-if="!(modalErrorTarget?.['password'])" class="text-muted font-italic small order-last order-last">
+                                <a href="#" v-on:click="showResetPassword()">{{$t('label.forgotpass')}}</a>
+                            </div>
+                            <div class="form-group"></div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox"  id="rememberme" v-model="rememberme">
                                 <label class="form-check-label" for="rememberme">{{$t('label.rememberme')}}</label>
+                            </div>
+                            <div class="form-group"></div>
+                            <div class="form-group">
+                                <label>{{$t('label.noaccount')}}&nbsp;&nbsp;&nbsp;<a href="#" v-on:click="showRegister()">{{$t('label.register')}}</a></label>
                             </div>
 
                         </form>
@@ -521,7 +543,87 @@
                 </div>
             </div>
         </div>
-        
+
+        <div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="resetPasswordLabel">{{$t('label.resetPassword')}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
+                            <p class="mb-0">{{$t(modalError)}}</p>
+                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="fade" v-if="modalWarning" v-bind:class="{'alert alert-warning alert-dismissible show': modalWarning != ''}" role="alert">
+                            <p class="mb-0">{{$t(modalWarning)}}</p>
+                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form>
+                            <div class="form-group">
+                                <label for="username" class="col-form-label">{{$t('label.username')}}</label>
+                                <input  type="text" class="form-control " v-bind:class="{'is-invalid':modalErrorTarget?.['username']}" v-model="username" id="username-resetPassword">
+                                <div v-if="modalErrorTarget" v-bind:class="{'valid-feedback': !modalErrorTarget?.['username'] ,'invalid-feedback':modalErrorTarget?.['username']}">
+                                    {{$t(modalErrorTarget?.['username'])}}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
+                        <button type="button" class="btn btn-primary"  v-on:click="sendRecoverPasswordEmail(username)">{{$t('label.reset')}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="recoverUsernameModal" tabindex="-1" role="dialog" aria-labelledby="recoverUsernameModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="recoverUsernameModalLabel">{{$t('label.recoverUsername')}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
+                            <p class="mb-0">{{$t(modalError)}}</p>
+                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="fade" v-if="modalWarning" v-bind:class="{'alert alert-warning alert-dismissible show': modalWarning != ''}" role="alert">
+                            <p class="mb-0">{{$t(modalWarning)}}</p>
+                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form>
+                            <div class="form-group">
+                                <label for="email-recoverUsername" class="col-form-label">{{$t('label.email')}}</label>
+                                <input  type="text" class="form-control " v-bind:class="{'is-invalid':modalErrorTarget?.['email']}" v-model="email" id="email-recoverUsername" >
+                                <div v-if="modalErrorTarget" v-bind:class="{'valid-feedback': !modalErrorTarget?.['email'] ,'invalid-feedback':modalErrorTarget?.['email']}">
+                                    {{$t(modalErrorTarget?.['email'])}}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
+                        <button type="button" class="btn btn-primary"  v-on:click="sendRecoverUsernameEmail(email)">{{$t('label.recover')}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">

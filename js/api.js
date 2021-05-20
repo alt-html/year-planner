@@ -371,6 +371,14 @@ var verifyEmailToken = function (token) {
 }
 
 var sendRecoverPasswordEmail = function (username) {
+    modalErr('username',null);
+    if (!model.username){
+        // model.modalWarning = 'warn.usernamenotprovided'
+        modalErr('username','warn.usernamenotprovided')
+    }
+    if (model.modalErrorTarget['username']){
+        return;
+    }
     request
         .post('/api/verify/'+model.uuid)
         .send({subject:i18n.t('label.recoverPassSubject'),bodyText:i18n.t('label.recoverPassBody')})
@@ -391,6 +399,14 @@ var sendRecoverPasswordEmail = function (username) {
 }
 
 var sendRecoverUsernameEmail = function (email) {
+    modalErr('email',null);
+    if (!model.email){
+        // model.modalWarning = 'warn.usernamenotprovided'
+        modalErr('email','warn.emailnotprovided')
+    }
+    if (model.modalErrorTarget['email']){
+        return;
+    }
     request
         .post('/api/verify/'+model.uuid)
         .send({subject:i18n.t('label.recoverUserSubject'),bodyText:i18n.t('label.recoverUserBody')})

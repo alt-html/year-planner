@@ -226,6 +226,8 @@ var showRegister = function (){
     model.password='';
     model.peek = false;
     $('#registerModal').modal('show');
+    $('#signinModal').modal('hide');
+
 }
 
 var clearError = function() {
@@ -247,7 +249,21 @@ var showSignin = function (){
     model.password = null;
     model.peek = false;
     $('#signinModal').modal('show');
-    refresh();
+    $('#registerModal').modal('hide');
+}
+
+var showResetPassword = function (){
+    clearModalAlert();
+    model.username = null;
+    $('#signinModal').modal('hide');
+    $('#resetPasswordModal').modal('show');
+}
+
+var showRecoverUser = function (){
+    clearModalAlert();
+    model.username = null;
+    $('#signinModal').modal('hide');
+    $('#recoverUsernameModal').modal('show');
 }
 
 var clearModalAlert = function (){
