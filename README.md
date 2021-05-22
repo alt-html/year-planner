@@ -10,7 +10,7 @@ Example planners:
 
 The Year planner is a responsive (mobile-first) single-page HTML application that uses browser storage (cookies) to store, navigate and display clickable tweet sized Western (Gregorian) calendar diary entries.  
 
-Unregistered entries are <em>not</em> sent to or stored in the "cloud" by design.  Each unregistered browser instance stores and maintains an independent instance (copy) of your planner, but can be <em>shared</em> across browsers by using the share icon in the navigation header.
+Unregistered entries are <em>not</em> sent to or stored in the "cloud" by design.  Each unregistered browser instance stores and maintains an independent instance (copy) of your planner, but can be <em>shared</em> across browsers by using the share icon in the navigation header, or the share menu item.
 
 Shared planners maintain a "unique" timestamp identifier for the instant that they were created (to second precision).  Within a small set, any given planner's shared identifier is probably unique, however they are not universal and a shared planner will over-write a planner with the same identifier if opened in the same browser.
 

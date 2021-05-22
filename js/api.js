@@ -326,6 +326,31 @@ var setMobile = function (mobile){
         })
 }
 
+var setDonation = function (receipt_url){
+    request
+        .post('/api/profile/'+model.uuid+'/donation')
+        .send({receiptUrl:receipt_url,subject:i18n.t('label.donationSubject'),bodyText:i18n.t('label.donationBody')+'\n\n\t'+receipt_url})
+        .set('Accept','application/json')
+        .then(response => {
+                model.response = response;
+                model.uuid = response.body.uuid;
+                model.donation = response.body.donation;
+                model.email = response.body.email;
+                model.emailverified = response.body.emailverified;
+                model.mobile = response.body.mobile;
+                model.mobileverified = response.body.mobileverified;
+            }
+
+        )
+        .catch(err => {
+            if (err.status == 405)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 404)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 401)
+                model.modalError = 'error.unauthorized';
+        })
+}
 var sendVerificationEmail = function () {
     request
         .post('/api/verify/'+model.uuid)

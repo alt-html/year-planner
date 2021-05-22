@@ -1,13 +1,6 @@
 window.request = superagent;
 
-$.urlParam = function (name) {
-    var results = new RegExp('[\?&]' + name + '=([^&#]*)')
-        .exec(window.location.href);
-    if (results == null) {
-        return 0;
-    }
-    return results[1] || 0;
-}
+$.urlParam = urlParam;
 
 var DateTime = luxon.DateTime;
 var pageLoadTime = DateTime.now();
@@ -63,6 +56,7 @@ var model = {
     peeknp :false,
     donation : -1,
     rememberme : false,
+    paymentSuccess : false,
 
     identities: getLocalIdentities() || [{0:uid,1:window.navigator.userAgent,2:0,3:0}],
     preferences: preferences,
@@ -266,6 +260,11 @@ var showRecoverUser = function (){
     $('#recoverUsernameModal').modal('show');
 }
 
+var showDonate = function (){
+    initPaymentForm();
+    $('#payModal').modal('show');
+}
+
 var clearModalAlert = function (){
  model.modalError = '';
  model.modalErrorTarget = null;
@@ -290,11 +289,12 @@ var unpeekNewPass = function(){
     model.peeknp = false;
 }
 
-const i18n = new VueI18n({
-    locale: ($.urlParam('lang') || 'en').substring(0,2), // set locale
-    fallbackLocale: 'en',
-    messages, // set locale messages
-})
+// const i18n = new VueI18n({
+//     locale: ($.urlParam('lang') || 'en').substring(0,2), // set locale
+//     fallbackLocale: 'en',
+//     messages, // set locale messages
+// })
+i18n.locale = ($.urlParam('lang') || 'en').substring(0,2);
 
 var app = new Vue({
     i18n : i18n,

@@ -22,8 +22,10 @@
     <script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,Promise,Symbol,Object.setPrototypeOf,Object.getOwnPropertySymbols"></script>
     <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
     <script src="https://kit.fontawesome.com/10808f8e76.js" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>
+    <script type="text/javascript" src="https://js.squareup.com/v2/paymentform"></script>
     <script  src="js/uuid.js"></script>
+    <script  src="js/urlparam.js"></script>
+    <script  src="js/i18n.js"></script>
 
 </head>
 <body>
@@ -35,7 +37,7 @@
             </div>
         </div>
 
-        <nav class="navbar navbar-expand sticky-top" v-bind:class="{'d-flex':loaded}" >
+        <nav class="navbar navbar-expand sticky-top d-none" v-bind:class="{'d-flex':loaded}" >
 
             <a class="navbar-brand" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
 
@@ -118,10 +120,11 @@
                           </div>
                         </div>
                         <button v-if="feature.register && !registered" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#registerModal" title="">{{$t('label.register')}}</button>
+                        <button v-if="feature.donate && signedin && loaded > donation" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" v-on:click="showDonate()" data-toggle="modal" data-target="#donateModal" title="">Donate</button>
                         <button v-if="feature.signin && !signedin && !registered" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showSignin()"  data-toggle="tooltip" data-placement="bottom" v-bind:title="$t('label.signin')"><i class="fas fa-sign-in-alt"></i></button>
+                        <button v-if="feature.donate && signedin && loaded > donation" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="signout()"  data-toggle="tooltip" data-placement="bottom" v-bind:title="$t('label.signout')"><i class="fas fa-sign-out-alt"></i></button>
                         <button v-if="feature.signin && !signedin && registered" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showSignin()">{{$t('label.signin')}}</button>
-                        <button v-if="feature.signin && signedin" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="signout()" data-toggle="modal" data-target="#" title="">{{$t('label.signout')}}</button>
-                        <button v-if="feature.donate" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" v-on:click="showDonate()" data-toggle="modal" data-target="#donateModal" title="">Donate</button>
+                        <button v-if="feature.signin && signedin && loaded < donation" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="signout()" data-toggle="modal" data-target="#" title="">{{$t('label.signout')}}</button>
                         <button v-if="!feature.register && !feature.signin" id="no-feature-button" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" >&nbsp;</button>
                </form>
 
@@ -635,125 +638,29 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>{{$t('label.donatespiel')}}</p>
-                        <div id="form-container">
+                        <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
+                            <p class="mb-0">{{$t(modalError)}}</p>
+                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <p v-bind:class="{'d-none':paymentSuccess}">{{$t('label.donatespiel')}}</p>
+                        <div id="form-container" v-bind:class="{'d-none':paymentSuccess}">
                             <div id="sq-card-number"></div>
                             <div class="third" id="sq-expiration-date"></div>
                             <div class="third" id="sq-cvv"></div>
                             <div class="third" id="sq-postal-code"></div>
                         </div>
 
+                        <div v-bind:class="{'d-none':!paymentSuccess}">
+                            <h4 class="text-center">{{$t('label.donationaccepted')}}</h4>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
-                        <button id="sq-creditcard" type="button" class="btn btn-primary button-credit-card"  v-on:click="onGetCardNonce(event)">{{$t('label.give')}}</button>
+                        <button id="sq-creditcard" type="button" class="btn btn-primary button-credit-card"  v-bind:class="{'d-none':paymentSuccess}" v-on:click="onGetCardNonce(event)">{{$t('label.give')}}</button>
                     </div>
-                    <script type="text/javascript">
-
-                        const idempotency_key = uuidv4();
-
-                        // Create and initialize a payment form object
-                        const paymentForm = new SqPaymentForm({
-                            // Initialize the payment form elements
-
-                           // applicationId: "REPLACE_WITH_APPLICATION_ID";
-                            applicationId: "sandbox-sq0idb-ZaOa3uAuhkRfgVmR2xHQyA",
-                            inputClass: 'sq-input',
-                            autoBuild: false,
-                            // Customize the CSS for SqPaymentForm iframe elements
-                            inputStyles: [{
-                                fontSize: '16px',
-                                lineHeight: '24px',
-                                padding: '16px',
-                                placeholderColor: '#a0a0a0',
-                                backgroundColor: 'transparent',
-                            }],
-                            // Initialize the credit card placeholders
-                            cardNumber: {
-                                elementId: 'sq-card-number',
-                                placeholder: 'Card Number'
-                            },
-                            cvv: {
-                                elementId: 'sq-cvv',
-                                placeholder: 'CVV'
-                            },
-                            expirationDate: {
-                                elementId: 'sq-expiration-date',
-                                placeholder: 'MM/YY'
-                            },
-                            postalCode: {
-                                elementId: 'sq-postal-code',
-                                placeholder: 'Postal'
-                            },
-                            // SqPaymentForm callback functions
-                            callbacks: {
-                                /*
-                                * callback function: cardNonceResponseReceived
-                                * Triggered when: SqPaymentForm completes a card nonce request
-                                */
-                                cardNonceResponseReceived: function (errors, nonce, cardData) {
-                                    if (errors) {
-                                        // Log errors from nonce generation to the browser developer console.
-                                        console.error('Encountered errors:');
-                                        errors.forEach(function (error) {
-                                            console.error('  ' + error.message);
-                                        });
-                                        alert('Encountered errors, check browser developer console for more details');
-                                        return;
-                                    }
-
-                                    // alert(`The generated nonce is:\n${nonce}`);
-                                    console.log(nonce);
-                                    console.log(idempotency_key);
-                                    fetch('/api/payment', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Accept': 'application/json',
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({
-                                            nonce: nonce,
-                                            idempotency_key: idempotency_key,
-                                            // location_id: "REPLACE_WITH_LOCATION_ID"
-                                            location_id: "LDF5NP9BZJ0CP"
-                                        })
-                                    })
-                                        .catch(err => {
-                                            alert('Network error: ' + err);
-                                        })
-                                        .then(response => {
-                                            if (!response.ok) {
-                                                return response.json().then(
-                                                    errorInfo => Promise.reject(errorInfo));
-                                            }
-                                            return response.json();
-                                        })
-                                        .then(data => {
-                                            console.log(data);
-                                            alert('Payment complete successfully!\nCheck browser developer console for more details');
-                                        })
-                                        .catch(err => {
-                                            console.error(err);
-                                            alert('Payment failed to complete!\nCheck browser developer console for more details');
-                                        });
-
-                                }
-                            }
-                        });
-
-                        paymentForm.build();
-
-                        //TODO: paste code from step 2.1.2
-
-                        // onGetCardNonce is triggered when the "Pay $1.00" button is clicked
-                        function onGetCardNonce(event) {
-
-                            // Don't submit the form until SqPaymentForm returns with a nonce
-                            event.preventDefault();
-                            // Request a nonce from the SqPaymentForm object
-                            paymentForm.requestCardNonce();
-                        }
-                    </script>
                 </div>
             </div>
         </div>
@@ -845,12 +752,12 @@
     <script src="js/lz-string.min.js"></script>
 
     <script  src="js/features.js"></script>
-    <script  src="js/i81n.js"></script>
     <script  src="js/cookies.js"></script>
     <script  src="js/storage-local.js"></script>
     <script  src="js/storage.js"></script>
     <script  src="js/storage-remote.js"></script>
     <script  src="js/api.js"></script>
+    <script  src="js/squareup.js"></script>
     <script  src="js/main.js"></script>
 
 </body>

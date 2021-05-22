@@ -1,4 +1,5 @@
-const messages = {
+
+var messages = {
     en: {
         label : {
             yearplanner : 'Year Planner',
@@ -24,8 +25,9 @@ const messages = {
             verifySubject: 'Year Planner: Email Verification', verifyBody: 'Please verify your email address by clicking the link below:\n\n\t',
             resetPassword: 'Reset Password', recoverPassSubject: 'Year Planner: Reset Password', recoverPassBody: 'Your reset Year Planner account password is:\n\n\t',
             recover:'Recover', recoverUsername: 'Recover Username', recoverUserSubject: 'Year Planner: Recover Username', recoverUserBody: 'Your Year Planner account name is:\n\n\t',
-            donate: 'Donate', give :'Give AUD 1.00', donatespiel: 'A donation hides the Donate button for one year.'
-            , donationaccepted:'Donation Accepted.'
+            donate: 'Donate', give :'Give AUD 1.00', donatespiel: 'A donation hides the Donate button for one year.', donationaccepted:'Donation Accepted.',
+            donationSubject:'Year Planner: Donation Receipt',donationBody:'Thanks you for your donation, your receipt can be found here:\n\n\t',
+            cardnumber:'Card Number', mmyy:'MM/YY', cvv:'CVV', postalcode:'Postal Code'
     },
         success: {
             verifySent : 'A verification email has been sent.',
@@ -47,6 +49,7 @@ const messages = {
             usernotavailable: 'The username is not available',
             unauthorized: 'Username or password is not correct',
             passwordincorrect: 'Password is not correct',
+            paymentfailed: 'Payment failed',
         },
         month : {
             January: 'January', February: 'February', March : 'March', April:'April', May:'May',June:'June',July:'July',August:'August',September:'September',October:'October',November:'November',December:'December'
@@ -238,7 +241,7 @@ const messages = {
                verifySubject: 'वर्ष योजनाकार ईमेल सत्यापन', verifyBody: 'कृपया नीचे दिए गए लिंक पर क्लिक करके अपना ईमेल पता सत्यापित करें\n\n\t',
                resetPassword: 'पासवर्ड रीसेट', recoverPassSubject: 'वर्ष योजनाकार पासवर्ड रीसेट करें', recoverPassBody: 'आपका रीसेट वर्ष योजनाकार खाता पासवर्ड है\n\n\t',
                recover:'वसूली', recoverUsername: 'उपयोगकर्ता नाम पुनर्प्राप्त करें', recoverUserSubject: 'वर्ष योजनाकार उपयोगकर्ता नाम पुनर्प्राप्त करें', recoverUserBody: 'आपके वर्ष योजनाकार खाते का नाम है\n\n\t',
-               donate: 'Donate'
+               donate: 'Donate',
            },
         success: {
             verifySent : 'एक सत्यापन ईमेल भेजा गया है',
@@ -581,3 +584,8 @@ const messages = {
 
 var getNavigatorLanguage = () => (navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
 
+var i18n = new VueI18n({
+    locale: (urlParam('lang') || 'en').substring(0,2), // set locale
+    fallbackLocale: 'en',
+    messages, // set locale messages
+});
