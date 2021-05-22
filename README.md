@@ -20,6 +20,7 @@ Multiple planners with different "unique" identifiers can be named and stored in
 
 Registering an account creates a universally unique copy of the local cookie storage in the "cloud" that will synchronise across browser instances and devices.
 
+
 ## Features
 
 ### Simple Year Planner View
