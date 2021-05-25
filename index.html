@@ -655,6 +655,7 @@
 
                         <div v-bind:class="{'d-none':!paymentSuccess}">
                             <h4 class="text-center">{{$t('label.donationaccepted')}}</h4>
+                            <p class="text-center"><a v-bind:href="receiptUrl"  target="_blank">{{$t('label.donationreceipt')}}</a></p>
                         </div>
 
                     </div>

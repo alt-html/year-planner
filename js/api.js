@@ -340,8 +340,9 @@ var squarePayment = function (nonce,idempotency_key){
         .set('Accept','application/json')
         .set('Content-Type','application/json')
         .then(response => {
-            model.paymentSuccess = true;
             result = JSON.parse(response.body.text)
+            model.paymentSuccess = true;
+            model.receiptUrl = result.payment.receipt_url;
             setDonation(result.payment.receipt_url);
             }
 

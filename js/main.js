@@ -57,6 +57,7 @@ var model = {
     donation : -1,
     rememberme : false,
     paymentSuccess : false,
+    receiptUrl : '',
 
     identities: getLocalIdentities() || [{0:uid,1:window.navigator.userAgent,2:0,3:0}],
     preferences: preferences,

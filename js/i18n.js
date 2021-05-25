@@ -25,7 +25,7 @@ var messages = {
             verifySubject: 'Year Planner: Email Verification', verifyBody: 'Please verify your email address by clicking the link below:\n\n\t',
             resetPassword: 'Reset Password', recoverPassSubject: 'Year Planner: Reset Password', recoverPassBody: 'Your reset Year Planner account password is:\n\n\t',
             recover:'Recover', recoverUsername: 'Recover Username', recoverUserSubject: 'Year Planner: Recover Username', recoverUserBody: 'Your Year Planner account name is:\n\n\t',
-            donate: 'Donate', give :'Give AUD 1.00', donatespiel: 'A donation hides the Donate button for one year.', donationaccepted:'Donation Accepted.',
+            donate: 'Donate', give :'Give AUD 1.00', donatespiel: 'A donation hides the Donate button for one year.', donationaccepted:'Donation Accepted.',donationreceipt:'Your donation receipt',
             donationSubject:'Year Planner: Donation Receipt',donationBody:'Thanks you for your donation, your receipt can be found here:\n\n\t',
             cardnumber:'Card Number', mmyy:'MM/YY', cvv:'CVV', postalcode:'Postal Code'
     },
