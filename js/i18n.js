@@ -26,7 +26,7 @@ var messages = {
             resetPassword: 'Reset Password', recoverPassSubject: 'Year Planner: Reset Password', recoverPassBody: 'Your reset Year Planner account password is:\n\n\t',
             recover:'Recover', recoverUsername: 'Recover Username', recoverUserSubject: 'Year Planner: Recover Username', recoverUserBody: 'Your Year Planner account name is:\n\n\t',
             donate: 'Donate', give :'Give AUD 1.00', donatespiel: 'A donation hides the Donate button for one year.', donationaccepted:'Donation Accepted.',donationreceipt:'Your donation receipt',
-            donationSubject:'Year Planner: Donation Receipt',donationBody:'Thanks you for your donation, your receipt can be found here:\n\n\t',
+            donationSubject:'Planificador anual: recibo de donación',donationBody:'Gracias por su donación, su recibo se puede encontrar aquí\n\n\t',
             cardnumber:'Card Number', mmyy:'MM/YY', cvv:'CVV', postalcode:'Postal Code'
     },
         success: {
@@ -84,7 +84,9 @@ var messages = {
             verifySubject: 'Planificador anual: verificación por correo electrónico', verifyBody: 'Verifique su dirección de correo electrónico haciendo clic en el enlace siguiente:\n\n\t',
             resetPassword: 'Restablecer la contraseña', recoverPassSubject: 'Planificador anual: restablecer contraseña', recoverPassBody: 'Su contraseña de cuenta de Year Planner restablecida es:\n\n\t',
             recover:'Recuperar', recoverUsername: 'Recuperar nombre de usuario', recoverUserSubject: 'Planificador anual: recuperar nombre de usuario', recoverUserBody: 'El nombre de su cuenta del planificador anual es:\n\n\t',
-            donate: 'Donate'
+            donate: 'Donar', give :'Dar 1,00 AUD', donatespiel: 'Una donación oculta el botón Donar durante un año.', donationaccepted:'Donación aceptada.',donationreceipt:'Tu recibo de donación',
+            donationSubject:'Year Planner: Donation Receipt',donationBody:'Thanks you for your donation, your receipt can be found here:\n\n\t',
+            cardnumber:'Card Number', mmyy:'MM/YY', cvv:'CVV', postalcode:'Postal Code'
         },
         success: {
             verifySent : 'Se ha enviado un correo electrónico de verificación',
@@ -136,7 +138,9 @@ var messages = {
            verifySubject: 'Planejador do ano: verificação de e-mail', verifyBody: 'Verifique o seu endereço de e-mail clicando no link abaixo:\n\n\t',
            resetPassword: 'Redefinir senha', recoverPassSubject: 'Planejador do ano: redefinir senha', recoverPassBody: 'A senha redefinida da sua conta do planejador anual é:\n\n\t',
            recover:'Recuperar', recoverUsername: 'Recuperar nome de usuário', recoverUserSubject: 'Planejador do ano: recuperar nome de usuário', recoverUserBody: 'O nome da sua conta do planejador anual é:\n\n\t',
-           donate: 'Donate'
+           donate: 'Doar', give :'Dê AUD 1,00', donatespiel: 'Uma doação oculta o botão Doar por um ano.', donationaccepted:'Doação aceita.',donationreceipt:'Seu recibo de doação',
+           donationSubject:'Planejador do ano: recibo de doação',donationBody:'Obrigado pela sua doação, o seu recibo pode ser encontrado aqui:\n\n\t',
+           cardnumber:'Card Number', mmyy:'MM/YY', cvv:'CVV', postalcode:'Postal Code'
         },
         success: {
             verifySent : 'Um e-mail de verificação foi enviado',
@@ -189,7 +193,9 @@ var messages = {
             verifySubject: '年計劃電子郵件驗證', verifyBody: '請通過點擊以下鏈接來驗證您的電子郵件地址\n\n\t',
             resetPassword: '重設密碼', recoverPassSubject: '年計劃員重置密碼', recoverPassBody: '您的重置年計劃者帳戶密碼為\n\n\t',
             recover:'恢復', recoverUsername: '恢復用戶名', recoverUserSubject: '年計劃員恢復用戶名', recoverUserBody: '您的年度計劃者帳戶名稱為\n\n\t',
-            donate: 'Donate'
+            donate: '捐', give :'贈送1.00澳元', donatespiel: '捐贈會將“捐贈”按鈕隱藏一年', donationaccepted:'接受捐款',donationreceipt:'您的捐贈收據',
+            donationSubject:'年度策劃人捐贈收據',donationBody:'謝謝您的捐款您可以在這裡找到收據\n\n\t',
+            cardnumber:'Card Number', mmyy:'MM/YY', cvv:'CVV', postalcode:'Postal Code'
         },
         success: {
             verifySent : '驗證郵件已發送',
@@ -241,7 +247,9 @@ var messages = {
                verifySubject: 'वर्ष योजनाकार ईमेल सत्यापन', verifyBody: 'कृपया नीचे दिए गए लिंक पर क्लिक करके अपना ईमेल पता सत्यापित करें\n\n\t',
                resetPassword: 'पासवर्ड रीसेट', recoverPassSubject: 'वर्ष योजनाकार पासवर्ड रीसेट करें', recoverPassBody: 'आपका रीसेट वर्ष योजनाकार खाता पासवर्ड है\n\n\t',
                recover:'वसूली', recoverUsername: 'उपयोगकर्ता नाम पुनर्प्राप्त करें', recoverUserSubject: 'वर्ष योजनाकार उपयोगकर्ता नाम पुनर्प्राप्त करें', recoverUserBody: 'आपके वर्ष योजनाकार खाते का नाम है\n\n\t',
-               donate: 'Donate',
+               donate: 'दान करना', give :'AUD 1.00 . दें', donatespiel: 'एक दान एक वर्ष के लिए दान करें बटन को छुपाता है।', donationaccepted:'दान स्वीकृत।',donationreceipt:'आपकी दान रसीद',
+               donationSubject:'वर्ष योजनाकार दान रसीद',donationBody:'आपके दान के लिए धन्यवाद आपकी रसीद यहां मिल सकती है\n\n\t',
+               cardnumber:'Card Number', mmyy:'MM/YY', cvv:'CVV', postalcode:'Postal Code'
            },
         success: {
             verifySent : 'एक सत्यापन ईमेल भेजा गया है',
@@ -293,7 +301,9 @@ var messages = {
             verifySubject: 'Planificateur annuel: vérification des e-mails', verifyBody: 'Veuillez vérifier votre adresse e-mail en cliquant sur le lien ci-dessous:\n\n\t',
             resetPassword: 'Réinitialiser le mot de passe', recoverPassSubject: 'Planificateur annuel: réinitialiser le mot de passe', recoverPassBody: 'Le mot de passe de votre compte de planificateur d\'année de réinitialisation est:\n\n\t',
             recover:'Se remettre', recoverUsername: 'Récupérer le nom d\'utilisateur', recoverUserSubject: 'Planificateur d\'année: récupérer le nom d\'utilisateur', recoverUserBody: 'Le nom de votre compte de planificateur annuel est:\n\n\t',
-            donate: 'Donate'
+            donate: 'Faire un don', give :'Donner 1,00 AUD', donatespiel: 'Un don masque le bouton Faire un don pendant un an.', donationaccepted:'Don accepté.',donationreceipt:'Votre reçu de don',
+            donationSubject:'Planificateur d\'année: Reçu de don',donationBody:'Merci pour votre don votre reçu peut être trouvé ici:\n\n\t',
+            cardnumber:'Card Number', mmyy:'MM/YY', cvv:'CVV', postalcode:'Postal Code'
         },
         success: {
             verifySent : 'Un e-mail de vérification a été envoyé',
@@ -345,8 +355,9 @@ var messages = {
             verifySubject: 'مخطط العام التحقق من البريد الإلكتروني', verifyBody: 'يرجى التحقق من عنوان بريدك الإلكتروني من خلال النقر على الرابط أدناه',
             resetPassword: 'إعادة تعيين كلمة المرور', recoverPassSubject: 'مخطط العام إعادة تعيين كلمة المرور', recoverPassBody: 'إعادة تعيين كلمة مرور حساب مخطط العام الخاص بك هي\n\n\t',
             recover:'استعادة', recoverUsername: 'استعادة اسم المستخدم', recoverUserSubject: 'مخطط العام استرداد اسم المستخدم', recoverUserBody: 'اسم حساب مخطط العام الخاص بك هو\n\n\t',
-            donate: 'Donate'
-
+            donate: 'يتبرع', give :'أعط 1.00 دولار أسترالي', donatespiel: 'تبرع يخفي زر التبرع لمدة عام واحد', donationaccepted:'التبرع مقبول',donationreceipt:'إيصال التبرع الخاص بك',
+            donationSubject:'مخطط السنة إيصال التبرع',donationBody:'شكرا لتبرعك يمكن العثور على إيصالك هنا\n\n\t',
+            cardnumber:'Card Number', mmyy:'MM/YY', cvv:'CVV', postalcode:'Postal Code'
         },
       success: {
           verifySent : 'تم إرسال بريد إلكتروني للتحقق',
@@ -398,7 +409,9 @@ var messages = {
            verifySubject: 'Планировщик года: подтверждение адреса электронной почты', verifyBody: 'Подтвердите свой адрес электронной почты, щелкнув ссылку ниже:\n\n\t',
            resetPassword: 'Сброс пароля', recoverPassSubject: 'Планировщик года сбросить пароль', recoverPassBody: 'Пароль вашей учетной записи планировщика на год для сброса\n\n\t',
            recover:'Восстанавливаться', recoverUsername: 'Восстановить имя пользователя', recoverUserSubject: 'Планировщик года восстановить имя пользователя', recoverUserBody: 'Имя вашей учетной записи планировщика года\n\n\t',
-           donate: 'Donate'
+           donate: 'Пожертвовать', give :'Дайте 1 австралийский доллар', donatespiel: 'Пожертвование скрывает кнопку «Пожертвовать» на один год.', donationaccepted:'Пожертвование принято.',donationreceipt:'Квитанция о пожертвовании',
+           donationSubject:'Планировщик года: квитанция о пожертвовании',donationBody:'Спасибо за пожертвование, квитанцию ​​можно найти здесь:\n\n\t',
+           cardnumber:'Card Number', mmyy:'MM/YY', cvv:'CVV', postalcode:'Postal Code'
        },
         success: {
             verifySent : 'Письмо с подтверждением отправлено',
@@ -450,7 +463,9 @@ var messages = {
            verifySubject: 'イヤープランナーメール検証', verifyBody: '以下のリンクをクリックして、メールアドレスを確認してください。\n\n\t',
            resetPassword: 'パスワードを再設定する', recoverPassSubject: 'イヤープランナーパスワードをリセット', recoverPassBody: 'リセットされたイヤープランナーアカウントのパスワードは\n\n\t',
            recover:'回復します', recoverUsername: 'ユーザー名を回復する', recoverUserSubject: 'イヤープランナーユーザー名を回復する', recoverUserBody: 'イヤープランナーのアカウント名は\n\n\t',
-           donate: 'Donate'
+           donate: '寄付', give :'1.00豪ドルを与える', donatespiel: '寄付は1年間[寄付]ボタンを非表示にします', donationaccepted:'寄付を受け付けました',donationreceipt:'寄付の領収書',
+           donationSubject:'イヤープランナー寄付の領収書',donationBody:'寄付ありがとうございます。領収書はこちらにあります:\n\n\t',
+           cardnumber:'Card Number', mmyy:'MM/YY', cvv:'CVV', postalcode:'Postal Code'
        },
         success: {
             verifySent : '確認メールが送信されました',
@@ -502,8 +517,9 @@ var messages = {
            verifySubject: 'Perencana Tahun: Verifikasi Email', verifyBody: 'Harap verifikasi alamat email Anda dengan mengklik link di bawah ini:\n\n\t',
            resetPassword: 'Atur Ulang Kata Sandi', recoverPassSubject: 'Perencana Tahun: Atur Ulang Kata Sandi', recoverPassBody: 'Kata sandi akun perencana tahun penyetelan ulang Anda adalah:\n\n\t',
            recover:'Memulihkan', recoverUsername: 'Pulihkan Nama Pengguna', recoverUserSubject: 'Perencana Tahun: Pulihkan Nama Pengguna', recoverUserBody: 'Nama akun perencana tahun Anda adalah\n\n\t',
-           donate: 'Donate', give :'Give AUD 1.00', donatespiel: 'If you would like to show your appreciation for the year planner micro-application, a small donation of one Australian Dollar helps cover hosting charges and removes the Donate button for one year.  Thank you.'
-           , donationaccepted:'Donation Accepted.'
+           donate: 'Menyumbangkan', give :'Memberikan AUD 1,00', donatespiel: 'Donasi menyembunyikan tombol Donasi selama satu tahun.', donationaccepted:'Donasi Diterima.',donationreceipt:'Tanda terima donasi Anda',
+           donationSubject:'Perencana Tahun: Tanda Terima Donasi',donationBody:'Terima kasih atas donasi Anda, tanda terima Anda dapat ditemukan di sini:\n\n\t',
+           cardnumber:'Card Number', mmyy:'MM/YY', cvv:'CVV', postalcode:'Postal Code'
        },
         success: {
             verifySent : 'Email verifikasi telah dikirim',
