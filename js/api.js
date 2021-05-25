@@ -326,6 +326,37 @@ var setMobile = function (mobile){
         })
 }
 
+var squarePayment = function (nonce,idempotency_key){
+    request
+        .post('/api/payment')
+        .send({
+            nonce: nonce,
+            idempotency_key: idempotency_key,
+            // location_id: "REPLACE_WITH_LOCATION_ID"
+            // location_id: "LDF5NP9BZJ0CP", //SANDBOX
+            location_id: "L15E6C1JAT7BD", //live
+            uuid : model.uuid
+        })
+        .set('Accept','application/json')
+        .set('Content-Type','application/json')
+        .then(response => {
+            model.paymentSuccess = true;
+            result = JSON.parse(response.body.text)
+            setDonation(result.payment.receipt_url);
+            }
+
+        )
+        .catch(err => {
+            if (err.status == 405)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 404)
+                model.modalError = 'error.apinotavailable';
+            if (err.status == 401)
+                model.modalError = 'error.unauthorized';
+        });
+
+}
+
 var setDonation = function (receipt_url){
     request
         .post('/api/profile/'+model.uuid+'/donation')

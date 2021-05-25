@@ -5,7 +5,7 @@ var feature = {
     signin : true,
     import : false,
     export : false,
-    donate : false,
+    donate : true,
     pay : false
 };
 

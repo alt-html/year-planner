@@ -60,15 +60,15 @@ The year planner is available in 10 popular languages:
 - Japanese
 
 ### Backlog
-- \[ \] Donate via payment gateway (Square)
-- \[ \] Expire a donation
+
 - \[ \] 2x 26 week semester view
 - \[ \] 4x 13 week term view
 - \[ \] Export to CSV
-- \[ \] Add / Verify mobile
+
 
 ### Recent Features Added
-- \[x\] Recover password
+- \[x\] Donate via payment gateway (Square)
+- \[x\] Expire a donation- \[x\] Recover password
 - \[x\] Recover username
 - \[x\] Profile Edit
 - \[x\] Change username
@@ -99,6 +99,7 @@ The year planner is available in 10 popular languages:
 - \[ \] Twemoji support (https://kevinfaguiar.github.io/vue-twemoji-picker/ + https://codesandbox.io/s/vue-twemoji-picker-umdiife-example-we3co?from-embed=&file=/index.html)
 - \[ \] Disable non-current year, dark theme on switch
 - \[ \] Expand entry icon set with select dropdown, or remove
+- \[ \] Add / Verify mobile
 
 
 

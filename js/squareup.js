@@ -10,8 +10,8 @@ var initPaymentForm = function (){
         // Initialize the payment form elements
 
         // applicationId: "REPLACE_WITH_APPLICATION_ID";
-        //applicationId: "sandbox-sq0idb-ZaOa3uAuhkRfgVmR2xHQyA", // SANDBOX
-        applicationId: "sq0idp-sO7EOg5ctbH8jq-X_o6ytw",
+        // applicationId: "sandbox-sq0idb-ZaOa3uAuhkRfgVmR2xHQyA", // SANDBOX
+        applicationId: "sq0idp-sO7EOg5ctbH8jq-X_o6ytw", //LIVE
         inputClass: 'sq-input',
         autoBuild: false,
         // Customize the CSS for SqPaymentForm iframe elements
@@ -59,44 +59,7 @@ var initPaymentForm = function (){
                 // alert(`The generated nonce is:\n${nonce}`);
                 //console.log(nonce);
                 //console.log(idempotency_key);
-                fetch('/api/payment', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        nonce: nonce,
-                        idempotency_key: idempotency_key,
-                        // location_id: "REPLACE_WITH_LOCATION_ID"
-                        //location_id: "LDF5NP9BZJ0CP", //SANDBOX
-                        location_id: "L15E6C1JAT7BD",
-                        uuid : model.uuid
-                    })
-                })
-                    .catch(err => {
-                        alert('Network error: ' + err);
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            return response.json().then(
-                                errorInfo => Promise.reject(errorInfo));
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        result = JSON.parse(data.text);
-                        console.log(result);
-                        model.paymentSuccess = true;
-                        setDonation(result.receipt_url);
-                        //alert('Payment complete successfully!\nCheck browser developer console for more details');
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        model.modalError = 'error.paymentfailed';
-                        //alert('Payment failed to complete!\nCheck browser developer console for more details');
-                    });
-
+                squarePayment(nonce,idempotency_key);
             }
         }
     });
