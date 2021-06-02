@@ -95,6 +95,11 @@ The year planner is available in 10 popular languages:
 - \[x\] Switches for light and dark themes in settings menu
 - \[x\] Theme i81n
 
+### Bugs
+- \[\] Entry placeholder not i18n-ised
+
+### Bugs Fixed
+
 ### Parking Lot
 - \[ \] Twemoji support (https://kevinfaguiar.github.io/vue-twemoji-picker/ + https://codesandbox.io/s/vue-twemoji-picker-umdiife-example-we3co?from-embed=&file=/index.html)
 - \[ \] Disable non-current year, dark theme on switch
