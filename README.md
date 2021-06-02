@@ -96,9 +96,9 @@ The year planner is available in 10 popular languages:
 - \[x\] Theme i81n
 
 ### Bugs
-- \[\] Entry placeholder not i18n-ised
 
 ### Bugs Fixed
+- \[x\] Entry placeholder not i18n-ised
 
 ### Parking Lot
 - \[ \] Twemoji support (https://kevinfaguiar.github.io/vue-twemoji-picker/ + https://codesandbox.io/s/vue-twemoji-picker-umdiife-example-we3co?from-embed=&file=/index.html)
