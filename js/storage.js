@@ -121,7 +121,8 @@ var setModelFromImportString = function (importUrlParam){
         model.preferences = importer[1]
         model.year = importer[2];
         model.planner = importer[3];
-        model.lang = model.preferences['0'];
+        model.lang = model.preferences['1'];
+        model.theme= model.preferences['2'];
     }
 }
 

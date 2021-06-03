@@ -98,7 +98,7 @@ verifyEmailToken(verify);
 var refresh = function() {
     setYear(model.year);
     acceptCookies();
-    if (cookiesAccepted()){
+   if (cookiesAccepted()){
         synchroniseToLocal(false);
         setLocalFromModel();
         if (!window.location.href.includes('?uid=')){
@@ -109,7 +109,7 @@ var refresh = function() {
         }else{
             document.body.classList.length = 0;
         }
-    }
+   }
     model.loaded=true;
 }
 
