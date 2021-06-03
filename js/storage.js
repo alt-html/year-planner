@@ -122,7 +122,7 @@ var setModelFromImportString = function (importUrlParam){
         model.year = importer[2];
         model.planner = importer[3];
         model.lang = model.preferences['1'];
-        model.theme= model.preferences['2'];
+        model.theme= model.preferences['2'] == 1 ? 'dark' : 'light';
     }
 }
 
