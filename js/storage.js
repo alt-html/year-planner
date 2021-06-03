@@ -123,6 +123,7 @@ var setModelFromImportString = function (importUrlParam){
         model.planner = importer[3];
         model.lang = model.preferences['1'];
         model.theme= model.preferences['2'] == 1 ? 'dark' : 'light';
+        theme = model.theme;
     }
 }
 
