@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -61,11 +61,11 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear-1}" v-bind:href="'/?uid='+uid+'&year='+(cyear-1)+'&lang='+lang+'&theme='+theme">{{cyear-1}}</a>
                         <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear}" v-bind:href="'/?uid='+uid+'&year='+cyear+'&lang='+lang+'&theme='+theme">{{cyear}}</a>
-                        <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear+1}"v-bind:href="'/?uid='+uid+'&year='+(cyear+1)+'&lang='+lang+'&theme='+theme">{{cyear+1}}</a>
+                        <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear+1}" v-bind:href="'/?uid='+uid+'&year='+(cyear+1)+'&lang='+lang+'&theme='+theme">{{cyear+1}}</a>
 <!--                        <div class="dropdown-divider"></div>-->
                         <form class="nav-form px-4 py-3 pb-0">
                             <div class="form-group form-group-sm">
-                                <label for="exampleDropdownFormEmail1" class="sr-only">Email address</label>
+                                <label for="nyear" class="sr-only">Email address</label>
                                 <input type="text" maxlength=4 class="form-control form-control-sm" id="nyear" v-model="nyear" v-on:focusout="navigateToYear()" v-bind:placeholder="$t('label.year')">
                             </div>
                         </form>
@@ -97,6 +97,7 @@
 
             <span class="text-right">
 
+                <!--suppress HtmlUnknownTag -->
                 <form class="form-inline my-0 ">
 
                     <button class="navbar-brand navbar-brand-support btn btn-secondary my-0  d-none d-sm-inline" type="button" v-on:click="sharePlanner()" data-toggle="tooltip" data-placement="bottom" v-bind:title="$t('label.share')"><i class="fa fa-share-alt" aria-hidden="true"></i></button>
@@ -138,7 +139,7 @@
                 <div class="container">
                     <div class="fade" v-if="error" v-bind:class="{'alert alert-danger alert-dismissible show': error != ''}" role="alert" >
                         <p>{{t$(model.error)}}</p>
-                        <button type="button" class="close" v-on:click="clearError"aria-label="Close">
+                        <button type="button" class="close" v-on:click="clearError" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -188,7 +189,7 @@
                                              v-bind:class="{'yp-cell-bottom': n+firstWeekdayOfMonth[mindex]-1 == 37 && m != 'December','yp-cell-right': n+firstWeekdayOfMonth[mindex]-1 < 37 && m == 'December', 'yp-cell-bottom-right': n+firstWeekdayOfMonth[mindex]-1 == 37 && m == 'December', 'yp-cell-past': DateTime.local(year,mindex+1,n).ts < DateTime.local(cyear,cmonth,cday).ts,'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-1-1) % 7 > 4,'yp-cell-c1':getEntryColour(mindex,n)==1,'yp-cell-c2':getEntryColour(mindex,n)==2,'yp-cell-c3':getEntryColour(mindex,n)==3,'yp-cell-c4':getEntryColour(mindex,n)==4,'yp-cell-c5':getEntryColour(mindex,n)==5,'yp-cell-c6':getEntryColour(mindex,n)==6,'yp-cell-c7':getEntryColour(mindex,n)==7,'yp-cell-c8':getEntryColour(mindex,n)==8,'yp-cell-today': cyear == year && cmonth==mindex+1 && cday == n  }"
                                              v-for="n in daysInMonth[mindex]" data-toggle="modal" data-target="#entryModal"
                                              v-on:click="updateEntryState(mindex,n)">
-                                            <a v-if="cyear == year && cmonth==mindex+1 && cday == n" class="yp-anchor" name="today" ></a>
+                                            <a v-if="cyear == year && cmonth==mindex+1 && cday == n" class="yp-anchor" id="today" ></a>
                                             <span class="yp-cell-text" >{{DateTime.local(year, mindex+1, n).setLocale(lang).toLocaleString({day:'numeric'})}}&nbsp;</span>
                                             <span class="yp-cell-text" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="getEntryTypeIcon(mindex,n)+' ' +getEntry(mindex,n).trimStart()">
                                                     {{getEntry(mindex,n).trimStart().substr(0,20)}}</span><span class="yp-cell-text">{{getEntry(mindex,n).trimStart().substr(20)}}</span>
@@ -204,7 +205,10 @@
                             </div>
                         </div>
                     </div>
-                    <div id="yp-table-subscript" class="text-muted text-right">▥ {{$t('label.created')}} {{DateTime.fromMillis(uid*1000).setLocale(lang).toLocaleString(DateTime.DATETIME_FULL)}}, {{$t('label.updated')}} {{DateTime.fromMillis(updated).setLocale(lang).toLocaleString(DateTime.TIME_SIMPLE)}}</a>
+                    <div id="yp-table-subscript" class="text-muted text-right">▥ {{$t('label.created')}}
+                        {{DateTime.fromMillis(uid*1000).setLocale(lang).toLocaleString(DateTime.DATETIME_FULL)}},
+                        {{$t('label.updated')}}
+                        {{DateTime.fromMillis(updated).setLocale(lang).toLocaleString(DateTime.TIME_SIMPLE)}}
                     </div>
                     <div>&nbsp</div>
                 </div>
@@ -222,7 +226,7 @@
                         <div class="notice d-flex justify-content-between align-items-center">
                             <div class="cookie-text">{{$t('label.cookies')}}</div>
                             <div class="buttons d-flex flex-column flex-lg-row">
-                                <a href="#a" class="btn btn-secondary btn-sm" data-dismiss="modal" v-on:click="initialise()">{{$t('label.accept')}}</a>
+                                <a href="#" class="btn btn-secondary btn-sm" data-dismiss="modal" v-on:click="initialise()">{{$t('label.accept')}}</a>
                             </div>
                         </div>
                     </div>
@@ -242,8 +246,8 @@
                     <div class="modal-body">
                         <form>
                              <div class="form-group">
-                                <label for="recipient-name" class="col-form-label"></label>
-                                <textarea type="text" v-bind:placeholder="$t('label.entryplaceholder')" class="form-control" v-model="entry" id="yp-entry-textarea" rows="5" maxlength="256"
+                                <label for="yp-entry-textarea" class="col-form-label"></label>
+                                <textarea v-bind:placeholder="$t('label.entryplaceholder')" class="form-control" v-model="entry" id="yp-entry-textarea" rows="5" maxlength="256"
                                           v-bind:class="'yp-cell-c'+getEntryColour(month,day)"></textarea>
                             </div>
                             <div class="form-select-button">
@@ -281,7 +285,7 @@
                     <div class="modal-body">
                         <form>
                             <div class="form-group">
-                                <label for="recipient-name" class="col-form-label">{{$t('label.sharecopy')}}</label>
+                                <label for="copyUrl" class="col-form-label">{{$t('label.sharecopy')}}</label>
                                 <input  type="text" class="form-control" v-model="shareUrl" id="copyUrl">
                             </div>
                         </form>
@@ -327,19 +331,19 @@
                     <div class="modal-body">
                         <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
                             <p class="mb-0">{{$t(modalError)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="fade" v-if="modalWarning" v-bind:class="{'alert alert-warning alert-dismissible show': modalWarning != ''}" role="alert">
                             <p class="mb-0">{{$t(modalWarning)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="fade" v-if="modalSuccess" v-bind:class="{'alert alert-success alert-dismissible show': modalSuccess != ''}" role="alert">
                             <p class="mb-0">{{$t(modalSuccess)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -429,13 +433,13 @@
                     <div class="modal-body">
                         <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
                             <p class="mb-0">{{$t(modalError)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="fade" v-if="modalWarning" v-bind:class="{'alert alert-warning alert-dismissible show': modalWarning != ''}" role="alert">
                             <p class="mb-0">{{$t(modalWarning)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -493,19 +497,19 @@
                     <div class="modal-body">
                         <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
                             <p class="mb-0">{{$t(modalError)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="fade" v-if="modalWarning" v-bind:class="{'alert alert-warning alert-dismissible show': modalWarning != ''}" role="alert">
                             <p class="mb-0">{{$t(modalWarning)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <form>
                             <div class="form-group">
-                                <label for="username" class="col-form-label">{{$t('label.username')}}</label>
+                                <label for="username-signin" class="col-form-label">{{$t('label.username')}}</label>
                                 <input  type="text" class="form-control " v-bind:class="{'is-invalid':modalErrorTarget?.['username']}" v-model="username" id="username-signin">
                                 <div v-if="modalErrorTarget" v-bind:class="{'valid-feedback': !modalErrorTarget?.['username'] ,'invalid-feedback':modalErrorTarget?.['username']}">
                                     {{$t(modalErrorTarget?.['username'])}}
@@ -514,7 +518,7 @@
                                     <a href="#" v-on:click="showRecoverUser()">{{$t('label.forgotuser')}}</a>
                                 </div>
                             </div>
-                            <label for="password" class="col-form-label">{{$t('label.password')}}</label>
+                            <label for="password-signin" class="col-form-label">{{$t('label.password')}}</label>
                             <div class="input-group">
                                 <input  v-bind:type="peek?'text':'password'" class="form-control readonly" v-bind:class="{'is-invalid':modalErrorTarget?.['password']}" v-model="password" id="password-signin">
 
@@ -561,19 +565,19 @@
                     <div class="modal-body">
                         <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
                             <p class="mb-0">{{$t(modalError)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="fade" v-if="modalWarning" v-bind:class="{'alert alert-warning alert-dismissible show': modalWarning != ''}" role="alert">
                             <p class="mb-0">{{$t(modalWarning)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <form>
                             <div class="form-group">
-                                <label for="username" class="col-form-label">{{$t('label.username')}}</label>
+                                <label for="username-resetPassword" class="col-form-label">{{$t('label.username')}}</label>
                                 <input  type="text" class="form-control " v-bind:class="{'is-invalid':modalErrorTarget?.['username']}" v-model="username" id="username-resetPassword">
                                 <div v-if="modalErrorTarget" v-bind:class="{'valid-feedback': !modalErrorTarget?.['username'] ,'invalid-feedback':modalErrorTarget?.['username']}">
                                     {{$t(modalErrorTarget?.['username'])}}
@@ -601,13 +605,13 @@
                     <div class="modal-body">
                         <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
                             <p class="mb-0">{{$t(modalError)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="fade" v-if="modalWarning" v-bind:class="{'alert alert-warning alert-dismissible show': modalWarning != ''}" role="alert">
                             <p class="mb-0">{{$t(modalWarning)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -641,7 +645,7 @@
                     <div class="modal-body">
                         <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
                             <p class="mb-0">{{$t(modalError)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert"aria-label="Close">
+                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
