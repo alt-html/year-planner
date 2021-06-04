@@ -1,7 +1,7 @@
 
 var initialise = function (){
     setLocalIdentities (model.identities);
-    setLocalPreferences(model.uid,{0:year,1:lang,2:(theme == 'dark'?1:0)});
+    setLocalPreferences(model.uid,{0:year,1:lang,2:(theme == 'dark'?1:0),3:model.preferences['3']||null});
     setLocalPlanner(model.uid,model.year,model.planner);
     refresh();
 }
