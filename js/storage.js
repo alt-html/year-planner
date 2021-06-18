@@ -1,7 +1,7 @@
 
 var initialise = function (){
     setLocalIdentities (model.identities);
-    setLocalPreferences(model.uid,{0:year,1:lang});
+    setLocalPreferences(model.uid,{0:year,1:lang,2:(theme == 'dark'?1:0),3:model.preferences['3']||null});
     setLocalPlanner(model.uid,model.year,model.planner);
     refresh();
 }
@@ -122,7 +122,8 @@ var setModelFromImportString = function (importUrlParam){
         model.year = importer[2];
         model.planner = importer[3];
         model.lang = model.preferences['1'];
-        model.theme= model.preferences['2'];
+        model.theme= model.preferences['2'] == 1 ? 'dark' : 'light';
+        theme = model.theme;
     }
 }
 
