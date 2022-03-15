@@ -18,6 +18,7 @@ let app = new Vue({
     }
 })
 
+context.app = app;
 app.refresh();
 
 document.title = app.$t('label.yearplanner');

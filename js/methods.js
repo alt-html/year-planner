@@ -5,13 +5,13 @@ import { i18n } from "./i18n.js";
 export const methods = {
 
     refresh() {
-        this.setYear(model.year);
+        this.setYear(this.year);
         this.api.acceptCookies();
         if (this.api.cookiesAccepted()){
             this.api.synchroniseToLocal(false);
             this.storageLocal.setLocalFromModel();
             if (!window.location.href.includes('?uid=')){
-                window.location.href = window.location.origin +'?uid='+model.uid+'&year='+model.year+'&lang='+model.lang+'&theme='+model.theme;
+                window.location.href = window.location.origin +'?uid='+this.uid+'&year='+this.year+'&lang='+this.lang+'&theme='+this.theme;
             }
             if (this.theme =='dark'){
                 document.body.classList.add("yp-dark");
@@ -226,34 +226,34 @@ export const methods = {
             })
             .set('Accept', 'application/json')
             .then(response => {
-                    this.model.response = response;
-                    this.model.uuid = response.body.uuid;
-                    this.model.donation = response.body.donation;
+                    this.response = response;
+                    this.uuid = response.body.uuid;
+                    this.donation = response.body.donation;
                     this.storageLocal.extendLocalSession();
-                    this.model.signedin = signedin();
-                    this.model.registered = registered();
+                    this.signedin = signedin();
+                    this.registered = registered();
                     $('#registerModal').modal('hide');
                 }
             )
             .catch(err => {
                 if (err.status == 405)
-                    this.model.modalError = 'error.apinotavailable';
+                    this.modalError = 'error.apinotavailable';
                 if (err.status == 400)
-                    this.model.modalError = 'error.usernotavailable';
+                    this.modalError = 'error.usernotavailable';
             });//400 - bad request (name exists), 200 success returns uuid and subscription
     },
 
     signin (username, password, rememberme){
         this.clearModalAlert();
-        if (!this.model.username) {
-            // this.model.modalWarning = 'warn.usernamenotprovided'
+        if (!this.username) {
+            // this.modalWarning = 'warn.usernamenotprovided'
             this.modalErr('username', 'warn.usernamenotprovided')
         }
-        if (!this.model.password) {
-            // this.model.modalWarning = 'warn.passwordnotprovided'
+        if (!this.password) {
+            // this.modalWarning = 'warn.passwordnotprovided'
             this.modalErr('password', 'warn.passwordnotprovided')
         }
-        if (this.model.modalErrorTarget) {
+        if (this.modalErrorTarget) {
             return;
         }
 
@@ -261,65 +261,65 @@ export const methods = {
             .get('/api/planner')
             .auth(username, password)
             .then(response => {
-                    this.model.response = response;
-                    this.model.uuid = response.body.uuid;
-                    this.model.username = response.body.username;
-                    this.model.donation = response.body.donation;
-                    this.model.email = response.body.email;
-                    this.model.emailverified = response.body.emailverified;
-                    this.model.mobile = response.body.mobile;
-                    this.model.mobileverified = response.body.mobileverified;
+                    this.response = response;
+                    this.uuid = response.body.uuid;
+                    this.username = response.body.username;
+                    this.donation = response.body.donation;
+                    this.email = response.body.email;
+                    this.emailverified = response.body.emailverified;
+                    this.mobile = response.body.mobile;
+                    this.mobileverified = response.body.mobileverified;
                     $('#signinModal').modal('hide');
-                    if (this.model.rememberme) {
-                        this.storageLocal.setLocalSession(this.model.uuid, 0);
+                    if (this.rememberme) {
+                        this.storageLocal.setLocalSession(this.uuid, 0);
                     } else {
-                        this.storageLocal.setLocalSession(this.model.uuid, DateTime.local().plus({minutes: 30}).ts);
+                        this.storageLocal.setLocalSession(this.uuid, DateTime.local().plus({minutes: 30}).ts);
                     }
-                    this.model.signedin = signedin();
-                    this.model.registered = registered();
+                    this.signedin = signedin();
+                    this.registered = registered();
 
                     this.storageLocal.synchroniseLocalPlanners(response.body.data, true);
-                    this.model.uid = response.body.data['1']?.['2'] || this.model.uid;
-                    this.model.year = response.body.data['1']?.['3'] || this.model.year;
+                    this.uid = response.body.data['1']?.['2'] || this.uid;
+                    this.year = response.body.data['1']?.['3'] || this.year;
 
-                    window.location.href = window.location.origin + '?uid=' + this.model.uid + '&year=' + this.model.year;
+                    window.location.href = window.location.origin + '?uid=' + this.uid + '&year=' + this.year;
                 }
             )
             .catch(err => {
                 if (err.status == 404)
-                    this.model.modalError = 'error.apinotavailable';
+                    this.modalError = 'error.apinotavailable';
                 if (err.status == 401)
-                    this.model.modalError = 'error.unauthorized';
+                    this.modalError = 'error.unauthorized';
             }) //401 - unauthorised, 200 success returns uuid and subscription
     },
 
     signout (){
-        this.model.uuid = '';
+        this.uuid = '';
         this.storageLocal.deleteLocalSession();
-        this.model.signedin = this.signedin();
-        this.model.registered = this.registered();
+        this.signedin = this.signedin();
+        this.registered = this.registered();
         this.storageLocal.wipe();
     },
 
      showSignin (){
         this.clearModalAlert();
-        model.username = null;
-        model.password = null;
-        model.peek = false;
+        this.username = null;
+        this.password = null;
+        this.peek = false;
         $('#signinModal').modal('show');
         $('#registerModal').modal('hide');
     },
 
     showResetPassword (){
         this.clearModalAlert();
-        model.username = null;
+        this.username = null;
         $('#signinModal').modal('hide');
         $('#resetPasswordModal').modal('show');
     },
 
     showRecoverUser (){
         this.clearModalAlert();
-        model.username = null;
+        this.username = null;
         $('#signinModal').modal('hide');
         $('#recoverUsernameModal').modal('show');
     },
@@ -330,26 +330,26 @@ export const methods = {
     },
 
     clearModalAlert (){
-        model.modalError = '';
-        model.modalErrorTarget = null;
-        model.modalWarning = '';
-        model.modalSuccess = '';
+        this.modalError = '';
+        this.modalErrorTarget = null;
+        this.modalWarning = '';
+        this.modalSuccess = '';
 
     },
 
      peekPass(){
-        model.peek = true;
+        this.peek = true;
     },
 
      unpeekPass(){
-        model.peek = false;
+        this.peek = false;
     },
 
     peekNewPass (){
-        model.peeknp = true;
+        this.peeknp = true;
     },
 
      unpeekNewPass (){
-        model.peeknp = false;
+        this.peeknp = false;
     }
 }
