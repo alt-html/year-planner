@@ -1,4 +1,5 @@
 import { urlParam } from './urlparam.js';
+// import { createI18n } from 'https://unpkg.com/vue-i18n@9/dist/vue-i18n.esm-browser.js';
 
 export const messages = {
     en: {
@@ -612,7 +613,7 @@ export const messages = {
 
 export const getNavigatorLanguage = () => (navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
 
-export const i18n = new VueI18n({
+export const i18n = VueI18n.createI18n ({
     locale: (urlParam('lang') || 'en').substring(0,2), // set locale
     fallbackLocale: 'en',
     messages, // set locale messages
