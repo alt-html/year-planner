@@ -1,11 +1,8 @@
 import { context } from './context.js';
 import { i18n } from './i18n.js';
-// import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 
 window.request = superagent;
 window.context = context;
-
-
 
 i18n.locale = context.model.lang;
 

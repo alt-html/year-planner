@@ -1,5 +1,4 @@
 import { urlParam } from './urlparam.js';
-// import { createI18n } from 'https://unpkg.com/vue-i18n@9/dist/vue-i18n.esm-browser.js';
 
 export const messages = {
     en: {
