@@ -1,4 +1,4 @@
-var feature = {
+export let feature = {
     debug : false,
     profile : true,
     register : true,
@@ -9,7 +9,7 @@ var feature = {
     pay : false
 };
 
-var ftoggle = function (fname){
+export function ftoggle (fname){
     feature[fname] = !feature[fname];
     return feature[fname];
 }

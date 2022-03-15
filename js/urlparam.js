@@ -1,4 +1,4 @@
-var urlParam = function (name) {
+export function urlParam (name) {
     var results = new RegExp('[\?&]' + name + '=([^&#]*)')
         .exec(window.location.href);
     if (results == null) {

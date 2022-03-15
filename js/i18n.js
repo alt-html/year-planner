@@ -1,5 +1,6 @@
+import { urlParam } from './urlparam.js';
 
-var messages = {
+export const messages = {
     en: {
         label : {
             yearplanner : 'Year Planner',
@@ -112,6 +113,7 @@ var messages = {
         day :{
             Monday:'lunes',Tuesday:'martes',Wednesday:'miércoles',Thursday:'jueves',Friday:'viernes',Saturday:'sábado',Sunday:'domingo'
         },
+        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia',tp:'Tok Pisin'}
     },
     pt: {
        label : {
@@ -166,6 +168,7 @@ var messages = {
         day :{
             Monday:'segunda-feira',Tuesday:'terça-feira',Wednesday:'quarta-feira',Thursday:'quinta-feira',Friday:'sexta-feira',Saturday:'sábado',Sunday:'domigo'
         },
+        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia',tp:'Tok Pisin'}
     },
 
     zh:{
@@ -221,6 +224,7 @@ var messages = {
         day :{
             Monday:'週一',Tuesday:'週二',Wednesday:'週三',Thursday:'週四',Friday:'星期五',Saturday:'週六',Sunday:'星期日'
         },
+        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia',tp:'Tok Pisin'}
     },
     hi:{
            label : {
@@ -275,6 +279,7 @@ var messages = {
         day :{
             Monday:'सोमवार',Tuesday:'मंगलवार',Wednesday:'बुधवार',Thursday:'गुरूवार',Friday:'शुक्रवार',Saturday:'शनिवार',Sunday:'रविवार'
         },
+        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia',tp:'Tok Pisin'}
     },
     fr:{
         label : {
@@ -329,6 +334,7 @@ var messages = {
         day :{
             Monday:'lundi',Tuesday:'mardi',Wednesday:'mercredi',Thursday:'jeudi',Friday:'vendredi',Saturday:'samedi',Sunday:'dimanche'
         },
+        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia',tp:'Tok Pisin'}
     },
   ar:{
         label : {
@@ -383,6 +389,7 @@ var messages = {
         day :{
             Monday:'يوم الاثنين',Tuesday:'يوم الثلاثاء',Wednesday:'الأربعاء',Thursday:'يوم الخميس',Friday:'يوم الجمعة',Saturday:'يوم السبت',Sunday:'يوم الأحد'
         },
+      lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia',tp:'Tok Pisin'}
     },
     ru:{
        label : {
@@ -437,6 +444,7 @@ var messages = {
         day :{
             Monday:'понедельник',Tuesday:'вторник',Wednesday:'среда',Thursday:'четверг',Friday:'Пятница',Saturday:'Суббота',Sunday:'воскресенье'
         },
+        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia',tp:'Tok Pisin'}
     },
     ja:{
        label : {
@@ -491,6 +499,7 @@ var messages = {
         day :{
             Monday:'月曜',Tuesday:'火曜日',Wednesday:'水曜日',Thursday:'木曜日',Friday:'金曜日',Saturday:'土曜日',Sunday:'日曜日'
         },
+        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia',tp:'Tok Pisin'}
     },
     id:{
        label : {
@@ -544,7 +553,9 @@ var messages = {
         },
         day :{
             Monday:'Senin',Tuesday:'Selasa',Wednesday:'Rabu',Thursday:'Kamis',Friday:'Jumat',Saturday:'Sabtu',Sunday:'Minggu'
-        }    },
+        },
+        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia',tp:'Tok Pisin'}
+    },
     tp: {
         label : {
             yearplanner : 'Toktok bilong yia',
@@ -595,12 +606,13 @@ var messages = {
         day :{
             Monday:'Mande',Tuesday:'Tunde',Wednesday:'Trinde',Thursday:'Fonde',Friday:'Fraide',Saturday:'Sarere',Sunday:'Sande'
         },
-    },
+        lang: {en:'English', zh:'中國人', hi:'हिन्दी', es:'español', fr:'Français',  ar:'عربى',ru:'русский',pt:'português',ja:'日本語',id:'Bahasa Indonesia',tp:'Tok Pisin'}
+   },
 }
 
-var getNavigatorLanguage = () => (navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
+export const getNavigatorLanguage = () => (navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
 
-var i18n = new VueI18n({
+export const i18n = new VueI18n({
     locale: (urlParam('lang') || 'en').substring(0,2), // set locale
     fallbackLocale: 'en',
     messages, // set locale messages
