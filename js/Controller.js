@@ -1,5 +1,5 @@
 import { urlParam } from './urlparam.js';
-import { DateTime } from "./DateTime.js";
+import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 import { getNavigatorLanguage } from "./i18n.js";
 
 export default class Controller {

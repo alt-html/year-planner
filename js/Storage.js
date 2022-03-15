@@ -1,23 +1,13 @@
-import { DateTime } from './DateTime.js';
+import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.js/+esm';
 
 export default class Storage {
 
-    constructor(model, storageLocal) {
+    constructor(api,model, storageLocal) {
+        this.api = api;
         this.model = model;
         this.storageLocal = storageLocal;
     }
 
-    initialise (){
-        this.storageLocal.setLocalIdentities(this.model.identities);
-        this.storageLocal.setLocalPreferences(this.model.uid, {
-            0: year,
-            1: lang,
-            2: (theme == 'dark' ? 1 : 0),
-            3: this.model.preferences['3'] || null
-        });
-        this.storageLocal.setLocalPlanner(this.model.uid, this.model.year, this.model.planner);
-        refresh();
-    }
 
     getPlanner (uid, year) {
         //if signed in get remote planner otherwise local
@@ -26,7 +16,7 @@ export default class Storage {
 
     deletePlannerByYear (uid, year) {
         this.storageLocal.deleteLocalPlannerByYear(uid, year);
-        synchroniseToRemote();
+        this.api.synchroniseToRemote();
     }
 
     exportPlannerToJSON (){

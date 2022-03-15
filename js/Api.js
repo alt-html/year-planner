@@ -1,7 +1,7 @@
 import Storage from "./Storage.js";
 import { model } from "./model.js";
 import { i18n } from "./i18n.js";
-import { DateTime } from "./DateTime.js";
+import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 
 export default class Api {
     constructor(model, storageLocal, cookies) {

@@ -1,3 +1,6 @@
+import _ from 'https://cdn.jsdelivr.net/npm/lodash-es/lodash.min.js';
+import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.js/+esm';
+
 export default class StorageRemote {
     constructor(model,storage,storageLocal,cookies) {
         this.model = model;

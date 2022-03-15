@@ -37,6 +37,7 @@ context.model.api = context.api;
 context.model.messages = context.messages;
 context.model.storage = context.storage;
 context.model.storageLocal = context.storageLocal;
+context.storage.api = context.api;
 context.storage.model = context.model;
 context.storage.storageLocal = context.storageLocal;
 context.storageLocal.api = context.api;

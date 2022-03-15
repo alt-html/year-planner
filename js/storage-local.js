@@ -1,4 +1,6 @@
-import { DateTime } from "./DateTime.js";
+import _ from 'https://cdn.jsdelivr.net/npm/lodash-es/lodash.min.js';
+import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
+import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.js/+esm';
 
 export default class StorageLocal {
     constructor(api,model,cookies,storage) {
@@ -6,13 +8,6 @@ export default class StorageLocal {
         this.model = model;
         this.cookies = cookies;
         this.storage = storage;
-    }
-
-    initialise () {
-        this.setLocalIdentities(this.model.identities);
-        this.setLocalPreferences(this.model.uid, {0: this.model.year, 1: this.model.lang, 2: (this.model.theme == 'dark' ? 1 : 0)});
-        this.setLocalPlanner(this.model.uid, this.model.year, this.model.planner);
-        refresh();
     }
 
     setLocalIdentities (identities) {
