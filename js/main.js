@@ -14,12 +14,11 @@ let app = new Vue({
     data: context.model,
     methods: context.methods,
     mounted() {
-        // this.refresh();
+        this.refresh();
     }
 })
 
 context.app = app;
-app.refresh();
 
 document.title = app.$t('label.yearplanner');
 document.documentElement.lang = context.model.lang;
