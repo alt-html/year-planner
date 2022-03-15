@@ -1,9 +1,8 @@
 import { context } from './context.js';
-import { urlParam } from './urlparam.js';
 import { i18n } from './i18n.js';
 
 window.request = superagent;
-
+window.context = context;
 
 
 
