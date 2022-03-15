@@ -30,7 +30,6 @@ export default class Controller {
         this.model.uuid = this.storageLocal.getLocalSession()?.['0']||'',
         this.model.pageLoadTime = this.pageLoadTime;
         this.model.identities = this.storageLocal.getLocalIdentities() || [{0:this.model.uid,1:window.navigator.userAgent,2:0,3:0}],
-        this.model.planner = this.storage.getPlanner(this.model.uid, this.model.year),
 
         this.model.preferences = (this.storageLocal.getLocalPreferences(this.model.uid) || {});
 
@@ -58,6 +57,7 @@ export default class Controller {
 
         this.model.registered = this.api.registered(),
         this.model.signedin = this.api.signedin(),
+        this.model.planner = this.storage.getPlanner(this.model.uid, this.model.year),
 
         this.storage.setModelFromImportString(this.model.share);
         this.api.verifyEmailToken(this.url.parameters.verify, this.model);
