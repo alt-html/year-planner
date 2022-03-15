@@ -9,16 +9,6 @@ window.context = context;
 
 i18n.locale = context.model.lang;
 
-// let app = new Vue({
-//     i18n : i18n,
-//     el: '#app',
-//     data: context.model,
-//     methods: context.methods,
-//     mounted() {
-//         this.refresh();
-//     }
-// })
-
 let app = Vue.createApp({
     data() {
         return context.model;
