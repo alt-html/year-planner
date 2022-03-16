@@ -1,17 +1,16 @@
-import Storage from "./Storage.js";
 import { model } from "./model.js";
 import { i18n } from "./i18n.js";
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 
+//  Client SDK to server side API
+//
 export default class Api {
     constructor(model, storageLocal, cookies) {
         this.model = model;
         this.storageLocal = storageLocal;
         this.cookies = cookies;
     }
-
     synchroniseToRemote (){
-
         if (this.signedin()) {
 
             this.storageLocal.registerRemoteIdentity(this.model.uid);
@@ -31,7 +30,6 @@ export default class Api {
                 }) //401 - unauthorised, 200 success returns uuid and subscription
         }
     }
-
     synchroniseToLocal (syncPrefs){
 
         if (this.signedin()) {
@@ -60,20 +58,6 @@ export default class Api {
         }
 
     }
-
-    signedin (){
-        let expires = this.storageLocal.getLocalSession()?.['1'];
-        let isSignedIn = (expires != null && (expires > 0 && expires >= DateTime.now().ts) || expires == 0);
-        // if (showSignin && !isSignedIn){
-        //     showSignin();
-        // }
-        return isSignedIn;
-    }
-
-    registered (){
-        return (!!this.storageLocal.getLocalSession());
-    }
-
     deleteRegistration (){
         request
             .delete('/api/planner/' + this.storageLocal.getLocalSession()?.['0'])
@@ -90,7 +74,6 @@ export default class Api {
             });//404 - (uuid not found)), 200 success returns no data
 
     }
-
     setUsername (username) {
         this.modalErr('username', null);
         if (!this.model.username) {
@@ -128,7 +111,6 @@ export default class Api {
                     this.model.modalError = 'error.usernotavailable';
             })
     }
-
     setPassword (password, newpassword){
         this.modalErr('password', null);
         this.modalErr('newpassword', null);
@@ -171,7 +153,6 @@ export default class Api {
                     this.model.modalError = 'error.passwordincorrect';
             })
     }
-
     setEmail (email){
         this.modalErr('email', null);
         if (!this.model.email) {
@@ -206,7 +187,6 @@ export default class Api {
                     this.model.modalError = 'error.unauthorized';
             })
     }
-
     setMobile (mobile){
         request
             .post('/api/profile/' + this.model.uuid + '/mobile')
@@ -231,7 +211,6 @@ export default class Api {
                     this.model.modalError = 'error.unauthorized';
             })
     }
-
     squarePayment (nonce, idempotency_key){
         request
             .post('/api/payment')
@@ -262,7 +241,6 @@ export default class Api {
             });
 
     }
-
     setDonation (receipt_url){
         request
             .post('/api/profile/' + this.model.uuid + '/donation')
@@ -291,7 +269,6 @@ export default class Api {
                     this.model.modalError = 'error.unauthorized';
             })
     }
-
     sendVerificationEmail (){
         request
             .post('/api/verify/' + this.model.uuid)
@@ -310,7 +287,6 @@ export default class Api {
                     this.model.modalError = 'error.unauthorized';
             })
     }
-
     verifyEmailToken (token, model){
         if (token) {
             request
@@ -334,7 +310,6 @@ export default class Api {
         }
 
     }
-
     sendRecoverPasswordEmail(username){
         this.modalErr('username', null);
         if (!this.model.username) {
@@ -361,9 +336,7 @@ export default class Api {
                     this.model.modalError = 'error.unauthorized';
             })
     }
-
-    sendRecoverUsernameEmail(email)
-    {
+    sendRecoverUsernameEmail(email) {
         this.modalErr('email', null);
         if (!this.model.email) {
             // this.model.modalWarning = 'warn.usernamenotprovided'
@@ -389,9 +362,7 @@ export default class Api {
                     this.model.modalError = 'error.unauthorized';
             })
     }
-
-    email(to, subject, bodyText)
-    {
+    email(to, subject, bodyText) {
         request
             .post('/api/email')
             .send({to: [to], subject: subject, bodyText: bodyText})
@@ -407,7 +378,6 @@ export default class Api {
                     this.model.modalError = 'error.general';
             })
     }
-
     modalErr (target,err) {
         if (!model.modalErrorTarget){
             model.modalErrorTarget = {};
@@ -416,14 +386,4 @@ export default class Api {
         model.touch = model.touch ? '': ' ';
     }
 
-    cookiesAccepted () {
-        return !(this.cookies.getCookie('0') == '');
-    }
-
-    acceptCookies () {
-        if (!this.cookiesAccepted()) {
-            $('#cookieModal').modal('show');
-        }
-        this.storageLocal.setLocalFromModel();
-    }
 }

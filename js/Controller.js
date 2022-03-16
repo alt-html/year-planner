@@ -55,8 +55,8 @@ export default class Controller {
         this.model.cmonth  = this.pageLoadTime.month,
         this.model.cday = this.pageLoadTime.day,
 
-        this.model.registered = this.api.registered(),
-        this.model.signedin = this.api.signedin(),
+        this.model.registered = this.storageLocal.registered(),
+        this.model.signedin = this.storageLocal.signedin(),
         this.model.planner = this.storage.getPlanner(this.model.uid, this.model.year),
 
         this.storage.setModelFromImportString(this.model.share);

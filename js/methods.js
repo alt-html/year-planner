@@ -6,8 +6,8 @@ export const methods = {
 
     refresh() {
         this.setYear(this.year);
-        this.api.acceptCookies();
-        if (this.api.cookiesAccepted()){
+        this.storageLocal.acceptCookies();
+        if (this.storageLocal.cookiesAccepted()){
             this.api.synchroniseToLocal(false);
             this.storageLocal.setLocalFromModel();
             if (!window.location.href.includes('?uid=')){
@@ -82,7 +82,7 @@ export const methods = {
 
         this.uid = uid;
         this.preferences = preferences;
-        this.identities.unshift({0:uid,1:window.navigator.userAgent,2:this.api.signedin()?1:0,3:0});
+        this.identities.unshift({0:uid,1:window.navigator.userAgent,2:this.storageLocal.signedin()?1:0,3:0});
         this.storage.setLocalIdentities(this.identities);
         this.planner = this.storage.getPlanner(uid, this.year);
         this.refresh();
@@ -230,8 +230,8 @@ export const methods = {
                     this.uuid = response.body.uuid;
                     this.donation = response.body.donation;
                     this.storageLocal.extendLocalSession();
-                    this.signedin = signedin();
-                    this.registered = registered();
+                    this.signedin = this.storageLocal.signedin();
+                    this.registered = this.storageLocal.registered();
                     $('#registerModal').modal('hide');
                 }
             )
@@ -275,8 +275,8 @@ export const methods = {
                     } else {
                         this.storageLocal.setLocalSession(this.uuid, DateTime.local().plus({minutes: 30}).ts);
                     }
-                    this.signedin = signedin();
-                    this.registered = registered();
+                    this.signedin = this.storageLocal.signedin();
+                    this.registered = this.storageLocal.registered();
 
                     this.storageLocal.synchroniseLocalPlanners(response.body.data, true);
                     this.uid = response.body.data['1']?.['2'] || this.uid;
@@ -296,8 +296,8 @@ export const methods = {
     signout (){
         this.uuid = '';
         this.storageLocal.deleteLocalSession();
-        this.signedin = this.signedin();
-        this.registered = this.registered();
+        this.signedin = this.storageLocal.signedin();
+        this.registered = this.storageLocal.registered();
         this.storageLocal.wipe();
     },
 

@@ -1,13 +1,12 @@
 export default class Cookies {
-    constructor(storageLocal) {
-        this.storageLocal = storageLocal;
-    }
+    constructor() {
+     }
 
-    setCookie (cname, cvalue, exdays) {
+    setCookie (cname, cvalue, exdays,samesite) {
         let d = new Date();
         d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
         let expires = "expires=" + d.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;SameSite=Strict";
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;SameSite="+(samesite||"Strict");
     }
 
     deleteCookie (cname) {

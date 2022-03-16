@@ -7,45 +7,31 @@ export default class Storage {
         this.model = model;
         this.storageLocal = storageLocal;
     }
-
-
     getPlanner (uid, year) {
-        //if signed in get remote planner otherwise local
         return this.storageLocal.getLocalPlanner(uid, year);
     }
-
     deletePlannerByYear (uid, year) {
         this.storageLocal.deleteLocalPlannerByYear(uid, year);
         this.api.synchroniseToRemote();
     }
-
     exportPlannerToJSON (){
         return JSON.stringify(this.model.planner);
     }
-
     exportPlannerToBase64 (){
         return LZString.compressToBase64(this.exportPlannerToJSON());
     }
-
     setPlanner (uid, year, planner) {
         this.storageLocal.setLocalPlanner(uid, year, planner);
     }
-
-
-
     updateMonthColour (mindex, day, entryColour) {
-
         for (let i = day + 1; i <= this.model.daysInMonth[mindex]; i++) {
             let entry = this.getEntry(mindex, i);
             let entryType = this.getEntryType(mindex, i);
             let syncToRemote = (i == this.model.daysInMonth[mindex]);
             this.updateEntry(mindex, i, entry, entryType, entryColour, syncToRemote);
-            //(mindex,day,entry,entryType,entryColour,syncToRemote)
-            //function(mindex,day,entry,entryType,entryColour)
-        }
+         }
     }
-
-     getExportString (){
+    getExportString (){
         let exporter = [];
         exporter.push(this.storageLocal.getLocalIdentity(this.model.uid));
         exporter.push(this.model.preferences);
@@ -53,8 +39,7 @@ export default class Storage {
         exporter.push(this.model.planner);
         return LZString.compressToEncodedURIComponent(JSON.stringify(exporter));
     }
-
-     setModelFromImportString (importUrlParam) {
+    setModelFromImportString (importUrlParam) {
         if ('' != importUrlParam) {
             let importer = JSON.parse(LZString.decompressFromEncodedURIComponent(importUrlParam));
             this.model.uid = importer[0]['0'];
@@ -69,8 +54,6 @@ export default class Storage {
             let theme = this.model.theme;
         }
     }
-
-
     download(filename, contentType, text) {
         let element = document.createElement('a');
         element.setAttribute('href', 'data:' + contentType + ';charset=utf-8,' + encodeURIComponent(text));

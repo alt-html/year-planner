@@ -9,11 +9,9 @@ export default class StorageLocal {
         this.cookies = cookies;
         this.storage = storage;
     }
-
     setLocalIdentities (identities) {
         this.cookies.setCookie('0', LZString.compressToBase64(JSON.stringify(identities)), 4384);
     }
-
     setLocalPreferences (uid, preferences) {
 
         this.preferences = preferences;
@@ -23,7 +21,6 @@ export default class StorageLocal {
 
         this.cookies.setCookie(uid + '', LZString.compressToBase64(JSON.stringify(preferences)), 4384);
     }
-
     getLocalUid () {
         let localIdentities = this.getLocalIdentities();
         if (localIdentities) {
@@ -31,7 +28,6 @@ export default class StorageLocal {
         }
         return null;
     }
-
     getDefaultLocalIdentity () {
         let localIdentities = this.getLocalIdentities();
         if (localIdentities) {
@@ -39,7 +35,6 @@ export default class StorageLocal {
         }
         return null;
     }
-
     getLocalIdentity (uid) {
         let localIdentities = this.getLocalIdentities();
         if (localIdentities) {
@@ -51,11 +46,9 @@ export default class StorageLocal {
         }
         return null;
     }
-
     getLocalIdentities () {
         return JSON.parse(LZString.decompressFromBase64(this.cookies.getCookie('0')));
     }
-
     getLocalPlannerYears () {
         let localPlannerYears = {};
         let cookies = Object.keys(this.cookies.getCookies());
@@ -73,19 +66,15 @@ export default class StorageLocal {
         }
         return localPlannerYears;
     }
-
     getDefaultLocalPreferences () {
         return JSON.parse(LZString.decompressFromBase64(this.cookies.getCookie(this.getLocalIdentities()[0]['0'] + '')));
     }
-
     getLocalPreferences (uid) {
         return JSON.parse(LZString.decompressFromBase64(this.cookies.getCookie(uid + '')));
     }
-
     getDefaultLocalPlanner () {
         return this.getLocalPlanner(this.getLocalIdentities(), this.model.year)
     }
-
     getLocalPlanner (uid, year) {
         let planner = []
         for (let m = 1; m <= 12; m++) {
@@ -93,7 +82,6 @@ export default class StorageLocal {
         }
         return planner;
     }
-
     deletePlannerByYear (uid, year) {
         let localPlannerYears = {};
         let cookies = Object.keys(this.cookies.getCookies());
@@ -117,7 +105,6 @@ export default class StorageLocal {
         window.location.href = window.location.origin + '?uid=' + this.model.uid + '&year=' + this.model.cyear;
         location.reload();
     }
-
     deleteLocalPlanner (uid) {
         let localPlannerYears = {};
         let cookies = Object.keys(this.cookies.getCookies());
@@ -136,25 +123,20 @@ export default class StorageLocal {
         }
         this.setLocalIdentities(this.model.identities);
     }
-
     setLocalPlanner (uid, year, planner) {
         for (let m = 1; m <= 12; m++) {
             this.cookies.setCookie(uid + '-' + year + m, LZString.compressToBase64(JSON.stringify(planner[m - 1])), 4384)
         }
     }
-
     setLocalPlannerLastUpdated (uid, year, lastUpdated) {
         this.cookies.setCookie(uid + '-' + year, LZString.compressToBase64(JSON.stringify(lastUpdated)), 4384)
     }
-
     importLocalPlannerFromJSON (planner) {
         this.importLocalPlanner(JSON.parse(planner));
     }
-
     importLocalPlannerFromBase64 (planner) {
         this.importLocalPlanner(JSON.parse(LZString.decompressFromBase64(planner)));
     }
-
     importLocalPlanner (planner) {
         for (let m = 0; m < 12; m++) {
             for (let d = 0; d < this.model.daysInMonth[m - 1]; d++) {
@@ -187,7 +169,6 @@ export default class StorageLocal {
         this.setLocalPlanner(this.model.uid, this.model.year, this.model.planner);
         this.setLocalPlannerLastUpdated(this.model.uid, this.model.year, Math.floor(DateTime.now().ts / 1000));
     }
-
     updateLocalEntry (mindex, day, entry, entryType, entryColour) {
         if (!this.model.planner[mindex]) {
             this.model.planner[mindex] = {};
@@ -205,22 +186,18 @@ export default class StorageLocal {
         this.setLocalPlannerLastUpdated(this.model.uid, this.model.year, Math.floor(DateTime.now().ts / 1000));
 
     }
-
-
     setLocalFromModel () {
-        if (this.api.cookiesAccepted()) {
+        if (this.cookiesAccepted()) {
             this.setLocalIdentities(this.model.identities)
             this.setLocalPreferences(this.model.uid, this.model.preferences)
             this.storage.setPlanner(this.model.uid, this.model.year, this.model.planner);
         }
     }
-
     extendLocalSession () {
-        if (this.api.signedin() && this.getLocalSession()['1'] > 0) {
+        if (this.signedin() && this.getLocalSession()['1'] > 0) {
             this.setLocalSession(this.model.uuid, DateTime.local().plus({minutes: 30}).ts);
         }
     }
-
     setLocalSession (uuid, expires) {
         this.cookies.setCookie('1', LZString.compressToBase64(JSON.stringify({
             0: uuid,
@@ -229,19 +206,15 @@ export default class StorageLocal {
             3: this.model.year
         })), 4384);
     }
-
     getLocalSession () {
         return JSON.parse(LZString.decompressFromBase64(this.cookies.getCookie('1')));
     }
-
     expireLocalSession () {
         this.cookies.setCookie('1', LZString.compressToBase64(JSON.stringify({0: this.model.uuid, 1: 1})), 4384);
     }
-
     deleteLocalSession () {
         this.cookies.deleteCookie('1');
     }
-
     reset () {
         let cookies = Object.keys(this.cookies.getCookies());
         for (let i = 0; i < cookies.length; i++) {
@@ -249,7 +222,6 @@ export default class StorageLocal {
         }
         window.location.href = window.location.origin;
     }
-
     registerRemoteIdentity (uid) {
         let ids = this.getLocalIdentities();
         for (let i = 0; i < ids.length; i++) {
@@ -260,7 +232,6 @@ export default class StorageLocal {
         this.model.identities = ids;
         this.setLocalIdentities(ids);
     }
-
     registerRemoteIdentities () {
         let ids = this.getLocalIdentities();
         for (let i = 0; i < ids.length; i++) {
@@ -269,18 +240,33 @@ export default class StorageLocal {
         this.model.identities = ids;
         this.setLocalIdentities(ids);
     }
-
     getRemoteIdentities () {
         return _.filter(this.getLocalIdentities(), function (id) {
             return id?.[2] == 1
         });
     }
-
     wipe () {
         let remoteIdentities = this.getRemoteIdentities();
         for (let i = 0; i < remoteIdentities.length; i++) {
             this.deleteLocalPlanner(remoteIdentities[i]['0']);
         }
         window.location.href = window.location.origin;
+    }
+    cookiesAccepted () {
+        return !(this.cookies.getCookie('0') == '');
+    }
+    acceptCookies () {
+        if (!this.cookiesAccepted()) {
+            $('#cookieModal').modal('show');
+        }
+        this.setLocalFromModel();
+    }
+    signedin (){
+        let expires = this.getLocalSession()?.['1'];
+        let isSignedIn = (expires != null && (expires > 0 && expires >= DateTime.now().ts) || expires == 0);
+        return isSignedIn;
+    }
+    registered (){
+        return (!!this.getLocalSession());
     }
 }
