@@ -1,6 +1,7 @@
 import _ from 'https://cdn.jsdelivr.net/npm/lodash-es/lodash.min.js';
 import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.js/+esm';
 
+// Synchronises local storgae from remote data
 export default class StorageRemote {
     constructor(model,storage,storageLocal,cookies) {
         this.model = model;
@@ -8,7 +9,6 @@ export default class StorageRemote {
         this.storageLocal = storageLocal;
         this.cookies = cookies;
     }
-
     synchroniseLocalPlanners (data, syncPrefs) {
 
         let localIdentities = this.storageLocal.getLocalIdentities();
@@ -59,11 +59,9 @@ export default class StorageRemote {
         this.model.entryType = this.storage.getEntryType(this.model.month, this.model.day);
         this.model.entryColour = this.storage.getEntryColour(this.model.month, this.model.day);
     }
-
     getRemoteIdentitiesFromData (data) {
         return data['0'];
     }
-
     getRemotePlannerYears (data) {
         let remotePlannerYears = {};
         let keys = Object.keys(data);

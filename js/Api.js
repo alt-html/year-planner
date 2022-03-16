@@ -3,15 +3,13 @@ import { i18n } from "./i18n.js";
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 
 //  Client SDK to server side API
-//
 export default class Api {
     constructor(model, storageLocal, cookies) {
         this.model = model;
         this.storageLocal = storageLocal;
-        this.cookies = cookies;
     }
     synchroniseToRemote (){
-        if (this.signedin()) {
+        if (this.storageLocal.signedin()) {
 
             this.storageLocal.registerRemoteIdentity(this.model.uid);
 
@@ -31,8 +29,7 @@ export default class Api {
         }
     }
     synchroniseToLocal (syncPrefs){
-
-        if (this.signedin()) {
+        if (this.storageLocal.signedin()) {
             request
                 .get('/api/planner/' + this.storageLocal.getLocalSession()?.['0'])
                 .set('Accept', 'application/json')
@@ -56,7 +53,6 @@ export default class Api {
                         this.model.modalError = 'error.usernotavailable';
                 });//400 - bad request (name exists), 200 success returns uuid and subscription
         }
-
     }
     deleteRegistration (){
         request

@@ -2,6 +2,7 @@ import _ from 'https://cdn.jsdelivr.net/npm/lodash-es/lodash.min.js';
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.js/+esm';
 
+//  Interface to cookie-based local storage
 export default class StorageLocal {
     constructor(api,model,cookies,storage) {
         this.api = api;
@@ -218,7 +219,7 @@ export default class StorageLocal {
     reset () {
         let cookies = Object.keys(this.cookies.getCookies());
         for (let i = 0; i < cookies.length; i++) {
-            deleteCookie('' + cookies[i]);
+            this.cookies.deleteCookie('' + cookies[i]);
         }
         window.location.href = window.location.origin;
     }

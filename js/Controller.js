@@ -26,7 +26,7 @@ export default class Controller {
 
     init(){
 
-        this.model.uid = parseInt( urlParam('uid') ) || this.storageLocal.getLocalUid() || Math.floor(pageLoadTime.ts/1000);
+        this.model.uid = parseInt( urlParam('uid') ) || this.storageLocal.getLocalUid() || Math.floor(this.pageLoadTime.ts/1000);
         this.model.uuid = this.storageLocal.getLocalSession()?.['0']||'',
         this.model.pageLoadTime = this.pageLoadTime;
         this.model.identities = this.storageLocal.getLocalIdentities() || [{0:this.model.uid,1:window.navigator.userAgent,2:0,3:0}],

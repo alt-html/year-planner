@@ -19,8 +19,9 @@ let app = Vue.createApp({
 app.use(i18n);
 app.mount('#app');
 context.app = app;
+context.i18n = i18n;
 
-document.title = app.$t('label.yearplanner');
+document.title = i18n.global.t('label.yearplanner');
 document.documentElement.lang = context.model.lang;
 
 $(function () {
