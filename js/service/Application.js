@@ -1,6 +1,6 @@
-import { urlParam } from './util/urlparam.js';
+import { urlParam } from '../util/urlparam.js';
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
-import { getNavigatorLanguage } from "./vue/i18n/i18n.js";
+import { getNavigatorLanguage } from "../vue/i18n/i18n.js";
 
 export default class Application {
 

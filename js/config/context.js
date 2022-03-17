@@ -3,7 +3,7 @@ import { Cookies } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/cookies/di
 
 
 import Api from '../service/Api.js';
-import Application from '../Application.js';
+import Application from '../service/Application.js';
 import { controller } from '../vue/controller.js';
 import config from './config.js';
 import SquareUp  from '../service/SquareUp.js';
