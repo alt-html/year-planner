@@ -1,4 +1,3 @@
-import lang from './lang.js'
 import ar from './ar.js'
 import en from './en.js'
 import es from './es.js'

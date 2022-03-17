@@ -1,17 +1,17 @@
 import { LoggerFactory, LoggerCategoryCache, ConfigurableLogger } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/logger@2.0.3/dist/alt-javascript-logger-esm.js'
 import { Cookies } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/cookies/dist/alt-javascript-cookies-esm.js';
 
-import Api from '/js/service/Api.js';
-import Application from '/js/service/Application.js';
-import { controller } from '/js/vue/controller.js';
-import config from '/js/config/config.js';
-import SquareUp  from '/js/service/SquareUp.js';
-import Storage  from '/js/service/Storage.js';
-import StorageLocal  from '/js/service/StorageLocal.js';
-import StorageRemote  from '/js/service/StorageRemote.js';
-import { feature } from '/js/vue/model-features.js';
-import { messages } from '/js/vue/i18n/messages.js';
-import { model } from '/js/vue/model.js';
+import Api from '../service/Api.js';
+import Application from '../service/Application.js';
+import { controller } from '../vue/controller.js';
+import config from '../config/config.js';
+import SquareUp  from '../service/SquareUp.js';
+import Storage  from '../service/Storage.js';
+import StorageLocal  from '../service/StorageLocal.js';
+import StorageRemote  from '../service/StorageRemote.js';
+import { feature } from '../vue/model-features.js';
+import { messages } from '../vue/i18n/messages.js';
+import { model } from '../vue/model.js';
 
 const context = {};
 

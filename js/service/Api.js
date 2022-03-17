@@ -1,5 +1,5 @@
-import { model } from "/js/vue/model.js";
-import { i18n } from "/js/vue/i18n.js";
+import { model } from "../vue/model.js";
+import { i18n } from "../vue/i18n.js";
 
 //  Client SDK to server side API
 export default class Api {

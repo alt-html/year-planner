@@ -1,5 +1,5 @@
-import { urlParam } from '/js/util/urlparam.js';
-import { getNavigatorLanguage } from "/js/vue/i18n.js";
+import { urlParam } from '../util/urlparam.js';
+import { getNavigatorLanguage } from "../vue/i18n.js";
 
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 

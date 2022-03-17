@@ -1,4 +1,4 @@
-import { feature } from '/js/vue/model-features.js'
+import { feature } from './model-features.js'
 
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 
