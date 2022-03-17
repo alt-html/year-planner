@@ -1,5 +1,5 @@
 import { context } from '/js/config/context.js';
-import { i18n } from '/js/vue/i18n/i18n.js';
+import { i18n } from '/js/vue/i18n.js';
 
 i18n.global.locale = context.model.lang;
 

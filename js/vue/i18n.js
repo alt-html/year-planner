@@ -1,5 +1,5 @@
-import { messages } from './messages.js'
-import { urlParam } from '../../util/urlparam.js';
+import { messages } from './i18n/messages.js'
+import { urlParam } from '../util/urlparam.js';
 
 export const getNavigatorLanguage = () => (navigator.languages && navigator.languages.length) ? navigator.languages[0] : navigator.userLanguage || navigator.language || navigator.browserLanguage || 'en';
 
