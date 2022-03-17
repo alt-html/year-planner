@@ -5,6 +5,9 @@ import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.
 //  Interface to cookie-based local storage
 export default class StorageLocal {
     constructor(api,model,cookies,storage) {
+        this.qualifier = '@alt-html/year-planner/StorageLocal'
+        this.logger = null;
+
         this.api = api;
         this.model = model;
         this.cookies = cookies;

@@ -39,19 +39,19 @@ export default class SquareUp {
             // Initialize the credit card placeholders
             cardNumber: {
                 elementId: 'sq-card-number',
-                placeholder: this.i18n.t('label.cardnumber')
+                placeholder: this.i18n.global.t('label.cardnumber')
             },
             cvv: {
                 elementId: 'sq-cvv',
-                placeholder: this.i18n.t('label.cvv')
+                placeholder: this.i18n.global.t('label.cvv')
             },
             expirationDate: {
                 elementId: 'sq-expiration-date',
-                placeholder: this.i18n.t('label.mmyy')
+                placeholder: this.i18n.global.t('label.mmyy')
             },
             postalCode: {
                 elementId: 'sq-postal-code',
-                placeholder: this.i18n.t('label.postalcode')
+                placeholder: this.i18n.global.t('label.postalcode')
             },
             // SqPaymentForm callback functions
             callbacks: {

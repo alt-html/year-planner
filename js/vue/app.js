@@ -1,10 +1,10 @@
 import { context } from './config/context.js';
-import { i18n } from './vue/i18n/i18n.js';
+import { i18n } from './i18n/i18n.js';
 
 window.request = superagent;
 window.context = context;
 
-i18n.locale = context.model.lang;
+i18n.global.locale = context.model.lang;
 
 let app = Vue.createApp({
     data() {

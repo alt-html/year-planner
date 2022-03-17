@@ -1,9 +1,12 @@
 import _ from 'https://cdn.jsdelivr.net/npm/lodash-es/lodash.min.js';
 import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.js/+esm';
 
-// Synchronises local storgae from remote data
+// Synchronises local storage from remote data
 export default class StorageRemote {
     constructor(model,storage,storageLocal,cookies) {
+        this.qualifier = '@alt-html/year-planner/StorageRemote'
+        this.logger = null;
+
         this.model = model;
         this.storage = storage;
         this.storageLocal = storageLocal;

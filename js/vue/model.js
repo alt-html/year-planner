@@ -1,16 +1,12 @@
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
-import { feature } from './features.js'
+import { feature } from './model-features.js'
 
 const model = {
+    qualifier : '@alt-html/year-planner/controller',
+    logger : null,
+
     DateTime : DateTime,
-    // pageLoadTime : pageLoadTime,
-    // lang: lang,
-    // uid : uid,
-    // year: year,
     nyear : null,
-    // theme : theme,
-    // share : share,
-    // name : name,
     rename : false,
     changepass : false,
 
@@ -31,9 +27,6 @@ const model = {
     paymentSuccess : false,
     receiptUrl : '',
 
-    // identities: storageLocal.getLocalIdentities() || [{0:uid,1:window.navigator.userAgent,2:0,3:0}],
-    // preferences: preferences,
-    // planner: storage.getPlanner(uid, year),
 
     month : 0,
     day : 1,

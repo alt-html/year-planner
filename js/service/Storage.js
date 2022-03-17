@@ -3,6 +3,9 @@ import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.
 export default class Storage {
 
     constructor(api,model, storageLocal) {
+        this.qualifier = '@alt-html/year-planner/Storage'
+        this.logger = null;
+
         this.api = api;
         this.model = model;
         this.storageLocal = storageLocal;

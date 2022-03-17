@@ -9,7 +9,7 @@ export let feature = {
     pay : false
 };
 
-export function ftoggle (fname){
+window.ftoggle = function (fname){
     feature[fname] = !feature[fname];
     return feature[fname];
 }

@@ -1,8 +1,8 @@
 import { model } from "./model.js";
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
-import { i18n } from "./i18n.js";
+import { i18n } from "./i18n/i18n.js";
 
-export const methods = {
+export const controller = {
 
     refresh() {
         this.setYear(this.year);
