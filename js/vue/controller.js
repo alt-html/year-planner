@@ -1,6 +1,5 @@
-import { model } from "./model.js";
+import { i18n } from "/js/vue/i18n/i18n.js";
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
-import { i18n } from "./i18n/i18n.js";
 
 export const controller = {
 

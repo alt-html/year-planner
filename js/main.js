@@ -1,5 +1,5 @@
-import { app } from './vue/app.js';
-import { context } from './config/context.js';
+import { app } from '/js/vue/app.js';
+import { context } from '/js/config/context.js';
 
 window.request = superagent;
 window.context = context;
