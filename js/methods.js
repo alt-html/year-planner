@@ -22,6 +22,13 @@ export const methods = {
         this.loaded=true;
     },
 
+    initialise() {
+        this.storageLocal.setLocalIdentities (this.identities);
+        this.storageLocal.setLocalPreferences(this.uid,{0:this.year,1:this.lang,2:(this.theme == 'dark'?1:0),3:this.preferences['3']||null});
+        this.storageLocal.setLocalPlanner(this.uid,this.year,this.planner);
+        this.refresh();
+    },
+
     setYear (year) {
         this.year = year;
         this.firstWeekdayOfMonth = []

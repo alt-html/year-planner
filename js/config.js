@@ -7,7 +7,7 @@ export default ConfigFactory.getConfig({
             "@alt-javascript/cookies" : "debug",
         }
     },
-    "http://127+0+0+1:8080" : {
+    "http://127+0+0+1:8080/" : {
         logging : {
             level : {
                 "/" : "info",
