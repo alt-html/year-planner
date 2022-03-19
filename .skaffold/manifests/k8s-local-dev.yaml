@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: year-planner
+spec:
+  containers:
+  - name: year-planner
+    image: alt-html/year-planner
+    ports:
+      - containerPort: 8080

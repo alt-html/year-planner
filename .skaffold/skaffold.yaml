@@ -1,0 +1,43 @@
+apiVersion: skaffold/v2beta24
+kind: Config
+metadata:
+  name: alt-html/year-planner
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube
+        command: dev,run
+  - name: node
+    activation:
+      - kubeContext: minikube
+        command: dev,run
+    build:
+      artifacts:
+        - image: alt-html/year-planner
+          docker:
+            dockerfile : .docker/Dockerfile-node-16-alpine
+    portForward:
+      - resourceType: pod
+        port: 8080
+        localPort: 9001
+build:
+  tagPolicy:
+#    gitCommit: {}
+#    sha256:
+#    envTemplate:
+#      template: "{{.NONE}}"
+  artifacts:
+    - image: alt-html/year-planner
+      docker:
+        dockerfile : .docker/Dockerfile-nginx-16-alpine
+
+deploy:
+  kubectl:
+    manifests:
+      - .skaffold/manifests/k8s-local-dev*
+portForward:
+  - resourceType: pod
+    resourceName: year-planner
+    namespace: default
+    port: 80
+    localPort: 8080
