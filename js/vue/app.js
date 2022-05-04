@@ -14,7 +14,6 @@ const app = Vue.createApp({
 });
 
 context.app = app;
-context.i18n = i18n;
 
 export { app }
 

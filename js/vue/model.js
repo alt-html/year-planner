@@ -3,7 +3,7 @@ import { feature } from './model-features.js'
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 
 const model = {
-    qualifier : '@alt-html/year-planner/controller',
+    qualifier : '@alt-html/year-planner/vue/controller',
     logger : null,
 
     DateTime : DateTime,

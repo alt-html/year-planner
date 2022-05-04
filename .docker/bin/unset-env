@@ -1,0 +1,4 @@
+#!/bin/bash
+echo 'To revert to the local Docker daemon (rather than the minikube/skaffold one), run:'
+echo 'eval $(minikube -p skaffold docker-env --unset)'
+echo 'env | sort | grep DOCKER'

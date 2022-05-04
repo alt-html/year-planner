@@ -1,4 +1,4 @@
-import { LoggerFactory, LoggerCategoryCache, ConfigurableLogger } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/logger@2.0.3/dist/alt-javascript-logger-esm.js'
+import { LoggerFactory, LoggerCategoryCache, ConfigurableLogger } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/logger@2/dist/alt-javascript-logger-esm.js'
 import { Cookies } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/cookies/dist/alt-javascript-cookies-esm.js';
 
 import Api from '../service/Api.js';
@@ -13,6 +13,8 @@ import { feature } from '../vue/model-features.js';
 import { messages } from '../vue/i18n/messages.js';
 import { model } from '../vue/model.js';
 
+import { i18n } from '../vue/i18n.js';
+
 const context = {};
 
 //Construct
@@ -22,6 +24,7 @@ context.application = new Application();
 context.controller = controller;
 context.cookies = new Cookies();
 context.feature = feature;
+context.i18n = i18n;
 context.loggerCategoryCache = new LoggerCategoryCache();
 context.loggerFactory = new LoggerFactory(context.config,context.loggerCategoryCache,ConfigurableLogger.DEFAULT_CONFIG_PATH);
 context.messages = messages;
@@ -32,8 +35,10 @@ context.storageLocal = new StorageLocal();
 context.storageRemote = new StorageRemote();
 
 // Inject Dependencies
+context.api.logger = context.loggerFactory.getLogger(context.api);
 context.api.model = context.model;
 context.api.storageLocal = context.storageLocal;
+context.api.i18N = context.i18n;
 
 context.application.logger = context.loggerFactory.getLogger(context.application);
 context.application.api = context.api;

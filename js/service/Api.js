@@ -1,22 +1,99 @@
+import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
+
 import { model } from "../vue/model.js";
-import { i18n } from "../vue/i18n.js";
 
 //  Client SDK to server side API
 export default class Api {
-    constructor(model, storageLocal, cookies) {
+    constructor(model, storageLocal, i18n) {
         this.qualifier = '@alt-html/year-planner/Api'
         this.logger = null;
 
+        this.url = 'http://127.0.0.1:8081/';
         this.model = model;
         this.storageLocal = storageLocal;
+        this.i18n = i18n;
     }
+
+    register (username, password, email, mobile){
+
+        request
+            .put(`${this.url}api/planner`)
+            .send({
+                username: this.model.username,
+                password: this.model.password,
+                email: this.model.email,
+                mobile: this.model.mobile,
+                subject: this.i18n.global.t('label.verifySubject'),
+                bodyText: this.i18n.global.t('label.verifyBody')
+            })
+            .set('Accept', 'application/json')
+            .then(response => {
+                    this.model.response = response;
+                    this.model.uuid = response.body.uuid;
+                    this.model.donation = response.body.donation;
+                    this.model.storageLocal.extendLocalSession();
+                    this.model.signedin = this.storageLocal.signedin();
+                    this.model.registered = this.storageLocal.registered();
+                    $('#registerModal').modal('hide');
+                }
+            )
+            .catch(err => {
+                this.logger?.warn("Register Failed.",err); // not an error from an apps perspective
+                if (err.status == 405)
+                    this.model.modalError = 'error.apinotavailable';
+                if (err.status == 400)
+                    this.model.modalError = 'error.usernotavailable';
+            });//400 - bad request (name exists), 200 success returns uuid and subscription
+    }
+
+    signin (username, password, rememberme){
+
+
+        request
+            .get(`${this.url}api/planner`)
+            .auth(username, password)
+            .then(response => {
+                    this.model.response = response;
+                    this.model.uuid = response.body.uuid;
+                    this.model.username = response.body.username;
+                    this.model.donation = response.body.donation;
+                    this.model.email = response.body.email;
+                    this.model.emailverified = response.body.emailverified;
+                    this.model.mobile = response.body.mobile;
+                    this.model.mobileverified = response.body.mobileverified;
+                    $('#signinModal').modal('hide');
+                    if (this.model.rememberme) {
+                        this.storageLocal.setLocalSession(this.model.uuid, 0);
+                    } else {
+                        this.storageLocal.setLocalSession(this.model.uuid, DateTime.local().plus({minutes: 30}).ts);
+                    }
+                    this.model.signedin = this.storageLocal.signedin();
+                    this.model.registered = this.storageLocal.registered();
+
+                    this.storageLocal.synchroniseLocalPlanners(response.body.data, true);
+                    this.model.uid = response.body.data['1']?.['2'] || this.model.uid;
+                    this.model.year = response.body.data['1']?.['3'] || this.model.year;
+
+                    window.location.href = window.location.origin + '?uid=' + this.model.uid + '&year=' + this.model.year;
+                }
+            )
+            .catch(err => {
+                this.logger?.warn("Sign in Failed.",err); // not an error from an apps perspective
+                this.model.modalError = 'error.apinotavailable';
+                if (err.status == 404)
+                    this.model.modalError = 'error.apinotavailable';
+                if (err.status == 401)
+                    this.model.modalError = 'error.unauthorized';
+            }) //401 - unauthorised, 200 success returns uuid and subscription
+    }
+
     synchroniseToRemote (){
         if (this.storageLocal.signedin()) {
 
             this.storageLocal.registerRemoteIdentity(this.model.uid);
 
             request
-                .post('/api/planner/' + this.storageLocal.getLocalSession()?.['0'])
+                .post(`${this.url}api/planner/` + this.storageLocal.getLocalSession()?.['0'])
                 .send({})
                 .then(response => {
                     this.storageLocal.extendLocalSession();
@@ -33,7 +110,7 @@ export default class Api {
     synchroniseToLocal (syncPrefs){
         if (this.storageLocal.signedin()) {
             request
-                .get('/api/planner/' + this.storageLocal.getLocalSession()?.['0'])
+                .get('api/planner/' + this.storageLocal.getLocalSession()?.['0'])
                 .set('Accept', 'application/json')
                 .then(response => {
                         this.model.response = response;
@@ -58,7 +135,7 @@ export default class Api {
     }
     deleteRegistration (){
         request
-            .delete('/api/planner/' + this.storageLocal.getLocalSession()?.['0'])
+            .delete(`${this.url}api/planner/` + this.storageLocal.getLocalSession()?.['0'])
             .send({})
             .set('Accept', 'application/json')
             .then(response => {
@@ -82,7 +159,7 @@ export default class Api {
             return;
         }
         request
-            .post('/api/profile/' + this.model.uuid + '/username')
+            .post(`${this.url}api/profile/` + this.model.uuid + '/username')
             .send({username: username})
             .set('Accept', 'application/json')
             .then(response => {
@@ -95,7 +172,7 @@ export default class Api {
                     this.model.mobile = response.body.mobile;
                     this.model.mobileverified = response.body.mobileverified;
                     this.model.changeuser = false;
-                    this.model.modalSuccess = i18n.t('success.usernamechanged');
+                    this.model.modalSuccess = i18n.global.t('success.usernamechanged');
                 }
             )
             .catch(err => {
@@ -125,7 +202,7 @@ export default class Api {
         }
 
         request
-            .post('/api/profile/' + this.model.uuid + '/password')
+            .post(`${this.url}api/profile/` + this.model.uuid + '/password')
             .send({password: password, newpassword: newpassword})
             .set('Accept', 'application/json')
             .then(response => {
@@ -139,7 +216,7 @@ export default class Api {
                     this.model.password = '';
                     this.model.newpassword = '';
                     this.model.changepass = false;
-                    this.model.modalSuccess = i18n.t('success.passwordchanged');
+                    this.model.modalSuccess = i18n.global.t('success.passwordchanged');
                 }
             )
             .catch(err => {
@@ -161,7 +238,7 @@ export default class Api {
             return;
         }
         request
-            .post('/api/profile/' + this.model.uuid + '/email')
+            .post(`${this.url}api/profile/` + this.model.uuid + '/email')
             .send({email: email})
             .set('Accept', 'application/json')
             .then(response => {
@@ -173,7 +250,7 @@ export default class Api {
                     this.model.mobile = response.body.mobile;
                     this.model.mobileverified = response.body.mobileverified;
                     this.model.changeemail = false;
-                    this.model.modalSuccess = i18n.t('success.emailchanged');
+                    this.model.modalSuccess = i18n.global.t('success.emailchanged');
                 }
             )
             .catch(err => {
@@ -187,7 +264,7 @@ export default class Api {
     }
     setMobile (mobile){
         request
-            .post('/api/profile/' + this.model.uuid + '/mobile')
+            .post(`${this.url}api/profile/` + this.model.uuid + '/mobile')
             .send({mobile: mobile})
             .set('Accept', 'application/json')
             .then(response => {
@@ -211,7 +288,7 @@ export default class Api {
     }
     squarePayment (nonce, idempotency_key){
         request
-            .post('/api/payment')
+            .post(`${this.url}api/payment`)
             .send({
                 nonce: nonce,
                 idempotency_key: idempotency_key,
@@ -241,11 +318,11 @@ export default class Api {
     }
     setDonation (receipt_url){
         request
-            .post('/api/profile/' + this.model.uuid + '/donation')
+            .post(`${this.url}api/profile/` + this.model.uuid + '/donation')
             .send({
                 receiptUrl: receipt_url,
-                subject: i18n.t('label.donationSubject'),
-                bodyText: i18n.t('label.donationBody') + '\n\n\t' + receipt_url
+                subject: i18n.global.t('label.donationSubject'),
+                bodyText: i18n.global.t('label.donationBody') + '\n\n\t' + receipt_url
             })
             .set('Accept', 'application/json')
             .then(response => {
@@ -269,11 +346,11 @@ export default class Api {
     }
     sendVerificationEmail (){
         request
-            .post('/api/verify/' + this.model.uuid)
-            .send({subject: i18n.t('label.verifySubject'), bodyText: i18n.t('label.verifyBody')})
+            .post(`${this.url}api/verify/` + this.model.uuid)
+            .send({subject: i18n.global.t('label.verifySubject'), bodyText: i18n.global.t('label.verifyBody')})
             .set('Accept', 'application/json')
             .then(response => {
-                    this.model.modalSuccess = i18n.t('success.verifySent')
+                    this.model.modalSuccess = i18n.global.t('success.verifySent')
                 }
             )
             .catch(err => {
@@ -288,7 +365,7 @@ export default class Api {
     verifyEmailToken (token, model){
         if (token) {
             request
-                .post('/api/verify/email/' + token)
+                .post(`${this.url}api/verify/email/` + token)
                 .send({})
                 .set('Accept', 'application/json')
                 .then(response => {
@@ -318,11 +395,11 @@ export default class Api {
             return;
         }
         request
-            .post('/api/verify/' + this.model.uuid)
-            .send({subject: i18n.t('label.recoverPassSubject'), bodyText: i18n.t('label.recoverPassBody')})
+            .post(`${this.url}api/verify/` + this.model.uuid)
+            .send({subject: i18n.global.t('label.recoverPassSubject'), bodyText: i18n.global.t('label.recoverPassBody')})
             .set('Accept', 'application/json')
             .then(response => {
-                    this.model.modalSuccess = i18n.t('success.recoverPassSent')
+                    this.model.modalSuccess = i18n.global.t('success.recoverPassSent')
                 }
             )
             .catch(err => {
@@ -344,11 +421,11 @@ export default class Api {
             return;
         }
         request
-            .post('/api/verify/' + this.model.uuid)
-            .send({subject: i18n.t('label.recoverUserSubject'), bodyText: i18n.t('label.recoverUserBody')})
+            .post(`${this.url}api/verify/` + this.model.uuid)
+            .send({subject: i18n.global.t('label.recoverUserSubject'), bodyText: i18n.global.t('label.recoverUserBody')})
             .set('Accept', 'application/json')
             .then(response => {
-                    this.model.modalSuccess = i18n.t('success.recoverUserSent')
+                    this.model.modalSuccess = i18n.global.t('success.recoverUserSent')
                 }
             )
             .catch(err => {
@@ -362,7 +439,7 @@ export default class Api {
     }
     email(to, subject, bodyText) {
         request
-            .post('/api/email')
+            .post(`${this.url}api/email`)
             .send({to: [to], subject: subject, bodyText: bodyText})
             .set('Accept', 'application/json')
             .then(response => {

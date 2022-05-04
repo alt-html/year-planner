@@ -1,4 +1,3 @@
-import { i18n } from "../vue/i18n.js";
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 
 export const controller = {
@@ -220,36 +219,11 @@ export const controller = {
 
         this.storageLocal.registerRemoteIdentities();
 
-        request
-            .put('/api/planner')
-            .send({
-                username: username,
-                password: password,
-                email: email,
-                mobile: mobile,
-                subject: i18n.t('label.verifySubject'),
-                bodyText: i18n.t('label.verifyBody')
-            })
-            .set('Accept', 'application/json')
-            .then(response => {
-                    this.response = response;
-                    this.uuid = response.body.uuid;
-                    this.donation = response.body.donation;
-                    this.storageLocal.extendLocalSession();
-                    this.signedin = this.storageLocal.signedin();
-                    this.registered = this.storageLocal.registered();
-                    $('#registerModal').modal('hide');
-                }
-            )
-            .catch(err => {
-                if (err.status == 405)
-                    this.modalError = 'error.apinotavailable';
-                if (err.status == 400)
-                    this.modalError = 'error.usernotavailable';
-            });//400 - bad request (name exists), 200 success returns uuid and subscription
+        this.api.register(this.username, this.password, this.email, this.mobile)
+
     },
 
-    signin (username, password, rememberme){
+    signin (){
         this.clearModalAlert();
         if (!this.username) {
             // this.modalWarning = 'warn.usernamenotprovided'
@@ -263,40 +237,7 @@ export const controller = {
             return;
         }
 
-        request
-            .get('/api/planner')
-            .auth(username, password)
-            .then(response => {
-                    this.response = response;
-                    this.uuid = response.body.uuid;
-                    this.username = response.body.username;
-                    this.donation = response.body.donation;
-                    this.email = response.body.email;
-                    this.emailverified = response.body.emailverified;
-                    this.mobile = response.body.mobile;
-                    this.mobileverified = response.body.mobileverified;
-                    $('#signinModal').modal('hide');
-                    if (this.rememberme) {
-                        this.storageLocal.setLocalSession(this.uuid, 0);
-                    } else {
-                        this.storageLocal.setLocalSession(this.uuid, DateTime.local().plus({minutes: 30}).ts);
-                    }
-                    this.signedin = this.storageLocal.signedin();
-                    this.registered = this.storageLocal.registered();
-
-                    this.storageLocal.synchroniseLocalPlanners(response.body.data, true);
-                    this.uid = response.body.data['1']?.['2'] || this.uid;
-                    this.year = response.body.data['1']?.['3'] || this.year;
-
-                    window.location.href = window.location.origin + '?uid=' + this.uid + '&year=' + this.year;
-                }
-            )
-            .catch(err => {
-                if (err.status == 404)
-                    this.modalError = 'error.apinotavailable';
-                if (err.status == 401)
-                    this.modalError = 'error.unauthorized';
-            }) //401 - unauthorised, 200 success returns uuid and subscription
+        this.api.signin(this.username, this.password, this.rememberme);
     },
 
     signout (){

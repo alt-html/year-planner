@@ -1,0 +1,2 @@
+#!/bin/bash
+docker build -f ./.docker/Dockerfile-nginx-16-alpine --tag alt-html/year-planner:latest  .
