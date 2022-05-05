@@ -1,9 +1,11 @@
 import { LoggerFactory, LoggerCategoryCache, ConfigurableLogger } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/logger@2.0.3/dist/alt-javascript-logger-esm.js'
 
-import Api from '../service/Api.js';
-import Application from '../service/Application.js';
+
 import { Cookies } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/cookies/dist/alt-javascript-cookies-esm.js';
 
+import Api  from '../service/Api.js';
+import Application from "../Application.js";
+import { app } from '../vue/app.js'
 import { controller } from '../vue/controller.js';
 import config from '../config/config.js';
 import SquareUp  from '../service/SquareUp.js';
@@ -27,6 +29,7 @@ export default [
     StorageLocal,
     StorageRemote,
 
+    {name:'app', Reference: app },
     {name:'controller', Reference: controller },
     {name:'feature', Reference: feature },
     {name:'messages', Reference: messages },

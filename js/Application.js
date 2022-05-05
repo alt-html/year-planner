@@ -1,11 +1,11 @@
-import { urlParam } from '../util/urlparam.js';
-import { getNavigatorLanguage } from "../vue/i18n.js";
+import { urlParam } from './util/urlparam.js';
+import { getNavigatorLanguage } from "./vue/i18n.js";
 
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 
 export default class Application {
 
-    constructor(api, model, storage, storageLocal, messages) {
+    constructor(app, i18n, api, model, storage, storageLocal, messages) {
         this.qualifier = '@alt-html/year-planner/Application'
         this.logger = null;
 
@@ -21,11 +21,13 @@ export default class Application {
                 verify : urlParam('share')
             }
         }
-        this.api = api;
-        this.model = model;
-        this.storage = storage;
-        this.storageLocal = storageLocal;
-        this.messages = messages;
+        this.app = app || null;
+        this.i18n = i18n || null;
+        this.api = api || null;
+        this.model = model || null;
+        this.storage = storage || null;
+        this.storageLocal = storageLocal || null;
+        this.messages = messages || null;
     }
 
     init(){
@@ -67,5 +69,21 @@ export default class Application {
         this.api.verifyEmailToken(this.url.parameters.verify, this.model);
 
         this.messages[this.model.lang]['label']['name_'+this.model.year] = this.model.name;
+    }
+
+    async run () {
+        this.logger?.verbose('Running application: mounting Vue app to <div> with id #app.');
+        this.app.use(this.i18n);
+        this.app.mount("#app");
+
+        document.title = this.i18n.global.t('label.yearplanner');
+        document.documentElement.lang = this.model.lang;
+
+        window.request = superagent;
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+
     }
 }
