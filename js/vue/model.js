@@ -5,6 +5,10 @@ import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.m
 const model = {
     qualifier : '@alt-html/year-planner/vue/controller',
     logger : null,
+    api : null,
+    messages : null,
+    storage : null,
+    storageLocal : null,
 
     DateTime : DateTime,
     nyear : null,

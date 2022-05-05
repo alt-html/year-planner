@@ -8,7 +8,7 @@ export default class Api {
         this.qualifier = '@alt-html/year-planner/Api'
         this.logger = null;
 
-        this.url = 'http://127.0.0.1:8081/';
+        this.url = '${api.url}';
         this.model = model;
         this.storageLocal = storageLocal;
         this.i18n = i18n;

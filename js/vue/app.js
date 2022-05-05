@@ -1,19 +1,15 @@
-import { context } from '../config/context.js';
-import { i18n } from './i18n.js';
-
-i18n.global.locale = context.model.lang;
+import { model } from './model.js';
+import { controller } from './controller.js';
 
 const app = Vue.createApp({
     data() {
-        return context.model;
+        return model;
     },
-    methods: context.controller,
+    methods: controller,
     mounted() {
         this.refresh();
     }
 });
-
-context.app = app;
 
 export { app }
 
