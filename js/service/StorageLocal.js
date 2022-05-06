@@ -11,10 +11,11 @@ export default class StorageLocal {
         this.api = api;
         this.model = model;
         this.cookies = cookies;
+        this.samesite = '${cookies.samesite:null}'
         this.storage = storage;
     }
     setLocalIdentities (identities) {
-        this.cookies.setCookie('0', LZString.compressToBase64(JSON.stringify(identities)), 4384);
+        this.cookies.setCookie('0', LZString.compressToBase64(JSON.stringify(identities)), 4384,this.samesite);
     }
     setLocalPreferences (uid, preferences) {
 
@@ -23,7 +24,7 @@ export default class StorageLocal {
         this.model.lang = preferences['1'];
         this.model.theme = (preferences['2'] == 1 ? 'dark' : 'light');
 
-        this.cookies.setCookie(uid + '', LZString.compressToBase64(JSON.stringify(preferences)), 4384);
+        this.cookies.setCookie(uid + '', LZString.compressToBase64(JSON.stringify(preferences)), 4384,this.samesite);
     }
     getLocalUid () {
         let localIdentities = this.getLocalIdentities();
@@ -129,11 +130,11 @@ export default class StorageLocal {
     }
     setLocalPlanner (uid, year, planner) {
         for (let m = 1; m <= 12; m++) {
-            this.cookies.setCookie(uid + '-' + year + m, LZString.compressToBase64(JSON.stringify(planner[m - 1])), 4384)
+            this.cookies.setCookie(uid + '-' + year + m, LZString.compressToBase64(JSON.stringify(planner[m - 1])), 4384,this.samesite)
         }
     }
     setLocalPlannerLastUpdated (uid, year, lastUpdated) {
-        this.cookies.setCookie(uid + '-' + year, LZString.compressToBase64(JSON.stringify(lastUpdated)), 4384)
+        this.cookies.setCookie(uid + '-' + year, LZString.compressToBase64(JSON.stringify(lastUpdated)), 4384,this.samesite)
     }
     importLocalPlannerFromJSON (planner) {
         this.importLocalPlanner(JSON.parse(planner));
@@ -208,13 +209,13 @@ export default class StorageLocal {
             1: expires,
             2: this.model.uid,
             3: this.model.year
-        })), 4384);
+        })), 4384,this.samesite);
     }
     getLocalSession () {
         return JSON.parse(LZString.decompressFromBase64(this.cookies.getCookie('1')));
     }
     expireLocalSession () {
-        this.cookies.setCookie('1', LZString.compressToBase64(JSON.stringify({0: this.model.uuid, 1: 1})), 4384);
+        this.cookies.setCookie('1', LZString.compressToBase64(JSON.stringify({0: this.model.uuid, 1: 1})), 4384,this.samesite);
     }
     deleteLocalSession () {
         this.cookies.deleteCookie('1');

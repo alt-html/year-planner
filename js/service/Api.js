@@ -4,13 +4,14 @@ import { model } from "../vue/model.js";
 
 //  Client SDK to server side API
 export default class Api {
-    constructor(model, storageLocal, i18n) {
+    constructor(model, storageLocal, storageRemote, i18n) {
         this.qualifier = '@alt-html/year-planner/Api'
         this.logger = null;
 
         this.url = '${api.url}';
         this.model = model;
         this.storageLocal = storageLocal;
+        this.storageRemote = storageRemote;
         this.i18n = i18n;
     }
 
@@ -70,7 +71,7 @@ export default class Api {
                     this.model.signedin = this.storageLocal.signedin();
                     this.model.registered = this.storageLocal.registered();
 
-                    this.storageLocal.synchroniseLocalPlanners(response.body.data, true);
+                    this.storageRemote.synchroniseLocalPlanners(response.body.data, true);
                     this.model.uid = response.body.data['1']?.['2'] || this.model.uid;
                     this.model.year = response.body.data['1']?.['3'] || this.model.year;
 
@@ -87,14 +88,23 @@ export default class Api {
             }) //401 - unauthorised, 200 success returns uuid and subscription
     }
 
+    getData(){
+        let localSession = this.storageLocal.getLocalSession();
+        let uid = localSession[2];
+        let data = {}
+        data["0"] =  localSession;
+        data[`uid`] = this.storageLocal.getLocalPreferences(uid)
+    }
     synchroniseToRemote (){
         if (this.storageLocal.signedin()) {
 
             this.storageLocal.registerRemoteIdentity(this.model.uid);
 
+            let localSession = this.storageLocal.getLocalSession();
+            let cookies = this.storageLocal.cookies.getCookies()
             request
-                .post(`${this.url}api/planner/` + this.storageLocal.getLocalSession()?.['0'])
-                .send({})
+                .post(`${this.url}api/planner/` + localSession?.['0'])
+                .send(cookies)
                 .then(response => {
                     this.storageLocal.extendLocalSession();
                     }
@@ -110,8 +120,9 @@ export default class Api {
     synchroniseToLocal (syncPrefs){
         if (this.storageLocal.signedin()) {
             request
-                .get('api/planner/' + this.storageLocal.getLocalSession()?.['0'])
+                .get(`${this.url}api/planner/` + this.storageLocal.getLocalSession()?.['0'])
                 .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer '+this.storageLocal.getLocalSession()?.['0']+'.'+this.storageLocal.getLocalSession()?.['1'])
                 .then(response => {
                         this.model.response = response;
                         this.model.uuid = response.body.uuid;
@@ -122,7 +133,7 @@ export default class Api {
                         this.model.mobile = response.body.mobile;
                         this.model.mobileverified = response.body.mobileverified;
                         this.storageLocal.extendLocalSession();
-                        this.storageLocal.synchroniseLocalPlanners(response.body.data, syncPrefs);
+                        this.storageRemote.synchroniseLocalPlanners(response.body.data, syncPrefs);
                     }
                 )
                 .catch(err => {

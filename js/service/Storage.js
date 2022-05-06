@@ -13,6 +13,30 @@ export default class Storage {
     getPlanner (uid, year) {
         return this.storageLocal.getLocalPlanner(uid, year);
     }
+    getEntry (mindex, day) {
+        if (this.model.planner[mindex] && this.model.planner[mindex]['' + day]) {
+            return this.model.planner[mindex]['' + day]['' + 1] || ''
+        } else {
+            return ''
+        }
+    }
+
+    getEntryType (mindex, day) {
+        if (this.model.planner[mindex] && this.model.planner[mindex]['' + day]) {
+            return this.model.planner[mindex]['' + day]['' + 0] || ''
+        } else {
+            return ''
+        }
+    }
+
+    getEntryColour (mindex, day) {
+        if (this.model.planner[mindex] && this.model.planner[mindex]['' + day]) {
+            return this.model.planner[mindex]['' + day]['' + 2] || ''
+        } else {
+            return ''
+        }
+    }
+
     deletePlannerByYear (uid, year) {
         this.storageLocal.deleteLocalPlannerByYear(uid, year);
         this.api.synchroniseToRemote();

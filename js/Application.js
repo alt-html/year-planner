@@ -32,6 +32,8 @@ export default class Application {
 
     init(){
 
+        window.request = superagent;
+
         this.model.uid = parseInt( urlParam('uid') ) || this.storageLocal.getLocalUid() || Math.floor(this.pageLoadTime.ts/1000);
         this.model.uuid = this.storageLocal.getLocalSession()?.['0']||'',
         this.model.pageLoadTime = this.pageLoadTime;
@@ -79,7 +81,7 @@ export default class Application {
         document.title = this.i18n.global.t('label.yearplanner');
         document.documentElement.lang = this.model.lang;
 
-        window.request = superagent;
+
 
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()

@@ -4,6 +4,9 @@ export default ConfigFactory.getConfig({
     api : {
         url : 'http://127.0.0.1:8081/'
     },
+    cookies : {
+        samesite : 'Strict'
+    },
     logging : {
         level : {
             "/" : "warn",
@@ -12,6 +15,9 @@ export default ConfigFactory.getConfig({
     "http://127+0+0+1:8080/" : {
         api : {
             url : 'http://127.0.0.1:8081/'
+        },
+        cookies : {
+            samesite : 'None; Secure'
         },
         logging : {
             format : "text",
