@@ -81,6 +81,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Test Infrastructure | 2/2 | Complete    | 2026-03-11 |
-| 2. Core E2E Tests | 3/5 | Gap closure | - |
+| 2. Core E2E Tests | 4/5 | In Progress|  |
 | 3. Security Hardening | 0/TBD | Not started | - |
 | 4. HTML Composition | 0/TBD | Not started | - |
