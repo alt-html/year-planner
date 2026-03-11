@@ -1,1 +1,3 @@
 .planning/
+.tests/.auth/
+.tests/node_modules/
