@@ -88,10 +88,22 @@ export const controller = {
         this.uid = uid;
         this.preferences = preferences;
         this.identities.unshift({0:uid,1:window.navigator.userAgent,2:this.storageLocal.signedin()?1:0,3:0});
-        this.storage.setLocalIdentities(this.identities);
+        this.storageLocal.setLocalIdentities(this.identities);
         this.planner = this.storage.getPlanner(uid, this.year);
         this.refresh();
         window.location.href = window.location.origin +'?uid='+this.uid+'&year='+this.year+'&lang='+this.lang+'&theme='+this.theme;
+    },
+
+    deletePlannerByYear(uid, year) {
+        // Delete all data for this planner (identity + all year cookies)
+        this.storageLocal.deleteLocalPlanner(uid);
+        // Navigate to the first remaining planner, or reload if none
+        const remaining = this.identities.find(id => id['0'] != uid);
+        if (remaining) {
+            window.location.href = window.location.origin + '?uid=' + remaining['0'] + '&year=' + this.year + '&lang=' + this.lang + '&theme=' + this.theme;
+        } else {
+            window.location.reload();
+        }
     },
 
      showRenamePlanner() {
