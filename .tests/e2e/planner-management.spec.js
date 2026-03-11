@@ -39,6 +39,8 @@ test('planner management: create, rename, switch, delete (E2E-03)', async ({ pag
   });
   // Wait for rename form to hide (jQuery $().hide() called by renamePlanner())
   await page.waitForSelector('#rename', { state: 'hidden' });
+  // Assert new planner name is visible in navbar brand
+  await expect(page.locator('.navbar-brand').first()).toContainText('My Test Planner');
 
   // --- Switch back to the original planner (triggers full-page navigation) ---
   await page.click('.nav a.dropdown-toggle');
