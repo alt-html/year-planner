@@ -77,6 +77,7 @@ export default class Application {
         this.logger?.verbose('Running application: mounting Vue app to <div> with id #app.');
         this.app.use(this.i18n);
         this.app.mount("#app");
+        document.body.dataset.appReady = '1';
 
         document.title = this.i18n.global.t('label.yearplanner');
         document.documentElement.lang = this.model.lang;
