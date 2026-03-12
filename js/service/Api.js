@@ -42,8 +42,10 @@ export default class Api {
                 this.logger?.warn("Register Failed.",err); // not an error from an apps perspective
                 if (err.status == 405)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 400)
+                else if (err.status == 400)
                     this.model.modalError = 'error.usernotavailable';
+                else
+                    this.model.modalError = 'error.syncfailed';
             });//400 - bad request (name exists), 200 success returns uuid and subscription
     }
 
@@ -80,10 +82,10 @@ export default class Api {
             )
             .catch(err => {
                 this.logger?.warn("Sign in Failed.",err); // not an error from an apps perspective
-                this.model.modalError = 'error.apinotavailable';
+                this.model.modalError = 'error.apinotavailable'; // unconditional fallback: covers network errors
                 if (err.status == 404)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 401)
+                else if (err.status == 401)
                     this.model.modalError = 'error.unauthorized';
             }) //401 - unauthorised, 200 success returns uuid and subscription
     }
@@ -112,8 +114,10 @@ export default class Api {
                 .catch(err => {
                     if (err.status == 404)
                         this.model.error = 'error.apinotavailable';
-                    if (err.status == 401)
+                    else if (err.status == 401)
                         this.model.error = 'error.unauthorized';
+                    else
+                        this.model.error = 'error.syncfailed';
                 }) //401 - unauthorised, 200 success returns uuid and subscription
         }
     }
@@ -138,9 +142,11 @@ export default class Api {
                 )
                 .catch(err => {
                     if (err.status == 405)
-                        this.model.modalError = 'error.apinotavailable';
-                    if (err.status == 400)
-                        this.model.modalError = 'error.usernotavailable';
+                        this.model.error = 'error.apinotavailable';
+                    else if (err.status == 400)
+                        this.model.error = 'error.usernotavailable';
+                    else
+                        this.model.error = 'error.syncfailed';
                 });//400 - bad request (name exists), 200 success returns uuid and subscription
         }
     }
@@ -156,7 +162,7 @@ export default class Api {
                 }
             )
             .catch(err => {
-                this.model.error = err;
+                this.model.error = 'error.syncfailed';
             });//404 - (uuid not found)), 200 success returns no data
 
     }
@@ -189,12 +195,14 @@ export default class Api {
             .catch(err => {
                 if (err.status == 405)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 404)
+                else if (err.status == 404)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 401)
+                else if (err.status == 401)
                     this.model.modalError = 'error.unauthorized';
-                if (err.status == 400)
+                else if (err.status == 400)
                     this.model.modalError = 'error.usernotavailable';
+                else
+                    this.model.modalError = 'error.syncfailed';
             })
     }
     setPassword (password, newpassword){
@@ -233,10 +241,12 @@ export default class Api {
             .catch(err => {
                 if (err.status == 405)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 404)
+                else if (err.status == 404)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 401)
+                else if (err.status == 401)
                     this.model.modalError = 'error.passwordincorrect';
+                else
+                    this.model.modalError = 'error.syncfailed';
             })
     }
     setEmail (email){
@@ -267,10 +277,12 @@ export default class Api {
             .catch(err => {
                 if (err.status == 405)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 404)
+                else if (err.status == 404)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 401)
+                else if (err.status == 401)
                     this.model.modalError = 'error.unauthorized';
+                else
+                    this.model.modalError = 'error.syncfailed';
             })
     }
     setMobile (mobile){
@@ -291,10 +303,12 @@ export default class Api {
             .catch(err => {
                 if (err.status == 405)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 404)
+                else if (err.status == 404)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 401)
+                else if (err.status == 401)
                     this.model.modalError = 'error.unauthorized';
+                else
+                    this.model.modalError = 'error.syncfailed';
             })
     }
     squarePayment (nonce, idempotency_key){
@@ -320,10 +334,12 @@ export default class Api {
             .catch(err => {
                 if (err.status == 405)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 404)
+                else if (err.status == 404)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 401)
+                else if (err.status == 401)
                     this.model.modalError = 'error.unauthorized';
+                else
+                    this.model.modalError = 'error.syncfailed';
             });
 
     }
@@ -349,10 +365,12 @@ export default class Api {
             .catch(err => {
                 if (err.status == 405)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 404)
+                else if (err.status == 404)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 401)
+                else if (err.status == 401)
                     this.model.modalError = 'error.unauthorized';
+                else
+                    this.model.modalError = 'error.syncfailed';
             })
     }
     sendVerificationEmail (){
@@ -367,10 +385,12 @@ export default class Api {
             .catch(err => {
                 if (err.status == 405)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 404)
+                else if (err.status == 404)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 401)
+                else if (err.status == 401)
                     this.model.modalError = 'error.unauthorized';
+                else
+                    this.model.modalError = 'error.syncfailed';
             })
     }
     verifyEmailToken (token, model){
@@ -387,10 +407,12 @@ export default class Api {
                 .catch(err => {
                     if (err.status == 405)
                         this.model.error = 'error.apinotavailable';
-                    if (err.status == 404)
+                    else if (err.status == 404)
                         this.model.error = 'error.apinotavailable';
-                    if (err.status == 401)
+                    else if (err.status == 401)
                         this.model.error = 'error.unauthorized';
+                    else
+                        this.model.error = 'error.syncfailed';
                 })
 
         }
@@ -416,10 +438,12 @@ export default class Api {
             .catch(err => {
                 if (err.status == 405)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 404)
+                else if (err.status == 404)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 401)
+                else if (err.status == 401)
                     this.model.modalError = 'error.unauthorized';
+                else
+                    this.model.modalError = 'error.syncfailed';
             })
     }
     sendRecoverUsernameEmail(email) {
@@ -442,10 +466,12 @@ export default class Api {
             .catch(err => {
                 if (err.status == 405)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 404)
+                else if (err.status == 404)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 401)
+                else if (err.status == 401)
                     this.model.modalError = 'error.unauthorized';
+                else
+                    this.model.modalError = 'error.syncfailed';
             })
     }
     email(to, subject, bodyText) {
@@ -460,8 +486,10 @@ export default class Api {
             .catch(err => {
                 if (err.status == 404)
                     this.model.modalError = 'error.apinotavailable';
-                if (err.status == 500)
+                else if (err.status == 500)
                     this.model.modalError = 'error.general';
+                else
+                    this.model.modalError = 'error.syncfailed';
             })
     }
     modalErr (target,err) {

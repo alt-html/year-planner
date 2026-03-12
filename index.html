@@ -148,7 +148,7 @@
             <div class="jumbotron">
                 <div class="container">
                     <div class="fade" v-if="error" v-bind:class="{'alert alert-danger alert-dismissible show': error != ''}" role="alert" >
-                        <p>{{t$(model.error)}}</p>
+                        <p>{{$t(error)}}</p>
                         <button type="button" class="close" v-on:click="clearError" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
