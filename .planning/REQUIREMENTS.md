@@ -20,7 +20,7 @@
 
 ### Security
 
-- [ ] **SEC-01**: `polyfill.io` script tag removed from `index.html` (supply-chain risk; all polyfilled features natively supported in modern browsers)
+- [x] **SEC-01**: `polyfill.io` script tag removed from `index.html` (supply-chain risk; all polyfilled features natively supported in modern browsers)
 - [x] **SEC-02**: Remaining feasible CDN `<script>` and `<link>` tags pinned to exact patch versions and annotated with `integrity` + `crossorigin` SRI attributes; a `generate-sri.mjs` script in `.tests/` or `.scripts/` automates hash regeneration when versions change
 - [x] **SEC-03**: Bootstrap tooltip XSS fixed — `data-html="true"` + user entry text in `data-original-title` removed or sanitised; entry text rendered via text-only tooltip attribute or moved out of `v-html` context
 - [x] **SEC-04**: Network and sync errors surfaced to the user via visible UI feedback (e.g. toast or inline message) rather than silent promise rejection
@@ -73,7 +73,7 @@
 | E2E-01 | Phase 2 | Complete |
 | E2E-02 | Phase 2 | Complete |
 | E2E-03 | Phase 2 | Complete |
-| SEC-01 | Phase 3 | Pending |
+| SEC-01 | Phase 3 | Complete |
 | SEC-02 | Phase 3 | Complete |
 | SEC-03 | Phase 3 | Complete |
 | SEC-04 | Phase 3 | Complete |
