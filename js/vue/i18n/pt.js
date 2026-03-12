@@ -48,6 +48,7 @@ export default {
         usernotavailable: 'O nome de usuário não está disponível',
         unauthorized: 'Nome de usuário ou senha incorretos',
         passwordincorrect: 'Senha incorreta',
+        syncfailed: 'Sync failed. Please check your connection.',
     },
     month : {
         January: 'janeiro', February: 'fevereiro', March : 'marcha', April:'abril', May:'maio',June:'junho',July:'julho',August:'agosto',September:'setembro',October:'outubro',November:'novembro',December:'dezembro'

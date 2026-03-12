@@ -48,6 +48,7 @@ export default {
         usernotavailable: 'उपयोगकर्ता नाम उपलब्ध नहीं है',
         unauthorized: 'उपयोगकर्ता नाम या पासवर्ड सही नहीं है',
         passwordincorrect: 'पासवर्ड सही नहीं है',
+        syncfailed: 'Sync failed. Please check your connection.',
     },
     month : {
         January: 'जनवरी', February: 'फ़रवरी', March : 'जुलूस', April:'अप्रैल', May:'मई',June:'जून',July:'जुलाई',August:'अगस्त',September:'सितंबर',October:'अक्टूबर',November:'नवंबर',December:'दिसंबर'

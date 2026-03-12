@@ -48,6 +48,7 @@ export default {
         usernotavailable: 'Nama pengguna tidak tersedia',
         unauthorized: 'Nama pengguna atau kata sandi salah',
         passwordincorrect: 'Kata sandi salah',
+        syncfailed: 'Sync failed. Please check your connection.',
     },
     month : {
         January: 'Januari', February: 'Februari', March : 'Maret', April:'April', May:'Mungkin',June:'Juni',July:'Juli',August:'Agustus',September:'September',October:'Oktober',November:'November',December:'Desember'

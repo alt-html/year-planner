@@ -52,6 +52,7 @@ export default {
         unauthorized: 'Username or password is not correct',
         passwordincorrect: 'Password is not correct',
         paymentfailed: 'Payment failed',
+        syncfailed: 'Sync failed. Please check your connection.',
     },
     month : month,
     day : day,

@@ -48,6 +48,7 @@ export default {
         usernotavailable: 'اسم المستخدم غير متوفر',
         unauthorized: 'اسم المستخدم أو كلمة المرور غير صحيحة',
         passwordincorrect: 'كلمة المرور غير صحيحة',
+        syncfailed: 'Sync failed. Please check your connection.',
     },
     month : {
         January: 'كانون الثاني', February: 'شهر فبراير', March : 'مارس', April:'أبريل', May:'يمكن',June:'يونيو',July:'يوليو',August:'شهر اغسطس',September:'سبتمبر',October:'اكتوبر',November:'شهر نوفمبر',December:'ديسمبر'

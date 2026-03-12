@@ -47,7 +47,8 @@ export default {
     error: {
         apinotavailable: '遠程年計劃器API不可用',
         usernotavailable: '用戶名不可用',
-        unauthorized: '用戶名或密碼不正確'
+        unauthorized: '用戶名或密碼不正確',
+        syncfailed: 'Sync failed. Please check your connection.',
     },
     month : {
         January: '一月', February: '二月', March : '行進', April:'四月', May:'可能',June:'六月',July:'七月',August:'八月',September:'九月',October:'十月',November:'十一月',December:'十二月'

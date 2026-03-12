@@ -48,6 +48,7 @@ export default {
             usernotavailable: 'Имя пользователя недоступно',
             unauthorized: 'Имя пользователя или пароль неверны',
             passwordincorrect: 'Пароль неверный',
+            syncfailed: 'Sync failed. Please check your connection.',
     },
     month : {
         January: 'январь', February: 'февраль', March : 'марш', April:'апрель', May:'май',June:'июнь',July:'июль',August:'август',September:'сентябрь',October:'октябрь',November:'ноябрь',December:'Декабрь'

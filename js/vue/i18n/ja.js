@@ -48,6 +48,7 @@ export default {
         usernotavailable: 'ユーザー名は利用できません',
         unauthorized: 'ユーザー名またはパスワードが正しくありません',
         passwordincorrect: 'パスワードが正しくありません',
+        syncfailed: 'Sync failed. Please check your connection.',
     },
     month : {
         January: '一月', February: '二月', March : '三月', April:'四月', May:'五月',June:'六月',July:'七月',August:'八月',September:'九月',October:'十月',November:'十一月',December:'十二月'
