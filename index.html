@@ -50,7 +50,7 @@
 
         <nav class="navbar navbar-expand sticky-top d-none" v-bind:class="{'d-flex':loaded}" >
 
-            <a class="navbar-brand" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
+            <a class="navbar-brand" data-toggle="tooltip" data-placement="bottom" :title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
 
             <form id="rename" class="form-inline" >
                 <div class="input-group"><input id="title" maxlength="64" class="form-control form-control-sm" type="text" v-bind:placeholder="$t('label.untitled')" aria-label="Name" v-model="name" v-on:keyup="" v-on:focusout="renamePlanner()">
@@ -201,7 +201,7 @@
                                              v-on:click="updateEntryState(mindex,n)">
                                             <a v-if="cyear == year && cmonth==mindex+1 && cday == n" class="yp-anchor" id="today" ></a>
                                             <span class="yp-cell-text" >{{DateTime.local(year, mindex+1, n).setLocale(lang).toLocaleString({day:'numeric'})}}&nbsp;</span>
-                                            <span class="yp-cell-text" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="getEntryTypeIcon(mindex,n)+' ' +getEntry(mindex,n).trimStart()">
+                                            <span class="yp-cell-text" data-toggle="tooltip" data-placement="bottom" :title="getEntry(mindex,n).trimStart()">
                                                     {{getEntry(mindex,n).trimStart().substr(0,20)}}</span><span class="yp-cell-text">{{getEntry(mindex,n).trimStart().substr(20)}}</span>
 
                                         </div>
@@ -411,7 +411,7 @@
                                         {{(!changeemail && emailverified) ? $t('label.verified') : (modalErrorTarget?.['email'] ? $t(modalErrorTarget?.['email']) : changeemail ? '' : ($t('label.unverified'))) }}
                                     </div>
                                     <div class="input-group-append">
-                                        <button v-if="!changeemail && !emailverified" data-toggle="tooltip" data-html="true" data-placement="bottom" v-bind:data-original-title="$t('label.verify')" class="btn btn-danger py-0 my-0" type="button" v-on:click="sendVerificationEmail()" ><i class="far fa-paper-plane"></i></button>
+                                        <button v-if="!changeemail && !emailverified" data-toggle="tooltip" data-placement="bottom" :title="$t('label.verify')" class="btn btn-danger py-0 my-0" type="button" v-on:click="sendVerificationEmail()" ><i class="far fa-paper-plane"></i></button>
                                         <button v-if="!changeemail && emailverified" class="btn btn-primary py-0 my-0" v-on:click="changeemail=!changeemail" type="button"><i class="fas fa-edit"></i></button>
                                         <button v-if="changeemail" class="btn btn-primary py-0 my-0" v-on:click="setEmail(email)" type="button"><i class="fas fa-save"></i></button>
                                     </div>
