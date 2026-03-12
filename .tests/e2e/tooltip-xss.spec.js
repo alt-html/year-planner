@@ -8,16 +8,22 @@ test('tooltip does not execute injected HTML (SEC-03)', async ({ page }) => {
   await page.goto('/');
   await page.waitForSelector('[data-app-ready]');
 
-  // Inject XSS payload as entry text into the first available day cell
-  const cell = page.locator('.yp-cell').first();
+  // Target January day 1 — use text filter to avoid blank offset cells
+  const janColumn = page.locator('#yp-months .col-xs-12.col-sm-6.col-md-4.col-lg-3.col-xl-1').first();
+  const cell = janColumn.locator('.yp-cell').filter({ hasText: /^1\s/ }).first();
+
+  // Inject XSS payload as entry text into the day cell
   await cell.click();
 
-  // Type the XSS payload into the entry modal textarea
-  const textarea = page.locator('textarea').first();
-  await textarea.fill('<img src=x onerror=window.__xss=1>');
+  // Wait for the entry modal to be visible before interacting with textarea
+  await page.waitForSelector('#entryModal.show');
 
-  // Save the entry (close modal — click outside or press Escape)
-  await page.keyboard.press('Escape');
+  // Type the XSS payload into the entry modal textarea
+  await page.fill('#yp-entry-textarea', '<img src=x onerror=window.__xss=1>');
+
+  // Save the entry via the modal Save button
+  await page.click('#entryModal .modal-footer .btn-primary');
+  await expect(page.locator('#entryModal')).not.toBeVisible();
 
   // Hover over the cell to trigger tooltip rendering
   await cell.hover();
