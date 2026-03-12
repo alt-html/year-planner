@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-03-12T04:00:34.853Z"
+stopped_at: Completed 03-03-PLAN.md
+last_updated: "2026-03-12T04:13:57.285Z"
 last_activity: 2026-03-11 — Completed 02-01 CDN fixtures
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 11
-  completed_plans: 10
+  completed_plans: 11
   percent: 0
 ---
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-security-hardening P01 | 8min | 3 tasks | 5 files |
 | Phase 03-security-hardening P02 | 5min | 1 tasks | 1 files |
 | Phase 03-security-hardening P04 | 21min | 2 tasks | 14 files |
+| Phase 03-security-hardening P03 | 8min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,8 @@ Recent decisions affecting current work:
 - [Phase 03-security-hardening]: FA sha384 computed by generate-sri.mjs used in index.html (not plan-noted sha512); link placed in CDN script block rather than Bootstrap CSS section
 - [Phase 03-security-hardening]: Session cookie for E2E signed-in state: pre-computed LZString value; sync-error test relies on startup synchroniseToLocal() failure
 - [Phase 03-security-hardening]: Template bug fixed: t$(model.error) -> $t(error) — model is not a Vue data property, error is
+- [Phase 03-security-hardening]: Tooltip XSS closed: removed data-html=true and switched to :title text-only binding; getEntryTypeIcon() HTML dropped from cell tooltip
+- [Phase 03-security-hardening]: FA 6 canonical prefixes (fa-solid/fa-regular/fa-brands) replace old fas/far/fab aliases in index.html
 
 ### Pending Todos
 
@@ -104,6 +107,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T04:00:34.851Z
-Stopped at: Completed 03-04-PLAN.md
+Last session: 2026-03-12T04:09:43.389Z
+Stopped at: Completed 03-03-PLAN.md
 Resume file: None
