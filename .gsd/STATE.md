@@ -1,18 +1,20 @@
 # GSD State
 
-**Active Milestone:** M001 — Migration
+**Active Milestone:** None
 **Active Slice:** None
-**Phase:** completing-milestone
+**Phase:** idle
 **Requirements Status:** 0 active · 14 validated · 0 deferred · 0 out of scope
 
 ## Milestone Registry
-- 🔄 **M001:** Migration
+- ✅ **M001:** Migration (completed 2026-03-12)
 
 ## Recent Decisions
-- None recorded
+- D001: Selected m4 for HTML composition (S04)
+- D002: Used m4 -P flag for JavaScript builtin collision avoidance (S04)
+- D003: Hidden .compose/ directory for build-time fragments (S04)
 
 ## Blockers
 - None
 
 ## Next Action
-All slices complete in M001. Write milestone summary.
+No active milestone. Ready for next milestone planning.
