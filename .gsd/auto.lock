@@ -1,0 +1,9 @@
+{
+  "pid": 51139,
+  "startedAt": "2026-03-12T09:08:56.164Z",
+  "unitType": "complete-slice",
+  "unitId": "M001/S04",
+  "unitStartedAt": "2026-03-12T09:08:56.164Z",
+  "completedUnits": 0,
+  "sessionFile": "/Users/craig/.gsd/sessions/--Users-craig-src-github-alt-html-year-planner--/2026-03-12T09-08-56-164Z_4c649ae5-7351-4fa4-a6f5-9d21631a8fb9.jsonl"
+}

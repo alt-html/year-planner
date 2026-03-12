@@ -1,3 +1,6 @@
 .planning/
 .tests/.auth/
 .tests/node_modules/
+.tests/test-results/
+.bg-shell/
+.idea/
