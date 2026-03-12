@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-core-e2e-tests-04-PLAN.md
-last_updated: "2026-03-11T23:54:59.160Z"
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-03-12T03:34:16.459Z"
 last_activity: 2026-03-11 — Completed 02-01 CDN fixtures
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 7
-  completed_plans: 7
+  total_plans: 11
+  completed_plans: 8
   percent: 0
 ---
 
@@ -57,6 +57,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-core-e2e-tests P03 | 27 | 1 tasks | 2 files |
 | Phase 02-core-e2e-tests P05 | 2min | 1 tasks | 1 files |
 | Phase 02-core-e2e-tests P04 | 3 | 1 tasks | 3 files |
+| Phase 03-security-hardening P01 | 8min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,8 @@ Recent decisions affecting current work:
 - [Phase 02-core-e2e-tests]: navbar-brand assertion after rename verifies observable UI state via .first() to disambiguate from .navbar-brand-support
 - [Phase 02-core-e2e-tests]: http-server (not Docker) used as CI webServer — playwright.config.js already configured it, keeping CI simple
 - [Phase 02-core-e2e-tests]: No caching in CI workflow — correctness-first; http-server added to package.json devDependencies to fix missing CI dependency
+- [Phase 03-security-hardening]: FA cdnjs URL used for both SRI and fixture to keep source consistent
+- [Phase 03-security-hardening]: CDN routes pinned to exact versions in cdn.js ahead of SRI implementation
 
 ### Pending Todos
 
@@ -96,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T23:50:38.119Z
-Stopped at: Completed 02-core-e2e-tests-04-PLAN.md
+Last session: 2026-03-12T03:34:16.457Z
+Stopped at: Completed 03-01-PLAN.md
 Resume file: None

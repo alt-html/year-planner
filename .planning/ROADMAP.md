@@ -61,7 +61,13 @@ Plans:
   2. Every applicable CDN `<script>` and `<link>` tag in `index.html` carries `integrity` and `crossorigin` attributes with correct SRI hashes; a `generate-sri.mjs` script in `.scripts/` or `.tests/` regenerates them when versions change
   3. Injecting `<img src=x onerror=window.__xss=1>` as entry text does not execute JavaScript — the Bootstrap tooltip `data-original-title` XSS vector is closed
   4. When a network or sync failure occurs, the user sees a visible error message (toast or inline); the failure does not disappear silently
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Wave 0 scaffolding: generate-sri.mjs, FA 6.7.2 fixture, RED E2E specs for SEC-03/SEC-04, cdn.js route updates
+- [ ] 03-02-PLAN.md — CDN supply chain: remove polyfill.io, pin Vue/vue-i18n/superagent with SRI, replace FA Kit with cdnjs CSS link
+- [ ] 03-03-PLAN.md — index.html body: FA 6 icon class name sweep + Bootstrap tooltip XSS fix
+- [ ] 03-04-PLAN.md — Api.js error surfacing: else-fallback catch blocks + error.syncfailed i18n key in all 10 language files
 
 ### Phase 4: HTML Composition
 **Goal**: The 761-line `index.html` is decomposed into maintainable fragments that assemble back into a single committed `index.html`, with no change to how Docker and Skaffold serve the app.
@@ -78,9 +84,9 @@ Plans:
 **Execution Order:**
 Phases execute in numeric order: 1 → 2 → 3 → 4
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Test Infrastructure | 2/2 | Complete    | 2026-03-11 |
-| 2. Core E2E Tests | 4/5 | In Progress|  |
-| 3. Security Hardening | 0/TBD | Not started | - |
-| 4. HTML Composition | 0/TBD | Not started | - |
+| Phase                  | Plans Complete | Status      | Completed  |
+|------------------------|----------------|-------------|------------|
+| 1. Test Infrastructure | 2/2            | Complete    | 2026-03-11 |
+| 2. Core E2E Tests      | 4/5            | In Progress |            |
+| 3. Security Hardening  | 1/4 | In Progress|  |
+| 4. HTML Composition    | 0/TBD          | Not started | -          |
