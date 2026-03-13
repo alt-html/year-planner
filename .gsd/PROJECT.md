@@ -1,17 +1,26 @@
 # Year Planner — Project Status
 
-## Overview
+## What This Is
 
 A multi-lingual, responsive Progressive Web App (PWA) for personal and student year planning. Pure ES6 modules loaded via CDN — no build step. Optional cloud sync via REST API.
+
+## Core Value
+
+A simple, fast year planner that works offline with local storage, supports 10 languages, and optionally syncs to the cloud.
 
 ## Current State
 
 **Completed Milestones:**
 - ✅ **M001: Migration** (2026-03-12) — Test infrastructure, E2E coverage, security hardening, and HTML composition pipeline
 
-**Active Milestone:** None
+**Active Milestone:** M002 — JS Modularisation
 
-## What Exists
+## Architecture / Key Patterns
+
+### Runtime Stack
+- Vue 3 (Options API) + Vue-i18n + Luxon + Bootstrap 4 loaded from CDN
+- @alt-javascript/cdi for dependency injection (constructor wiring via `contexts.js`)
+- ES6 modules with bare CDN imports — no bundler, no build step
 
 ### Test Infrastructure
 - Playwright test harness in `.tests/` with 14 passing tests (smoke + E2E)
@@ -20,10 +29,7 @@ A multi-lingual, responsive Progressive Web App (PWA) for personal and student y
 - GitHub Actions CI workflow at `.github/workflows/e2e.yml`
 
 ### Security
-- polyfill.io supply-chain risk removed
 - All CDN resources pinned with SRI integrity hashes
-- Bootstrap tooltip XSS vector closed
-- API/sync errors surface visible user feedback
 - `generate-sri.mjs` for automated hash regeneration
 
 ### HTML Composition
@@ -31,17 +37,22 @@ A multi-lingual, responsive Progressive Web App (PWA) for personal and student y
 - GNU m4 with `-P` flag assembles fragments via `.compose/build.sh`
 - Composed output is byte-identical to committed `index.html`
 
-### Architecture
-- Vue 3 + Vue-i18n + Luxon + Bootstrap 4 loaded from CDN
-- alt-js/cdi for dependency injection (bindings in `js/config/contexts.js`)
-- 10 language translations in `js/vue/i18n/`
-- localStorage/cookie persistence for unregistered users; REST API sync for registered users
-
-## Key Patterns
+### Key Conventions
 - Hidden directories for tooling: `.tests/`, `.compose/`, `.docker/`, `.skaffold/`
 - No root-level `package.json` — test dependencies isolated in `.tests/`
 - CDN fixture interception via custom Playwright fixture (`cdn.js`)
 - m4 `-P` with `changequote([[[, ]]])` for safe HTML macro processing
+
+## Capability Contract
+
+See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement status, and coverage mapping.
+
+## Milestone Sequence
+
+- [x] M001: Migration — Test infrastructure, E2E coverage, security hardening, and HTML composition pipeline
+- [ ] M002: JS Modularisation — Decompose monolithic Vue controllers and services into focused, single-responsibility ES6 modules
+- [ ] M003: Storage Modernisation — Replace cookie-based persistence with localStorage, remove cookie consent modal
+- [ ] M004: Auth & API Contract — Federated auth (Google/Apple/Microsoft), OpenAPI sync contract
 
 ## Running Locally
 ```bash

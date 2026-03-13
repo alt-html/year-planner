@@ -1,18 +1,26 @@
 # GSD State
 
-**Active Milestone:** M001 — Migration
+**Active Milestone:** M002 — JS Modularisation
 **Active Slice:** None
-**Phase:** complete
-**Requirements Status:** 0 active · 14 validated · 0 deferred · 0 out of scope
+**Phase:** Planning complete — ready for slice execution
+**Requirements Status:** 21 active · 14 validated · 0 deferred · 3 out of scope
 
 ## Milestone Registry
 - ✅ **M001:** Migration
+- 🔵 **M002:** JS Modularisation
+- ⬜ **M003:** Storage Modernisation
+- ⬜ **M004:** Auth & API Contract
 
 ## Recent Decisions
-- None recorded
+- D004: Stay with Vue 3 Options API
+- D005: All new modules wired through CDI
+- D006: Remove SquareUp payment integration
+- D007: Replace superagent with native fetch
+- D008: Replace lodash with native Array methods
+- D009: Model restructured into grouped sub-objects
 
 ## Blockers
 - None
 
 ## Next Action
-All milestones complete.
+Begin S01: Controller decomposition — plan the slice, then execute tasks.
