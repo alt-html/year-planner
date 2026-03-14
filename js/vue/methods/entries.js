@@ -1,0 +1,71 @@
+import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
+
+export const entryMethods = {
+
+    updateEntry (mindex, day, entry, entryType, entryColour, syncToRemote) {
+        this.storageLocal.updateLocalEntry(mindex, day, entry, entryType, entryColour);
+        if (syncToRemote) {
+            this.api.synchroniseToRemote();
+        }
+    },
+
+    updateWeekColour (mindex, day, entryColour) {
+        let weekday = DateTime.local(this.year, mindex + 1, day).weekday;
+        for (let i = 1; i < (7 - weekday + 1) && day + i <= daysInMonth[mindex]; i++) {
+            let entry = this.getEntry(mindex, day + i);
+            let entryType = this.getEntryType(mindex, day + i);
+            let syncToRemote = (i == (7 - weekday) || day + i == this.daysInMonth[mindex]);
+            this.updateEntry(mindex, day + i, entry, entryType, entryColour, syncToRemote);
+        }
+    },
+
+     updateEntryState  (mindex,day){
+        this.api.synchroniseToLocal(false);
+        this.month = mindex;
+        this.day = day;
+        this.entry = this.getEntry(mindex,day);
+        this.entryType = this.getEntryType(mindex,day);
+        this.entryColour = this.getEntryColour(mindex,day);
+    },
+
+    getEntry (mindex, day) {
+        if (this.planner[mindex] && this.planner[mindex]['' + day]) {
+            return this.planner[mindex]['' + day]['' + 1] || ''
+        } else {
+            return ''
+        }
+    },
+
+    getEntryType (mindex, day) {
+        if (this.planner[mindex] && this.planner[mindex]['' + day]) {
+            return this.planner[mindex]['' + day]['' + 0] || ''
+        } else {
+            return ''
+        }
+    },
+
+    getEntryColour (mindex, day) {
+        if (this.planner[mindex] && this.planner[mindex]['' + day]) {
+            return this.planner[mindex]['' + day]['' + 2] || ''
+        } else {
+            return ''
+        }
+    },
+
+    getEntryTypeIcon (mindex, day) {
+        if (this.getEntryType(mindex, day) == 1) {
+            return '<i class="fas fa-bell"></i>'
+        } else if (this.getEntryType(mindex, day) == 2) {
+            return '<i class="fas fa-birthday-cake"></i>'
+        } else if (this.getEntryType(mindex, day) == 3) {
+            return '<i class="fas fa-glass-martini"></i>'
+        } else if (this.getEntryType(mindex, day) == 4) {
+            return '<i class="fas fa-utensils"></i>'
+        } else if (this.getEntryType(mindex, day) == 5) {
+            return '<i class="fas fa-graduation-cap"></i>'
+        } else if (this.getEntryType(mindex, day) == 6) {
+            return '<i class="fas fa-heartbeat"></i>'
+        }
+        return ''
+    },
+}

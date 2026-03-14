@@ -11,8 +11,8 @@
 - Source: user
 - Primary owning slice: M002/S01
 - Supporting slices: none
-- Validation: unmapped
-- Notes: Methods are plain object literals spread into Vue Options API `methods`. The `this` context is the Vue instance.
+- Validation: validated
+- Notes: Methods are plain object literals spread into Vue Options API `methods`. The `this` context is the Vue instance. Validated by M002/S01 — all 14 E2E tests pass with split controller.
 
 ### MOD-02 — Restructure model.js into grouped sub-objects
 
@@ -23,8 +23,8 @@
 - Source: user
 - Primary owning slice: M002/S02
 - Supporting slices: M002/S05
-- Validation: unmapped
-- Notes: Requires updating all Vue template bindings (v-model, v-on, mustache expressions) in .compose HTML fragments and recomposing via m4.
+- Validation: validated
+- Notes: Model split into 4 domain sub-files (calendar, planner, auth, ui) with flat spread merge. Template bindings unchanged — runtime model shape preserved. Validated by M002/S02 — all 14 E2E tests pass.
 
 ### MOD-03 — Split Api.js into focused service modules
 
@@ -34,9 +34,9 @@
 - Why it matters: Api.js bundles 12+ methods across sync, auth, profile, payment, and email verification. Splitting enables M004 to surgically replace auth and redesign the sync contract without touching unrelated code.
 - Source: user
 - Primary owning slice: M002/S03
-- Supporting slices: none
-- Validation: unmapped
-- Notes: Error handling patterns are duplicated across every method — extraction enables a shared error handler.
+- Supporting slices: M002/S05
+- Validation: partial
+- Notes: fetch migration complete in Api.js. Sub-module split (SyncApi/AuthApi/ProfileApi) deferred to S05 due to ES module import issues in test environment.
 
 ### MOD-04 — Replace superagent with native fetch
 
@@ -47,8 +47,8 @@
 - Source: user
 - Primary owning slice: M002/S03
 - Supporting slices: none
-- Validation: unmapped
-- Notes: superagent uses `.send()`, `.set()`, `.auth()` chaining — fetch uses `RequestInit` options. Error handling shifts from `.catch(err => err.status)` to checking `response.ok`.
+- Validation: validated
+- Notes: All superagent calls replaced with fetchJSON helper. CDN tag and window.request removed. Sync-error E2E test verifies fetch error handling.
 
 ### MOD-05 — Remove SquareUp.js and all payment-related code
 

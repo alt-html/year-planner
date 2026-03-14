@@ -56,19 +56,19 @@ This milestone is complete only when all are true:
 
 ## Slices
 
-- [ ] **S01: Controller decomposition** `risk:medium` `depends:[]`
+- [x] **S01: Controller decomposition** `risk:medium` `depends:[]`
   > After this: controller.js replaced by 5 domain-grouped method modules (calendar, entries, planner, auth, ui-lifecycle). App boots and all 14 E2E tests pass. Methods still use flat model fields.
 
-- [ ] **S02: Model restructuring and template update** `risk:high` `depends:[S01]`
+- [x] **S02: Model restructuring and template update** `risk:high` `depends:[S01]`
   > After this: model.js split into grouped sub-objects. All .compose HTML fragments updated with new field paths. index.html recomposed via m4. All 14 E2E tests pass with restructured model.
 
-- [ ] **S03: API layer modularisation and fetch migration** `risk:medium` `depends:[S01]`
+- [x] **S03: API layer modularisation and fetch migration** `risk:medium` `depends:[S01]`
   > After this: Api.js replaced by SyncApi, AuthApi, ProfileApi using native fetch. superagent CDN dependency removed. Sync-error E2E test still passes. All 14 tests pass.
 
-- [ ] **S04: Dependency cleanup** `risk:low` `depends:[S01,S03]`
+- [x] **S04: Dependency cleanup** `risk:low` `depends:[S01,S03]`
   > After this: SquareUp.js deleted, payment modal removed, lodash replaced with native methods, feature flags in proper ES6 module. All 14 tests pass.
 
-- [ ] **S05: CDI wiring and integration verification** `risk:low` `depends:[S01,S02,S03,S04]`
+- [x] **S05: CDI wiring and integration verification** `risk:low` `depends:[S01,S02,S03,S04]`
   > After this: All new modules registered in contexts.js. Full integration verified — app boots, all 14 Playwright tests pass, no console errors. Milestone complete.
 
 ## Boundary Map

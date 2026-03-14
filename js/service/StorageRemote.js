@@ -1,4 +1,3 @@
-import _ from 'https://cdn.jsdelivr.net/npm/lodash-es/lodash.min.js';
 import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.js/+esm';
 
 // Synchronises local storage from remote data
@@ -17,7 +16,7 @@ export default class StorageRemote {
         let localIdentities = this.storageLocal.getLocalIdentities();
         let remoteIdentities = this.getRemoteIdentitiesFromData(data);
         for (let i = remoteIdentities.length - 1; i >= 0; i--) {
-            let index = _.findIndex(localIdentities, function (id) {
+            let index = localIdentities.findIndex(function (id) {
                 return id['0'] == remoteIdentities[i]['0'];
             })
             if (index < 0) {
@@ -73,11 +72,11 @@ export default class StorageRemote {
             for (let i = 0; i < remoteIdentities.length; i++) {
                 let uid = remoteIdentities[i][0];
                 remotePlannerYears[uid] =
-                    _.uniq(_.map(_.filter(keys, function (key) {
+                    [...new Set(keys.filter(function (key) {
                         return key.includes(uid + '-');
-                    }), function (key) {
+                    }).map(function (key) {
                         return key.substr(11, 4);
-                    }), true);
+                    }))];
             }
         }
         return remotePlannerYears;

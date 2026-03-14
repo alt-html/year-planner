@@ -5,9 +5,7 @@ import { app } from '../vue/app.js';
 import Application from '../Application.js';
 import { Cookies } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/cookies/dist/alt-javascript-cookies-esm.js';
 
-import { controller } from '../vue/controller.js';
 import config from '../config/config.js';
-import SquareUp  from '../service/SquareUp.js';
 import Storage  from '../service/Storage.js';
 import StorageLocal  from '../service/StorageLocal.js';
 import StorageRemote  from '../service/StorageRemote.js';
@@ -23,13 +21,11 @@ export default [
     Api,
     Application,
     Cookies,
-    SquareUp,
     Storage,
     StorageLocal,
     StorageRemote,
 
     {name:'app', Reference: app },
-    {name:'controller', Reference: controller },
     {name:'feature', Reference: feature },
     {name:'messages', Reference: messages },
     {name:'model', Reference: model },

@@ -32,8 +32,6 @@ export default class Application {
 
     init(){
 
-        window.request = superagent;
-
         this.model.uid = parseInt( urlParam('uid') ) || this.storageLocal.getLocalUid() || Math.floor(this.pageLoadTime.ts/1000);
         this.model.uuid = this.storageLocal.getLocalSession()?.['0']||'',
         this.model.pageLoadTime = this.pageLoadTime;

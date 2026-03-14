@@ -1,4 +1,3 @@
-import _ from 'https://cdn.jsdelivr.net/npm/lodash-es/lodash.min.js';
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.js/+esm';
 
@@ -62,11 +61,11 @@ export default class StorageLocal {
             for (let i = 0; i < localIdentities.length; i++) {
                 let uid = localIdentities[i][0];
                 localPlannerYears[uid] =
-                    _.uniq(_.map(_.filter(cookies, function (key) {
+                    [...new Set(cookies.filter(function (key) {
                         return key.includes(uid + '-');
-                    }), function (key) {
+                    }).map(function (key) {
                         return key.substr(11, 4);
-                    }), true);
+                    }))];
             }
         }
         return localPlannerYears;
@@ -90,7 +89,7 @@ export default class StorageLocal {
     deletePlannerByYear (uid, year) {
         let localPlannerYears = {};
         let cookies = Object.keys(this.cookies.getCookies());
-        let cookiesToDelete = _.filter(cookies, function (key) {
+        let cookiesToDelete = cookies.filter(function (key) {
             return key.includes(uid + '-' + year);
         });
 
@@ -99,7 +98,7 @@ export default class StorageLocal {
         }
 
         //Mark remote planner-year as deleted locally
-        let isRemote = _.find(this.getLocalIdentities(), function (id) {
+        let isRemote = this.getLocalIdentities().find(function (id) {
             return id['0'] == uid
         })?.[2] == 1;
         if (isRemote) {
@@ -113,15 +112,15 @@ export default class StorageLocal {
     deleteLocalPlanner (uid) {
         let localPlannerYears = {};
         let cookies = Object.keys(this.cookies.getCookies());
-        let cookiesToDelete = _.filter(cookies, function (key) {
+        let cookiesToDelete = cookies.filter(function (key) {
             return key.includes(uid);
         });
 
         for (let i = 0; i < cookiesToDelete.length; i++) {
             this.cookies.deleteCookie(cookiesToDelete[i])
         }
-        _.remove(this.model.identities, function (id) {
-            return id['0'] == uid
+        this.model.identities = this.model.identities.filter(function (id) {
+            return id['0'] != uid
         })
         if (this.model.identities.length == 0) {
             this.model.identities = [{0: Math.floor(DateTime.now().ts / 1000), 1: window.navigator.userAgent, 2: 0, 3: 0}]
@@ -246,7 +245,7 @@ export default class StorageLocal {
         this.setLocalIdentities(ids);
     }
     getRemoteIdentities () {
-        return _.filter(this.getLocalIdentities(), function (id) {
+        return this.getLocalIdentities().filter(function (id) {
             return id?.[2] == 1
         });
     }

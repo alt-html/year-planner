@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/yp-dark.css">
     <link rel="stylesheet" href="./css/typeaheadjs.css">
-    <link rel="stylesheet" type="text/css" href="./css/sqpaymentform.css">
 
     <title>Year Planner</title>
 
@@ -31,11 +30,6 @@
     <script src="https://cdn.jsdelivr.net/npm/vue-i18n@9.14.5/dist/vue-i18n.global.prod.js"
             integrity="sha384-DUZ16DArXVGPIVZmfui1TAqsquB/3WiF1OmDv4eCj+kOBRdgL4GCyLoRaUsmoSt7"
             crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/superagent@10.3.0/dist/superagent.min.js"
-            integrity="sha384-vKYrrQnCdb4VB9wYZCasQFtF12dStq3fVJg8L40fhkcOaZdZljrCiLrqpa7DVyeZ"
-            crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://js.squareup.com/v2/paymentform"></script> <!-- LIVE -->
-    <!-- <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script> SANDBOX -->
 
 
 </head>
@@ -132,9 +126,8 @@
                           </div>
                         </div>
                         <button v-if="feature.register && !registered" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showRegister()" data-toggle="modal" data-target="#registerModal" title="">{{$t('label.register')}}</button>
-                        <button v-if="feature.donate && signedin && loaded > donation" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" v-on:click="showDonate()" data-toggle="modal" data-target="#donateModal" title="">Donate</button>
                         <button v-if="feature.signin && !signedin && !registered" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showSignin()"  data-toggle="tooltip" data-placement="bottom" v-bind:title="$t('label.signin')"><i class="fa-solid fa-right-to-bracket"></i></button>
-                        <button v-if="feature.donate && signedin && loaded > donation" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="signout()"  data-toggle="tooltip" data-placement="bottom" v-bind:title="$t('label.signout')"><i class="fa-solid fa-right-from-bracket"></i></button>
+                        <button v-if="feature.signin && signedin" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="signout()"  data-toggle="tooltip" data-placement="bottom" v-bind:title="$t('label.signout')"><i class="fa-solid fa-right-from-bracket"></i></button>
                         <button v-if="feature.signin && !signedin && registered" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showSignin()">{{$t('label.signin')}}</button>
                         <button v-if="feature.signin && signedin && loaded < donation" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="signout()" data-toggle="modal" data-target="#" title="">{{$t('label.signout')}}</button>
                         <button v-if="!feature.register && !feature.signin" id="no-feature-button" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" >&nbsp;</button>
@@ -638,44 +631,6 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
                         <button type="button" class="btn btn-primary"  v-on:click="sendRecoverUsernameEmail(email)">{{$t('label.recover')}}</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="payModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="payModalLabel">{{$t('label.donate')}}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert" >
-                            <p class="mb-0">{{$t(modalError)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <p v-bind:class="{'d-none':paymentSuccess}">{{$t('label.donatespiel')}}</p>
-                        <div id="form-container" v-bind:class="{'d-none':paymentSuccess}">
-                            <div id="sq-card-number"></div>
-                            <div class="third" id="sq-expiration-date"></div>
-                            <div class="third" id="sq-cvv"></div>
-                            <div class="third" id="sq-postal-code"></div>
-                        </div>
-
-                        <div v-bind:class="{'d-none':!paymentSuccess}">
-                            <h4 class="text-center">{{$t('label.donationaccepted')}}</h4>
-                            <p class="text-center"><a v-bind:href="receiptUrl"  target="_blank">{{$t('label.donationreceipt')}}</a></p>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
-                        <button id="sq-creditcard" type="button" class="btn btn-primary button-credit-card"  v-bind:class="{'d-none':paymentSuccess}" v-on:click="onGetCardNonce(event)">{{$t('label.give')}}</button>
                     </div>
                 </div>
             </div>

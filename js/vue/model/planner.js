@@ -1,0 +1,18 @@
+export const plannerState = {
+    uid : null,
+    month : 0,
+    day : 1,
+    entry: '',
+    entryType : 0,
+    entryColour : 0,
+    shareUrl: window.location.origin,
+    planner : null,
+    identities : null,
+    preferences : null,
+    updated : null,
+    name : '',
+    share : '',
+    pageLoadTime : null,
+    lang : null,
+    theme : null,
+}
