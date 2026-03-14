@@ -3,8 +3,6 @@ import { LoggerFactory, LoggerCategoryCache, ConfigurableLogger } from 'https://
 import Api from '../service/Api.js';
 import { app } from '../vue/app.js';
 import Application from '../Application.js';
-import { Cookies } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/cookies/dist/alt-javascript-cookies-esm.js';
-
 import config from '../config/config.js';
 import Storage  from '../service/Storage.js';
 import StorageLocal  from '../service/StorageLocal.js';
@@ -20,7 +18,6 @@ let loggerFactory = new LoggerFactory(config,loggerCategoryCache,ConfigurableLog
 export default [
     Api,
     Application,
-    Cookies,
     Storage,
     StorageLocal,
     StorageRemote,

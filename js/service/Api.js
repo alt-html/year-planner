@@ -120,10 +120,10 @@ export default class Api {
             this.storageLocal.registerRemoteIdentity(this.model.uid);
 
             let localSession = this.storageLocal.getLocalSession();
-            let cookies = this.storageLocal.cookies.getCookies()
+            let localData = this.storageLocal.getLocalStorageData()
             fetchJSON(`${this.url}api/planner/` + localSession?.['0'], {
                 method: 'POST',
-                body: JSON.stringify(cookies),
+                body: JSON.stringify(localData),
             })
                 .then(body => {
                     this.storageLocal.extendLocalSession();

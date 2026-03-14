@@ -31,26 +31,20 @@ const test = base.extend({
     await page.route('**/luxon@2/build/es6/luxon.min.js', localFile('luxon.min.js', 'application/javascript'));
     // 4. LZ-String ESM build (export default LZString) — /+esm suffix in glob
     await page.route('**/lz-string/libs/lz-string.min.js/+esm', localFile('lz-string.esm.js', 'application/javascript'));
-    // 5. Lodash-ES module build
-    await page.route('**/lodash-es/lodash.min.js', localFile('lodash.min.js', 'application/javascript'));
-    // 6. Superagent
-    await page.route('**/superagent@10.3.0/**', localFile('superagent.min.js', 'application/javascript'));
-    // 7. Bootstrap JS
+    // 5. Bootstrap JS
     await page.route('**/bootstrap/4.3.1/js/bootstrap.min.js', localFile('bootstrap.min.js', 'application/javascript'));
-    // 8. jQuery slim
+    // 6. jQuery slim
     await page.route('**/jquery-3.3.1.slim.min.js', localFile('jquery.slim.min.js', 'application/javascript'));
-    // 9. Popper.js
+    // 7. Popper.js
     await page.route('**/popper.js/1.14.7/**', localFile('popper.min.js', 'application/javascript'));
-    // 10. Bootstrap CSS
+    // 8. Bootstrap CSS
     await page.route('**/bootstrap/4.3.1/css/bootstrap.min.css', localFile('bootstrap.min.css', 'text/css'));
-    // 11. Google Fonts — empty stub
+    // 9. Google Fonts — empty stub
     await page.route('**/fonts.googleapis.com/**', (route) => route.fulfill({ status: 200, body: '', contentType: 'text/css' }));
-    // 12. FontAwesome 6.7.2 CSS from cdnjs — serve local fixture
+    // 10. FontAwesome 6.7.2 CSS from cdnjs — serve local fixture
     await page.route('**/font-awesome/6.7.2/css/all.min.css', localFile('fontawesome.min.css', 'text/css'));
-    // 13. FontAwesome webfonts — empty stub (tests don't need actual fonts)
+    // 11. FontAwesome webfonts — empty stub (tests don't need actual fonts)
     await page.route('**/font-awesome/**', (route) => route.fulfill({ status: 200, body: '', contentType: 'text/css' }));
-    // 14. Square payments — empty stub
-    await page.route('**/squareup.com/**', (route) => route.fulfill({ status: 200, body: '' }));
 
     await use(page);
   },

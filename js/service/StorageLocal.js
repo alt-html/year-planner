@@ -1,20 +1,18 @@
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.js/+esm';
 
-//  Interface to cookie-based local storage
+//  Interface to localStorage-based persistence
 export default class StorageLocal {
-    constructor(api,model,cookies,storage) {
+    constructor(api,model,storage) {
         this.qualifier = '@alt-html/year-planner/StorageLocal'
         this.logger = null;
 
         this.api = api;
         this.model = model;
-        this.cookies = cookies;
-        this.samesite = '${cookies.samesite:null}'
         this.storage = storage;
     }
     setLocalIdentities (identities) {
-        this.cookies.setCookie('0', LZString.compressToBase64(JSON.stringify(identities)), 4384,this.samesite);
+        localStorage.setItem('0', JSON.stringify(identities));
     }
     setLocalPreferences (uid, preferences) {
 
@@ -23,7 +21,7 @@ export default class StorageLocal {
         this.model.lang = preferences['1'];
         this.model.theme = (preferences['2'] == 1 ? 'dark' : 'light');
 
-        this.cookies.setCookie(uid + '', LZString.compressToBase64(JSON.stringify(preferences)), 4384,this.samesite);
+        localStorage.setItem(uid + '', JSON.stringify(preferences));
     }
     getLocalUid () {
         let localIdentities = this.getLocalIdentities();
@@ -51,17 +49,18 @@ export default class StorageLocal {
         return null;
     }
     getLocalIdentities () {
-        return JSON.parse(LZString.decompressFromBase64(this.cookies.getCookie('0')));
+        let raw = localStorage.getItem('0');
+        return raw ? JSON.parse(raw) : null;
     }
     getLocalPlannerYears () {
         let localPlannerYears = {};
-        let cookies = Object.keys(this.cookies.getCookies());
+        let keys = Object.keys(localStorage);
         let localIdentities = this.getLocalIdentities();
         if (localIdentities) {
             for (let i = 0; i < localIdentities.length; i++) {
                 let uid = localIdentities[i][0];
                 localPlannerYears[uid] =
-                    [...new Set(cookies.filter(function (key) {
+                    [...new Set(keys.filter(function (key) {
                         return key.includes(uid + '-');
                     }).map(function (key) {
                         return key.substr(11, 4);
@@ -71,10 +70,12 @@ export default class StorageLocal {
         return localPlannerYears;
     }
     getDefaultLocalPreferences () {
-        return JSON.parse(LZString.decompressFromBase64(this.cookies.getCookie(this.getLocalIdentities()[0]['0'] + '')));
+        let raw = localStorage.getItem(this.getLocalIdentities()[0]['0'] + '');
+        return raw ? JSON.parse(raw) : null;
     }
     getLocalPreferences (uid) {
-        return JSON.parse(LZString.decompressFromBase64(this.cookies.getCookie(uid + '')));
+        let raw = localStorage.getItem(uid + '');
+        return raw ? JSON.parse(raw) : null;
     }
     getDefaultLocalPlanner () {
         return this.getLocalPlanner(this.getLocalIdentities(), this.model.year)
@@ -82,19 +83,19 @@ export default class StorageLocal {
     getLocalPlanner (uid, year) {
         let planner = []
         for (let m = 1; m <= 12; m++) {
-            planner.push(JSON.parse(LZString.decompressFromBase64(this.cookies.getCookie(uid + '-' + year + m))));
+            let raw = localStorage.getItem(uid + '-' + year + m);
+            planner.push(raw ? JSON.parse(raw) : null);
         }
         return planner;
     }
     deletePlannerByYear (uid, year) {
-        let localPlannerYears = {};
-        let cookies = Object.keys(this.cookies.getCookies());
-        let cookiesToDelete = cookies.filter(function (key) {
+        let keys = Object.keys(localStorage);
+        let keysToDelete = keys.filter(function (key) {
             return key.includes(uid + '-' + year);
         });
 
-        for (let i = 0; i < cookiesToDelete.length; i++) {
-            this.cookies.deleteCookie(cookiesToDelete[i])
+        for (let i = 0; i < keysToDelete.length; i++) {
+            localStorage.removeItem(keysToDelete[i])
         }
 
         //Mark remote planner-year as deleted locally
@@ -110,14 +111,13 @@ export default class StorageLocal {
         location.reload();
     }
     deleteLocalPlanner (uid) {
-        let localPlannerYears = {};
-        let cookies = Object.keys(this.cookies.getCookies());
-        let cookiesToDelete = cookies.filter(function (key) {
+        let keys = Object.keys(localStorage);
+        let keysToDelete = keys.filter(function (key) {
             return key.includes(uid);
         });
 
-        for (let i = 0; i < cookiesToDelete.length; i++) {
-            this.cookies.deleteCookie(cookiesToDelete[i])
+        for (let i = 0; i < keysToDelete.length; i++) {
+            localStorage.removeItem(keysToDelete[i])
         }
         this.model.identities = this.model.identities.filter(function (id) {
             return id['0'] != uid
@@ -129,11 +129,11 @@ export default class StorageLocal {
     }
     setLocalPlanner (uid, year, planner) {
         for (let m = 1; m <= 12; m++) {
-            this.cookies.setCookie(uid + '-' + year + m, LZString.compressToBase64(JSON.stringify(planner[m - 1])), 4384,this.samesite)
+            localStorage.setItem(uid + '-' + year + m, JSON.stringify(planner[m - 1]))
         }
     }
     setLocalPlannerLastUpdated (uid, year, lastUpdated) {
-        this.cookies.setCookie(uid + '-' + year, LZString.compressToBase64(JSON.stringify(lastUpdated)), 4384,this.samesite)
+        localStorage.setItem(uid + '-' + year, JSON.stringify(lastUpdated))
     }
     importLocalPlannerFromJSON (planner) {
         this.importLocalPlanner(JSON.parse(planner));
@@ -191,11 +191,9 @@ export default class StorageLocal {
 
     }
     setLocalFromModel () {
-        if (this.cookiesAccepted()) {
-            this.setLocalIdentities(this.model.identities)
-            this.setLocalPreferences(this.model.uid, this.model.preferences)
-            this.storage.setPlanner(this.model.uid, this.model.year, this.model.planner);
-        }
+        this.setLocalIdentities(this.model.identities)
+        this.setLocalPreferences(this.model.uid, this.model.preferences)
+        this.storage.setPlanner(this.model.uid, this.model.year, this.model.planner);
     }
     extendLocalSession () {
         if (this.signedin() && this.getLocalSession()['1'] > 0) {
@@ -203,27 +201,25 @@ export default class StorageLocal {
         }
     }
     setLocalSession (uuid, expires) {
-        this.cookies.setCookie('1', LZString.compressToBase64(JSON.stringify({
+        localStorage.setItem('1', JSON.stringify({
             0: uuid,
             1: expires,
             2: this.model.uid,
             3: this.model.year
-        })), 4384,this.samesite);
+        }));
     }
     getLocalSession () {
-        return JSON.parse(LZString.decompressFromBase64(this.cookies.getCookie('1')));
+        let raw = localStorage.getItem('1');
+        return raw ? JSON.parse(raw) : null;
     }
     expireLocalSession () {
-        this.cookies.setCookie('1', LZString.compressToBase64(JSON.stringify({0: this.model.uuid, 1: 1})), 4384,this.samesite);
+        localStorage.setItem('1', JSON.stringify({0: this.model.uuid, 1: 1}));
     }
     deleteLocalSession () {
-        this.cookies.deleteCookie('1');
+        localStorage.removeItem('1');
     }
     reset () {
-        let cookies = Object.keys(this.cookies.getCookies());
-        for (let i = 0; i < cookies.length; i++) {
-            this.cookies.deleteCookie('' + cookies[i]);
-        }
+        localStorage.clear();
         window.location.href = window.location.origin;
     }
     registerRemoteIdentity (uid) {
@@ -256,14 +252,16 @@ export default class StorageLocal {
         }
         window.location.href = window.location.origin;
     }
-    cookiesAccepted () {
-        return !(this.cookies.getCookie('0') == '');
-    }
-    acceptCookies () {
-        if (!this.cookiesAccepted()) {
-            $('#cookieModal').modal('show');
+    getLocalStorageData () {
+        let data = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            data[key] = localStorage.getItem(key);
         }
-        this.setLocalFromModel();
+        return data;
+    }
+    initialised () {
+        return localStorage.getItem('0') !== null;
     }
     signedin (){
         let expires = this.getLocalSession()?.['1'];

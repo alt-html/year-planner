@@ -13,7 +13,7 @@ A simple, fast year planner that works offline with local storage, supports 10 l
 **Completed Milestones:**
 - ✅ **M001: Migration** (2026-03-12) — Test infrastructure, E2E coverage, security hardening, and HTML composition pipeline
 
-**Active Milestone:** M003 — Storage Modernisation (not yet started)
+**Active Milestone:** M004 — Auth & API Contract (not yet started)
 
 ## Architecture / Key Patterns
 
@@ -51,7 +51,7 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 - [x] M001: Migration — Test infrastructure, E2E coverage, security hardening, and HTML composition pipeline
 - [x] M002: JS Modularisation — Decomposed monolithic Vue controller, model, and API into focused ES6 modules; removed superagent, lodash, SquareUp CDN dependencies
-- [ ] M003: Storage Modernisation — Replace cookie-based persistence with localStorage, remove cookie consent modal
+- [x] M003: Storage Modernisation — Migrated all persistence from cookies to localStorage, removed consent modal and @alt-javascript/cookies CDN dependency
 - [ ] M004: Auth & API Contract — Federated auth (Google/Apple/Microsoft), OpenAPI sync contract
 
 ## Running Locally

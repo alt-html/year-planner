@@ -26,9 +26,9 @@ test('.compose/ fragment directory exists with nested structure (COMP-02)', () =
   // Nested modal fragments (demonstrates nesting — COMP-02)
   const modalDir = path.join(fragmentsDir, 'modals');
   expect(fs.existsSync(modalDir)).toBe(true);
-  const modalFiles = ['cookie.html', 'entry.html', 'share.html', 'delete.html', 'settings.html',
+  const modalFiles = ['entry.html', 'share.html', 'delete.html', 'settings.html',
                        'register.html', 'signin.html', 'reset-password.html', 'recover-username.html',
-                       'pay.html', 'feature.html'];
+                       'feature.html'];
   for (const f of modalFiles) {
     expect(fs.existsSync(path.join(modalDir, f))).toBe(true);
   }
@@ -49,6 +49,6 @@ test('modals.html demonstrates nesting — includes sub-fragments (COMP-02)', ()
   const modalsContent = fs.readFileSync(path.join(ROOT, '.compose', 'fragments', 'modals.html'), 'utf8');
   // modals.html should contain m4_include directives for nested modal fragments
   expect(modalsContent).toContain('m4_include');
-  expect(modalsContent).toContain('modals/cookie.html');
+  expect(modalsContent).toContain('modals/entry.html');
   expect(modalsContent).toContain('modals/feature.html');
 });

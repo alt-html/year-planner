@@ -26,7 +26,7 @@ export const plannerMethods = {
     },
 
     deletePlannerByYear(uid, year) {
-        // Delete all data for this planner (identity + all year cookies)
+        // Delete all data for this planner (identity + all year data)
         this.storageLocal.deleteLocalPlanner(uid);
         // Navigate to the first remaining planner, or reload if none
         const remaining = this.identities.find(id => id['0'] != uid);

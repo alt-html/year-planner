@@ -2,14 +2,13 @@ import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.
 
 // Synchronises local storage from remote data
 export default class StorageRemote {
-    constructor(model,storage,storageLocal,cookies) {
+    constructor(model,storage,storageLocal) {
         this.qualifier = '@alt-html/year-planner/StorageRemote'
         this.logger = null;
 
         this.model = model;
         this.storage = storage;
         this.storageLocal = storageLocal;
-        this.cookies = cookies;
     }
     synchroniseLocalPlanners (data, syncPrefs) {
 
@@ -41,16 +40,17 @@ export default class StorageRemote {
             for (let y = 0; y < remotePlannerYears[uid].length; y++) {
                 let year = remotePlannerYears[uid][y];
                 if (data[uid + '-' + year] == 0) {
-                    this.cookies.deleteCookie(uid + '-' + year);
+                    localStorage.removeItem(uid + '-' + year);
                     for (let m = 1; m <= 12; m++) {
-                        this.cookies.deleteCookie(uid + '-' + year + m);
+                        localStorage.removeItem(uid + '-' + year + m);
                     }
                 }
-                if (data[uid + '-' + year] > (parseInt(LZString.decompressFromBase64(getCookie(uid + '-' + year))) || 0)) {
-                    this.cookies.setCookie(uid + '-' + year, LZString.compressToBase64(JSON.stringify(data [uid + '-' + year])));
+                let localLastUpdated = parseInt(localStorage.getItem(uid + '-' + year)) || 0;
+                if (data[uid + '-' + year] > localLastUpdated) {
+                    localStorage.setItem(uid + '-' + year, JSON.stringify(data[uid + '-' + year]));
                     // set uid-year+1-12
                     for (let m = 1; m <= 12; m++) {
-                        this.cookies.setCookie(uid + '-' + year + m, LZString.compressToBase64(JSON.stringify(data[uid + '-' + year + m])));
+                        localStorage.setItem(uid + '-' + year + m, JSON.stringify(data[uid + '-' + year + m]));
                     }
                 }
             }

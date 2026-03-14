@@ -4,9 +4,6 @@ export default ConfigFactory.getConfig({
     api : {
         url : 'http://127.0.0.1:8081/'
     },
-    cookies : {
-        samesite : 'Strict'
-    },
     logging : {
         level : {
             "/" : "warn",
@@ -16,14 +13,10 @@ export default ConfigFactory.getConfig({
         api : {
             url : 'http://127.0.0.1:8081/'
         },
-        cookies : {
-            samesite : 'None; Secure'
-        },
         logging : {
             format : "text",
             level : {
                 "/" : "info",
-                "@alt-javascript/cookies" : "info",
                 "@alt-javascript/cdi" : "verbose",
             }
         }

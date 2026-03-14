@@ -14,14 +14,11 @@ module.exports = async function globalSetup(config) {
   // Wait for CDI initialisation — requires data-app-ready from Application.js
   await page.waitForSelector('[data-app-ready]');
 
-  // Accept cookie consent modal
-  // Selector from index.html line 232: stable attribute-based, not text-based
-  await page.click('#cookieModal .btn-secondary[data-dismiss="modal"]');
+  // App auto-initialises on first visit (writes identities to localStorage).
+  // Wait for localStorage key '0' to be set (set by storageLocal.setLocalIdentities() in lifecycle refresh/initialise).
+  await page.waitForFunction(() => localStorage.getItem('0') !== null);
 
-  // Wait for cookie '0' to be set (set by storageLocal.setLocalIdentities() in initialise())
-  await page.waitForFunction(() => document.cookie.includes('0='));
-
-  // Save full browser state: cookies + localStorage
+  // Save full browser state: localStorage
   await page.context().storageState({
     path: path.join(authDir, 'consent.json'),
   });

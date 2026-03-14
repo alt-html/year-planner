@@ -1,7 +1,7 @@
 // .tests/smoke/harness.spec.js
 // Baseline harness smoke test.
 // Verifies: server starts (TEST-02), app loads and CDI fires (TEST-03),
-// no root package.json (TEST-01), clean browser state / no cookie modal (TEST-04).
+// no root package.json (TEST-01), app auto-initialises without consent modal (TEST-04).
 const { test, expect } = require('@playwright/test');
 const path = require('path');
 const fs = require('fs');
@@ -18,11 +18,10 @@ test('no root-level package.json exists (TEST-01)', async () => {
   expect(fs.existsSync(rootPkgJson)).toBe(false);
 });
 
-test('cookie consent modal is not visible on load (TEST-04)', async ({ page }) => {
+test('app auto-initialises without consent modal (TEST-04)', async ({ page }) => {
   await page.goto('/');
   await page.waitForSelector('[data-app-ready]');
-  // storageState from globalSetup means consent already accepted
-  // The modal must not be visible
+  // No cookie consent modal should exist in the DOM
   const modal = page.locator('#cookieModal');
-  await expect(modal).not.toBeVisible();
+  await expect(modal).toHaveCount(0);
 });

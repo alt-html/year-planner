@@ -3,24 +3,21 @@
 // Uses page.route() to make the sync API return 500, then triggers a sync
 // and verifies the .alert-danger div becomes visible.
 //
-// Session setup: injects a fake session cookie (LZ-base64 encoded, expires=0
-// means "remember me") so signedin() returns true and synchroniseToLocal/Remote()
-// are not short-circuited before the route intercept can return 500.
+// Session setup: injects a fake session into localStorage (key '1', JSON encoded,
+// expires=0 means "remember me") so signedin() returns true and
+// synchroniseToLocal/Remote() are not short-circuited before the route
+// intercept can return 500.
 const { test, expect } = require('../fixtures/cdn');
 
-// Pre-computed LZString.compressToBase64(JSON.stringify({"0":"test-uuid","1":0}))
-// expires=0 means "remember me" / always signed in per StorageLocal.signedin()
-const SESSION_COOKIE = 'N4IgDCBcIC4KYGcYFoCuqCWATEAaEAjFGAL5A===';
+// Session JSON: {0: "test-uuid", 1: 0} — expires=0 means "remember me" / always signed in
+const SESSION_JSON = JSON.stringify({"0":"test-uuid","1":0});
 
 test('sync failure shows visible error alert (SEC-04)', async ({ page }) => {
-  // Inject a signed-in session cookie before the page loads.
-  // Cookie '1' holds the LZ-compressed session: {0: uuid, 1: expires}
-  await page.context().addCookies([{
-    name: '1',
-    value: SESSION_COOKIE,
-    domain: 'localhost',
-    path: '/',
-  }]);
+  // Inject a signed-in session into localStorage before the page loads.
+  // Key '1' holds the session: {0: uuid, 1: expires}
+  await page.addInitScript((sessionData) => {
+    localStorage.setItem('1', sessionData);
+  }, SESSION_JSON);
 
   // Intercept all API calls and return 500 to simulate sync failure.
   // On app startup, synchroniseToLocal() is called — this will return 500
