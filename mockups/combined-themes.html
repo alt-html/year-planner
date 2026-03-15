@@ -259,6 +259,23 @@ body {
     gap: 2px;
 }
 
+.yp-rail-divider {
+    width: 24px;
+    height: 1px;
+    background: rgba(255,255,255,0.12);
+    margin: 6px 0;
+}
+
+.rail-theme-toggle {
+    font-size: 0.6rem !important;
+    font-weight: 700;
+    font-family: var(--font-body);
+    letter-spacing: 0.02em;
+    background: var(--rail-active-bg) !important;
+    color: var(--rail-text-hover) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+}
+
 /* ---- RAIL TOGGLE (left-side circle) ---- */
 .rail-toggle {
     position: fixed;
@@ -362,27 +379,7 @@ body {
     padding: 5px 6px;
 }
 
-.yp-nav-right {
-    display: flex;
-    align-items: center;
-    gap: 1px;
-}
 
-.yp-nav-right button {
-    background: none;
-    border: none;
-    color: var(--text-light);
-    padding: 6px 9px;
-    cursor: pointer;
-    font-size: 0.82rem;
-    border-radius: 5px;
-    transition: all 0.12s;
-}
-
-.yp-nav-right button:hover {
-    color: var(--text);
-    background: var(--border);
-}
 
 /* ---- GRID ---- */
 .yp-grid {
@@ -533,15 +530,6 @@ body {
     color: var(--bg);
 }
 
-.theme-switch {
-    background: var(--accent);
-    color: white;
-    font-size: 0.65rem;
-    font-weight: 700;
-    font-family: var(--font-body);
-    letter-spacing: 0.02em;
-}
-
 /* ---- THEME LABEL (top-right indicator) ---- */
 .theme-label {
     position: fixed;
@@ -574,6 +562,11 @@ body {
         <button title="Language"><i class="fa-solid fa-globe"></i></button>
         <button title="Settings"><i class="fa-solid fa-gear"></i></button>
         <button title="Sign in"><i class="fa-solid fa-right-to-bracket"></i></button>
+        <div class="yp-rail-divider"></div>
+        <button class="rail-theme-toggle" id="themeSwitch" title="Switch theme">
+            <span id="themeSwitchLabel">N</span>
+        </button>
+        <button id="railDarkToggle" title="Toggle dark mode"><i class="fa-solid fa-circle-half-stroke"></i></button>
     </div>
 </nav>
 
@@ -591,10 +584,7 @@ body {
         <button class="yp-nav-year-btn current">2026</button>
         <button class="yp-nav-year-btn"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
-    <div class="yp-nav-right">
-        <button title="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
-        <button title="Sign in"><i class="fa-solid fa-right-to-bracket"></i></button>
-    </div>
+
 </nav>
 
 <!-- GRID -->
@@ -659,11 +649,8 @@ body {
 <!-- THEME LABEL -->
 <div class="theme-label" id="themeLabel">Ink &amp; Paper</div>
 
-<!-- FLOATING CONTROLS -->
+<!-- FLOATING CONTROL (dark mode only — theme toggle moved to rail) -->
 <div class="floating-controls">
-    <button class="float-btn theme-switch" id="themeSwitch" title="Switch theme">
-        <span id="themeSwitchLabel">N</span>
-    </button>
     <button class="float-btn dark-toggle" id="darkToggle" title="Toggle dark mode">
         <i class="fa-solid fa-circle-half-stroke"></i>
     </button>
@@ -675,6 +662,7 @@ body {
     const rail = document.getElementById('rail');
     const railToggle = document.getElementById('railToggle');
     const darkToggle = document.getElementById('darkToggle');
+    const railDarkToggle = document.getElementById('railDarkToggle');
     const themeSwitch = document.getElementById('themeSwitch');
     const themeSwitchLabel = document.getElementById('themeSwitchLabel');
     const themeLabel = document.getElementById('themeLabel');
@@ -738,10 +726,10 @@ body {
         }
     });
 
-    // Dark mode toggle
-    darkToggle.addEventListener('click', function() {
-        body.classList.toggle('dark');
-    });
+    // Dark mode toggle (both floating and rail buttons)
+    function toggleDark() { body.classList.toggle('dark'); }
+    darkToggle.addEventListener('click', toggleDark);
+    railDarkToggle.addEventListener('click', toggleDark);
 
     // Theme switch
     themeSwitch.addEventListener('click', function() {
