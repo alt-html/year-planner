@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Year Planner — Theme Preview</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Sans+3:wght@300;400;600&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   COMBINED THEMES — SHARED STRUCTURE
+   
+   Two selectable themes layered over one shared layout:
+     • Thin top nav strip (title + year left, tools right)
+     • Hidden left icon rail (slides out on toggle)
+     • Grid as hero
+     • Dark/light mode per theme
+   ============================================================ */
+
+/* ---- CSS CUSTOM PROPERTIES: THEME A (Ink & Paper) ---- */
+:root,
+[data-theme="ink"] {
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+    --font-mono: var(--font-body);
+
+    --bg: #FAF7F2;
+    --surface: #FAF7F2;
+    --surface-raised: #FFFFFF;
+    --text: #2C2520;
+    --text-mid: #6B5F54;
+    --text-light: #A89B8C;
+
+    --accent: #D4663A;
+    --accent-hover: #B8552E;
+    --today: #E8A838;
+    --today-bg: #FFF5E0;
+
+    --weekend: #F7F0E8;
+    --past: #F0EDE8;
+    --border: #E5DDD2;
+    --header-border: var(--text);
+
+    --rail-bg: #3A302A;
+    --rail-text: rgba(255,255,255,0.5);
+    --rail-text-hover: #FFFFFF;
+    --rail-active-bg: rgba(255,255,255,0.15);
+
+    --c2: #F5D0C0;
+    --c3: #D4EDDA;
+    --c4: #D6E4F0;
+    --c5: #D0ECE8;
+    --c6: #F5EFCF;
+    --c7: #EDDCF0;
+    --c8: #F5DFC0;
+
+    --th-color: var(--text-mid);
+    --th-bg: var(--surface);
+    --th-weight: 600;
+    --th-size: 0.8rem;
+    --th-transform: uppercase;
+    --th-spacing: 0.08em;
+    --day-col-font: var(--font-body);
+    --day-col-weight: 300;
+    --day-col-size: 0.75rem;
+    --day-col-transform: none;
+    --day-col-spacing: 0;
+    --today-radius: 50%;
+}
+
+/* ---- THEME A DARK ---- */
+[data-theme="ink"].dark {
+    --bg: #1C1917;
+    --surface: #1C1917;
+    --surface-raised: #252220;
+    --text: #E7E0D8;
+    --text-mid: #A8A095;
+    --text-light: #78716C;
+    --accent: #E8875A;
+    --accent-hover: #D07848;
+    --today: #E8A838;
+    --today-bg: #332B18;
+    --weekend: #231F1C;
+    --past: #211E1B;
+    --border: #3D3730;
+    --header-border: var(--text-light);
+    --rail-bg: #0F0D0B;
+    --c2: #4A2525;
+    --c3: #1E3A22;
+    --c4: #1E2A3E;
+    --c5: #1A3330;
+    --c6: #333015;
+    --c7: #2E1E35;
+    --c8: #3A2A15;
+}
+
+/* ---- CSS CUSTOM PROPERTIES: THEME B (Nordic Clarity) ---- */
+[data-theme="nordic"] {
+    --font-display: 'DM Sans', -apple-system, sans-serif;
+    --font-body: 'DM Sans', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --bg: #F8F9FB;
+    --surface: #F8F9FB;
+    --surface-raised: #FFFFFF;
+    --text: #1A1D23;
+    --text-mid: #5A6070;
+    --text-light: #9CA3B0;
+
+    --accent: #2563EB;
+    --accent-hover: #1D4FD8;
+    --today: #2563EB;
+    --today-bg: #EFF4FF;
+
+    --weekend: #F3F4F8;
+    --past: #FAFBFC;
+    --border: #E8EAF0;
+    --header-border: #1A1D23;
+
+    --rail-bg: #1A1D23;
+    --rail-text: rgba(255,255,255,0.45);
+    --rail-text-hover: #FFFFFF;
+    --rail-active-bg: rgba(255,255,255,0.12);
+
+    --c2: #FFE0E0;
+    --c3: #D5F0D5;
+    --c4: #D5E5FF;
+    --c5: #D0F0F0;
+    --c6: #FFF5D5;
+    --c7: #EAD5FF;
+    --c8: #FFE5D0;
+
+    --th-color: #FFFFFF;
+    --th-bg: #1A1D23;
+    --th-weight: 700;
+    --th-size: 0.72rem;
+    --th-transform: uppercase;
+    --th-spacing: 0.1em;
+    --day-col-font: var(--font-mono);
+    --day-col-weight: 500;
+    --day-col-size: 0.72rem;
+    --day-col-transform: none;
+    --day-col-spacing: -0.02em;
+    --today-radius: 6px;
+}
+
+/* ---- THEME B DARK ---- */
+[data-theme="nordic"].dark {
+    --bg: #0D0F14;
+    --surface: #0D0F14;
+    --surface-raised: #161920;
+    --text: #E4E7ED;
+    --text-mid: #8890A0;
+    --text-light: #555D70;
+    --accent: #4B8AFF;
+    --accent-hover: #3A73E0;
+    --today: #4B8AFF;
+    --today-bg: #1A2540;
+    --weekend: #1A1D25;
+    --past: #12141A;
+    --border: #252830;
+    --header-border: #3A3E48;
+    --rail-bg: #08090D;
+    --th-bg: #252830;
+    --th-color: #C5CAD5;
+    --c2: #3A1818;
+    --c3: #183A1E;
+    --c4: #18253A;
+    --c5: #183535;
+    --c6: #35331A;
+    --c7: #2A1A3A;
+    --c8: #3A2A18;
+}
+
+/* ---- RESET ---- */
+* { box-sizing: border-box; margin: 0; }
+
+body {
+    font-family: var(--font-body);
+    font-weight: 400;
+    color: var(--text);
+    background: var(--bg);
+    font-size: 13.5px;
+    line-height: 1.4;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* ---- HIDDEN ICON RAIL ---- */
+.yp-rail {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 48px;
+    background: var(--rail-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+    z-index: 300;
+    gap: 2px;
+    transform: translateX(-48px);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.yp-rail.open {
+    transform: translateX(0);
+}
+
+.yp-rail-logo {
+    width: 30px;
+    height: 30px;
+    background: var(--rail-active-bg);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--rail-text-hover);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+}
+
+.yp-rail button {
+    background: none;
+    border: none;
+    color: var(--rail-text);
+    padding: 9px;
+    cursor: pointer;
+    border-radius: 7px;
+    transition: all 0.12s;
+    font-size: 0.9rem;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.yp-rail button:hover {
+    color: var(--rail-text-hover);
+    background: var(--rail-active-bg);
+}
+
+.yp-rail button.active {
+    color: var(--rail-text-hover);
+    background: var(--rail-active-bg);
+}
+
+.yp-rail-spacer { flex: 1; }
+
+.yp-rail-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+/* ---- RAIL TOGGLE (left-side circle) ---- */
+.rail-toggle {
+    position: fixed;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--rail-bg);
+    color: var(--rail-text-hover);
+    border: none;
+    cursor: pointer;
+    font-size: 0.65rem;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.35;
+    transition: opacity 0.2s, left 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.rail-toggle:hover {
+    opacity: 1;
+}
+
+.rail-toggle .fa-chevron-right { display: inline; }
+.rail-toggle .fa-chevron-left { display: none; }
+
+.rail-open .rail-toggle {
+    left: 58px;
+    opacity: 0.7;
+}
+.rail-open .rail-toggle .fa-chevron-right { display: none; }
+.rail-open .rail-toggle .fa-chevron-left { display: inline; }
+
+/* Shift main content when rail is open */
+.rail-open .yp-nav,
+.rail-open .yp-grid,
+.rail-open .yp-footer {
+    margin-left: 48px;
+}
+
+/* ---- TOP NAV: thin utility strip ---- */
+.yp-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
+}
+
+.yp-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.yp-nav-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-right: 12px;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+}
+
+.yp-nav-title .year {
+    color: var(--accent);
+}
+
+.yp-nav-year-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    padding: 5px 8px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    transition: all 0.12s;
+    font-family: var(--font-body);
+}
+
+.yp-nav-year-btn:hover {
+    color: var(--text);
+    background: var(--border);
+}
+
+.yp-nav-year-btn.current {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.85rem;
+    padding: 5px 6px;
+}
+
+.yp-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.yp-nav-right button {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    padding: 6px 9px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    border-radius: 5px;
+    transition: all 0.12s;
+}
+
+.yp-nav-right button:hover {
+    color: var(--text);
+    background: var(--border);
+}
+
+/* ---- GRID ---- */
+.yp-grid {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.yp-grid th {
+    font-family: var(--font-display);
+    font-weight: var(--th-weight);
+    font-size: var(--th-size);
+    text-transform: var(--th-transform);
+    letter-spacing: var(--th-spacing);
+    color: var(--th-color);
+    background: var(--th-bg);
+    padding: 10px 6px 8px;
+    text-align: left;
+    border-bottom: 2px solid var(--header-border);
+    position: sticky;
+    top: 41px;
+    z-index: 10;
+    transition: background 0.3s, color 0.3s;
+}
+
+.yp-grid th:first-child {
+    color: var(--text-light);
+    font-family: var(--day-col-font);
+    font-weight: var(--day-col-weight);
+    font-size: var(--day-col-size);
+    text-transform: var(--day-col-transform);
+    letter-spacing: var(--day-col-spacing);
+    width: 76px;
+}
+
+/* Nordic theme: first header cell gets dark bg too */
+[data-theme="nordic"] .yp-grid th:first-child {
+    color: var(--th-color);
+    background: var(--th-bg);
+    opacity: 0.6;
+}
+
+.yp-grid td {
+    padding: 3px 6px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+    height: 24px;
+    vertical-align: middle;
+    transition: background 0.15s;
+}
+
+.yp-grid td:first-child {
+    color: var(--text-light);
+    font-family: var(--day-col-font);
+    font-size: var(--day-col-size);
+    font-weight: var(--day-col-weight);
+    letter-spacing: var(--day-col-spacing);
+    border-right: 1px solid var(--border);
+}
+
+/* Row states */
+.yp-grid tr.weekend td { background-color: var(--weekend); }
+.yp-grid tr.weekend td:first-child {
+    color: var(--text-mid);
+    font-weight: 500;
+}
+
+.yp-grid tr.today td { background-color: var(--today-bg); }
+.yp-grid tr.today td:first-child {
+    color: var(--today);
+    font-weight: 600;
+}
+
+.yp-grid tr.today td .day-num {
+    background: var(--today);
+    color: white;
+    border-radius: var(--today-radius);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+}
+
+.yp-grid tr.past td { background-color: var(--past); }
+.yp-grid tr.past td { color: var(--text-light); }
+
+/* ---- FOOTER ---- */
+.yp-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    font-size: 0.72rem;
+    color: var(--text-light);
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    bottom: 0;
+    transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
+}
+
+.yp-footer a {
+    color: var(--text-light);
+    text-decoration: none;
+}
+.yp-footer a:hover {
+    color: var(--accent);
+}
+
+/* ---- FLOATING CONTROLS (bottom-right) ---- */
+.floating-controls {
+    position: fixed;
+    bottom: 14px;
+    right: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 400;
+}
+
+.float-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.float-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+}
+
+.dark-toggle {
+    background: var(--text);
+    color: var(--bg);
+}
+
+.theme-switch {
+    background: var(--accent);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    font-family: var(--font-body);
+    letter-spacing: 0.02em;
+}
+
+/* ---- THEME LABEL (top-right indicator) ---- */
+.theme-label {
+    position: fixed;
+    top: 8px;
+    right: 16px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    z-index: 150;
+    font-family: var(--font-body);
+    pointer-events: none;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+</style>
+</head>
+<body data-theme="ink">
+
+<!-- HIDDEN LEFT RAIL -->
+<nav class="yp-rail" id="rail">
+    <div class="yp-rail-logo">YP</div>
+    <button class="active" title="Calendar"><i class="fa-solid fa-calendar-days"></i></button>
+    <button title="Import"><i class="fa-solid fa-file-import"></i></button>
+    <button title="Export"><i class="fa-solid fa-file-export"></i></button>
+    <button title="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+    <div class="yp-rail-spacer"></div>
+    <div class="yp-rail-bottom">
+        <button title="Language"><i class="fa-solid fa-globe"></i></button>
+        <button title="Settings"><i class="fa-solid fa-gear"></i></button>
+        <button title="Sign in"><i class="fa-solid fa-right-to-bracket"></i></button>
+    </div>
+</nav>
+
+<!-- RAIL TOGGLE (left-side circle) -->
+<button class="rail-toggle" id="railToggle" title="Menu">
+    <i class="fa-solid fa-chevron-right"></i>
+    <i class="fa-solid fa-chevron-left"></i>
+</button>
+
+<!-- TOP NAV STRIP -->
+<nav class="yp-nav">
+    <div class="yp-nav-left">
+        <span class="yp-nav-title">Year Planner <span class="year">2026</span></span>
+        <button class="yp-nav-year-btn"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="yp-nav-year-btn current">2026</button>
+        <button class="yp-nav-year-btn"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+    <div class="yp-nav-right">
+        <button title="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+        <button title="Sign in"><i class="fa-solid fa-right-to-bracket"></i></button>
+    </div>
+</nav>
+
+<!-- GRID -->
+<table class="yp-grid">
+<thead>
+<tr>
+    <th></th>
+    <th>January</th>
+    <th>February</th>
+    <th>March</th>
+    <th>April</th>
+    <th>May</th>
+    <th>June</th>
+    <th>July</th>
+    <th>August</th>
+    <th>September</th>
+    <th>October</th>
+    <th>November</th>
+    <th>December</th>
+</tr>
+</thead>
+<tbody>
+<tr class="past"><td>Thursday</td><td>1</td><td></td><td></td><td>1</td><td></td><td>1</td><td></td><td></td><td>1</td><td>1</td><td></td><td>1</td></tr>
+<tr class="past"><td>Friday</td><td>2</td><td></td><td></td><td>2</td><td>1</td><td>2</td><td></td><td></td><td>2</td><td>2</td><td></td><td>2</td></tr>
+<tr class="past weekend"><td>Saturday</td><td>3</td><td></td><td></td><td>3</td><td>2</td><td>3</td><td></td><td>1</td><td>3</td><td>3</td><td></td><td>3</td></tr>
+<tr class="past weekend"><td>Sunday</td><td>4</td><td>1</td><td>1</td><td>4</td><td>3</td><td>4</td><td></td><td>2</td><td>4</td><td>4</td><td>1</td><td>4</td></tr>
+<tr class="past"><td>Monday</td><td>5</td><td>2</td><td>2</td><td>5</td><td>4</td><td>5</td><td></td><td>3</td><td>5</td><td>5</td><td>2</td><td>5</td></tr>
+<tr class="past"><td>Tuesday</td><td>6</td><td>3</td><td>3</td><td>6</td><td>5</td><td>6</td><td></td><td>4</td><td>6</td><td>6</td><td>3</td><td>6</td></tr>
+<tr class="past"><td>Wednesday</td><td>7</td><td>4</td><td>4</td><td>7</td><td>6</td><td>7</td><td>1</td><td>5</td><td>7</td><td>7</td><td>4</td><td>7</td></tr>
+<tr class="past"><td>Thursday</td><td>8</td><td>5</td><td>5</td><td>8</td><td>7</td><td>8</td><td>2</td><td>6</td><td>8</td><td>8</td><td>5</td><td>8</td></tr>
+<tr class="past"><td>Friday</td><td>9</td><td>6</td><td>6</td><td>9</td><td>8</td><td>9</td><td>3</td><td>7</td><td>9</td><td>9</td><td>6</td><td>9</td></tr>
+<tr class="past weekend"><td>Saturday</td><td>10</td><td>7</td><td>7</td><td>10</td><td>9</td><td>10</td><td>4</td><td>8</td><td>10</td><td>10</td><td>7</td><td>10</td></tr>
+<tr class="past weekend"><td>Sunday</td><td>11</td><td>8</td><td>8</td><td>11</td><td>10</td><td>11</td><td>5</td><td>9</td><td>11</td><td>11</td><td>8</td><td>11</td></tr>
+<tr class="past"><td>Monday</td><td>12</td><td>9</td><td>9</td><td>12</td><td>11</td><td>12</td><td>6</td><td>10</td><td>12</td><td>12</td><td>9</td><td>12</td></tr>
+<tr class="past"><td>Tuesday</td><td>13</td><td>10</td><td>10</td><td>13</td><td>12</td><td>13</td><td>7</td><td>11</td><td>13</td><td>13</td><td>10</td><td>13</td></tr>
+<tr class="past"><td>Wednesday</td><td>14</td><td>11</td><td>11</td><td>14</td><td>13</td><td>14</td><td>8</td><td>12</td><td>14</td><td>14</td><td>11</td><td>14</td></tr>
+<tr class="past"><td>Thursday</td><td>15</td><td>12</td><td>12</td><td>15</td><td>14</td><td>15</td><td>9</td><td>13</td><td>15</td><td>15</td><td>12</td><td>15</td></tr>
+<tr class="today"><td>Saturday</td><td>17</td><td>14</td><td><span class="day-num">14</span></td><td>17</td><td>16</td><td>17</td><td>11</td><td>15</td><td>17</td><td>17</td><td>14</td><td>17</td></tr>
+<tr class="weekend"><td>Sunday</td><td>18</td><td>15</td><td>15</td><td>18</td><td>17</td><td>18</td><td>12</td><td>16</td><td>18</td><td>18</td><td>15</td><td>18</td></tr>
+<tr><td>Monday</td><td>19</td><td>16</td><td>16</td><td>19</td><td>18</td><td>19</td><td>13</td><td>17</td><td>19</td><td>19</td><td>16</td><td>19</td></tr>
+<tr><td>Tuesday</td><td>20</td><td>17</td><td>17</td><td>20</td><td>19</td><td>20</td><td>14</td><td>18</td><td>20</td><td>20</td><td>17</td><td>20</td></tr>
+<tr><td>Wednesday</td><td>21</td><td>18</td><td>18</td><td>21</td><td>20</td><td>21</td><td>15</td><td>19</td><td>21</td><td>21</td><td>18</td><td>21</td></tr>
+<tr><td>Thursday</td><td>22</td><td>19</td><td>19</td><td>22</td><td>21</td><td>22</td><td>16</td><td>20</td><td>22</td><td>22</td><td>19</td><td>22</td></tr>
+<tr><td>Friday</td><td>23</td><td>20</td><td>20</td><td>23</td><td>22</td><td>23</td><td>17</td><td>21</td><td>23</td><td>23</td><td>20</td><td>23</td></tr>
+<tr class="weekend"><td>Saturday</td><td>24</td><td>21</td><td>21</td><td>24</td><td>23</td><td>24</td><td>18</td><td>22</td><td>24</td><td>24</td><td>21</td><td>24</td></tr>
+<tr class="weekend"><td>Sunday</td><td>25</td><td>22</td><td>22</td><td>25</td><td>24</td><td>25</td><td>19</td><td>23</td><td>25</td><td>25</td><td>22</td><td>25</td></tr>
+<tr><td>Monday</td><td>26</td><td>23</td><td>23</td><td>26</td><td>25</td><td>26</td><td>20</td><td>24</td><td>26</td><td>26</td><td>23</td><td>26</td></tr>
+<tr><td>Tuesday</td><td>27</td><td>24</td><td>24</td><td>27</td><td>26</td><td>27</td><td>21</td><td>25</td><td>27</td><td>27</td><td>24</td><td>27</td></tr>
+<tr><td>Wednesday</td><td>28</td><td>25</td><td>25</td><td>28</td><td>27</td><td>28</td><td>22</td><td>26</td><td>28</td><td>28</td><td>25</td><td>28</td></tr>
+<tr><td>Thursday</td><td>29</td><td>26</td><td>26</td><td>29</td><td>28</td><td>29</td><td>23</td><td>27</td><td>29</td><td>29</td><td>26</td><td>29</td></tr>
+<tr><td>Friday</td><td>30</td><td>27</td><td>27</td><td>30</td><td>29</td><td>30</td><td>24</td><td>28</td><td>30</td><td>30</td><td>27</td><td>30</td></tr>
+<tr class="weekend"><td>Saturday</td><td>31</td><td>28</td><td>28</td><td></td><td>30</td><td></td><td>25</td><td>29</td><td></td><td>31</td><td>28</td><td>31</td></tr>
+</tbody>
+</table>
+
+<!-- FOOTER -->
+<footer class="yp-footer">
+    <span>English</span>
+    <span>© 2021, Craig Parravicini · <a href="#">CC BY-NC-SA</a></span>
+</footer>
+
+<!-- THEME LABEL -->
+<div class="theme-label" id="themeLabel">Ink &amp; Paper</div>
+
+<!-- FLOATING CONTROLS -->
+<div class="floating-controls">
+    <button class="float-btn theme-switch" id="themeSwitch" title="Switch theme">
+        <span id="themeSwitchLabel">N</span>
+    </button>
+    <button class="float-btn dark-toggle" id="darkToggle" title="Toggle dark mode">
+        <i class="fa-solid fa-circle-half-stroke"></i>
+    </button>
+</div>
+
+<script>
+(function() {
+    const body = document.body;
+    const rail = document.getElementById('rail');
+    const railToggle = document.getElementById('railToggle');
+    const darkToggle = document.getElementById('darkToggle');
+    const themeSwitch = document.getElementById('themeSwitch');
+    const themeSwitchLabel = document.getElementById('themeSwitchLabel');
+    const themeLabel = document.getElementById('themeLabel');
+    const ths = document.querySelectorAll('.yp-grid thead th');
+
+    // Month display names per theme
+    const fullMonths = ['', 'January', 'February', 'March', 'April', 'May',
+                        'June', 'July', 'August', 'September', 'October',
+                        'November', 'December'];
+    const shortMonths = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May',
+                         'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    // Day display names per theme  
+    const fullDays = ['Thursday','Friday','Saturday','Sunday','Monday','Tuesday',
+                      'Wednesday','Thursday','Friday','Saturday','Sunday','Monday',
+                      'Tuesday','Wednesday','Thursday','Saturday','Sunday',
+                      'Monday','Tuesday','Wednesday','Thursday','Friday',
+                      'Saturday','Sunday','Monday','Tuesday','Wednesday',
+                      'Thursday','Friday','Saturday'];
+    const shortDays = ['Thu','Fri','Sat','Sun','Mon','Tue','Wed','Thu','Fri',
+                       'Sat','Sun','Mon','Tue','Wed','Thu','Sat','Sun',
+                       'Mon','Tue','Wed','Thu','Fri','Sat','Sun','Mon',
+                       'Tue','Wed','Thu','Fri','Sat'];
+
+    const dayTds = document.querySelectorAll('.yp-grid tbody tr td:first-child');
+
+    function applyThemeLabels() {
+        const isNordic = body.getAttribute('data-theme') === 'nordic';
+        const months = isNordic ? shortMonths : fullMonths;
+        const days = isNordic ? shortDays : fullDays;
+
+        // Update month headers
+        ths.forEach(function(th, i) {
+            if (i > 0 && i < months.length) {
+                th.textContent = months[i];
+            }
+        });
+
+        // Update day labels
+        dayTds.forEach(function(td, i) {
+            if (i < days.length) {
+                td.textContent = days[i];
+            }
+        });
+    }
+
+    // Rail toggle
+    railToggle.addEventListener('click', function() {
+        rail.classList.toggle('open');
+        body.classList.toggle('rail-open');
+    });
+
+    // Close rail when clicking outside
+    document.addEventListener('click', function(e) {
+        if (rail.classList.contains('open') &&
+            !rail.contains(e.target) &&
+            e.target !== railToggle &&
+            !railToggle.contains(e.target)) {
+            rail.classList.remove('open');
+            body.classList.remove('rail-open');
+        }
+    });
+
+    // Dark mode toggle
+    darkToggle.addEventListener('click', function() {
+        body.classList.toggle('dark');
+    });
+
+    // Theme switch
+    themeSwitch.addEventListener('click', function() {
+        const current = body.getAttribute('data-theme');
+        if (current === 'ink') {
+            body.setAttribute('data-theme', 'nordic');
+            themeSwitchLabel.textContent = 'I';
+            themeLabel.innerHTML = 'Nordic Clarity';
+        } else {
+            body.setAttribute('data-theme', 'ink');
+            themeSwitchLabel.textContent = 'N';
+            themeLabel.innerHTML = 'Ink &amp; Paper';
+        }
+        applyThemeLabels();
+    });
+
+    // Initial labels
+    applyThemeLabels();
+})();
+</script>
+
+</body>
+</html>
