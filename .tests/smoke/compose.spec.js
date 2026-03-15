@@ -26,9 +26,8 @@ test('.compose/ fragment directory exists with nested structure (COMP-02)', () =
   // Nested modal fragments (demonstrates nesting — COMP-02)
   const modalDir = path.join(fragmentsDir, 'modals');
   expect(fs.existsSync(modalDir)).toBe(true);
-  const modalFiles = ['entry.html', 'share.html', 'delete.html', 'settings.html',
-                       'register.html', 'signin.html', 'reset-password.html', 'recover-username.html',
-                       'feature.html'];
+  const modalFiles = ['entry.html', 'share.html', 'delete.html',
+                       'auth.html', 'feature.html'];
   for (const f of modalFiles) {
     expect(fs.existsSync(path.join(modalDir, f))).toBe(true);
   }

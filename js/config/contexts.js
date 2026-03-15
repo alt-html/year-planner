@@ -3,6 +3,7 @@ import { LoggerFactory, LoggerCategoryCache, ConfigurableLogger } from 'https://
 import Api from '../service/Api.js';
 import { app } from '../vue/app.js';
 import Application from '../Application.js';
+import AuthProvider from '../service/AuthProvider.js';
 import config from '../config/config.js';
 import Storage  from '../service/Storage.js';
 import StorageLocal  from '../service/StorageLocal.js';
@@ -18,6 +19,7 @@ let loggerFactory = new LoggerFactory(config,loggerCategoryCache,ConfigurableLog
 export default [
     Api,
     Application,
+    AuthProvider,
     Storage,
     StorageLocal,
     StorageRemote,

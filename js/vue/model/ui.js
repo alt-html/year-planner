@@ -1,6 +1,5 @@
 export const uiState = {
     rename : false,
-    changepass : false,
     error : '',
     warning : '',
     modalError : '',

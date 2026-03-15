@@ -1,0 +1,170 @@
+openapi: 3.0.3
+info:
+  title: Year Planner Sync API
+  description: |
+    API contract for synchronising planner data between the Year Planner PWA
+    and a backend service. The frontend authenticates users via federated
+    identity providers (Google, Apple, Microsoft) and passes the provider's
+    ID token as a Bearer token. The backend verifies the token with the
+    provider and manages server-side planner storage.
+  version: 1.0.0
+  contact:
+    name: Craig Parravicini
+  license:
+    name: CC BY-NC-SA 4.0
+    url: https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+servers:
+  - url: http://127.0.0.1:8081
+    description: Local development
+
+security:
+  - bearerAuth: []
+
+paths:
+  /api/planner:
+    get:
+      operationId: syncPull
+      summary: Pull planner data from server
+      description: |
+        Returns the user's planner data, preferences, and identities.
+        The server identifies the user from the Bearer token.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Planner data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncPullResponse'
+        '401':
+          description: Invalid or expired auth token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      operationId: syncPush
+      summary: Push planner data to server
+      description: |
+        Uploads the user's complete local storage state to the server.
+        The server merges or replaces based on timestamps.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncPushRequest'
+      responses:
+        '200':
+          description: Data accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncPushResponse'
+        '401':
+          description: Invalid or expired auth token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      operationId: deleteAccount
+      summary: Delete user account and all data
+      description: |
+        Permanently deletes the user's account and all associated planner data.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Account deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted:
+                    type: boolean
+                    example: true
+        '401':
+          description: Invalid or expired auth token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Federated identity provider token (Google/Apple/Microsoft ID token).
+        The backend verifies the token with the issuing provider.
+
+  schemas:
+    SyncPullResponse:
+      type: object
+      required:
+        - uuid
+        - data
+      properties:
+        uuid:
+          type: string
+          description: Server-assigned user identifier
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        data:
+          type: object
+          description: |
+            Key-value map of planner data. Keys follow the local storage
+            convention: '0' for identities, uid for preferences,
+            'uid-yearM' for planner months (M=1-12), 'uid-year' for
+            last-updated timestamps.
+          additionalProperties: true
+          example:
+            "0": [{"0": 1234567890, "1": "Mozilla/5.0", "2": 1, "3": 0}]
+            "1234567890": {"0": 2026, "1": "en", "2": 0}
+            "1234567890-20261": {"0": 1, "1": "New Year's Day"}
+
+    SyncPushRequest:
+      type: object
+      description: |
+        Complete local storage state as a key-value map. Same key convention
+        as SyncPullResponse.data.
+      additionalProperties: true
+      example:
+        "0": "[{\"0\":1234567890,\"1\":\"Mozilla/5.0\",\"2\":1,\"3\":0}]"
+        "1234567890": "{\"0\":2026,\"1\":\"en\",\"2\":0}"
+
+    SyncPushResponse:
+      type: object
+      properties:
+        accepted:
+          type: boolean
+          example: true
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Machine-readable error code
+          example: "unauthorized"
+        message:
+          type: string
+          description: Human-readable error description
+          example: "Invalid or expired authentication token"

@@ -8,6 +8,7 @@ const model = {
     qualifier : '@alt-html/year-planner/vue/controller',
     logger : null,
     api : null,
+    authProvider : null,
     messages : null,
     storage : null,
     storageLocal : null,

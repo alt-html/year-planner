@@ -17,8 +17,7 @@ export default class Application {
                 lang : urlParam('lang'),
                 theme : urlParam('theme'),
                 name : urlParam('name'),
-                share : urlParam('share'),
-                verify : urlParam('share')
+                share : urlParam('share')
             }
         }
         this.app = app || null;
@@ -66,7 +65,6 @@ export default class Application {
         this.model.planner = this.storage.getPlanner(this.model.uid, this.model.year),
 
         this.storage.setModelFromImportString(this.model.share);
-        this.api.verifyEmailToken(this.url.parameters.verify, this.model);
 
         this.messages[this.model.lang]['label']['name_'+this.model.year] = this.model.name;
     }
