@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup A — Ink &amp; Paper</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MOCKUP A — "INK & PAPER"
+   
+   Design direction: Editorial warmth. The grid is the hero.
+   Nav recedes to a thin utility strip. Warm cream paper 
+   background with ink-dark text. Serif headlines give it 
+   the feel of a well-designed wall calendar you'd actually 
+   hang. Weekend rows have a subtle warm blush instead of 
+   cold aliceblue. Today pops with a saturated amber accent.
+   ============================================================ */
+
+:root {
+    /* Warm neutrals */
+    --paper: #FAF7F2;
+    --paper-alt: #F3EDE4;
+    --ink: #2C2520;
+    --ink-mid: #6B5F54;
+    --ink-light: #A89B8C;
+    
+    /* Accent */
+    --accent: #D4663A;
+    --accent-soft: #F2DDD4;
+    --today: #E8A838;
+    --today-bg: #FFF5E0;
+    
+    /* Weekend */
+    --weekend: #F7F0E8;
+    
+    /* Grid */
+    --border: #E5DDD2;
+    --past: #F0EDE8;
+    
+    /* Entry colours — warm palette */
+    --c2: #F5D0C0; /* warm rose */
+    --c3: #D4EDDA; /* sage */
+    --c4: #D6E4F0; /* sky */
+    --c5: #D0ECE8; /* seafoam */
+    --c6: #F5EFCF; /* butter */
+    --c7: #EDDCF0; /* lavender */
+    --c8: #F5DFC0; /* peach */
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+    font-weight: 400;
+    color: var(--ink);
+    background-color: var(--paper);
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* ---- NAV: thin utility strip, title left, tools right ---- */
+.yp-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.yp-nav-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+}
+
+.yp-nav-title .year {
+    color: var(--accent);
+}
+
+.yp-nav-tools {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.yp-nav-tools button {
+    background: none;
+    border: none;
+    color: var(--ink-light);
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+.yp-nav-tools button:hover {
+    color: var(--ink);
+    background: var(--paper-alt);
+}
+
+.yp-nav-tools .yp-year-select {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 0.9rem;
+    padding: 4px 8px;
+}
+
+/* ---- GRID ---- */
+.yp-grid {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.yp-grid th {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-mid);
+    padding: 12px 6px 8px;
+    border-bottom: 2px solid var(--ink);
+    text-align: left;
+    background: var(--paper);
+    position: sticky;
+    top: 43px;
+    z-index: 10;
+}
+
+.yp-grid th:first-child {
+    color: var(--ink-light);
+    font-weight: 400;
+    font-family: 'Source Sans 3', sans-serif;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.yp-grid td {
+    padding: 3px 6px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+    height: 24px;
+    vertical-align: middle;
+}
+
+.yp-grid td:first-child {
+    color: var(--ink-light);
+    font-size: 0.75rem;
+    font-weight: 300;
+    width: 80px;
+    border-right: 1px solid var(--border);
+}
+
+/* Row states */
+.yp-grid tr.weekend td { background-color: var(--weekend); }
+.yp-grid tr.weekend td:first-child { 
+    color: var(--ink-mid); 
+    font-weight: 400; 
+}
+
+.yp-grid tr.today td { background-color: var(--today-bg); }
+.yp-grid tr.today td:first-child { 
+    color: var(--today);
+    font-weight: 600;
+}
+.yp-grid tr.today td .day-num {
+    background: var(--today);
+    color: white;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.yp-grid tr.past td { background-color: var(--past); }
+.yp-grid tr.past td { color: var(--ink-light); }
+
+/* Entry colours */
+.entry-c2 { background-color: var(--c2) !important; }
+.entry-c3 { background-color: var(--c3) !important; }
+.entry-c4 { background-color: var(--c4) !important; }
+.entry-c5 { background-color: var(--c5) !important; }
+
+/* Entry text */
+.entry-text {
+    font-size: 0.72rem;
+    color: var(--ink-mid);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+/* ---- FOOTER ---- */
+.yp-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    font-size: 0.75rem;
+    color: var(--ink-light);
+    border-top: 1px solid var(--border);
+    background: var(--paper);
+    position: sticky;
+    bottom: 0;
+}
+
+.yp-footer a {
+    color: var(--ink-light);
+    text-decoration: none;
+}
+.yp-footer a:hover {
+    color: var(--accent);
+}
+
+/* ---- DARK MODE ---- */
+body.dark {
+    --paper: #1C1917;
+    --paper-alt: #292524;
+    --ink: #E7E0D8;
+    --ink-mid: #A8A095;
+    --ink-light: #78716C;
+    --accent: #E8875A;
+    --accent-soft: #3D2A20;
+    --today: #E8A838;
+    --today-bg: #332B18;
+    --weekend: #231F1C;
+    --border: #3D3730;
+    --past: #211E1B;
+    --c2: #4A2525;
+    --c3: #1E3A22;
+    --c4: #1E2A3E;
+    --c5: #1A3330;
+    --c6: #333015;
+    --c7: #2E1E35;
+    --c8: #3A2A15;
+}
+
+/* ---- THEME TOGGLE ---- */
+.theme-toggle {
+    position: fixed;
+    bottom: 50px;
+    right: 16px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---- DESIGN RATIONALE ---- */
+.rationale {
+    max-width: 640px;
+    margin: 40px auto;
+    padding: 32px 24px;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--ink-mid);
+}
+.rationale h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.3rem;
+    color: var(--ink);
+    margin-bottom: 16px;
+}
+.rationale ul { padding-left: 20px; }
+.rationale li { margin-bottom: 6px; }
+.rationale strong { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="yp-nav">
+    <div class="yp-nav-title">Year Planner <span class="year">2026</span></div>
+    <div class="yp-nav-tools">
+        <button class="yp-year-select"><i class="fa-solid fa-chevron-left" style="font-size:0.7rem"></i></button>
+        <button class="yp-year-select">2026</button>
+        <button class="yp-year-select"><i class="fa-solid fa-chevron-right" style="font-size:0.7rem"></i></button>
+        <button title="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+        <button title="Menu"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+        <button title="Sign in"><i class="fa-solid fa-right-to-bracket"></i></button>
+    </div>
+</nav>
+
+<!-- GRID (showing Jan–Jun with representative data) -->
+<table class="yp-grid">
+<thead>
+<tr>
+    <th></th>
+    <th>January</th>
+    <th>February</th>
+    <th>March</th>
+    <th>April</th>
+    <th>May</th>
+    <th>June</th>
+    <th>July</th>
+    <th>August</th>
+    <th>September</th>
+    <th>October</th>
+    <th>November</th>
+    <th>December</th>
+</tr>
+</thead>
+<tbody>
+<tr class="past"><td>Thursday</td><td>1</td><td></td><td></td><td>1</td><td></td><td>1</td><td></td><td></td><td>1</td><td>1</td><td></td><td>1</td></tr>
+<tr class="past"><td>Friday</td><td>2</td><td></td><td></td><td>2</td><td>1</td><td>2</td><td></td><td></td><td>2</td><td>2</td><td></td><td>2</td></tr>
+<tr class="past weekend"><td>Saturday</td><td>3</td><td></td><td></td><td>3</td><td>2</td><td>3</td><td></td><td>1</td><td>3</td><td>3</td><td></td><td>3</td></tr>
+<tr class="past weekend"><td>Sunday</td><td>4</td><td>1</td><td>1</td><td>4</td><td>3</td><td>4</td><td></td><td>2</td><td>4</td><td>4</td><td>1</td><td>4</td></tr>
+<tr class="past"><td>Monday</td><td>5</td><td>2</td><td>2</td><td>5</td><td>4</td><td>5</td><td></td><td>3</td><td>5</td><td>5</td><td>2</td><td>5</td></tr>
+<tr class="past"><td>Tuesday</td><td>6</td><td>3</td><td>3</td><td>6</td><td>5</td><td>6</td><td></td><td>4</td><td>6</td><td>6</td><td>3</td><td>6</td></tr>
+<tr class="past"><td>Wednesday</td><td>7</td><td>4</td><td>4</td><td>7</td><td>6</td><td>7</td><td>1</td><td>5</td><td>7</td><td>7</td><td>4</td><td>7</td></tr>
+<tr class="past"><td>Thursday</td><td>8</td><td>5</td><td>5</td><td>8</td><td>7</td><td>8</td><td>2</td><td>6</td><td>8</td><td>8</td><td>5</td><td>8</td></tr>
+<tr class="past"><td>Friday</td><td>9</td><td>6</td><td>6</td><td>9</td><td>8</td><td>9</td><td>3</td><td>7</td><td>9</td><td>9</td><td>6</td><td>9</td></tr>
+<tr class="past weekend"><td>Saturday</td><td>10</td><td>7</td><td>7</td><td>10</td><td>9</td><td>10</td><td>4</td><td>8</td><td>10</td><td>10</td><td>7</td><td>10</td></tr>
+<tr class="past weekend"><td>Sunday</td><td>11</td><td>8</td><td>8</td><td>11</td><td>10</td><td>11</td><td>5</td><td>9</td><td>11</td><td>11</td><td>8</td><td>11</td></tr>
+<tr class="past"><td>Monday</td><td>12</td><td>9</td><td>9</td><td>12</td><td>11</td><td>12</td><td>6</td><td>10</td><td>12</td><td>12</td><td>9</td><td>12</td></tr>
+<tr class="past"><td>Tuesday</td><td>13</td><td>10</td><td>10</td><td>13</td><td>12</td><td>13</td><td>7</td><td>11</td><td>13</td><td>13</td><td>10</td><td>13</td></tr>
+<tr class="past"><td>Wednesday</td><td>14</td><td>11</td><td>11</td><td>14</td><td>13</td><td>14</td><td>8</td><td>12</td><td>14</td><td>14</td><td>11</td><td>14</td></tr>
+<tr class="past"><td>Thursday</td><td>15</td><td>12</td><td>12</td><td>15</td><td>14</td><td>15</td><td>9</td><td>13</td><td>15</td><td>15</td><td>12</td><td>15</td></tr>
+<tr class="today"><td>Friday</td><td>16</td><td>13</td><td>13</td><td>16</td><td>15</td><td>16</td><td>10</td><td>14</td><td>16</td><td>16</td><td>13</td><td>16</td></tr>
+<tr class="weekend"><td>Saturday</td><td>17</td><td>14</td><td><span class="day-num">14</span></td><td>17</td><td>16</td><td>17</td><td>11</td><td>15</td><td>17</td><td>17</td><td>14</td><td>17</td></tr>
+<tr class="weekend"><td>Sunday</td><td>18</td><td>15</td><td>15</td><td>18</td><td>17</td><td>18</td><td>12</td><td>16</td><td>18</td><td>18</td><td>15</td><td>18</td></tr>
+<tr><td>Monday</td><td>19</td><td>16</td><td>16</td><td>19</td><td>18</td><td>19</td><td>13</td><td>17</td><td>19</td><td>19</td><td>16</td><td>19</td></tr>
+<tr><td>Tuesday</td><td>20</td><td>17</td><td>17</td><td>20</td><td>19</td><td>20</td><td>14</td><td>18</td><td>20</td><td>20</td><td>17</td><td>20</td></tr>
+<tr><td>Wednesday</td><td>21</td><td>18</td><td>18</td><td>21</td><td>20</td><td>21</td><td>15</td><td>19</td><td>21</td><td>21</td><td>18</td><td>21</td></tr>
+<tr><td>Thursday</td><td>22</td><td>19</td><td>19</td><td>22</td><td>21</td><td>22</td><td>16</td><td>20</td><td>22</td><td>22</td><td>19</td><td>22</td></tr>
+<tr><td>Friday</td><td>23</td><td>20</td><td>20</td><td>23</td><td>22</td><td>23</td><td>17</td><td>21</td><td>23</td><td>23</td><td>20</td><td>23</td></tr>
+<tr class="weekend"><td>Saturday</td><td>24</td><td>21</td><td>21</td><td>24</td><td>23</td><td>24</td><td>18</td><td>22</td><td>24</td><td>24</td><td>21</td><td>24</td></tr>
+<tr class="weekend"><td>Sunday</td><td>25</td><td>22</td><td>22</td><td>25</td><td>24</td><td>25</td><td>19</td><td>23</td><td>25</td><td>25</td><td>22</td><td>25</td></tr>
+<tr><td>Monday</td><td>26</td><td>23</td><td>23</td><td>26</td><td>25</td><td>26</td><td>20</td><td>24</td><td>26</td><td>26</td><td>23</td><td>26</td></tr>
+<tr><td>Tuesday</td><td>27</td><td>24</td><td>24</td><td>27</td><td>26</td><td>27</td><td>21</td><td>25</td><td>27</td><td>27</td><td>24</td><td>27</td></tr>
+<tr><td>Wednesday</td><td>28</td><td>25</td><td>25</td><td>28</td><td>27</td><td>28</td><td>22</td><td>26</td><td>28</td><td>28</td><td>25</td><td>28</td></tr>
+<tr><td>Thursday</td><td>29</td><td>26</td><td>26</td><td>29</td><td>28</td><td>29</td><td>23</td><td>27</td><td>29</td><td>29</td><td>26</td><td>29</td></tr>
+<tr><td>Friday</td><td>30</td><td>27</td><td>27</td><td>30</td><td>29</td><td>30</td><td>24</td><td>28</td><td>30</td><td>30</td><td>27</td><td>30</td></tr>
+<tr class="weekend"><td>Saturday</td><td>31</td><td>28</td><td>28</td><td></td><td>30</td><td></td><td>25</td><td>29</td><td></td><td>31</td><td>28</td><td>31</td></tr>
+</tbody>
+</table>
+
+<!-- FOOTER -->
+<footer class="yp-footer">
+    <span>English</span>
+    <span>© 2021, Craig Parravicini · <a href="#">CC BY-NC-SA</a></span>
+</footer>
+
+<button class="theme-toggle" onclick="document.body.classList.toggle('dark')" title="Toggle theme">
+    <i class="fa-solid fa-circle-half-stroke"></i>
+</button>
+
+<!-- DESIGN RATIONALE -->
+<div class="rationale">
+    <h2>A — "Ink &amp; Paper"</h2>
+    <p><strong>Direction:</strong> Editorial warmth. The grid is the hero — everything else recedes.</p>
+    <ul>
+        <li><strong>Typography:</strong> Playfair Display (serif) for headlines and months — gives the feel of a printed wall calendar. Source Sans 3 for body — clean and readable at small sizes.</li>
+        <li><strong>Palette:</strong> Warm cream paper (#FAF7F2) with ink-brown text (#2C2520). Terracotta accent (#D4663A) on the year and interactive highlights. Amber today marker (#E8A838).</li>
+        <li><strong>Nav:</strong> Single thin strip — title + year arrows left, tool icons right. No dropdown menus visible by default. The "Year" dropdown becomes simple chevron arrows. Menu items collapse into a vertical ellipsis.</li>
+        <li><strong>Weekends:</strong> Warm blush (#F7F0E8) instead of cold aliceblue — harmonises with the cream base.</li>
+        <li><strong>Today:</strong> Amber circle on the day number — immediately scannable without overwhelming the grid.</li>
+        <li><strong>Dark mode:</strong> Stone-dark (#1C1917) with warm grey text — cozy, not clinical.</li>
+    </ul>
+</div>
+
+</body>
+</html>

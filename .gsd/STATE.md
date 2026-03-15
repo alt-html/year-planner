@@ -1,22 +1,19 @@
 # GSD State
 
-**Active Milestone:** M004 complete — all milestones done
-**Active Slice:** none
-**Phase:** complete
+**Active Milestone:** M005 — UI/UX Design Research
+**Active Slice:** S01 complete — awaiting user selection
+**Phase:** review
 
 ## Milestone Registry
 - ✅ **M001:** Migration
 - ✅ **M002:** JS Modularisation
 - ✅ **M003:** Storage Modernisation
 - ✅ **M004:** Auth & API Contract
-
-## Recent Decisions
-- Lazy SDK loading for federated auth providers
-- OpenAPI spec as single source of truth for API contract
-- Bearer JWT from provider tokens (not custom session)
+- 🔄 **M005:** UI/UX Design Research
 
 ## Blockers
-- None
+- User must select a design direction from the 3 mockups
 
 ## Next Action
-Squash-merge gsd/M004/S01 to main. All 4 milestones complete.
+User reviews mockups/A-ink-and-paper.html, B-nordic-clarity.html, C-verdant-studio.html.
+Pick a direction (or hybrid) for implementation in M006.
