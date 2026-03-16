@@ -28,6 +28,10 @@
     --c6: #333015;
     --c7: #2E1E35;
     --c8: #3A2A15;
+
+    --btn-save-bg: #C49A38;
+    --btn-save-hover: #D4A840;
+    --btn-save-text: #1C1917;
 }
 
 /* Crisp & Clear dark */
@@ -54,6 +58,10 @@
     --c6: #35331A;
     --c7: #2A1A3A;
     --c8: #3A2A18;
+
+    --btn-save-bg: #9B6DFF;
+    --btn-save-hover: #A87DFF;
+    --btn-save-text: #FFFFFF;
 }
 
 /* ---- Element overrides for Bootstrap / jQuery components in dark mode ---- */

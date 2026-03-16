@@ -49,6 +49,11 @@
     --th-size: 0.9rem;
     --today-radius: 50%;
     --grid-td-size: 0.8rem;
+
+    /* Modal action button — warm leather/saddle */
+    --btn-save-bg: #8B6914;
+    --btn-save-hover: #7A5B0E;
+    --btn-save-text: #FFFDF5;
 }
 
 /* ---- THEME B: Crisp & Clear ---- */
@@ -91,6 +96,11 @@
     --th-size: 0.8rem;
     --today-radius: 6px;
     --grid-td-size: 0.78rem;
+
+    /* Modal action button — Figma-inspired violet */
+    --btn-save-bg: #A259FF;
+    --btn-save-hover: #9141E8;
+    --btn-save-text: #FFFFFF;
 }
 
 /* ---- RESPONSIVE CONTAINER ---- */
@@ -815,131 +825,250 @@ a.navbar-brand {
     display: none;
 }
 
-/* ---- ENTRY MODAL — theme-aware styling ---- */
-.modal-content {
-    background-color: var(--surface);
+/* ============================================================
+   ENTRY MODAL — "the writing surface IS the modal"
+   No card chrome. Textarea is the hero. Date is a whisper.
+   Colour dots are ink-well choices. Actions are minimal.
+   ============================================================ */
+
+/* Override Bootstrap modal-content to remove all card styling */
+.yp-entry-modal.modal-content {
+    background: var(--bg);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.18), 0 0 0 1px var(--border);
+    padding: 0;
+    overflow: hidden;
+}
+
+.yp-entry-modal .modal-header,
+.yp-entry-modal .modal-body,
+.yp-entry-modal .modal-footer {
+    display: none; /* suppress any Bootstrap defaults if structure leaks */
+}
+
+/* Date label — quiet typographic whisper */
+.yp-entry-date {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 0;
+}
+
+.yp-entry-date span {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--text-light);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.yp-entry-close {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 4px;
+    transition: color 0.12s, background 0.12s;
+    line-height: 1;
+}
+
+.yp-entry-close:hover {
+    color: var(--text);
+    background: var(--border);
+}
+
+/* Textarea — the hero */
+.yp-entry-text {
+    display: block;
+    width: calc(100% - 40px);
+    margin: 10px 20px 0;
+    padding: 12px 14px;
+    min-height: 110px;
+    resize: vertical;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+.yp-entry-text:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+}
+
+.yp-entry-text::placeholder {
+    color: var(--text-light);
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* Tools row — dots + actions on one line */
+.yp-entry-tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px 16px;
+    gap: 12px;
+}
+
+/* Colour dots — circular ink-well swatches */
+.yp-colour-dots {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.yp-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.12s, box-shadow 0.12s;
+    background: none;
+}
+
+.yp-dot:hover {
+    transform: scale(1.25);
+    box-shadow: 0 1px 5px rgba(0,0,0,0.15);
+}
+
+.yp-dot-clear  { background-color: var(--surface); }
+.yp-dot-c1     { background-color: var(--weekend); border-color: transparent; }
+.yp-dot-c2     { background-color: var(--c2); border-color: transparent; }
+.yp-dot-c3     { background-color: var(--c3); border-color: transparent; }
+.yp-dot-c4     { background-color: var(--c4); border-color: transparent; }
+.yp-dot-c5     { background-color: var(--c5); border-color: transparent; }
+.yp-dot-c6     { background-color: var(--c6); border-color: transparent; }
+.yp-dot-c7     { background-color: var(--c7); border-color: transparent; }
+.yp-dot-c8     { background-color: var(--c8); border-color: transparent; }
+
+/* Separator between dots and spread actions */
+.yp-dot-sep {
+    width: 1px;
+    height: 14px;
+    background: var(--border);
+    margin: 0 3px;
+}
+
+/* Spread-to-week / spread-to-month mini-actions */
+.yp-dot-action {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 0.78rem;
+    padding: 3px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: color 0.12s, background 0.12s;
+}
+
+.yp-dot-action:hover {
+    color: var(--text-mid);
+    background: var(--border);
+}
+
+/* Action buttons — right side */
+.yp-entry-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.yp-action-dismiss {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: color 0.12s, background 0.12s;
+}
+
+.yp-action-dismiss:hover {
+    color: var(--text);
+    background: var(--border);
+}
+
+/* Save button — theme-specific personality */
+.yp-action-save {
+    background: var(--btn-save-bg);
+    color: var(--btn-save-text);
+    border: none;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    padding: 7px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+}
+
+.yp-action-save:hover {
+    background: var(--btn-save-hover);
+    transform: translateY(-1px);
+}
+
+.yp-action-save:active {
+    transform: translateY(0);
+}
+
+/* Textarea inherits cell colour when one is set */
+.yp-entry-text.yp-cell-c0 { background-color: var(--surface); }
+.yp-entry-text.yp-cell-c1 { background-color: var(--weekend); }
+.yp-entry-text.yp-cell-c2 { background-color: var(--c2); }
+.yp-entry-text.yp-cell-c3 { background-color: var(--c3); }
+.yp-entry-text.yp-cell-c4 { background-color: var(--c4); }
+.yp-entry-text.yp-cell-c5 { background-color: var(--c5); }
+.yp-entry-text.yp-cell-c6 { background-color: var(--c6); }
+.yp-entry-text.yp-cell-c7 { background-color: var(--c7); }
+.yp-entry-text.yp-cell-c8 { background-color: var(--c8); }
+
+/* Non-entry modals (share, delete, auth, feature) — keep simple themed */
+#shareModal .modal-content,
+#deleteModal .modal-content,
+#authModal .modal-content,
+#featureModal .modal-content {
+    background: var(--surface);
     color: var(--text);
     border: 1px solid var(--border);
     border-radius: 10px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.18);
 }
 
-.modal-header {
+#shareModal .modal-header,
+#deleteModal .modal-header,
+#authModal .modal-header,
+#featureModal .modal-header {
     border-bottom: 1px solid var(--border);
-    padding: 14px 20px;
 }
 
-.modal-title {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1.05rem;
-    color: var(--text);
-}
-
-.modal-body {
-    padding: 16px 20px;
-}
-
-.modal-body .form-control {
-    background-color: var(--bg);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    transition: border-color 0.15s;
-}
-
-.modal-body .form-control:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 2px rgba(var(--accent), 0.15);
-    outline: none;
-}
-
-.modal-body .form-control::placeholder {
-    color: var(--text-light);
-}
-
-.modal-footer {
+#shareModal .modal-footer,
+#deleteModal .modal-footer,
+#authModal .modal-footer,
+#featureModal .modal-footer {
     border-top: 1px solid var(--border);
-    padding: 12px 20px;
 }
 
-.modal-footer .btn-secondary {
-    background-color: var(--bg);
-    color: var(--text-mid);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    transition: all 0.12s;
-}
-
-.modal-footer .btn-secondary:hover {
-    background-color: var(--border);
-    color: var(--text);
-}
-
-.modal-footer .btn-primary {
-    background-color: var(--accent);
-    color: #FFFFFF;
-    border: 1px solid var(--accent);
-    border-radius: 6px;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    transition: all 0.12s;
-}
-
-.modal-footer .btn-primary:hover {
-    opacity: 0.9;
-}
-
-.modal .close {
-    color: var(--text-light);
-    text-shadow: none;
-    opacity: 0.6;
-    font-size: 1.3rem;
-}
-
-.modal .close:hover {
-    color: var(--text);
-    opacity: 1;
-}
-
-/* Colour swatch buttons in entry modal */
-.form-select-button {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-    margin-top: 8px;
-}
-
-.form-select-button .btn {
-    width: 30px;
-    height: 26px;
-    padding: 0;
-    border-radius: 5px;
-    border: 1px solid var(--border);
-    transition: transform 0.1s, box-shadow 0.1s;
-}
-
-.form-select-button .btn:hover {
-    transform: scale(1.15);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-.form-select-button .btn.yp-cell-c0 {
-    background-color: var(--surface);
-}
-
-.form-select-button .btn:last-child,
-.form-select-button .btn:nth-last-child(2) {
-    border: 1px solid var(--border);
-    background-color: var(--bg);
-    color: var(--text-light);
-    font-size: 0.72rem;
-    width: auto;
-    padding: 0 6px;
+#deleteModal .btn-primary,
+#authModal .btn-primary {
+    background-color: var(--btn-save-bg);
+    border-color: var(--btn-save-bg);
+    color: var(--btn-save-text);
 }
 
 #spinner {
