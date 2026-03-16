@@ -95,7 +95,7 @@
     --c8: #3A2A15;
 }
 
-/* ---- CSS CUSTOM PROPERTIES: THEME B (Nordic Clarity) ---- */
+/* ---- CSS CUSTOM PROPERTIES: THEME B (Crisp Clarity) ---- */
 [data-theme="nordic"] {
     --font-display: 'DM Sans', -apple-system, sans-serif;
     --font-body: 'DM Sans', -apple-system, sans-serif;
@@ -416,11 +416,15 @@ body {
     width: 76px;
 }
 
-/* Nordic theme: first header cell gets dark bg too */
+/* Crisp Clarity theme: first header cell gets dark bg too */
 [data-theme="nordic"] .yp-grid th:first-child {
     color: var(--th-color);
     background: var(--th-bg);
     opacity: 0.6;
+}
+
+[data-theme="nordic"] .yp-grid td {
+    font-size: 0.78rem;
 }
 
 .yp-grid td {
@@ -737,7 +741,7 @@ body {
         if (current === 'ink') {
             body.setAttribute('data-theme', 'nordic');
             themeSwitchLabel.textContent = 'I';
-            themeLabel.innerHTML = 'Nordic Clarity';
+            themeLabel.innerHTML = 'Crisp Clarity';
         } else {
             body.setAttribute('data-theme', 'ink');
             themeSwitchLabel.textContent = 'N';
