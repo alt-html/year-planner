@@ -14,16 +14,22 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel='stylesheet' id='google-font-css'  href='https://fonts.googleapis.com/css?family=Roboto%3A300%2C400%2C600%7CRoboto&#038;ver=1.0' type='text/css' media='all' />
+
+    <!-- Fonts: Ink & Paper (Playfair + Source Sans) and Crisp & Clear (DM Sans + JetBrains Mono) -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Sans+3:wght@300;400;600&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/yp-dark.css">
     <link rel="stylesheet" href="./css/typeaheadjs.css">
 
     <title>Year Planner</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-          integrity="sha384-nRgPTkuX86pH8yjPJUAFuASXQSSl2/bBUiNV47vSYpKFxHJhbcrGnmlYpYJMeD7a"
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.2/src/regular/style.css"
           crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.2/src/light/style.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+
     <script src="https://cdn.jsdelivr.net/npm/vue@3.5.30/dist/vue.global.prod.js"
             integrity="sha384-vCgvGgU4V24AR6BHDZDH2f+muEekzRVoiu4vtvCdSR6z1N61Z1rTC9lKdgZIVk6P"
             crossorigin="anonymous"></script>
@@ -34,6 +40,40 @@
 
 </head>
 <body>
+    <!-- HIDDEN LEFT ICON RAIL (outside #app — plain JS, no Vue) -->
+    <nav class="yp-rail" id="rail">
+        <div class="yp-rail-logo">YP</div>
+        <button class="active" title="Calendar"><i class="ph ph-calendar-dots"></i></button>
+        <button title="Share" id="railShareBtn"><i class="ph ph-share-network"></i></button>
+        <div class="yp-rail-spacer"></div>
+        <div class="yp-rail-bottom">
+            <button title="Language"><i class="ph ph-globe-simple"></i></button>
+            <button title="Menu" id="railMenuBtn"><i class="ph ph-gear-six"></i></button>
+            <button title="Sign in" id="railSigninBtn"><i class="ph ph-sign-in"></i></button>
+            <div class="yp-rail-divider"></div>
+            <button class="rail-theme-toggle" id="themeToggleBtn" title="Switch theme">
+                <i class="ph ph-ruler" id="themeSwitchIconRuler"></i>
+                <i class="ph ph-feather" id="themeSwitchIconFeather" style="display:none"></i>
+            </button>
+            <button id="railDarkToggle" title="Toggle dark mode"><i class="ph ph-sun-dim"></i></button>
+        </div>
+    </nav>
+
+    <!-- RAIL TOGGLE (left-side circle) -->
+    <button class="rail-toggle" id="railToggle" title="Menu">
+        <i class="ph ph-caret-right"></i>
+        <i class="ph ph-caret-left"></i>
+    </button>
+
+    <!-- THEME LABEL (top-right indicator) -->
+    <div class="theme-label" id="themeLabel">Ink &amp; Paper</div>
+
+    <!-- FLOATING DARK MODE TOGGLE -->
+    <div class="floating-controls">
+        <button class="float-btn" id="darkToggle" title="Toggle dark mode">
+            <i class="ph ph-sun-dim"></i>
+        </button>
+    </div>
     <div id="app"  v-bind:class="{'yp-dark':theme=='dark'}">
 
         <div class="text-light text-center pt-5" v-bind:class="{'d-none':loaded}" >
@@ -49,7 +89,7 @@
             <form id="rename" class="form-inline" >
                 <div class="input-group"><input id="title" maxlength="64" class="form-control form-control-sm" type="text" v-bind:placeholder="$t('label.untitled')" aria-label="Name" v-model="name" v-on:keyup="" v-on:focusout="renamePlanner()">
                     <div class="input-group-append">
-                        <button class="navbar-brand navbar-brand-support btn btn-outline-secondary py-0 my-0" type="button" v-on:click="renamePlanner()" ><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i></button>
+                        <button class="navbar-brand navbar-brand-support btn btn-outline-secondary py-0 my-0" type="button" v-on:click="renamePlanner()" ><i class="ph ph-floppy-disk" aria-hidden="true"></i></button>
 
                     </div>
                 </div>
@@ -66,7 +106,6 @@
                         <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear-1}" v-bind:href="'/?uid='+uid+'&year='+(cyear-1)+'&lang='+lang+'&theme='+theme">{{cyear-1}}</a>
                         <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear}" v-bind:href="'/?uid='+uid+'&year='+cyear+'&lang='+lang+'&theme='+theme">{{cyear}}</a>
                         <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear+1}" v-bind:href="'/?uid='+uid+'&year='+(cyear+1)+'&lang='+lang+'&theme='+theme">{{cyear+1}}</a>
-<!--                        <div class="dropdown-divider"></div>-->
                         <form class="nav-form px-4 py-3 pb-0">
                             <div class="form-group form-group-sm">
                                 <label for="nyear" class="sr-only">Email address</label>
@@ -104,13 +143,12 @@
                 <!--suppress HtmlUnknownTag -->
                 <form class="form-inline my-0 ">
 
-                    <button class="navbar-brand navbar-brand-support btn btn-secondary my-0  d-none d-sm-inline" type="button" v-on:click="sharePlanner()" data-toggle="tooltip" data-placement="bottom" v-bind:title="$t('label.share')"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i></button>
                     <div  class="btn-group">
                           <button type="button" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa-solid fa-bars"></i>
+                            <i class="ph ph-list"></i>
                           </button>
                           <div class="nav-settings dropdown-menu dropdown-menu-right">
-                                <a  class="dropdown-item d-sm-none" href="#" v-on:click="sharePlanner()">{{$t('label.share')}}…</a>
+                                <a  class="dropdown-item" href="#" v-on:click="sharePlanner()">{{$t('label.share')}}…</a>
                                 <a  class="dropdown-item" href="#" v-on:click="showRenamePlanner()">{{$t('label.rename')}}</a>
                                 <a  class="dropdown-item" href="#" v-on:click="createPlanner()">{{$t('label.new')}}</a>
                                 <a  class="dropdown-item" href="#"  data-toggle="modal" data-target="#deleteModal">{{$t('label.delete')}}…</a>
@@ -123,9 +161,6 @@
                                 <a v-if="feature.signin && signedin" class="dropdown-item" href="#" v-on:click="signout()">{{$t('label.signout')}}…</a>
                           </div>
                         </div>
-                        <button v-if="feature.signin && !signedin" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="showSignin()"  data-toggle="tooltip" data-placement="bottom" v-bind:title="$t('label.signin')"><i class="fa-solid fa-right-to-bracket"></i></button>
-                        <button v-if="feature.signin && signedin" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0 " type="button" v-on:click="signout()"  data-toggle="tooltip" data-placement="bottom" v-bind:title="$t('label.signout')"><i class="fa-solid fa-right-from-bracket"></i></button>
-                        <button v-if="!feature.signin" id="no-feature-button" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" type="button" >&nbsp;</button>
                </form>
 
             </span>
@@ -243,8 +278,8 @@
                                 <button type="button" class="btn yp-cell-c6 yp-cell-btn" v-on:click="updateEntry(month,day,entry,entryType,6,true)">&nbsp;</button>
                                 <button type="button" class="btn yp-cell-c7 yp-cell-btn" v-on:click="updateEntry(month,day,entry,entryType,7,true)">&nbsp;</button>
                                 <button type="button" class="btn yp-cell-c8 yp-cell-btn" v-on:click="updateEntry(month,day,entry,entryType,8,true)">&nbsp;</button>
-                                <button type="button" class="btn yp-cell-c0 px-2" v-on:click="updateWeekColour(month,day,entryColour,0)"><i class="fa-solid fa-forward-step"></i></button>
-                                <button type="button" class="btn yp-cell-c0 px-2" v-on:click="updateMonthColour(month,day,entryColour)"><i class="fa-solid fa-forward-fast"></i></button>
+                                <button type="button" class="btn yp-cell-c0 px-2" v-on:click="updateWeekColour(month,day,entryColour,0)"><i class="ph ph-skip-forward"></i></button>
+                                <button type="button" class="btn yp-cell-c0 px-2" v-on:click="updateMonthColour(month,day,entryColour)"><i class="ph ph-fast-forward"></i></button>
                             </div>
                         </form>
                     </div>
@@ -320,13 +355,13 @@
                         </div>
                         <div class="d-grid gap-2">
                             <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('google')">
-                                <i class="fa-brands fa-google me-2"></i> Sign in with Google
+                                <i class="ph ph-google-logo me-2"></i> Sign in with Google
                             </button>
                             <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('apple')">
-                                <i class="fa-brands fa-apple me-2"></i> Sign in with Apple
+                                <i class="ph ph-apple-logo me-2"></i> Sign in with Apple
                             </button>
                             <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('microsoft')">
-                                <i class="fa-brands fa-microsoft me-2"></i> Sign in with Microsoft
+                                <i class="ph ph-microsoft-outlook-logo me-2"></i> Sign in with Microsoft
                             </button>
                         </div>
                     </div>
@@ -395,9 +430,9 @@
 
                     <div class="col-10">
 
-                        <div id="footer-text-right" class="text-muted text-right">© 2021, C<span class="d-none d-sm-inline">raig</span><span class="d-sm-none">.</span><span data-toggle="modal" data-target="#featureModal">&nbsp;</span>Parravicini&nbsp;&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
-                            <i class="fa-brands fa-creative-commons"></i>-<i class="fa-brands fa-creative-commons-by"></i>-<i class="fa-brands fa-creative-commons-sa"></i>
-                        </a>&nbsp;&nbsp; <a href="https://github.com/alt-html/year-planner" target="_blank"><i class="fa-brands fa-github"></i><span class="d-none d-sm-inline">&nbsp;README.md</span></a>
+                        <div id="footer-text-right" class="text-muted text-right">© 2021, C<span class="d-none d-sm-inline">raig</span><span class="d-sm-none">.</span><span data-toggle="modal" data-target="#featureModal">&nbsp;</span>Parravicini&nbsp;&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" style="display:inline-flex;align-items:center;gap:2px;">
+                            <svg class="cc-icon" viewBox="0 0 24 24"><path d="M11.983 0c-3.292 0-6.19 1.217-8.428 3.485C1.25 5.819 0 8.844 0 12c0 3.189 1.217 6.148 3.522 8.45C5.827 22.75 8.822 24 11.983 24c3.16 0 6.222-1.25 8.593-3.583C22.815 18.214 24 15.287 24 12c0-3.255-1.186-6.214-3.458-8.483C18.238 1.217 15.275 0 11.983 0zm.033 2.17c2.7 0 5.103 1.02 6.98 2.893 1.843 1.841 2.83 4.274 2.83 6.937 0 2.696-.954 5.063-2.798 6.872-1.943 1.906-4.444 2.926-7.012 2.926-2.601 0-5.038-1.019-6.914-2.893-1.877-1.875-2.93-4.34-2.93-6.905 0-2.597 1.053-5.063 2.93-6.97 1.844-1.874 4.214-2.86 6.914-2.86zM8.68 8.278C6.723 8.278 5.165 9.66 5.165 12c0 2.38 1.465 3.722 3.581 3.722 1.358 0 2.516-.744 3.155-1.874l-1.491-.758c-.333.798-.839 1.037-1.478 1.037-1.105 0-1.61-.917-1.61-2.126 0-1.21.426-2.127 1.61-2.127.32 0 .96.173 1.332.97l1.597-.838c-.68-1.236-1.837-1.728-3.181-1.728zm6.932 0c-1.957 0-3.514 1.382-3.514 3.722 0 2.38 1.464 3.722 3.58 3.722 1.359 0 2.516-.744 3.155-1.874l-1.49-.758c-.333.798-.84 1.037-1.478 1.037-1.105 0-1.611-.917-1.611-2.126 0-1.21.426-2.127 1.61-2.127.32 0 .96.173 1.332.97l1.597-.838c-.68-1.236-1.837-1.728-3.181-1.728z"/></svg><svg class="cc-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 3a3 3 0 100 6 3 3 0 000-6zm-4.5 8.5c0-1.5 2-2.5 4.5-2.5s4.5 1 4.5 2.5V17h-9v-3.5z"/></svg><svg class="cc-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm-2.5 5.5L7 12l2.5 4.5h2L9 12l2.5-4.5h-2zm5 0L12 12l2.5 4.5h2L14 12l2.5-4.5h-2z"/></svg>
+                        </a>&nbsp;&nbsp; <a href="https://github.com/alt-html/year-planner" target="_blank"><i class="ph ph-github-logo"></i><span class="d-none d-sm-inline">&nbsp;README.md</span></a>
                         </div>
                     </div>
                 </div>
@@ -415,6 +450,111 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
     <script  type="module" src="./js/main.js"></script>
+
+    <!-- Rail toggle & style theme switching -->
+    <script>
+    (function() {
+        var rail = document.getElementById('rail');
+        var railToggle = document.getElementById('railToggle');
+        var darkToggle = document.getElementById('darkToggle');
+        var railDarkToggle = document.getElementById('railDarkToggle');
+        var themeLabel = document.getElementById('themeLabel');
+        var iconRuler = document.getElementById('themeSwitchIconRuler');
+        var iconFeather = document.getElementById('themeSwitchIconFeather');
+        var app = document.getElementById('app');
+
+        // Restore style theme from localStorage
+        var savedStyleTheme = localStorage.getItem('style_theme') || 'ink';
+        if (app) app.setAttribute('data-theme', savedStyleTheme);
+        applyThemeLabel(savedStyleTheme);
+
+        function applyThemeLabel(theme) {
+            if (theme === 'nordic') {
+                if (themeLabel) themeLabel.innerHTML = 'Crisp &amp; Clear';
+                if (iconRuler) iconRuler.style.display = 'none';
+                if (iconFeather) iconFeather.style.display = 'inline';
+            } else {
+                if (themeLabel) themeLabel.innerHTML = 'Ink &amp; Paper';
+                if (iconRuler) iconRuler.style.display = 'inline';
+                if (iconFeather) iconFeather.style.display = 'none';
+            }
+        }
+
+        // Expose toggleStyleTheme for Vue v-on:click
+        window.toggleStyleTheme = function() {
+            var current = app.getAttribute('data-theme');
+            var next = current === 'ink' ? 'nordic' : 'ink';
+            app.setAttribute('data-theme', next);
+            localStorage.setItem('style_theme', next);
+            applyThemeLabel(next);
+        };
+
+        // Expose toggleDarkFromRail for Vue v-on:click
+        window.toggleDarkFromRail = function() {
+            if (darkToggle) darkToggle.click();
+        };
+
+        // Rail toggle
+        if (railToggle) {
+            railToggle.addEventListener('click', function() {
+                rail.classList.toggle('open');
+                document.body.classList.toggle('rail-open');
+            });
+        }
+
+        // Close rail when clicking outside
+        document.addEventListener('click', function(e) {
+            if (rail && rail.classList.contains('open') &&
+                !rail.contains(e.target) &&
+                e.target !== railToggle &&
+                !railToggle.contains(e.target)) {
+                rail.classList.remove('open');
+                document.body.classList.remove('rail-open');
+            }
+        });
+
+        // Floating dark mode toggle — navigate with theme param
+        function doDarkToggle() {
+            var params = new URLSearchParams(window.location.search);
+            var current = params.get('theme') || 'light';
+            var next = current === 'dark' ? 'light' : 'dark';
+            params.set('theme', next);
+            window.location.search = params.toString();
+        }
+        if (darkToggle) darkToggle.addEventListener('click', doDarkToggle);
+        if (railDarkToggle) railDarkToggle.addEventListener('click', doDarkToggle);
+
+        // Theme toggle
+        var themeToggleBtn = document.getElementById('themeToggleBtn');
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function() {
+                var current = app ? app.getAttribute('data-theme') : 'ink';
+                var next = current === 'ink' ? 'nordic' : 'ink';
+                if (app) app.setAttribute('data-theme', next);
+                localStorage.setItem('style_theme', next);
+                applyThemeLabel(next);
+            });
+        }
+
+        // Rail share button → trigger share in app
+        var railShareBtn = document.getElementById('railShareBtn');
+        if (railShareBtn) {
+            railShareBtn.addEventListener('click', function() {
+                var shareBtn = document.querySelector('.navbar-brand-support[data-toggle="tooltip"]');
+                if (shareBtn) shareBtn.click();
+            });
+        }
+
+        // Rail menu button → open the nav dropdown
+        var railMenuBtn = document.getElementById('railMenuBtn');
+        if (railMenuBtn) {
+            railMenuBtn.addEventListener('click', function() {
+                var menuBtn = document.querySelector('.nav-settings').closest('.btn-group').querySelector('button');
+                if (menuBtn) menuBtn.click();
+            });
+        }
+    })();
+    </script>
 
 </body>
 </html>

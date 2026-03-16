@@ -1,0 +1,34 @@
+    <!-- HIDDEN LEFT ICON RAIL (outside #app — plain JS, no Vue) -->
+    <nav class="yp-rail" id="rail">
+        <div class="yp-rail-logo">YP</div>
+        <button class="active" title="Calendar"><i class="ph ph-calendar-dots"></i></button>
+        <button title="Share" id="railShareBtn"><i class="ph ph-share-network"></i></button>
+        <div class="yp-rail-spacer"></div>
+        <div class="yp-rail-bottom">
+            <button title="Language"><i class="ph ph-globe-simple"></i></button>
+            <button title="Menu" id="railMenuBtn"><i class="ph ph-gear-six"></i></button>
+            <button title="Sign in" id="railSigninBtn"><i class="ph ph-sign-in"></i></button>
+            <div class="yp-rail-divider"></div>
+            <button class="rail-theme-toggle" id="themeToggleBtn" title="Switch theme">
+                <i class="ph ph-ruler" id="themeSwitchIconRuler"></i>
+                <i class="ph ph-feather" id="themeSwitchIconFeather" style="display:none"></i>
+            </button>
+            <button id="railDarkToggle" title="Toggle dark mode"><i class="ph ph-sun-dim"></i></button>
+        </div>
+    </nav>
+
+    <!-- RAIL TOGGLE (left-side circle) -->
+    <button class="rail-toggle" id="railToggle" title="Menu">
+        <i class="ph ph-caret-right"></i>
+        <i class="ph ph-caret-left"></i>
+    </button>
+
+    <!-- THEME LABEL (top-right indicator) -->
+    <div class="theme-label" id="themeLabel">Ink &amp; Paper</div>
+
+    <!-- FLOATING DARK MODE TOGGLE -->
+    <div class="floating-controls">
+        <button class="float-btn" id="darkToggle" title="Toggle dark mode">
+            <i class="ph ph-sun-dim"></i>
+        </button>
+    </div>

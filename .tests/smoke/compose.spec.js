@@ -18,7 +18,7 @@ test('.compose/ fragment directory exists with nested structure (COMP-02)', () =
   expect(fs.existsSync(fragmentsDir)).toBe(true);
 
   // Top-level fragments
-  const topFiles = ['head.html', 'spinner.html', 'nav.html', 'grid.html', 'modals.html', 'footer.html', 'scripts.html'];
+  const topFiles = ['head.html', 'spinner.html', 'rail.html', 'nav.html', 'grid.html', 'modals.html', 'footer.html', 'scripts.html'];
   for (const f of topFiles) {
     expect(fs.existsSync(path.join(fragmentsDir, f))).toBe(true);
   }

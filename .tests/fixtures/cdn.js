@@ -41,10 +41,8 @@ const test = base.extend({
     await page.route('**/bootstrap/4.3.1/css/bootstrap.min.css', localFile('bootstrap.min.css', 'text/css'));
     // 9. Google Fonts — empty stub
     await page.route('**/fonts.googleapis.com/**', (route) => route.fulfill({ status: 200, body: '', contentType: 'text/css' }));
-    // 10. FontAwesome 6.7.2 CSS from cdnjs — serve local fixture
-    await page.route('**/font-awesome/6.7.2/css/all.min.css', localFile('fontawesome.min.css', 'text/css'));
-    // 11. FontAwesome webfonts — empty stub (tests don't need actual fonts)
-    await page.route('**/font-awesome/**', (route) => route.fulfill({ status: 200, body: '', contentType: 'text/css' }));
+    // 10. Phosphor Icons CSS — empty stub (tests don't need actual icon fonts)
+    await page.route('**/phosphor-icons/**', (route) => route.fulfill({ status: 200, body: '', contentType: 'text/css' }));
 
     await use(page);
   },

@@ -6,3 +6,108 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
     <script  type="module" src="./js/main.js"></script>
+
+    <!-- Rail toggle & style theme switching -->
+    <script>
+    (function() {
+        var rail = document.getElementById('rail');
+        var railToggle = document.getElementById('railToggle');
+        var darkToggle = document.getElementById('darkToggle');
+        var railDarkToggle = document.getElementById('railDarkToggle');
+        var themeLabel = document.getElementById('themeLabel');
+        var iconRuler = document.getElementById('themeSwitchIconRuler');
+        var iconFeather = document.getElementById('themeSwitchIconFeather');
+        var app = document.getElementById('app');
+
+        // Restore style theme from localStorage
+        var savedStyleTheme = localStorage.getItem('style_theme') || 'ink';
+        if (app) app.setAttribute('data-theme', savedStyleTheme);
+        applyThemeLabel(savedStyleTheme);
+
+        function applyThemeLabel(theme) {
+            if (theme === 'nordic') {
+                if (themeLabel) themeLabel.innerHTML = 'Crisp &amp; Clear';
+                if (iconRuler) iconRuler.style.display = 'none';
+                if (iconFeather) iconFeather.style.display = 'inline';
+            } else {
+                if (themeLabel) themeLabel.innerHTML = 'Ink &amp; Paper';
+                if (iconRuler) iconRuler.style.display = 'inline';
+                if (iconFeather) iconFeather.style.display = 'none';
+            }
+        }
+
+        // Expose toggleStyleTheme for Vue v-on:click
+        window.toggleStyleTheme = function() {
+            var current = app.getAttribute('data-theme');
+            var next = current === 'ink' ? 'nordic' : 'ink';
+            app.setAttribute('data-theme', next);
+            localStorage.setItem('style_theme', next);
+            applyThemeLabel(next);
+        };
+
+        // Expose toggleDarkFromRail for Vue v-on:click
+        window.toggleDarkFromRail = function() {
+            if (darkToggle) darkToggle.click();
+        };
+
+        // Rail toggle
+        if (railToggle) {
+            railToggle.addEventListener('click', function() {
+                rail.classList.toggle('open');
+                document.body.classList.toggle('rail-open');
+            });
+        }
+
+        // Close rail when clicking outside
+        document.addEventListener('click', function(e) {
+            if (rail && rail.classList.contains('open') &&
+                !rail.contains(e.target) &&
+                e.target !== railToggle &&
+                !railToggle.contains(e.target)) {
+                rail.classList.remove('open');
+                document.body.classList.remove('rail-open');
+            }
+        });
+
+        // Floating dark mode toggle — navigate with theme param
+        function doDarkToggle() {
+            var params = new URLSearchParams(window.location.search);
+            var current = params.get('theme') || 'light';
+            var next = current === 'dark' ? 'light' : 'dark';
+            params.set('theme', next);
+            window.location.search = params.toString();
+        }
+        if (darkToggle) darkToggle.addEventListener('click', doDarkToggle);
+        if (railDarkToggle) railDarkToggle.addEventListener('click', doDarkToggle);
+
+        // Theme toggle
+        var themeToggleBtn = document.getElementById('themeToggleBtn');
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function() {
+                var current = app ? app.getAttribute('data-theme') : 'ink';
+                var next = current === 'ink' ? 'nordic' : 'ink';
+                if (app) app.setAttribute('data-theme', next);
+                localStorage.setItem('style_theme', next);
+                applyThemeLabel(next);
+            });
+        }
+
+        // Rail share button → trigger share in app
+        var railShareBtn = document.getElementById('railShareBtn');
+        if (railShareBtn) {
+            railShareBtn.addEventListener('click', function() {
+                var shareBtn = document.querySelector('.navbar-brand-support[data-toggle="tooltip"]');
+                if (shareBtn) shareBtn.click();
+            });
+        }
+
+        // Rail menu button → open the nav dropdown
+        var railMenuBtn = document.getElementById('railMenuBtn');
+        if (railMenuBtn) {
+            railMenuBtn.addEventListener('click', function() {
+                var menuBtn = document.querySelector('.nav-settings').closest('.btn-group').querySelector('button');
+                if (menuBtn) menuBtn.click();
+            });
+        }
+    })();
+    </script>
