@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Icon Set Comparison</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Font Awesome 6 (current) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<!-- Phosphor Icons (web font) -->
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.2/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.2/src/light/style.css">
+
+<!-- Tabler Icons (web font) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.40.0/dist/tabler-icons.min.css">
+
+<!-- Lucide (inline SVG via JS) -->
+<script src="https://unpkg.com/lucide@0.577.0/dist/umd/lucide.min.js"></script>
+
+<style>
+:root {
+    --bg: #F8F9FB;
+    --surface: #FFFFFF;
+    --text: #1A1D23;
+    --text-mid: #5A6070;
+    --text-light: #9CA3B0;
+    --border: #E8EAF0;
+    --accent: #2563EB;
+    --green: #16A34A;
+    --amber: #D97706;
+    --red: #DC2626;
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 32px 24px;
+    line-height: 1.5;
+}
+
+h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: var(--text-mid);
+    font-size: 0.9rem;
+    margin-bottom: 32px;
+}
+
+/* ---- COMPARISON GRID ---- */
+.comparison {
+    display: grid;
+    grid-template-columns: 140px repeat(3, 1fr);
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.comp-header {
+    background: var(--text);
+    color: white;
+    padding: 14px 16px;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+}
+
+.comp-header.label-col {
+    display: flex;
+    align-items: flex-end;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+}
+
+.comp-header .version {
+    display: block;
+    font-weight: 400;
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 2px;
+}
+
+.comp-header .license {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 0.62rem;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.comp-row-label {
+    padding: 10px 16px;
+    font-size: 0.78rem;
+    color: var(--text-mid);
+    font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    background: #FAFBFC;
+}
+
+.comp-cell {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--text);
+    min-height: 44px;
+}
+
+.comp-cell .icon-name {
+    font-size: 0.62rem;
+    color: var(--text-light);
+    display: block;
+    text-align: center;
+    margin-top: 4px;
+}
+
+.comp-cell-wrap {
+    text-align: center;
+}
+
+/* Lucide SVGs */
+.comp-cell [data-lucide] {
+    width: 20px;
+    height: 20px;
+    stroke: var(--text);
+    stroke-width: 2;
+}
+
+/* Section headers */
+.section-label {
+    grid-column: 1 / -1;
+    padding: 8px 16px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    background: #F3F4F6;
+    border-bottom: 1px solid var(--border);
+}
+
+/* ---- INFO CARDS ---- */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card .tag {
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tag-mit { background: #DCFCE7; color: #166534; }
+.tag-isc { background: #DBEAFE; color: #1E40AF; }
+
+.card ul {
+    list-style: none;
+    padding: 0;
+    font-size: 0.8rem;
+    color: var(--text-mid);
+}
+
+.card li {
+    padding: 3px 0;
+}
+
+.card li::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--text-light);
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.pro { color: var(--green); }
+.con { color: var(--red); }
+.neutral { color: var(--amber); }
+
+.card .summary {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--text-mid);
+    font-style: italic;
+}
+
+/* ---- BRAND NOTE ---- */
+.brand-note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    margin-bottom: 24px;
+}
+
+.brand-note strong {
+    color: var(--text);
+}
+</style>
+</head>
+<body>
+
+<h1>Icon Set Comparison</h1>
+<p class="subtitle">Three open-source alternatives to Font Awesome, showing every icon used in the Year Planner.</p>
+
+<!-- ICON COMPARISON GRID -->
+<div class="comparison">
+    <!-- Headers -->
+    <div class="comp-header label-col">Function</div>
+    <div class="comp-header">
+        Lucide
+        <span class="version">v0.577 · 1,703 icons</span>
+        <span class="license tag-isc">ISC License</span>
+    </div>
+    <div class="comp-header">
+        Phosphor
+        <span class="version">v2.1 · 9,072 icons (6 weights)</span>
+        <span class="license tag-mit">MIT License</span>
+    </div>
+    <div class="comp-header">
+        Tabler
+        <span class="version">v3.40 · 6,050 icons</span>
+        <span class="license tag-mit">MIT License</span>
+    </div>
+
+    <!-- NAV & CHROME -->
+    <div class="section-label">Navigation &amp; Chrome</div>
+
+    <div class="comp-row-label">Menu</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="menu"></i><span class="icon-name">menu</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-list"></i><span class="icon-name">ph-list</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-menu-2"></i><span class="icon-name">ti-menu-2</span></div></div>
+
+    <div class="comp-row-label">Chevron Left</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="chevron-left"></i><span class="icon-name">chevron-left</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-caret-left"></i><span class="icon-name">ph-caret-left</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-chevron-left"></i><span class="icon-name">ti-chevron-left</span></div></div>
+
+    <div class="comp-row-label">Chevron Right</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="chevron-right"></i><span class="icon-name">chevron-right</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-caret-right"></i><span class="icon-name">ph-caret-right</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-chevron-right"></i><span class="icon-name">ti-chevron-right</span></div></div>
+
+    <div class="comp-row-label">Calendar</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="calendar-days"></i><span class="icon-name">calendar-days</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-calendar-dots"></i><span class="icon-name">ph-calendar-dots</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-calendar"></i><span class="icon-name">ti-calendar</span></div></div>
+
+    <div class="comp-row-label">Globe / Language</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="globe"></i><span class="icon-name">globe</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-globe-simple"></i><span class="icon-name">ph-globe-simple</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-world"></i><span class="icon-name">ti-world</span></div></div>
+
+    <div class="comp-row-label">Settings / Gear</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="settings"></i><span class="icon-name">settings</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-gear-six"></i><span class="icon-name">ph-gear-six</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-settings"></i><span class="icon-name">ti-settings</span></div></div>
+
+    <!-- ACTIONS -->
+    <div class="section-label">Actions</div>
+
+    <div class="comp-row-label">Sign In</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="log-in"></i><span class="icon-name">log-in</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-sign-in"></i><span class="icon-name">ph-sign-in</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-login"></i><span class="icon-name">ti-login</span></div></div>
+
+    <div class="comp-row-label">Sign Out</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="log-out"></i><span class="icon-name">log-out</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-sign-out"></i><span class="icon-name">ph-sign-out</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-logout"></i><span class="icon-name">ti-logout</span></div></div>
+
+    <div class="comp-row-label">Share</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="share-2"></i><span class="icon-name">share-2</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-share-network"></i><span class="icon-name">ph-share-network</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-share"></i><span class="icon-name">ti-share</span></div></div>
+
+    <div class="comp-row-label">Upload / Export</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="upload"></i><span class="icon-name">upload</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-upload-simple"></i><span class="icon-name">ph-upload-simple</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-upload"></i><span class="icon-name">ti-upload</span></div></div>
+
+    <div class="comp-row-label">Import</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="download"></i><span class="icon-name">download</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-download-simple"></i><span class="icon-name">ph-download-simple</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-download"></i><span class="icon-name">ti-download</span></div></div>
+
+    <div class="comp-row-label">Edit / Pencil</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="pencil"></i><span class="icon-name">pencil</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-pencil-simple"></i><span class="icon-name">ph-pencil-simple</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-pencil"></i><span class="icon-name">ti-pencil</span></div></div>
+
+    <div class="comp-row-label">Save / Floppy</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="save"></i><span class="icon-name">save</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-floppy-disk"></i><span class="icon-name">ph-floppy-disk</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-device-floppy"></i><span class="icon-name">ti-device-floppy</span></div></div>
+
+    <div class="comp-row-label">Send</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="send"></i><span class="icon-name">send</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-paper-plane-tilt"></i><span class="icon-name">ph-paper-plane-tilt</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-send"></i><span class="icon-name">ti-send</span></div></div>
+
+    <!-- TOGGLE / STATE -->
+    <div class="section-label">Toggle &amp; State</div>
+
+    <div class="comp-row-label">Eye (show)</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="eye"></i><span class="icon-name">eye</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-eye"></i><span class="icon-name">ph-eye</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-eye"></i><span class="icon-name">ti-eye</span></div></div>
+
+    <div class="comp-row-label">Eye Off (hide)</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="eye-off"></i><span class="icon-name">eye-off</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-eye-slash"></i><span class="icon-name">ph-eye-slash</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-eye-off"></i><span class="icon-name">ti-eye-off</span></div></div>
+
+    <div class="comp-row-label">Dark Mode</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="sun-moon"></i><span class="icon-name">sun-moon</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-sun-dim"></i><span class="icon-name">ph-sun-dim</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-sun-moon"></i><span class="icon-name">ti-sun-moon</span></div></div>
+
+    <!-- YEAR NAVIGATION -->
+    <div class="section-label">Year Navigation</div>
+
+    <div class="comp-row-label">Step Forward</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="skip-forward"></i><span class="icon-name">skip-forward</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-skip-forward"></i><span class="icon-name">ph-skip-forward</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-player-skip-forward"></i><span class="icon-name">ti-player-skip-forward</span></div></div>
+
+    <div class="comp-row-label">Fast Forward</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="fast-forward"></i><span class="icon-name">fast-forward</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-fast-forward"></i><span class="icon-name">ph-fast-forward</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-player-track-next"></i><span class="icon-name">ti-player-track-next</span></div></div>
+
+    <!-- BRAND ICONS -->
+    <div class="section-label">Brand Icons</div>
+
+    <div class="comp-row-label">GitHub</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="github"></i><span class="icon-name">github</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-github-logo"></i><span class="icon-name">ph-github-logo</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-brand-github"></i><span class="icon-name">ti-brand-github</span></div></div>
+
+    <div class="comp-row-label">Google</div>
+    <div class="comp-cell"><div class="comp-cell-wrap">—<span class="icon-name">none</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-google-logo"></i><span class="icon-name">ph-google-logo</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-brand-google"></i><span class="icon-name">ti-brand-google</span></div></div>
+
+    <div class="comp-row-label">Apple</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="apple"></i><span class="icon-name">apple</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-apple-logo"></i><span class="icon-name">ph-apple-logo</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-brand-apple"></i><span class="icon-name">ti-brand-apple</span></div></div>
+
+    <div class="comp-row-label">Microsoft</div>
+    <div class="comp-cell"><div class="comp-cell-wrap">—<span class="icon-name">none</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-microsoft-outlook-logo"></i><span class="icon-name">ph-outlook</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-brand-windows"></i><span class="icon-name">ti-brand-windows</span></div></div>
+
+    <div class="comp-row-label">Creative Commons</div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i data-lucide="creative-commons"></i><span class="icon-name">creative-commons</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ph ph-copyright"></i><span class="icon-name">ph-copyright ⚠</span></div></div>
+    <div class="comp-cell"><div class="comp-cell-wrap"><i class="ti ti-creative-commons"></i><span class="icon-name">ti-creative-commons</span></div></div>
+</div>
+
+<!-- INFO CARDS -->
+<div class="cards">
+    <div class="card">
+        <h3>Lucide <span class="tag tag-isc">ISC</span></h3>
+        <ul>
+            <li class="pro">Feather fork — lightest stroke style, extremely clean</li>
+            <li class="pro">Inline SVG — no font files, pixel-perfect at any size</li>
+            <li class="pro">1,703 icons — curated, not bloated</li>
+            <li class="pro">Active community (forked Feather when it stalled)</li>
+            <li class="pro">ISC license — maximally permissive, no attribution required</li>
+            <li class="neutral">Smallest set — may lack niche icons</li>
+            <li class="con">No Google/Microsoft brand icons — need inline SVGs or a supplement</li>
+            <li class="con">JS-based rendering (createIcons) — not a CSS font class</li>
+        </ul>
+        <div class="summary">Best for: the "Ink & Paper" theme. Thin elegant strokes match the editorial feel. The lightest visual weight of the three.</div>
+    </div>
+
+    <div class="card">
+        <h3>Phosphor <span class="tag tag-mit">MIT</span></h3>
+        <ul>
+            <li class="pro">6 weight variants per icon (thin, light, regular, bold, fill, duotone)</li>
+            <li class="pro">9,072 icons — broadest coverage including many brands</li>
+            <li class="pro">CSS font classes — drop-in replacement for Font Awesome workflow</li>
+            <li class="pro">MIT license — no freemium upsell, fully open</li>
+            <li class="pro">Consistent rounded style — friendly but professional</li>
+            <li class="neutral">Slightly rounded aesthetic — softer than Lucide/Tabler</li>
+            <li class="con">Web font files are ~300KB (regular weight)</li>
+            <li class="con">Microsoft brand icon limited to Outlook — no Windows logo</li>
+        </ul>
+        <div class="summary">Best for: both themes. Weight variants let you use "light" for Ink & Paper and "regular" for Crisp & Clear from the same set.</div>
+    </div>
+
+    <div class="card">
+        <h3>Tabler <span class="tag tag-mit">MIT</span></h3>
+        <ul>
+            <li class="pro">6,050 icons — comprehensive including all needed brands</li>
+            <li class="pro">CSS font classes — easiest migration from Font Awesome</li>
+            <li class="pro">MIT license — fully open, no upsell on icons themselves</li>
+            <li class="pro">Consistent 1.5px stroke — crisp and technical feel</li>
+            <li class="pro">Full brand icon coverage (Google, Apple, Microsoft, GitHub, CC)</li>
+            <li class="neutral">Tabler sells templates/illustrations separately (icons are fully free)</li>
+            <li class="con">Single stroke weight — no thin/light/bold variants</li>
+            <li class="con">Web font is ~600KB</li>
+        </ul>
+        <div class="summary">Best for: the "Crisp & Clear" theme. Technical, precise strokes match the IDE/tool aesthetic. Easiest 1:1 migration from Font Awesome.</div>
+    </div>
+</div>
+
+<div class="brand-note">
+    <strong>Note on brand icons:</strong> All three sets include GitHub, Apple, and Creative Commons. For Google and Microsoft logos,
+    Phosphor and Tabler have coverage. Lucide intentionally excludes most brand marks — you'd supplement with inline SVGs from
+    <a href="https://simpleicons.org">Simple Icons</a> (CC0 license, 3,200+ brand marks) or keep Font Awesome Brands as a small supplement.
+</div>
+
+<script>
+    // Initialise Lucide inline SVGs
+    lucide.createIcons();
+</script>
+
+</body>
+</html>
