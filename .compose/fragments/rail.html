@@ -1,7 +1,7 @@
     <!-- HIDDEN LEFT ICON RAIL (outside #app — plain JS, no Vue) -->
     <nav class="yp-rail" id="rail">
         <div class="yp-rail-logo">YP</div>
-        <button class="active" title="Calendar"><i class="ph ph-calendar-dots"></i></button>
+        <button class="active" title="Calendar" id="railCalendarBtn"><i class="ph ph-calendar-dots"></i></button>
         <button title="Share" id="railShareBtn"><i class="ph ph-share-network"></i></button>
         <div class="yp-rail-spacer"></div>
         <div class="yp-rail-bottom">
@@ -15,6 +15,30 @@
             </button>
             <button id="railDarkToggle" title="Toggle dark mode"><i class="ph ph-sun-dim"></i></button>
         </div>
+
+        <!-- Calendar flyout (overlays to the right, rail stays same width) -->
+        <div class="rail-flyout" id="railCalendarFlyout">
+            <div class="rail-flyout-section">
+                <a class="rail-flyout-item" href="#January">January</a>
+                <a class="rail-flyout-item" href="#February">February</a>
+                <a class="rail-flyout-item" href="#March">March</a>
+                <a class="rail-flyout-item" href="#April">April</a>
+                <a class="rail-flyout-item" href="#May">May</a>
+                <a class="rail-flyout-item" href="#June">June</a>
+                <a class="rail-flyout-item" href="#July">July</a>
+                <a class="rail-flyout-item" href="#August">August</a>
+                <a class="rail-flyout-item" href="#September">September</a>
+                <a class="rail-flyout-item" href="#October">October</a>
+                <a class="rail-flyout-item" href="#November">November</a>
+                <a class="rail-flyout-item" href="#December">December</a>
+            </div>
+            <div class="rail-flyout-divider"></div>
+            <a class="rail-flyout-item" href="#today">Today</a>
+            <div class="rail-flyout-divider"></div>
+            <div class="rail-flyout-section">
+                <input type="text" maxlength="4" class="rail-flyout-input" id="railYearInput" placeholder="Year…">
+            </div>
+        </div>
     </nav>
 
     <!-- RAIL TOGGLE (left-side circle) -->
@@ -23,8 +47,8 @@
         <i class="ph ph-caret-left"></i>
     </button>
 
-    <!-- THEME LABEL (top-right indicator) -->
-    <div class="theme-label" id="themeLabel">Ink &amp; Paper</div>
+    <!-- THEME LABEL (hidden — replaced by nav label) -->
+    <div class="theme-label" id="themeLabel"></div>
 
     <!-- FLOATING DARK MODE TOGGLE -->
     <div class="floating-controls">

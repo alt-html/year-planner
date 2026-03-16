@@ -6,53 +6,18 @@
                 <div class="input-group"><input id="title" maxlength="64" class="form-control form-control-sm" type="text" v-bind:placeholder="$t('label.untitled')" aria-label="Name" v-model="name" v-on:keyup="" v-on:focusout="renamePlanner()">
                     <div class="input-group-append">
                         <button class="navbar-brand navbar-brand-support btn btn-outline-secondary py-0 my-0" type="button" v-on:click="renamePlanner()" ><i class="ph ph-floppy-disk" aria-hidden="true"></i></button>
-
                     </div>
                 </div>
             </form>
 
-            <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="collapse navbar-collapse" id="navbarCollapse"></div>
 
+            <!-- Year chevron navigation (mockup style) -->
+            <div class="yp-nav-year">
+                <a class="yp-nav-year-btn" v-bind:href="'/?uid='+uid+'&year='+(year-1)+'&lang='+lang+'&theme='+theme" title="Previous year"><i class="ph ph-caret-left"></i></a>
+                <span class="yp-nav-year-btn current">{{year}}</span>
+                <a class="yp-nav-year-btn" v-bind:href="'/?uid='+uid+'&year='+(year+1)+'&lang='+lang+'&theme='+theme" title="Next year"><i class="ph ph-caret-right"></i></a>
             </div>
-
-            <ul class="nav">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{$t('label.year')}}</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear-1}" v-bind:href="'/?uid='+uid+'&year='+(cyear-1)+'&lang='+lang+'&theme='+theme">{{cyear-1}}</a>
-                        <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear}" v-bind:href="'/?uid='+uid+'&year='+cyear+'&lang='+lang+'&theme='+theme">{{cyear}}</a>
-                        <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':year==cyear+1}" v-bind:href="'/?uid='+uid+'&year='+(cyear+1)+'&lang='+lang+'&theme='+theme">{{cyear+1}}</a>
-                        <form class="nav-form px-4 py-3 pb-0">
-                            <div class="form-group form-group-sm">
-                                <label for="nyear" class="sr-only">Email address</label>
-                                <input type="text" maxlength=4 class="form-control form-control-sm" id="nyear" v-model="nyear" v-on:focusout="navigateToYear()" v-bind:placeholder="$t('label.year')">
-                            </div>
-                        </form>
-                        <div class="dropdown-divider"></div>
-                        <template v-if="Object.keys(getPlannerYears()).length > 1 || getPlannerYears() && getPlannerYears()[uid]?.length > 1 ">
-                            <template v-for="p in Object.keys(getPlannerYears())">
-                            <a v-if="!(uid == p && parseInt(y) == year)" v-for="y in getPlannerYears()[p]" class="dropdown-item" v-bind:href="'/?uid='+p+'&year='+y+'&lang='+lang+'&theme='+theme">{{getPlannerNameByUidYear(p,y)||$t('label.yearplanner')+' '+DateTime.local(parseInt(y), 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
-                            </template>
-                            <div class="dropdown-divider"></div>
-                        </template>
-                        <a class="dropdown-item" href="#January" >{{$t('month.January')}}</a>
-                        <a class="dropdown-item" href="#February" >{{$t('month.February')}}</a>
-                        <a class="dropdown-item" href="#March" >{{$t('month.March')}}</a>
-                        <a class="dropdown-item" href="#April" >{{$t('month.April')}}</a>
-                        <a class="dropdown-item" href="#May" >{{$t('month.May')}}</a>
-                        <a class="dropdown-item" href="#June" >{{$t('month.June')}}</a>
-                        <a class="dropdown-item" href="#July" >{{$t('month.July')}}</a>
-                        <a class="dropdown-item" href="#August" >{{$t('month.August')}}</a>
-                        <a class="dropdown-item" href="#September" >{{$t('month.September')}}</a>
-                        <a class="dropdown-item" href="#October" >{{$t('month.October')}}</a>
-                        <a class="dropdown-item" href="#November" >{{$t('month.November')}}</a>
-                        <a class="dropdown-item" href="#December" >{{$t('month.December')}}</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#today" >{{$t('label.today')}}</a>
-
-                    </div>
-                </li>
-            </ul>
 
             <!-- Theme label in nav (right-aligned) -->
             <span class="nav-theme-label" id="navThemeLabel">Ink &amp; Paper</span>

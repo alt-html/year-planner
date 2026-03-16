@@ -186,6 +186,44 @@ a.navbar-brand {
     box-shadow: none;
 }
 
+/* Year chevron navigation */
+.yp-nav-year {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 8px;
+}
+
+.yp-nav-year-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 0.75rem;
+    transition: all 0.12s;
+    font-family: var(--font-body);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.yp-nav-year-btn:hover {
+    color: var(--text);
+    background: var(--border);
+    text-decoration: none;
+}
+
+.yp-nav-year-btn.current {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.85rem;
+    padding: 4px 6px;
+    cursor: default;
+}
+
 /* Theme label inside the nav (right-aligned) */
 .nav-theme-label {
     font-size: 0.65rem;
@@ -209,10 +247,6 @@ a.navbar-brand {
     opacity: 0;
 }
 
-.nav .dropdown-menu {
-    font-size: .8rem;
-}
-
 .nav-settings {
     min-width: 100px !important;
 }
@@ -220,11 +254,6 @@ a.navbar-brand {
 .nav-settings .dropdown-item {
     font-size: .8rem;
     left: 1rem;
-}
-
-.nav-form {
-    padding-top: 0px !important;
-    padding-bottom: 0px !important;
 }
 
 #rename {
@@ -322,6 +351,77 @@ a.navbar-brand {
     background: var(--rail-active-bg) !important;
     color: var(--rail-text-hover) !important;
     border: 1px solid rgba(255,255,255,0.15) !important;
+}
+
+/* ---- RAIL FLYOUT (calendar/month panel) ---- */
+.rail-flyout {
+    position: absolute;
+    left: 48px;
+    top: 40px;
+    width: 140px;
+    background: var(--rail-bg);
+    border-radius: 0 8px 8px 0;
+    padding: 8px 0;
+    box-shadow: 4px 2px 12px rgba(0,0,0,0.25);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-8px);
+    transition: opacity 0.15s, transform 0.15s;
+    z-index: 310;
+}
+
+.rail-flyout.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+.rail-flyout-item {
+    display: block;
+    padding: 5px 14px;
+    color: var(--rail-text);
+    font-size: 0.78rem;
+    text-decoration: none;
+    transition: all 0.1s;
+    font-family: var(--font-body);
+}
+
+.rail-flyout-item:hover {
+    color: var(--rail-text-hover);
+    background: var(--rail-active-bg);
+    text-decoration: none;
+}
+
+.rail-flyout-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 6px 12px;
+}
+
+.rail-flyout-input {
+    width: calc(100% - 24px);
+    margin: 2px 12px;
+    padding: 4px 8px;
+    font-size: 0.78rem;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    color: var(--rail-text-hover);
+    font-family: var(--font-body);
+    outline: none;
+}
+
+.rail-flyout-input::placeholder {
+    color: var(--rail-text);
+}
+
+.rail-flyout-input:focus {
+    border-color: var(--accent);
+}
+
+.yp-rail button.flyout-active {
+    color: var(--rail-text-hover);
+    background: var(--rail-active-bg);
 }
 
 /* ---- RAIL TOGGLE (left-side circle) ---- */
@@ -710,9 +810,136 @@ a.navbar-brand {
     box-shadow: 0 3px 12px rgba(0,0,0,0.2);
 }
 
-/* ---- THEME LABEL (fixed top-right overlay — hidden when nav label is visible) ---- */
+/* ---- THEME LABEL (hidden — replaced by nav label) ---- */
 .theme-label {
     display: none;
+}
+
+/* ---- ENTRY MODAL — theme-aware styling ---- */
+.modal-content {
+    background-color: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+}
+
+.modal-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--text);
+}
+
+.modal-body {
+    padding: 16px 20px;
+}
+
+.modal-body .form-control {
+    background-color: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    transition: border-color 0.15s;
+}
+
+.modal-body .form-control:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(var(--accent), 0.15);
+    outline: none;
+}
+
+.modal-body .form-control::placeholder {
+    color: var(--text-light);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border);
+    padding: 12px 20px;
+}
+
+.modal-footer .btn-secondary {
+    background-color: var(--bg);
+    color: var(--text-mid);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    transition: all 0.12s;
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: var(--border);
+    color: var(--text);
+}
+
+.modal-footer .btn-primary {
+    background-color: var(--accent);
+    color: #FFFFFF;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    transition: all 0.12s;
+}
+
+.modal-footer .btn-primary:hover {
+    opacity: 0.9;
+}
+
+.modal .close {
+    color: var(--text-light);
+    text-shadow: none;
+    opacity: 0.6;
+    font-size: 1.3rem;
+}
+
+.modal .close:hover {
+    color: var(--text);
+    opacity: 1;
+}
+
+/* Colour swatch buttons in entry modal */
+.form-select-button {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.form-select-button .btn {
+    width: 30px;
+    height: 26px;
+    padding: 0;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.form-select-button .btn:hover {
+    transform: scale(1.15);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.form-select-button .btn.yp-cell-c0 {
+    background-color: var(--surface);
+}
+
+.form-select-button .btn:last-child,
+.form-select-button .btn:nth-last-child(2) {
+    border: 1px solid var(--border);
+    background-color: var(--bg);
+    color: var(--text-light);
+    font-size: 0.72rem;
+    width: auto;
+    padding: 0 6px;
 }
 
 #spinner {
