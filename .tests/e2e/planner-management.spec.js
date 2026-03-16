@@ -16,14 +16,15 @@ test('planner management: create, rename, switch, delete (E2E-03)', async ({ pag
   const originalUrl = page.url();
 
   // --- Create a new planner (triggers full-page navigation) ---
-  await page.click('button:has(.ph.ph-list)');
+  // Menu button is visually hidden (accessible from rail); toggle dropdown via jQuery
+  await page.evaluate(() => { $('.nav-settings').closest('.btn-group').find('[data-toggle="dropdown"]').dropdown('toggle'); });
   await page.click('.nav-settings .dropdown-item:has-text("New")');
   await page.waitForSelector('[data-app-ready]');
   // Verify navigation actually occurred
   expect(page.url()).not.toBe(originalUrl);
 
   // --- Rename the new planner (does NOT navigate) ---
-  await page.click('button:has(.ph.ph-list)');
+  await page.evaluate(() => { $('.nav-settings').closest('.btn-group').find('[data-toggle="dropdown"]').dropdown('toggle'); });
   await page.click('.nav-settings .dropdown-item:has-text("Rename")');
   await page.waitForSelector('#rename', { state: 'visible' });
   // Use fill() to set the DOM value then dispatch input event to trigger Vue v-model
@@ -58,7 +59,7 @@ test('planner management: create, rename, switch, delete (E2E-03)', async ({ pag
   await page.waitForSelector('[data-app-ready]');
 
   // --- Delete "My Test Planner" (triggers full-page navigation + location.reload()) ---
-  await page.click('button:has(.ph.ph-list)');
+  await page.evaluate(() => { $('.nav-settings').closest('.btn-group').find('[data-toggle="dropdown"]').dropdown('toggle'); });
   await page.click('.nav-settings [data-target="#deleteModal"]');
   await page.waitForSelector('#deleteModal.show');
   // deletePlannerByYear does window.location.href then location.reload() — two navigations.

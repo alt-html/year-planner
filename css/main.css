@@ -1,7 +1,9 @@
 /* ============================================================
    YEAR PLANNER — MAIN STYLESHEET
-   Two themes via CSS custom properties: Ink & Paper / Crisp & Clear
-   Dark mode via .yp-dark class on #app
+   Two themes via CSS custom properties on <body>:
+     Ink & Paper  (data-theme="ink")
+     Crisp & Clear (data-theme="nordic")
+   Dark mode via .yp-dark class on <body>
    ============================================================ */
 
 @media print { @page {size: auto !important} }
@@ -164,10 +166,6 @@ input[type=number] {
     padding-bottom: 0;
 }
 
-.navbar-brand .year-accent {
-    color: var(--accent);
-}
-
 a.navbar-brand {
     color: var(--text) !important;
     text-decoration: none;
@@ -188,29 +186,27 @@ a.navbar-brand {
     box-shadow: none;
 }
 
-.yp-nav-year-btn {
-    background: none;
-    border: none;
-    color: var(--text-light);
-    padding: 5px 8px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 0.75rem;
-    transition: all 0.12s;
-    font-family: var(--font-body);
-}
-
-.yp-nav-year-btn:hover {
-    color: var(--text);
-    background: var(--border);
-}
-
-.yp-nav-year-btn.current {
-    font-family: var(--font-display);
+/* Theme label inside the nav (right-aligned) */
+.nav-theme-label {
+    font-size: 0.65rem;
     font-weight: 600;
-    color: var(--text);
-    font-size: 0.85rem;
-    padding: 5px 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    font-family: var(--font-body);
+    opacity: 0.6;
+    white-space: nowrap;
+    margin-left: auto;
+}
+
+/* Hidden nav-settings trigger: button invisible, dropdown still works */
+.nav-menu-hidden .btn-group > button {
+    width: 0;
+    height: 0;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    opacity: 0;
 }
 
 .nav .dropdown-menu {
@@ -415,6 +411,8 @@ a.navbar-brand {
     color: var(--th-color);
     line-height: 1.2;
     margin-bottom: .2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
 }
 
 .tst-cell {
@@ -428,7 +426,7 @@ a.navbar-brand {
     width: 100%;
     min-width: 95px;
     padding-left: 3px;
-    border-top: 1px;
+    border-top: 2px;
     border-left: 0px;
     border-bottom: 1px;
     border-right: 1px;
@@ -442,7 +440,7 @@ a.navbar-brand {
     width: 100%;
     min-width: 95px;
     padding-left: 3px;
-    border-top: 1px;
+    border-top: 2px;
     border-left: 0px;
     border-bottom: 1px;
     border-right: 0px;
@@ -712,21 +710,9 @@ a.navbar-brand {
     box-shadow: 0 3px 12px rgba(0,0,0,0.2);
 }
 
-/* ---- THEME LABEL (top-right indicator) ---- */
+/* ---- THEME LABEL (fixed top-right overlay — hidden when nav label is visible) ---- */
 .theme-label {
-    position: fixed;
-    top: 8px;
-    right: 16px;
-    font-size: 0.65rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-light);
-    z-index: 150;
-    font-family: var(--font-body);
-    pointer-events: none;
-    opacity: 0.6;
-    transition: opacity 0.3s;
+    display: none;
 }
 
 #spinner {

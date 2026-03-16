@@ -1,9 +1,11 @@
 /* ============================================================
    DARK MODE — overrides CSS custom properties when .yp-dark is active
-   Applied via v-bind:class="{'yp-dark':theme=='dark'}" on #app
+   Applied on <body> via:
+     - lifecycle.js refresh() sets body.classList.add('yp-dark')
+     - scripts.html early-apply reads URL ?theme=dark
    ============================================================ */
 
-/* Ink & Paper dark */
+/* Ink & Paper dark (default when .yp-dark is present) */
 .yp-dark,
 .yp-dark[data-theme="ink"] {
     --bg: #1C1917;
@@ -54,7 +56,8 @@
     --c8: #3A2A18;
 }
 
-/* Dark mode element overrides */
+/* ---- Element overrides for Bootstrap / jQuery components in dark mode ---- */
+
 .yp-dark .dropdown a {
     color: var(--text-mid);
 }
@@ -125,4 +128,8 @@
     color: var(--text-light) !important;
     background-color: var(--surface);
     border-color: var(--surface);
+}
+
+.yp-dark .nav-link {
+    color: var(--text-mid);
 }

@@ -138,11 +138,12 @@
                 </li>
             </ul>
 
-            <span class="text-right">
+            <!-- Theme label in nav (right-aligned) -->
+            <span class="nav-theme-label" id="navThemeLabel">Ink &amp; Paper</span>
 
-                <!--suppress HtmlUnknownTag -->
+            <!-- Hidden nav-settings menu — triggered from rail gear button -->
+            <span class="nav-menu-hidden">
                 <form class="form-inline my-0 ">
-
                     <div  class="btn-group">
                           <button type="button" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="ph ph-list"></i>
@@ -162,7 +163,6 @@
                           </div>
                         </div>
                </form>
-
             </span>
 
         </nav>
@@ -451,54 +451,46 @@
 
     <script  type="module" src="./js/main.js"></script>
 
-    <!-- Rail toggle & style theme switching -->
+    <!-- Rail toggle, style-theme switching, dark-mode early-apply -->
     <script>
     (function() {
+        var body = document.body;
         var rail = document.getElementById('rail');
         var railToggle = document.getElementById('railToggle');
         var darkToggle = document.getElementById('darkToggle');
         var railDarkToggle = document.getElementById('railDarkToggle');
         var themeLabel = document.getElementById('themeLabel');
+        var navThemeLabel = document.getElementById('navThemeLabel');
         var iconRuler = document.getElementById('themeSwitchIconRuler');
         var iconFeather = document.getElementById('themeSwitchIconFeather');
-        var app = document.getElementById('app');
 
-        // Restore style theme from localStorage
+        // ---- Style theme (ink / nordic) on <body> ----
         var savedStyleTheme = localStorage.getItem('style_theme') || 'ink';
-        if (app) app.setAttribute('data-theme', savedStyleTheme);
+        body.setAttribute('data-theme', savedStyleTheme);
         applyThemeLabel(savedStyleTheme);
 
         function applyThemeLabel(theme) {
-            if (theme === 'nordic') {
-                if (themeLabel) themeLabel.innerHTML = 'Crisp &amp; Clear';
-                if (iconRuler) iconRuler.style.display = 'none';
-                if (iconFeather) iconFeather.style.display = 'inline';
-            } else {
-                if (themeLabel) themeLabel.innerHTML = 'Ink &amp; Paper';
-                if (iconRuler) iconRuler.style.display = 'inline';
-                if (iconFeather) iconFeather.style.display = 'none';
-            }
+            var isNordic = theme === 'nordic';
+            var label = isNordic ? 'Crisp &amp; Clear' : 'Ink &amp; Paper';
+            if (themeLabel) themeLabel.innerHTML = label;
+            // navThemeLabel is inside #app — Vue may replace the DOM node, so look it up fresh
+            var navLabel = document.getElementById('navThemeLabel');
+            if (navLabel) navLabel.innerHTML = label;
+            if (iconRuler)  iconRuler.style.display  = isNordic ? 'none'   : 'inline';
+            if (iconFeather) iconFeather.style.display = isNordic ? 'inline' : 'none';
         }
 
-        // Expose toggleStyleTheme for Vue v-on:click
-        window.toggleStyleTheme = function() {
-            var current = app.getAttribute('data-theme');
-            var next = current === 'ink' ? 'nordic' : 'ink';
-            app.setAttribute('data-theme', next);
-            localStorage.setItem('style_theme', next);
-            applyThemeLabel(next);
-        };
+        // ---- Dark mode early-apply from URL ----
+        var params = new URLSearchParams(window.location.search);
+        if (params.get('theme') === 'dark') {
+            body.classList.add('yp-dark');
+        }
 
-        // Expose toggleDarkFromRail for Vue v-on:click
-        window.toggleDarkFromRail = function() {
-            if (darkToggle) darkToggle.click();
-        };
-
-        // Rail toggle
+        // ---- Rail toggle ----
         if (railToggle) {
             railToggle.addEventListener('click', function() {
                 rail.classList.toggle('open');
-                document.body.classList.toggle('rail-open');
+                body.classList.toggle('rail-open');
             });
         }
 
@@ -509,48 +501,52 @@
                 e.target !== railToggle &&
                 !railToggle.contains(e.target)) {
                 rail.classList.remove('open');
-                document.body.classList.remove('rail-open');
+                body.classList.remove('rail-open');
             }
         });
 
-        // Floating dark mode toggle — navigate with theme param
+        // ---- Dark mode toggle (floating + rail) → navigate with theme param ----
         function doDarkToggle() {
-            var params = new URLSearchParams(window.location.search);
-            var current = params.get('theme') || 'light';
+            var p = new URLSearchParams(window.location.search);
+            var current = p.get('theme') || 'light';
             var next = current === 'dark' ? 'light' : 'dark';
-            params.set('theme', next);
-            window.location.search = params.toString();
+            p.set('theme', next);
+            window.location.search = p.toString();
         }
-        if (darkToggle) darkToggle.addEventListener('click', doDarkToggle);
+        if (darkToggle)     darkToggle.addEventListener('click', doDarkToggle);
         if (railDarkToggle) railDarkToggle.addEventListener('click', doDarkToggle);
 
-        // Theme toggle
+        // ---- Style-theme toggle (rail button) ----
         var themeToggleBtn = document.getElementById('themeToggleBtn');
         if (themeToggleBtn) {
             themeToggleBtn.addEventListener('click', function() {
-                var current = app ? app.getAttribute('data-theme') : 'ink';
+                var current = body.getAttribute('data-theme');
                 var next = current === 'ink' ? 'nordic' : 'ink';
-                if (app) app.setAttribute('data-theme', next);
+                body.setAttribute('data-theme', next);
                 localStorage.setItem('style_theme', next);
                 applyThemeLabel(next);
             });
         }
 
-        // Rail share button → trigger share in app
+        // ---- Rail → app bridge buttons ----
         var railShareBtn = document.getElementById('railShareBtn');
         if (railShareBtn) {
             railShareBtn.addEventListener('click', function() {
-                var shareBtn = document.querySelector('.navbar-brand-support[data-toggle="tooltip"]');
-                if (shareBtn) shareBtn.click();
+                // Trigger the Vue sharePlanner method via a hidden helper
+                var brand = document.querySelector('.navbar-brand[data-toggle="tooltip"]');
+                if (brand) brand.click();
             });
         }
 
-        // Rail menu button → open the nav dropdown
+        // Rail gear → open the nav settings dropdown
         var railMenuBtn = document.getElementById('railMenuBtn');
         if (railMenuBtn) {
             railMenuBtn.addEventListener('click', function() {
-                var menuBtn = document.querySelector('.nav-settings').closest('.btn-group').querySelector('button');
-                if (menuBtn) menuBtn.click();
+                var container = document.querySelector('.nav-settings');
+                if (container) {
+                    var btn = container.closest('.btn-group').querySelector('button');
+                    if (btn) btn.click();
+                }
             });
         }
     })();
