@@ -115,11 +115,18 @@
 @media (min-width: 1600px) { .container { max-width: 2600px; } }
 
 /* ---- BASE ---- */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
 body {
     font-family: var(--font-body) !important;
     color: var(--text);
     background-color: var(--bg);
     transition: background 0.3s, color 0.3s;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -134,7 +141,17 @@ input[type=number] {
 }
 
 #app {
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+main.d-block {
+    display: flex !important;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 .container {
@@ -494,8 +511,20 @@ a.navbar-brand {
     padding-left: 0rem;
     padding-right: 0rem;
     padding-top: 2px;
+    padding-bottom: 40px;          /* clearance for fixed footer */
     margin-bottom: 0rem;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
     transition: background 0.3s, margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.jumbotron > .container {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 .yp-anchor {
@@ -510,6 +539,26 @@ a.navbar-brand {
     background-color: transparent;
     border: 0;
     font-variant-numeric: tabular-nums;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* Weekday column and each month column are flex containers so cells fill height */
+#yp-weekdays,
+#yp-months .row.no-gutters > [class*="col"] {
+    display: flex;
+    flex-direction: column;
+}
+
+/* The inner row inside #yp-months must also flex to fill */
+#yp-months {
+    display: flex;
+    flex-direction: column;
+}
+
+#yp-months > .row.no-gutters {
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 #yp-table h5 {
@@ -541,6 +590,7 @@ a.navbar-brand {
     border-style: solid;
     border-color: var(--header-border);
     background-color: var(--th-bg);
+    flex: 0 0 auto;
 }
 
 .yp-header-cell-right {
@@ -554,6 +604,7 @@ a.navbar-brand {
     border-style: solid;
     border-color: var(--header-border);
     background-color: var(--th-bg);
+    flex: 0 0 auto;
 }
 
 .yp-cell {
@@ -568,8 +619,10 @@ a.navbar-brand {
     border-style: solid;
     border-color: var(--border);
     white-space: nowrap;
-    display: inline-block;
     text-overflow: ellipsis !important;
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 .yp-cell-weekend {
@@ -583,6 +636,9 @@ a.navbar-brand {
     background-color: var(--surface);
     padding-left: 3px;
     border: 0;
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 .yp-cell-right {
@@ -596,6 +652,9 @@ a.navbar-brand {
     border-right: 0px;
     border-style: solid;
     border-color: var(--border);
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 /* The -right variant previously existed to suppress the right border on the
@@ -613,6 +672,9 @@ a.navbar-brand {
     border-right: 0px;
     border-style: solid;
     border-color: var(--border);
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
 }
 
 .yp-cell-text {
@@ -643,10 +705,6 @@ a.navbar-brand {
     color: white;
 }
 
-#yp-table-subscript {
-    font-size: .8rem;
-    color: var(--text-light);
-}
 
 /* ---- MODALS ---- */
 .size-input {
