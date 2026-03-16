@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Year Planner — Theme Preview</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.2/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.2/src/light/style.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Source+Sans+3:wght@300;400;600&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
@@ -303,15 +304,15 @@ body {
     opacity: 1;
 }
 
-.rail-toggle .fa-chevron-right { display: inline; }
-.rail-toggle .fa-chevron-left { display: none; }
+.rail-toggle .ph-caret-right { display: inline; }
+.rail-toggle .ph-caret-left { display: none; }
 
 .rail-open .rail-toggle {
     left: 58px;
     opacity: 0.7;
 }
-.rail-open .rail-toggle .fa-chevron-right { display: none; }
-.rail-open .rail-toggle .fa-chevron-left { display: inline; }
+.rail-open .rail-toggle .ph-caret-right { display: none; }
+.rail-open .rail-toggle .ph-caret-left { display: inline; }
 
 /* Shift main content when rail is open */
 .rail-open .yp-nav,
@@ -499,6 +500,14 @@ body {
     color: var(--accent);
 }
 
+/* CC inline SVG icons */
+.cc-icon {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+    vertical-align: middle;
+}
+
 /* ---- FLOATING CONTROLS (bottom-right) ---- */
 .floating-controls {
     position: fixed;
@@ -557,36 +566,36 @@ body {
 <!-- HIDDEN LEFT RAIL -->
 <nav class="yp-rail" id="rail">
     <div class="yp-rail-logo">YP</div>
-    <button class="active" title="Calendar"><i class="fa-solid fa-calendar-days"></i></button>
-    <button title="Import"><i class="fa-solid fa-file-import"></i></button>
-    <button title="Export"><i class="fa-solid fa-file-export"></i></button>
-    <button title="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+    <button class="active" title="Calendar"><i class="ph ph-calendar-dots"></i></button>
+    <button title="Import"><i class="ph ph-download-simple"></i></button>
+    <button title="Export"><i class="ph ph-upload-simple"></i></button>
+    <button title="Share"><i class="ph ph-share-network"></i></button>
     <div class="yp-rail-spacer"></div>
     <div class="yp-rail-bottom">
-        <button title="Language"><i class="fa-solid fa-globe"></i></button>
-        <button title="Settings"><i class="fa-solid fa-gear"></i></button>
-        <button title="Sign in"><i class="fa-solid fa-right-to-bracket"></i></button>
+        <button title="Language"><i class="ph ph-globe-simple"></i></button>
+        <button title="Settings"><i class="ph ph-gear-six"></i></button>
+        <button title="Sign in"><i class="ph ph-sign-in"></i></button>
         <div class="yp-rail-divider"></div>
         <button class="rail-theme-toggle" id="themeSwitch" title="Switch theme">
             <span id="themeSwitchLabel">N</span>
         </button>
-        <button id="railDarkToggle" title="Toggle dark mode"><i class="fa-solid fa-circle-half-stroke"></i></button>
+        <button id="railDarkToggle" title="Toggle dark mode"><i class="ph ph-sun-dim"></i></button>
     </div>
 </nav>
 
 <!-- RAIL TOGGLE (left-side circle) -->
 <button class="rail-toggle" id="railToggle" title="Menu">
-    <i class="fa-solid fa-chevron-right"></i>
-    <i class="fa-solid fa-chevron-left"></i>
+    <i class="ph ph-caret-right"></i>
+    <i class="ph ph-caret-left"></i>
 </button>
 
 <!-- TOP NAV STRIP -->
 <nav class="yp-nav">
     <div class="yp-nav-left">
         <span class="yp-nav-title">Year Planner <span class="year">2026</span></span>
-        <button class="yp-nav-year-btn"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="yp-nav-year-btn"><i class="ph ph-caret-left"></i></button>
         <button class="yp-nav-year-btn current">2026</button>
-        <button class="yp-nav-year-btn"><i class="fa-solid fa-chevron-right"></i></button>
+        <button class="yp-nav-year-btn"><i class="ph ph-caret-right"></i></button>
     </div>
 
 </nav>
@@ -647,7 +656,11 @@ body {
 <!-- FOOTER -->
 <footer class="yp-footer">
     <span>English</span>
-    <span>© 2021, Craig Parravicini · <a href="#">CC BY-NC-SA</a></span>
+    <span>© 2021, Craig Parravicini ·
+        <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" style="display:inline-flex;align-items:center;gap:2px;">
+            <svg class="cc-icon" viewBox="0 0 24 24"><path d="M11.983 0c-3.292 0-6.19 1.217-8.428 3.485C1.25 5.819 0 8.844 0 12c0 3.189 1.217 6.148 3.522 8.45C5.827 22.75 8.822 24 11.983 24c3.16 0 6.222-1.25 8.593-3.583C22.815 18.214 24 15.287 24 12c0-3.255-1.186-6.214-3.458-8.483C18.238 1.217 15.275 0 11.983 0zm.033 2.17c2.7 0 5.103 1.02 6.98 2.893 1.843 1.841 2.83 4.274 2.83 6.937 0 2.696-.954 5.063-2.798 6.872-1.943 1.906-4.444 2.926-7.012 2.926-2.601 0-5.038-1.019-6.914-2.893-1.877-1.875-2.93-4.34-2.93-6.905 0-2.597 1.053-5.063 2.93-6.97 1.844-1.874 4.214-2.86 6.914-2.86zM8.68 8.278C6.723 8.278 5.165 9.66 5.165 12c0 2.38 1.465 3.722 3.581 3.722 1.358 0 2.516-.744 3.155-1.874l-1.491-.758c-.333.798-.839 1.037-1.478 1.037-1.105 0-1.61-.917-1.61-2.126 0-1.21.426-2.127 1.61-2.127.32 0 .96.173 1.332.97l1.597-.838c-.68-1.236-1.837-1.728-3.181-1.728zm6.932 0c-1.957 0-3.514 1.382-3.514 3.722 0 2.38 1.464 3.722 3.58 3.722 1.359 0 2.516-.744 3.155-1.874l-1.49-.758c-.333.798-.84 1.037-1.478 1.037-1.105 0-1.611-.917-1.611-2.126 0-1.21.426-2.127 1.61-2.127.32 0 .96.173 1.332.97l1.597-.838c-.68-1.236-1.837-1.728-3.181-1.728z"/></svg><svg class="cc-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 3a3 3 0 100 6 3 3 0 000-6zm-4.5 8.5c0-1.5 2-2.5 4.5-2.5s4.5 1 4.5 2.5V17h-9v-3.5z"/></svg><svg class="cc-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm-2.5 5.5L7 12l2.5 4.5h2L9 12l2.5-4.5h-2zm5 0L12 12l2.5 4.5h2L14 12l2.5-4.5h-2z"/></svg>
+        </a>
+    </span>
 </footer>
 
 <!-- THEME LABEL -->
@@ -656,7 +669,7 @@ body {
 <!-- FLOATING CONTROL (dark mode only — theme toggle moved to rail) -->
 <div class="floating-controls">
     <button class="float-btn dark-toggle" id="darkToggle" title="Toggle dark mode">
-        <i class="fa-solid fa-circle-half-stroke"></i>
+        <i class="ph ph-sun-dim"></i>
     </button>
 </div>
 
