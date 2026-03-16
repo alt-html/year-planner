@@ -268,10 +268,7 @@ body {
 }
 
 .rail-theme-toggle {
-    font-size: 0.6rem !important;
-    font-weight: 700;
-    font-family: var(--font-body);
-    letter-spacing: 0.02em;
+    font-size: 0.95rem !important;
     background: var(--rail-active-bg) !important;
     color: var(--rail-text-hover) !important;
     border: 1px solid rgba(255,255,255,0.15) !important;
@@ -577,7 +574,8 @@ body {
         <button title="Sign in"><i class="ph ph-sign-in"></i></button>
         <div class="yp-rail-divider"></div>
         <button class="rail-theme-toggle" id="themeSwitch" title="Switch theme">
-            <span id="themeSwitchLabel">N</span>
+            <i class="ph ph-pencil-ruler" id="themeSwitchIconRuler"></i>
+            <i class="ph ph-feather" id="themeSwitchIconFeather" style="display:none"></i>
         </button>
         <button id="railDarkToggle" title="Toggle dark mode"><i class="ph ph-sun-dim"></i></button>
     </div>
@@ -681,7 +679,8 @@ body {
     const darkToggle = document.getElementById('darkToggle');
     const railDarkToggle = document.getElementById('railDarkToggle');
     const themeSwitch = document.getElementById('themeSwitch');
-    const themeSwitchLabel = document.getElementById('themeSwitchLabel');
+    const iconRuler = document.getElementById('themeSwitchIconRuler');
+    const iconFeather = document.getElementById('themeSwitchIconFeather');
     const themeLabel = document.getElementById('themeLabel');
     const ths = document.querySelectorAll('.yp-grid thead th');
 
@@ -753,11 +752,13 @@ body {
         const current = body.getAttribute('data-theme');
         if (current === 'ink') {
             body.setAttribute('data-theme', 'nordic');
-            themeSwitchLabel.textContent = 'I';
+            iconRuler.style.display = 'none';
+            iconFeather.style.display = 'inline';
             themeLabel.innerHTML = 'Crisp &amp; Clear';
         } else {
             body.setAttribute('data-theme', 'ink');
-            themeSwitchLabel.textContent = 'N';
+            iconRuler.style.display = 'inline';
+            iconFeather.style.display = 'none';
             themeLabel.innerHTML = 'Ink &amp; Paper';
         }
         applyThemeLabels();
