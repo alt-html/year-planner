@@ -46,7 +46,9 @@
     --th-color: var(--text-mid);
     --th-bg: var(--surface);
     --th-weight: 600;
-    --th-size: 0.9rem;
+    --th-size: 0.8rem;
+    --th-transform: uppercase;
+    --th-spacing: 0.08em;
     --today-radius: 50%;
     --grid-td-size: 0.8rem;
 
@@ -93,7 +95,9 @@
     --th-color: #FFFFFF;
     --th-bg: #1A1D23;
     --th-weight: 700;
-    --th-size: 0.8rem;
+    --th-size: 0.72rem;
+    --th-transform: uppercase;
+    --th-spacing: 0.1em;
     --today-radius: 6px;
     --grid-td-size: 0.78rem;
 
@@ -438,23 +442,22 @@ a.navbar-brand {
 .rail-toggle {
     position: fixed;
     left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 28px;
-    height: 28px;
+    bottom: 56px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: var(--rail-bg);
     color: var(--rail-text-hover);
     border: none;
     cursor: pointer;
-    font-size: 0.65rem;
+    font-size: 0.8rem;
     z-index: 200;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0.35;
-    transition: opacity 0.2s, left 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    transition: opacity 0.2s, left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 .rail-toggle:hover {
@@ -504,13 +507,8 @@ a.navbar-brand {
 #yp-table {
     font-size: var(--grid-td-size);
     font-weight: 300;
-    background-color: var(--border);
-    border-top: 0px;
-    border-right: 1px;
-    border-bottom: 1px;
-    border-left: 1px;
-    border-style: solid;
-    border-color: var(--border);
+    background-color: transparent;
+    border: 0;
     font-variant-numeric: tabular-nums;
 }
 
@@ -520,9 +518,9 @@ a.navbar-brand {
     font-size: var(--th-size);
     color: var(--th-color);
     line-height: 1.2;
-    margin-bottom: .2rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
+    margin-bottom: 0;
+    text-transform: var(--th-transform);
+    letter-spacing: var(--th-spacing);
 }
 
 .tst-cell {
@@ -535,28 +533,26 @@ a.navbar-brand {
 .yp-header-cell {
     width: 100%;
     min-width: 95px;
-    padding-left: 3px;
-    border-top: 2px;
+    padding: 10px 6px 8px;
+    border-top: 0px;
     border-left: 0px;
-    border-bottom: 1px;
-    border-right: 1px;
+    border-bottom: 2px;
+    border-right: 0px;
     border-style: solid;
-    border-color: var(--border);
-    border-top-color: var(--header-border);
+    border-color: var(--header-border);
     background-color: var(--th-bg);
 }
 
 .yp-header-cell-right {
     width: 100%;
     min-width: 95px;
-    padding-left: 3px;
-    border-top: 2px;
+    padding: 10px 6px 8px;
+    border-top: 0px;
     border-left: 0px;
-    border-bottom: 1px;
+    border-bottom: 2px;
     border-right: 0px;
     border-style: solid;
-    border-color: var(--border);
-    border-top-color: var(--header-border);
+    border-color: var(--header-border);
     background-color: var(--th-bg);
 }
 
@@ -568,7 +564,7 @@ a.navbar-brand {
     border-top: 0px;
     border-left: 0px;
     border-bottom: 1px;
-    border-right: 1px;
+    border-right: 0px;
     border-style: solid;
     border-color: var(--border);
     white-space: nowrap;
@@ -586,12 +582,7 @@ a.navbar-brand {
     min-width: 95px;
     background-color: var(--surface);
     padding-left: 3px;
-    border-top: 0px;
-    border-left: 0px;
-    border-bottom: 0px;
-    border-right: 1px;
-    border-style: solid;
-    border-color: var(--border);
+    border: 0;
 }
 
 .yp-cell-right {
@@ -606,6 +597,10 @@ a.navbar-brand {
     border-style: solid;
     border-color: var(--border);
 }
+
+/* The -right variant previously existed to suppress the right border on the
+   last column; now that all right borders are 0 it behaves identically to
+   .yp-cell, but we keep the class for semantic clarity. */
 
 .yp-cell-bottom-right {
     width: 100%;
@@ -791,7 +786,7 @@ a.navbar-brand {
 /* ---- FLOATING DARK MODE TOGGLE ---- */
 .floating-controls {
     position: fixed;
-    bottom: 14px;
+    bottom: 56px;
     right: 14px;
     display: flex;
     flex-direction: column;
@@ -868,6 +863,7 @@ a.navbar-brand {
     background: none;
     border: none;
     color: var(--text-light);
+    font-family: var(--font-body);
     font-size: 0.85rem;
     cursor: pointer;
     padding: 2px;
@@ -990,7 +986,7 @@ a.navbar-brand {
     background: none;
     border: none;
     color: var(--text-light);
-    font-family: var(--font-body);
+    font-family: var(--font-display);
     font-size: 0.8rem;
     cursor: pointer;
     padding: 6px 10px;
@@ -1037,6 +1033,37 @@ a.navbar-brand {
 .yp-entry-text.yp-cell-c6 { background-color: var(--c6); }
 .yp-entry-text.yp-cell-c7 { background-color: var(--c7); }
 .yp-entry-text.yp-cell-c8 { background-color: var(--c8); }
+
+/* ---- BOOTSTRAP TOOLTIP — themed ---- */
+.tooltip-inner {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    background-color: var(--text);
+    color: var(--bg);
+    border-radius: 6px;
+    padding: 6px 10px;
+    max-width: 260px;
+}
+
+.bs-tooltip-bottom .arrow::before,
+.bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
+    border-bottom-color: var(--text);
+}
+
+.bs-tooltip-top .arrow::before,
+.bs-tooltip-auto[x-placement^="top"] .arrow::before {
+    border-top-color: var(--text);
+}
+
+.bs-tooltip-left .arrow::before,
+.bs-tooltip-auto[x-placement^="left"] .arrow::before {
+    border-left-color: var(--text);
+}
+
+.bs-tooltip-right .arrow::before,
+.bs-tooltip-auto[x-placement^="right"] .arrow::before {
+    border-right-color: var(--text);
+}
 
 /* Non-entry modals (share, delete, auth, feature) — keep simple themed */
 #shareModal .modal-content,
