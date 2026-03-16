@@ -455,6 +455,77 @@ a.navbar-brand {
     background: var(--rail-active-bg);
 }
 
+/* ---- MARKER / HIGHLIGHTER MODE ---- */
+.marker-flyout {
+    top: 82px;   /* below marker button */
+    width: auto;
+    padding: 8px 10px;
+}
+
+.marker-flyout-dots {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.marker-flyout button.marker-dot {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    min-height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.12s, box-shadow 0.12s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--rail-text);
+    font-size: 0.7rem;
+}
+
+.marker-flyout button.marker-dot:hover {
+    transform: scale(1.2);
+    box-shadow: 0 1px 5px rgba(0,0,0,0.25);
+}
+
+.marker-flyout button.marker-dot.selected {
+    outline: 2px solid var(--rail-text-hover);
+    outline-offset: 2px;
+}
+
+.marker-flyout button.marker-dot-clear {
+    background: rgba(255,255,255,0.08) !important;
+    font-size: 0.75rem;
+}
+
+/* Colour swatches in marker flyout — must override rail button background:none */
+.marker-flyout button.yp-dot-c1 { background-color: var(--weekend) !important; }
+.marker-flyout button.yp-dot-c2 { background-color: var(--c2) !important; }
+.marker-flyout button.yp-dot-c3 { background-color: var(--c3) !important; }
+.marker-flyout button.yp-dot-c4 { background-color: var(--c4) !important; }
+.marker-flyout button.yp-dot-c5 { background-color: var(--c5) !important; }
+.marker-flyout button.yp-dot-c6 { background-color: var(--c6) !important; }
+.marker-flyout button.yp-dot-c7 { background-color: var(--c7) !important; }
+.marker-flyout button.yp-dot-c8 { background-color: var(--c8) !important; }
+
+/* Pen cursor when marker mode is active */
+body.marker-mode #yp-table .yp-cell {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 256 256'%3E%3Cpath d='M227.31 73.37l-44.68-44.69a16 16 0 00-22.63 0L36.69 152A15.86 15.86 0 0032 163.31V208a16 16 0 0016 16h44.69a15.86 15.86 0 0011.31-4.69L227.31 96a16 16 0 000-22.63zM192 108.68L147.31 64 168 43.31 212.69 88z' fill='%23555'/%3E%3C/svg%3E") 2 18, crosshair;
+}
+
+body.marker-mode #yp-table .yp-cell[data-toggle="modal"] {
+    /* Suppress modal trigger in marker mode — handled by JS */
+}
+
+/* Disable text selection during drag-highlight */
+body.marker-dragging {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 /* ---- RAIL TOGGLE (left-side circle) ---- */
 .rail-toggle {
     position: fixed;
@@ -1006,31 +1077,6 @@ a.navbar-brand {
 .yp-dot-c6     { background-color: var(--c6); border-color: transparent; }
 .yp-dot-c7     { background-color: var(--c7); border-color: transparent; }
 .yp-dot-c8     { background-color: var(--c8); border-color: transparent; }
-
-/* Separator between dots and spread actions */
-.yp-dot-sep {
-    width: 1px;
-    height: 14px;
-    background: var(--border);
-    margin: 0 3px;
-}
-
-/* Spread-to-week / spread-to-month mini-actions */
-.yp-dot-action {
-    background: none;
-    border: none;
-    color: var(--text-light);
-    font-size: 0.78rem;
-    padding: 3px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: color 0.12s, background 0.12s;
-}
-
-.yp-dot-action:hover {
-    color: var(--text-mid);
-    background: var(--border);
-}
 
 /* Action buttons — right side */
 .yp-entry-actions {

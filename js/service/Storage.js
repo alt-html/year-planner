@@ -50,14 +50,6 @@ export default class Storage {
     setPlanner (uid, year, planner) {
         this.storageLocal.setLocalPlanner(uid, year, planner);
     }
-    updateMonthColour (mindex, day, entryColour) {
-        for (let i = day + 1; i <= this.model.daysInMonth[mindex]; i++) {
-            let entry = this.getEntry(mindex, i);
-            let entryType = this.getEntryType(mindex, i);
-            let syncToRemote = (i == this.model.daysInMonth[mindex]);
-            this.updateEntry(mindex, i, entry, entryType, entryColour, syncToRemote);
-         }
-    }
     getExportString (){
         let exporter = [];
         exporter.push(this.storageLocal.getLocalIdentity(this.model.uid));

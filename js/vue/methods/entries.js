@@ -9,16 +9,6 @@ export const entryMethods = {
         }
     },
 
-    updateWeekColour (mindex, day, entryColour) {
-        let weekday = DateTime.local(this.year, mindex + 1, day).weekday;
-        for (let i = 1; i < (7 - weekday + 1) && day + i <= daysInMonth[mindex]; i++) {
-            let entry = this.getEntry(mindex, day + i);
-            let entryType = this.getEntryType(mindex, day + i);
-            let syncToRemote = (i == (7 - weekday) || day + i == this.daysInMonth[mindex]);
-            this.updateEntry(mindex, day + i, entry, entryType, entryColour, syncToRemote);
-        }
-    },
-
      updateEntryState  (mindex,day){
         this.api.synchroniseToLocal(false);
         this.month = mindex;

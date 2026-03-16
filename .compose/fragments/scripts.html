@@ -73,10 +73,12 @@
                 !rail.contains(e.target) &&
                 e.target !== railToggle &&
                 !railToggle.contains(e.target) &&
-                !(calendarFlyout && calendarFlyout.contains(e.target))) {
+                !(calendarFlyout && calendarFlyout.contains(e.target)) &&
+                !(markerFlyout && markerFlyout.contains(e.target))) {
                 rail.classList.remove('open');
                 body.classList.remove('rail-open');
                 closeFlyout();
+                deactivateMarkerMode();
             }
         });
 
@@ -151,6 +153,162 @@
                 }
             });
         }
+
+        // ---- Marker / highlighter mode ----
+        var railMarkerBtn = document.getElementById('railMarkerBtn');
+        var markerFlyout  = document.getElementById('railMarkerFlyout');
+        var markerActive  = false;
+        var markerColour  = 1;          // default colour index
+        var markerDragging = false;
+        var markerLastCell = null;       // prevent duplicate updates on same cell
+
+        function openMarkerFlyout() {
+            closeFlyout();  // close calendar flyout if open
+            markerFlyout.classList.add('open');
+            railMarkerBtn.classList.add('flyout-active');
+        }
+        function closeMarkerFlyout() {
+            if (markerFlyout) markerFlyout.classList.remove('open');
+            if (railMarkerBtn) railMarkerBtn.classList.remove('flyout-active');
+        }
+        function activateMarkerMode() {
+            markerActive = true;
+            body.classList.add('marker-mode');
+            railMarkerBtn.classList.add('active');
+            openMarkerFlyout();
+        }
+        function deactivateMarkerMode() {
+            markerActive = false;
+            body.classList.remove('marker-mode');
+            body.classList.remove('marker-dragging');
+            railMarkerBtn.classList.remove('active');
+            closeMarkerFlyout();
+            markerDragging = false;
+            markerLastCell = null;
+        }
+
+        if (railMarkerBtn) {
+            railMarkerBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (markerActive) {
+                    deactivateMarkerMode();
+                } else {
+                    activateMarkerMode();
+                }
+            });
+        }
+
+        // Colour dot selection in marker flyout
+        if (markerFlyout) {
+            markerFlyout.querySelectorAll('.marker-dot').forEach(function(dot) {
+                dot.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    markerColour = parseInt(dot.getAttribute('data-colour'));
+                    // Update selected state
+                    markerFlyout.querySelectorAll('.marker-dot').forEach(function(d) {
+                        d.classList.remove('selected');
+                    });
+                    dot.classList.add('selected');
+                });
+            });
+            // Set default selection
+            var defaultDot = markerFlyout.querySelector('[data-colour="1"]');
+            if (defaultDot) defaultDot.classList.add('selected');
+        }
+
+        // Apply colour to a single grid cell via the Vue app
+        function applyMarkerToCell(cellEl) {
+            if (cellEl === markerLastCell) return; // already painted this cell
+            markerLastCell = cellEl;
+
+            // Find the Vue app instance (Vue 3: vnode on container element)
+            var appEl = document.getElementById('app');
+            if (!appEl || !appEl._vnode || !appEl._vnode.component) return;
+            var vueInstance = appEl._vnode.component.proxy;
+            if (!vueInstance) return;
+
+            // Parse the cell's month and day from its rendered content and position
+            // The cell is inside a month column — find which month
+            var monthCol = cellEl.closest('[class*="col"]');
+            if (!monthCol) return;
+            var monthsRow = monthCol.parentElement;
+            if (!monthsRow) return;
+            var cols = monthsRow.querySelectorAll(':scope > [class*="col"]');
+            var mindex = -1;
+            for (var ci = 0; ci < cols.length; ci++) {
+                if (cols[ci] === monthCol) { mindex = ci; break; }
+            }
+            if (mindex < 0) return;
+
+            // Find the day number from the cell text
+            var daySpan = cellEl.querySelector('.yp-cell-text');
+            if (!daySpan) return;
+            var dayText = daySpan.textContent.trim().replace(/\u00a0/g, '');
+            var day = parseInt(dayText);
+            if (isNaN(day) || day < 1) return;
+
+            // Use the same updateEntry path as the modal
+            var entry = vueInstance.getEntry(mindex, day);
+            var entryType = vueInstance.getEntryType(mindex, day);
+            vueInstance.updateEntry(mindex, day, entry, entryType, markerColour, true);
+        }
+
+        // Intercept grid cell interactions in marker mode
+        document.addEventListener('mousedown', function(e) {
+            if (!markerActive) return;
+
+            // Find the nearest .yp-cell ancestor within #yp-months
+            var cell = e.target.closest('#yp-months .yp-cell');
+            if (!cell) return;
+
+            // Prevent modal from opening
+            e.preventDefault();
+            e.stopPropagation();
+
+            markerDragging = true;
+            markerLastCell = null;
+            body.classList.add('marker-dragging');
+            applyMarkerToCell(cell);
+        }, true);  // capture phase to intercept before Bootstrap modal
+
+        document.addEventListener('mousemove', function(e) {
+            if (!markerDragging) return;
+            var cell = document.elementFromPoint(e.clientX, e.clientY);
+            if (cell) cell = cell.closest('#yp-months .yp-cell');
+            if (cell) applyMarkerToCell(cell);
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (markerDragging) {
+                markerDragging = false;
+                markerLastCell = null;
+                body.classList.remove('marker-dragging');
+            }
+        });
+
+        // Also handle single clicks in marker mode (capture phase)
+        document.addEventListener('click', function(e) {
+            if (!markerActive) return;
+            var cell = e.target.closest('#yp-months .yp-cell');
+            if (cell) {
+                e.preventDefault();
+                e.stopPropagation();
+                // Already applied on mousedown, but catch any edge cases
+            }
+        }, true);
+
+        // Close marker flyout when clicking outside
+        document.addEventListener('click', function(e) {
+            if (markerFlyout && markerFlyout.classList.contains('open') &&
+                !markerFlyout.contains(e.target) &&
+                e.target !== railMarkerBtn &&
+                !railMarkerBtn.contains(e.target)) {
+                closeMarkerFlyout();
+            }
+        });
+
+        // Deactivate marker mode when rail closes
+        var origRailToggleHandler = railToggle ? railToggle.onclick : null;
 
         // ---- Rail → app bridge buttons ----
         var railShareBtn = document.getElementById('railShareBtn');
