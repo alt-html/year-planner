@@ -297,8 +297,9 @@
             }
         }, true);
 
-        // Close marker flyout when clicking outside
+        // Close marker flyout when clicking outside (but not while actively marking)
         document.addEventListener('click', function(e) {
+            if (markerActive) return;
             if (markerFlyout && markerFlyout.classList.contains('open') &&
                 !markerFlyout.contains(e.target) &&
                 e.target !== railMarkerBtn &&
