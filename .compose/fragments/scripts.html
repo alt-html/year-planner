@@ -74,11 +74,11 @@
                 e.target !== railToggle &&
                 !railToggle.contains(e.target) &&
                 !(calendarFlyout && calendarFlyout.contains(e.target)) &&
-                !(markerFlyout && markerFlyout.contains(e.target))) {
+                !(markerFlyout && markerFlyout.contains(e.target)) &&
+                !markerActive) {
                 rail.classList.remove('open');
                 body.classList.remove('rail-open');
                 closeFlyout();
-                deactivateMarkerMode();
             }
         });
 
