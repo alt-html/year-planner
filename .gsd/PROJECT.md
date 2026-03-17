@@ -10,9 +10,9 @@ A simple, fast year planner that works offline with local storage, supports 10 l
 
 ## Current State
 
-**Active Milestone:** M006 — UI/UX Polish & Finalisation
+**Active Milestone:** None — awaiting next milestone planning
 
-Two switchable visual themes (Ink & Paper / Crisp & Clear) with light and dark modes are implemented. The core design mockups from M005 have been applied. M006 will systematically polish remaining visual gaps, dark mode completeness, and responsive layout.
+Two switchable visual themes (Ink & Paper / Crisp & Clear) with light and dark modes are fully polished. Grid fills the viewport with flex layout, columns align precisely, and a marker/highlighter mode enables interactive cell colouring via the vertical rail.
 
 ## Architecture / Key Patterns
 
@@ -59,7 +59,7 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 - [x] M003: Storage Modernisation — Migrated all persistence from cookies to localStorage, removed consent modal and @alt-javascript/cookies CDN dependency
 - [x] M004: Auth & API Contract — Replaced bespoke auth with federated sign-in (Google/Apple/Microsoft), defined OpenAPI 3.x sync spec, aligned sync client
 - [x] M005: UI/UX Design Research — Created 3 design mockups, applied hybrid of Ink & Paper + Crisp & Clear as dual-theme system
-- [ ] M006: UI/UX Polish & Finalisation — Grid typography, dark mode audit, responsive layout
+- [x] M006: UI/UX Polish & Finalisation — Flex-fill grid, column alignment fix, marker/highlighter mode, modal cleanup
 
 ## Running Locally
 ```bash

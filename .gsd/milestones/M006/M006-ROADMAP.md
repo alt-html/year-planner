@@ -32,9 +32,9 @@ This milestone is complete only when all are true:
 
 ## Slices
 
-- [ ] **S01: Grid & typography polish** `risk:medium` `depends:[]`
+- [x] **S01: Grid & typography polish** `risk:medium` `depends:[]`
   > After this: grid cells, day column, weekend/today highlighting, and row spacing match the mockup for both themes
-- [ ] **S02: Dark mode completeness audit** `risk:medium` `depends:[S01]`
+- [x] **S02: Dark mode completeness audit** `risk:medium` `depends:[S01]`
   > After this: every Bootstrap component (dropdowns, modals, form controls, buttons) is fully themed in dark mode with no default leaks
-- [ ] **S03: Responsive layout polish** `risk:low` `depends:[S01]`
+- [x] **S03: Responsive layout polish** `risk:low` `depends:[S01]`
   > After this: grid, nav, footer, modals, rail, and floating controls render cleanly at mobile (375px), tablet (768px), and desktop (1280px+)
