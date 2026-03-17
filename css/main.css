@@ -701,17 +701,6 @@ body.marker-dragging {
     text-overflow: ellipsis !important;
 }
 
-.yp-cell-bottom {
-    width: 100%;
-    min-width: 95px;
-    background-color: var(--surface);
-    padding-left: 3px;
-    border: 0;
-    flex: 1 0 auto;
-    display: flex;
-    align-items: center;
-}
-
 .yp-cell-right {
     width: 100%;
     min-width: 95px;
@@ -728,9 +717,19 @@ body.marker-dragging {
     align-items: center;
 }
 
-/* The -right variant previously existed to suppress the right border on the
-   last column; now that all right borders are 0 it behaves identically to
-   .yp-cell, but we keep the class for semantic clarity. */
+/* .yp-cell-bottom must appear AFTER .yp-cell-right so that when both classes
+   are present (December's last row), border:0 wins and the total border budget
+   matches other columns — preventing cumulative sub-pixel drift. */
+.yp-cell-bottom {
+    width: 100%;
+    min-width: 95px;
+    background-color: var(--surface);
+    padding-left: 3px;
+    border: 0;
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
+}
 
 .yp-cell-bottom-right {
     width: 100%;
