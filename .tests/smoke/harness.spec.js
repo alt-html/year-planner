@@ -2,7 +2,7 @@
 // Baseline harness smoke test.
 // Verifies: server starts (TEST-02), app loads and CDI fires (TEST-03),
 // no root package.json (TEST-01), app auto-initialises without consent modal (TEST-04).
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../fixtures/cdn');
 const path = require('path');
 const fs = require('fs');
 

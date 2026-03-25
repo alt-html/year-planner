@@ -1,21 +1,18 @@
+import { vueStarter } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/boot-vue@3/dist/alt-javascript-boot-vue-esm.js';
 import config from './config/config.js';
-import contexts  from './config/contexts.js';
-import { ApplicationContext } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/cdi/dist/alt-javascript-cdi-esm.js';
+import contexts from './config/contexts.js';
+import { app } from './vue/app.js';
 
-let applicationContext = new ApplicationContext({contexts, config});
-await applicationContext.start();
+const { vueApp, applicationContext } = await vueStarter({
+    createApp: Vue.createApp,
+    selector: '#app',
+    contexts: [contexts],
+    config,
+    rootComponent: app,
+    onReady: async (vueApp, appCtx) => {
+        await appCtx.get('application').run(vueApp);
+    },
+});
 
+document.body.dataset.appReady = '1';
 window.applicationContext = applicationContext;
-
-
-
-
-
-
-
-
-
-
-
-
-

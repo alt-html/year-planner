@@ -1,5 +1,6 @@
 // .tests/globalSetup.js
 const { chromium } = require('@playwright/test');
+const { registerCdnRoutes } = require('./fixtures/cdn-routes.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -8,18 +9,23 @@ module.exports = async function globalSetup(config) {
   fs.mkdirSync(authDir, { recursive: true });
 
   const browser = await chromium.launch();
-  const page = await browser.newPage();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  // Register CDN intercepts — same fixtures as per-test cdn.js.
+  // Also strips integrity attributes from index.html so local fixture files
+  // pass SRI checks in this raw browser context.
+  await registerCdnRoutes(page);
 
   await page.goto('http://localhost:8080');
-  // Wait for CDI initialisation — requires data-app-ready from Application.js
-  await page.waitForSelector('[data-app-ready]');
+  // Wait for CDI initialisation — requires data-app-ready from main.js
+  await page.waitForSelector('[data-app-ready]', { timeout: 30000 });
 
   // App auto-initialises on first visit (writes identities to localStorage).
-  // Wait for localStorage key '0' to be set (set by storageLocal.setLocalIdentities() in lifecycle refresh/initialise).
   await page.waitForFunction(() => localStorage.getItem('0') !== null);
 
   // Save full browser state: localStorage
-  await page.context().storageState({
+  await context.storageState({
     path: path.join(authDir, 'consent.json'),
   });
 

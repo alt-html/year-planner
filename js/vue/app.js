@@ -5,7 +5,8 @@ import { plannerMethods } from './methods/planner.js';
 import { authMethods } from './methods/auth.js';
 import { lifecycleMethods } from './methods/lifecycle.js';
 
-const app = Vue.createApp({
+// Component definition — passed to Vue.createApp() by createCdiApp in main.js.
+const app = {
     data() {
         return model;
     },
@@ -19,6 +20,6 @@ const app = Vue.createApp({
     mounted() {
         this.refresh();
     }
-});
+};
 
 export { app }

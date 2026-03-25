@@ -1,34 +1,26 @@
-import { LoggerFactory, LoggerCategoryCache, ConfigurableLogger } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/logger@2.0.3/dist/alt-javascript-logger-esm.js'
+import { Context, Singleton } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/cdi@3/dist/alt-javascript-cdi-esm.js';
 
 import Api from '../service/Api.js';
-import { app } from '../vue/app.js';
 import Application from '../Application.js';
 import AuthProvider from '../service/AuthProvider.js';
-import config from '../config/config.js';
-import Storage  from '../service/Storage.js';
-import StorageLocal  from '../service/StorageLocal.js';
-import StorageRemote  from '../service/StorageRemote.js';
+import Storage from '../service/Storage.js';
+import StorageLocal from '../service/StorageLocal.js';
+import StorageRemote from '../service/StorageRemote.js';
 import { feature } from '../vue/model-features.js';
 import { messages } from '../vue/i18n/messages.js';
 import { model } from '../vue/model.js';
 import { i18n } from '../vue/i18n.js';
 
-let loggerCategoryCache = new LoggerCategoryCache();
-let loggerFactory = new LoggerFactory(config,loggerCategoryCache,ConfigurableLogger.DEFAULT_CONFIG_PATH);
+export default new Context([
+    new Singleton(Api),
+    new Singleton(Application),
+    new Singleton(AuthProvider),
+    new Singleton(Storage),
+    new Singleton(StorageLocal),
+    new Singleton(StorageRemote),
 
-export default [
-    Api,
-    Application,
-    AuthProvider,
-    Storage,
-    StorageLocal,
-    StorageRemote,
-
-    {name:'app', Reference: app },
-    {name:'feature', Reference: feature },
-    {name:'messages', Reference: messages },
-    {name:'model', Reference: model },
-    {name:'i18n', Reference: i18n },
-    {name:'loggerFactory', Reference: loggerFactory },
-    {name:'loggerCategoryCache', Reference: loggerCategoryCache },
-]
+    { name: 'feature',  Reference: feature },
+    { name: 'messages', Reference: messages },
+    { name: 'model',    Reference: model },
+    { name: 'i18n',     Reference: i18n },
+]);

@@ -1,6 +1,6 @@
 # GSD State
 
-**Active Milestone:** M004 complete — all milestones done
+**Active Milestone:** M007 — Boot v3 Uplift ✅ complete
 **Active Slice:** none
 **Phase:** complete
 
@@ -9,14 +9,18 @@
 - ✅ **M002:** JS Modularisation
 - ✅ **M003:** Storage Modernisation
 - ✅ **M004:** Auth & API Contract
+- ✅ **M007:** Boot v3 Uplift
 
 ## Recent Decisions
-- Lazy SDK loading for federated auth providers
-- OpenAPI spec as single source of truth for API contract
-- Bearer JWT from provider tokens (not custom session)
+- @alt-javascript v3.0.3 adopted across config/logger/cdi/common
+- ProfileAwareConfig + BrowserProfileResolver replaces v2 WindowLocationSelectiveConfig URL-key pattern
+- ProfileAwareConfig used directly (not wrapped in ConfigFactory.getConfig) — implements has()/get() natively
+- Global boot root populated manually in main.js (Boot.boot() skipped — can't wrap ProfileAwareConfig in browser mode)
+- Context/Singleton helpers from v3 cdi bundle replace bare class arrays in contexts.js
+- loggerFactory/loggerCategoryCache removed from contexts.js — provided via global root, picked up by detectGlobalContextComponents()
 
 ## Blockers
 - None
 
 ## Next Action
-Squash-merge gsd/M004/S01 to main. All 4 milestones complete.
+None queued. All milestones complete.

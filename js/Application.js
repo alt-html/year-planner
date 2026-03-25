@@ -5,7 +5,7 @@ import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.m
 
 export default class Application {
 
-    constructor(app, i18n, api, model, storage, storageLocal, messages) {
+    constructor(i18n, api, model, storage, storageLocal, messages) {
         this.qualifier = '@alt-html/year-planner/Application'
         this.logger = null;
 
@@ -20,7 +20,6 @@ export default class Application {
                 share : urlParam('share')
             }
         }
-        this.app = app || null;
         this.i18n = i18n || null;
         this.api = api || null;
         this.model = model || null;
@@ -69,20 +68,16 @@ export default class Application {
         this.messages[this.model.lang]['label']['name_'+this.model.year] = this.model.name;
     }
 
-    async run () {
-        this.logger?.verbose('Running application: mounting Vue app to <div> with id #app.');
-        this.app.use(this.i18n);
-        this.app.mount("#app");
-        document.body.dataset.appReady = '1';
+    async run (vueApp) {
+        this.logger?.verbose('Running application: configuring Vue app before mount.');
+        vueApp.use(this.i18n);
+        // Mount and data-app-ready are handled by vueStarter / main.js after onReady returns.
 
         document.title = this.i18n.global.t('label.yearplanner');
         document.documentElement.lang = this.model.lang;
 
-
-
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
         })
-
     }
 }
