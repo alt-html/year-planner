@@ -34,8 +34,8 @@
                                     {{$t(modalErrorTarget?.['username'])}}
                                 </div>
                                 <div class="input-group-append">
-                                    <button v-if="!changeuser" class="btn btn-primary py-0 my-0" type="button" v-on:click="changeuser=!changeuser" ><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button v-if="changeuser" class="btn btn-primary py-0 my-0" type="button" v-on:click="setUsername(username)"><i class="fa-solid fa-floppy-disk"></i></button>
+                                    <button v-if="!changeuser" class="btn btn-primary py-0 my-0" type="button" v-on:click="changeuser=!changeuser" ><i class="ph ph-pencil-simple"></i></button>
+                                    <button v-if="changeuser" class="btn btn-primary py-0 my-0" type="button" v-on:click="setUsername(username)"><i class="ph ph-floppy-disk"></i></button>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -47,9 +47,9 @@
                                     {{$t(modalErrorTarget?.['password'])}}
                                 </div>
                                 <div class="input-group-append">
-                                    <button v-if="!changepass" class="btn btn-primary py-0 my-0" type="button" v-on:click="changepass=!changepass" ><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button v-if="changepass && !peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="peekPass()" ><i class="fa-solid fa-eye"></i></button>
-                                    <button v-if="changepass && peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="unpeekPass()" ><i class="fa-solid fa-eye-slash"></i></button>
+                                    <button v-if="!changepass" class="btn btn-primary py-0 my-0" type="button" v-on:click="changepass=!changepass" ><i class="ph ph-pencil-simple"></i></button>
+                                    <button v-if="changepass && !peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="peekPass()" ><i class="ph ph-eye"></i></button>
+                                    <button v-if="changepass && peek" class="btn btn-primary py-0 my-0" type="button" v-on:click="unpeekPass()" ><i class="ph ph-eye-slash"></i></button>
                                 </div>
 
                             </div>
@@ -61,8 +61,8 @@
                                     {{$t(modalErrorTarget?.['newpassword'])}}
                                 </div>
                                 <div v-if="changepass" class="input-group-append">
-                                    <button v-if="!peeknp" class="btn btn-primary py-0 my-0" type="button" v-on:click="peekNewPass()" ><i class="fa-solid fa-eye"></i></button>
-                                    <button v-if="peeknp" class="btn btn-primary py-0 my-0" type="button" v-on:click="unpeekNewPass()" ><i class="fa-solid fa-eye-slash"></i></button>
+                                    <button v-if="!peeknp" class="btn btn-primary py-0 my-0" type="button" v-on:click="peekNewPass()" ><i class="ph ph-eye"></i></button>
+                                    <button v-if="peeknp" class="btn btn-primary py-0 my-0" type="button" v-on:click="unpeekNewPass()" ><i class="ph ph-eye-slash"></i></button>
                                 </div>
 
 
@@ -80,9 +80,9 @@
                                         {{(!changeemail && emailverified) ? $t('label.verified') : (modalErrorTarget?.['email'] ? $t(modalErrorTarget?.['email']) : changeemail ? '' : ($t('label.unverified'))) }}
                                     </div>
                                     <div class="input-group-append">
-                                        <button v-if="!changeemail && !emailverified" data-toggle="tooltip" data-placement="bottom" :title="$t('label.verify')" class="btn btn-danger py-0 my-0" type="button" v-on:click="sendVerificationEmail()" ><i class="fa-regular fa-paper-plane"></i></button>
-                                        <button v-if="!changeemail && emailverified" class="btn btn-primary py-0 my-0" v-on:click="changeemail=!changeemail" type="button"><i class="fa-solid fa-pen-to-square"></i></button>
-                                        <button v-if="changeemail" class="btn btn-primary py-0 my-0" v-on:click="setEmail(email)" type="button"><i class="fa-solid fa-floppy-disk"></i></button>
+                                        <button v-if="!changeemail && !emailverified" data-toggle="tooltip" data-placement="bottom" :title="$t('label.verify')" class="btn btn-danger py-0 my-0" type="button" v-on:click="sendVerificationEmail()" ><i class="ph ph-paper-plane-tilt"></i></button>
+                                        <button v-if="!changeemail && emailverified" class="btn btn-primary py-0 my-0" v-on:click="changeemail=!changeemail" type="button"><i class="ph ph-pencil-simple"></i></button>
+                                        <button v-if="changeemail" class="btn btn-primary py-0 my-0" v-on:click="setEmail(email)" type="button"><i class="ph ph-floppy-disk"></i></button>
                                     </div>
                                 </div>
 <!--                            <div class="form-group">-->

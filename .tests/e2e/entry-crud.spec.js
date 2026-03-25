@@ -15,7 +15,7 @@ test('entry CRUD: create, see, edit, delete (E2E-02)', async ({ page }) => {
   await day1Cell.click();
   await page.waitForSelector('#entryModal.show');
   await page.fill('#yp-entry-textarea', 'Test entry text');
-  await page.click('#entryModal .modal-footer .btn-primary');
+  await page.click('#entryModal .yp-action-save');
   await expect(page.locator('#entryModal')).not.toBeVisible();
   await expect(day1Cell.locator('.yp-cell-text').nth(1)).toContainText('Test entry');
 
@@ -23,7 +23,7 @@ test('entry CRUD: create, see, edit, delete (E2E-02)', async ({ page }) => {
   await day1Cell.click();
   await page.waitForSelector('#entryModal.show');
   await page.fill('#yp-entry-textarea', 'Edited entry text');
-  await page.click('#entryModal .modal-footer .btn-primary');
+  await page.click('#entryModal .yp-action-save');
   await expect(page.locator('#entryModal')).not.toBeVisible();
   await expect(day1Cell.locator('.yp-cell-text').nth(1)).toContainText('Edited entry');
 
@@ -31,7 +31,7 @@ test('entry CRUD: create, see, edit, delete (E2E-02)', async ({ page }) => {
   await day1Cell.click();
   await page.waitForSelector('#entryModal.show');
   await page.fill('#yp-entry-textarea', '');
-  await page.click('#entryModal .modal-footer .btn-primary');
+  await page.click('#entryModal .yp-action-save');
   await expect(page.locator('#entryModal')).not.toBeVisible();
   await expect(day1Cell.locator('.yp-cell-text').nth(1)).not.toContainText('Edited entry');
 });

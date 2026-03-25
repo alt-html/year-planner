@@ -22,7 +22,7 @@ test('tooltip does not execute injected HTML (SEC-03)', async ({ page }) => {
   await page.fill('#yp-entry-textarea', '<img src=x onerror=window.__xss=1>');
 
   // Save the entry via the modal Save button
-  await page.click('#entryModal .modal-footer .btn-primary');
+  await page.click('#entryModal .yp-action-save');
   await expect(page.locator('#entryModal')).not.toBeVisible();
 
   // Hover over the cell to trigger tooltip rendering

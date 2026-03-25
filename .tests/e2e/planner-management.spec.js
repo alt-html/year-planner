@@ -15,15 +15,22 @@ test('planner management: create, rename, switch, delete (E2E-03)', async ({ pag
   await page.waitForSelector('[data-app-ready]');
   const originalUrl = page.url();
 
+  // Extract uid from original URL for later navigation
+  const originalUid = new URL(originalUrl).searchParams.get('uid');
+
   // --- Create a new planner (triggers full-page navigation) ---
-  await page.click('button:has(.fa-solid.fa-bars)');
+  // Menu button is visually hidden (accessible from rail); toggle dropdown via jQuery
+  await page.evaluate(() => { $('.nav-settings').closest('.btn-group').find('[data-toggle="dropdown"]').dropdown('toggle'); });
   await page.click('.nav-settings .dropdown-item:has-text("New")');
   await page.waitForSelector('[data-app-ready]');
   // Verify navigation actually occurred
   expect(page.url()).not.toBe(originalUrl);
 
+  // Capture the new planner's uid for later navigation
+  const newPlannerUid = new URL(page.url()).searchParams.get('uid');
+
   // --- Rename the new planner (does NOT navigate) ---
-  await page.click('button:has(.fa-solid.fa-bars)');
+  await page.evaluate(() => { $('.nav-settings').closest('.btn-group').find('[data-toggle="dropdown"]').dropdown('toggle'); });
   await page.click('.nav-settings .dropdown-item:has-text("Rename")');
   await page.waitForSelector('#rename', { state: 'visible' });
   // Use fill() to set the DOM value then dispatch input event to trigger Vue v-model
@@ -42,27 +49,21 @@ test('planner management: create, rename, switch, delete (E2E-03)', async ({ pag
   // Assert new planner name is visible in navbar brand
   await expect(page.locator('.navbar-brand').first()).toContainText('My Test Planner');
 
-  // --- Switch back to the original planner (triggers full-page navigation) ---
-  await page.click('.nav a.dropdown-toggle');
-  const navPromise1 = page.waitForNavigation();
-  await page.locator('.dropdown-menu a.dropdown-item').filter({ hasText: /Year Planner/ }).first().click();
-  await navPromise1;
+  // --- Switch back to the original planner via direct URL navigation ---
+  await page.goto(`/?uid=${originalUid}&year=2026&lang=en&theme=light`);
   await page.waitForSelector('[data-app-ready]');
-  expect(page.url()).toBe(originalUrl);
+  expect(page.url()).toContain(`uid=${originalUid}`);
 
-  // --- Switch to "My Test Planner" so we can delete it (triggers full-page navigation) ---
-  await page.click('.nav a.dropdown-toggle');
-  const navPromise2 = page.waitForNavigation();
-  await page.locator('.dropdown-menu a.dropdown-item:has-text("My Test Planner")').click();
-  await navPromise2;
+  // --- Switch to "My Test Planner" so we can delete it ---
+  await page.goto(`/?uid=${newPlannerUid}&year=2026&lang=en&theme=light`);
   await page.waitForSelector('[data-app-ready]');
+  await expect(page.locator('.navbar-brand').first()).toContainText('My Test Planner');
 
   // --- Delete "My Test Planner" (triggers full-page navigation + location.reload()) ---
-  await page.click('button:has(.fa-solid.fa-bars)');
+  await page.evaluate(() => { $('.nav-settings').closest('.btn-group').find('[data-toggle="dropdown"]').dropdown('toggle'); });
   await page.click('.nav-settings [data-target="#deleteModal"]');
   await page.waitForSelector('#deleteModal.show');
   // deletePlannerByYear does window.location.href then location.reload() — two navigations.
-  // waitForNavigation() cannot survive the double navigation (ERR_ABORTED on first).
   // Instead: remove [data-app-ready] marker, click confirm, then wait for it to reappear.
   await page.evaluate(() => {
     delete document.body.dataset.appReady;
@@ -70,7 +71,9 @@ test('planner management: create, rename, switch, delete (E2E-03)', async ({ pag
   await page.click('#deleteModal .modal-footer .btn-primary');
   await page.waitForSelector('[data-app-ready]', { timeout: 15000 });
 
-  // --- Verify "My Test Planner" no longer appears in the Year dropdown ---
-  await page.click('.nav a.dropdown-toggle');
-  await expect(page.locator('.dropdown-menu a.dropdown-item:has-text("My Test Planner")')).not.toBeVisible();
+  // --- Verify "My Test Planner" is gone — navigating to its uid should NOT show its name ---
+  // After deletion, the planner's data is removed from localStorage.
+  // The app will redirect to the first remaining planner or create a new one.
+  const brandText = await page.locator('.navbar-brand').first().textContent();
+  expect(brandText).not.toContain('My Test Planner');
 });

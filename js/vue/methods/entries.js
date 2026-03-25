@@ -9,16 +9,6 @@ export const entryMethods = {
         }
     },
 
-    updateWeekColour (mindex, day, entryColour) {
-        let weekday = DateTime.local(this.year, mindex + 1, day).weekday;
-        for (let i = 1; i < (7 - weekday + 1) && day + i <= daysInMonth[mindex]; i++) {
-            let entry = this.getEntry(mindex, day + i);
-            let entryType = this.getEntryType(mindex, day + i);
-            let syncToRemote = (i == (7 - weekday) || day + i == this.daysInMonth[mindex]);
-            this.updateEntry(mindex, day + i, entry, entryType, entryColour, syncToRemote);
-        }
-    },
-
      updateEntryState  (mindex,day){
         this.api.synchroniseToLocal(false);
         this.month = mindex;
@@ -54,17 +44,17 @@ export const entryMethods = {
 
     getEntryTypeIcon (mindex, day) {
         if (this.getEntryType(mindex, day) == 1) {
-            return '<i class="fas fa-bell"></i>'
+            return '<i class="ph ph-bell"></i>'
         } else if (this.getEntryType(mindex, day) == 2) {
-            return '<i class="fas fa-birthday-cake"></i>'
+            return '<i class="ph ph-cake"></i>'
         } else if (this.getEntryType(mindex, day) == 3) {
-            return '<i class="fas fa-glass-martini"></i>'
+            return '<i class="ph ph-martini"></i>'
         } else if (this.getEntryType(mindex, day) == 4) {
-            return '<i class="fas fa-utensils"></i>'
+            return '<i class="ph ph-fork-knife"></i>'
         } else if (this.getEntryType(mindex, day) == 5) {
-            return '<i class="fas fa-graduation-cap"></i>'
+            return '<i class="ph ph-graduation-cap"></i>'
         } else if (this.getEntryType(mindex, day) == 6) {
-            return '<i class="fas fa-heartbeat"></i>'
+            return '<i class="ph ph-heartbeat"></i>'
         }
         return ''
     },

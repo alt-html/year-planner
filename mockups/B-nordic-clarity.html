@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup B — Nordic Clarity</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MOCKUP B — "NORDIC CLARITY"
+   
+   Design direction: Clean Scandinavian minimalism meets bold 
+   saturated accents. Geometric precision. Cool blue-grey base
+   with electric blue and coral accents that punch through the
+   calm. The nav slides into a pill-shaped toolbar that floats
+   at the top. Month headers use a distinct background band.
+   ============================================================ */
+
+:root {
+    --bg: #F8F9FB;
+    --surface: #FFFFFF;
+    --text: #1A1D23;
+    --text-mid: #5A6070;
+    --text-light: #9CA3B0;
+    
+    --accent: #2563EB;
+    --accent-hover: #1D4FD8;
+    --coral: #F06050;
+    --today: #2563EB;
+    --today-bg: #EFF4FF;
+    
+    --weekend: #F3F4F8;
+    --past: #FAFBFC;
+    --border: #E8EAF0;
+    --header-bg: #1A1D23;
+    --header-text: #FFFFFF;
+    
+    --c2: #FFE0E0;
+    --c3: #D5F0D5;
+    --c4: #D5E5FF;
+    --c5: #D0F0F0;
+    --c6: #FFF5D5;
+    --c7: #EAD5FF;
+    --c8: #FFE5D0;
+    
+    --radius: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; }
+
+body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    font-weight: 400;
+    color: var(--text);
+    background-color: var(--bg);
+    font-size: 13.5px;
+    line-height: 1.4;
+    padding-top: 60px;
+}
+
+/* ---- NAV: floating pill toolbar ---- */
+.yp-nav {
+    position: fixed;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    z-index: 100;
+    font-size: 0.85rem;
+}
+
+.yp-nav-title {
+    font-weight: 700;
+    color: var(--text);
+    padding: 6px 14px;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+
+.yp-nav-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+}
+
+.yp-nav button {
+    background: none;
+    border: none;
+    color: var(--text-mid);
+    padding: 7px 10px;
+    cursor: pointer;
+    border-radius: 999px;
+    transition: all 0.12s ease;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.yp-nav button:hover {
+    background: var(--bg);
+    color: var(--text);
+}
+
+.yp-nav button.active {
+    background: var(--accent);
+    color: white;
+}
+
+.yp-nav button.icon-btn {
+    padding: 7px 9px;
+    font-size: 0.9rem;
+}
+
+/* ---- GRID ---- */
+.yp-grid-wrap {
+    padding: 0 8px;
+}
+
+.yp-grid {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    background: var(--surface);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px solid var(--border);
+}
+
+.yp-grid th {
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--header-text);
+    background: var(--header-bg);
+    padding: 10px 6px;
+    text-align: left;
+}
+
+.yp-grid th:first-child {
+    border-radius: var(--radius) 0 0 0;
+    width: 80px;
+}
+.yp-grid th:last-child {
+    border-radius: 0 var(--radius) 0 0;
+}
+
+.yp-grid td {
+    padding: 3px 6px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+    height: 24px;
+    vertical-align: middle;
+}
+
+.yp-grid td:first-child {
+    color: var(--text-light);
+    font-size: 0.72rem;
+    font-weight: 500;
+    border-right: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: -0.02em;
+}
+
+/* Row states */
+.yp-grid tr.weekend td { background-color: var(--weekend); }
+.yp-grid tr.weekend td:first-child { 
+    color: var(--text-mid);
+    font-weight: 500;
+}
+
+.yp-grid tr.today td { background-color: var(--today-bg); }
+.yp-grid tr.today td:first-child {
+    color: var(--accent);
+    font-weight: 700;
+}
+.yp-grid tr.today td .day-num {
+    background: var(--accent);
+    color: white;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.yp-grid tr.past td { background-color: var(--past); }
+.yp-grid tr.past td { color: var(--text-light); }
+
+/* Last row no border */
+.yp-grid tbody tr:last-child td { border-bottom: none; }
+
+/* ---- FOOTER ---- */
+.yp-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    font-size: 0.72rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+.yp-footer a {
+    color: var(--text-light);
+    text-decoration: none;
+}
+.yp-footer a:hover {
+    color: var(--accent);
+}
+
+/* ---- DARK MODE ---- */
+body.dark {
+    --bg: #0D0F14;
+    --surface: #161920;
+    --text: #E4E7ED;
+    --text-mid: #8890A0;
+    --text-light: #555D70;
+    --accent: #4B8AFF;
+    --accent-hover: #3A73E0;
+    --coral: #FF6B5B;
+    --today: #4B8AFF;
+    --today-bg: #1A2540;
+    --weekend: #1A1D25;
+    --past: #12141A;
+    --border: #252830;
+    --header-bg: #252830;
+    --header-text: #C5CAD5;
+    --c2: #3A1818;
+    --c3: #183A1E;
+    --c4: #18253A;
+    --c5: #183535;
+    --c6: #35331A;
+    --c7: #2A1A3A;
+    --c8: #3A2A18;
+}
+
+body.dark .yp-nav {
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+/* ---- THEME TOGGLE ---- */
+.theme-toggle {
+    position: fixed;
+    bottom: 50px;
+    right: 16px;
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius);
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---- RATIONALE ---- */
+.rationale {
+    max-width: 640px;
+    margin: 40px auto;
+    padding: 32px 24px;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text-mid);
+}
+.rationale h2 {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--text);
+    margin-bottom: 16px;
+}
+.rationale ul { padding-left: 20px; }
+.rationale li { margin-bottom: 6px; }
+.rationale strong { color: var(--text); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="yp-nav">
+    <div class="yp-nav-title">Year Planner</div>
+    <div class="yp-nav-divider"></div>
+    <button><i class="fa-solid fa-chevron-left" style="font-size:0.65rem"></i></button>
+    <button class="active">2026</button>
+    <button><i class="fa-solid fa-chevron-right" style="font-size:0.65rem"></i></button>
+    <div class="yp-nav-divider"></div>
+    <button class="icon-btn" title="Share"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+    <button class="icon-btn" title="Menu"><i class="fa-solid fa-bars"></i></button>
+    <button class="icon-btn" title="Sign in"><i class="fa-solid fa-right-to-bracket"></i></button>
+</nav>
+
+<!-- GRID -->
+<div class="yp-grid-wrap">
+<table class="yp-grid">
+<thead>
+<tr>
+    <th></th>
+    <th>Jan</th>
+    <th>Feb</th>
+    <th>Mar</th>
+    <th>Apr</th>
+    <th>May</th>
+    <th>Jun</th>
+    <th>Jul</th>
+    <th>Aug</th>
+    <th>Sep</th>
+    <th>Oct</th>
+    <th>Nov</th>
+    <th>Dec</th>
+</tr>
+</thead>
+<tbody>
+<tr class="past"><td>Thu</td><td>1</td><td></td><td></td><td>1</td><td></td><td>1</td><td></td><td></td><td>1</td><td>1</td><td></td><td>1</td></tr>
+<tr class="past"><td>Fri</td><td>2</td><td></td><td></td><td>2</td><td>1</td><td>2</td><td></td><td></td><td>2</td><td>2</td><td></td><td>2</td></tr>
+<tr class="past weekend"><td>Sat</td><td>3</td><td></td><td></td><td>3</td><td>2</td><td>3</td><td></td><td>1</td><td>3</td><td>3</td><td></td><td>3</td></tr>
+<tr class="past weekend"><td>Sun</td><td>4</td><td>1</td><td>1</td><td>4</td><td>3</td><td>4</td><td></td><td>2</td><td>4</td><td>4</td><td>1</td><td>4</td></tr>
+<tr class="past"><td>Mon</td><td>5</td><td>2</td><td>2</td><td>5</td><td>4</td><td>5</td><td></td><td>3</td><td>5</td><td>5</td><td>2</td><td>5</td></tr>
+<tr class="past"><td>Tue</td><td>6</td><td>3</td><td>3</td><td>6</td><td>5</td><td>6</td><td></td><td>4</td><td>6</td><td>6</td><td>3</td><td>6</td></tr>
+<tr class="past"><td>Wed</td><td>7</td><td>4</td><td>4</td><td>7</td><td>6</td><td>7</td><td>1</td><td>5</td><td>7</td><td>7</td><td>4</td><td>7</td></tr>
+<tr class="past"><td>Thu</td><td>8</td><td>5</td><td>5</td><td>8</td><td>7</td><td>8</td><td>2</td><td>6</td><td>8</td><td>8</td><td>5</td><td>8</td></tr>
+<tr class="past"><td>Fri</td><td>9</td><td>6</td><td>6</td><td>9</td><td>8</td><td>9</td><td>3</td><td>7</td><td>9</td><td>9</td><td>6</td><td>9</td></tr>
+<tr class="past weekend"><td>Sat</td><td>10</td><td>7</td><td>7</td><td>10</td><td>9</td><td>10</td><td>4</td><td>8</td><td>10</td><td>10</td><td>7</td><td>10</td></tr>
+<tr class="past weekend"><td>Sun</td><td>11</td><td>8</td><td>8</td><td>11</td><td>10</td><td>11</td><td>5</td><td>9</td><td>11</td><td>11</td><td>8</td><td>11</td></tr>
+<tr class="past"><td>Mon</td><td>12</td><td>9</td><td>9</td><td>12</td><td>11</td><td>12</td><td>6</td><td>10</td><td>12</td><td>12</td><td>9</td><td>12</td></tr>
+<tr class="past"><td>Tue</td><td>13</td><td>10</td><td>10</td><td>13</td><td>12</td><td>13</td><td>7</td><td>11</td><td>13</td><td>13</td><td>10</td><td>13</td></tr>
+<tr class="today"><td>Sat</td><td>17</td><td>14</td><td><span class="day-num">14</span></td><td>17</td><td>16</td><td>17</td><td>11</td><td>15</td><td>17</td><td>17</td><td>14</td><td>17</td></tr>
+<tr class="weekend"><td>Sun</td><td>18</td><td>15</td><td>15</td><td>18</td><td>17</td><td>18</td><td>12</td><td>16</td><td>18</td><td>18</td><td>15</td><td>18</td></tr>
+<tr><td>Mon</td><td>19</td><td>16</td><td>16</td><td>19</td><td>18</td><td>19</td><td>13</td><td>17</td><td>19</td><td>19</td><td>16</td><td>19</td></tr>
+<tr><td>Tue</td><td>20</td><td>17</td><td>17</td><td>20</td><td>19</td><td>20</td><td>14</td><td>18</td><td>20</td><td>20</td><td>17</td><td>20</td></tr>
+<tr><td>Wed</td><td>21</td><td>18</td><td>18</td><td>21</td><td>20</td><td>21</td><td>15</td><td>19</td><td>21</td><td>21</td><td>18</td><td>21</td></tr>
+<tr><td>Thu</td><td>22</td><td>19</td><td>19</td><td>22</td><td>21</td><td>22</td><td>16</td><td>20</td><td>22</td><td>22</td><td>19</td><td>22</td></tr>
+<tr><td>Fri</td><td>23</td><td>20</td><td>20</td><td>23</td><td>22</td><td>23</td><td>17</td><td>21</td><td>23</td><td>23</td><td>20</td><td>23</td></tr>
+<tr class="weekend"><td>Sat</td><td>24</td><td>21</td><td>21</td><td>24</td><td>23</td><td>24</td><td>18</td><td>22</td><td>24</td><td>24</td><td>21</td><td>24</td></tr>
+<tr class="weekend"><td>Sun</td><td>25</td><td>22</td><td>22</td><td>25</td><td>24</td><td>25</td><td>19</td><td>23</td><td>25</td><td>25</td><td>22</td><td>25</td></tr>
+<tr><td>Mon</td><td>26</td><td>23</td><td>23</td><td>26</td><td>25</td><td>26</td><td>20</td><td>24</td><td>26</td><td>26</td><td>23</td><td>26</td></tr>
+<tr><td>Tue</td><td>27</td><td>24</td><td>24</td><td>27</td><td>26</td><td>27</td><td>21</td><td>25</td><td>27</td><td>27</td><td>24</td><td>27</td></tr>
+<tr><td>Wed</td><td>28</td><td>25</td><td>25</td><td>28</td><td>27</td><td>28</td><td>22</td><td>26</td><td>28</td><td>28</td><td>25</td><td>28</td></tr>
+<tr><td>Thu</td><td>29</td><td>26</td><td>26</td><td>29</td><td>28</td><td>29</td><td>23</td><td>27</td><td>29</td><td>29</td><td>26</td><td>29</td></tr>
+<tr><td>Fri</td><td>30</td><td>27</td><td>27</td><td>30</td><td>29</td><td>30</td><td>24</td><td>28</td><td>30</td><td>30</td><td>27</td><td>30</td></tr>
+<tr class="weekend"><td>Sat</td><td>31</td><td>28</td><td>28</td><td></td><td>30</td><td></td><td>25</td><td>29</td><td></td><td>31</td><td>28</td><td>31</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- FOOTER -->
+<footer class="yp-footer">
+    <span>English</span>
+    <span>© 2021, Craig Parravicini · CC BY-NC-SA</span>
+</footer>
+
+<button class="theme-toggle" onclick="document.body.classList.toggle('dark')" title="Toggle theme">
+    <i class="fa-solid fa-circle-half-stroke"></i>
+</button>
+
+<!-- RATIONALE -->
+<div class="rationale">
+    <h2>B — "Nordic Clarity"</h2>
+    <p><strong>Direction:</strong> Scandinavian minimalism with bold precision accents.</p>
+    <ul>
+        <li><strong>Typography:</strong> DM Sans — geometric and warm but not generic. JetBrains Mono for the day-of-week column — gives it a structured, engineered feel. Abbreviated day/month names save space and look cleaner.</li>
+        <li><strong>Palette:</strong> Cool off-white (#F8F9FB) with pure white grid on top. Dark header band (#1A1D23) gives the months strong visual weight. Electric blue accent (#2563EB) for today and interactive elements.</li>
+        <li><strong>Nav:</strong> Floating pill toolbar centred at top — like a macOS toolbar or Figma's floating UI. Year navigation with chevrons, tools as icon-only buttons. The whole bar is self-contained and feels modern.</li>
+        <li><strong>Grid:</strong> Rounded corners, subtle shadow — feels like a card, not a spreadsheet. Dark header row creates clear hierarchy.</li>
+        <li><strong>Today:</strong> Blue rounded-square badge on the day number — consistent with the rounded aesthetic.</li>
+        <li><strong>Dark mode:</strong> Deep navy-black (#0D0F14) — feels like an IDE or pro tool, not just an inversion.</li>
+    </ul>
+</div>
+
+</body>
+</html>

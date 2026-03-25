@@ -10,10 +10,9 @@ A simple, fast year planner that works offline with local storage, supports 10 l
 
 ## Current State
 
-**Completed Milestones:**
-- ✅ **M001: Migration** (2026-03-12) — Test infrastructure, E2E coverage, security hardening, and HTML composition pipeline
+**Active Milestone:** None — awaiting next milestone planning
 
-**Active Milestone:** All milestones complete
+Two switchable visual themes (Ink & Paper / Crisp & Clear) with light and dark modes are fully polished. Grid fills the viewport with flex layout, columns align precisely, and a marker/highlighter mode enables interactive cell colouring via the vertical rail.
 
 ## Architecture / Key Patterns
 
@@ -21,6 +20,12 @@ A simple, fast year planner that works offline with local storage, supports 10 l
 - Vue 3 (Options API) + Vue-i18n + Luxon + Bootstrap 4 loaded from CDN
 - @alt-javascript/cdi for dependency injection (constructor wiring via `contexts.js`)
 - ES6 modules with bare CDN imports — no bundler, no build step
+
+### Visual Theming
+- Two themes via CSS custom properties on `<body data-theme="ink|nordic">`
+- Dark mode via `.yp-dark` class on `<body>`
+- Theme stored in `localStorage('style_theme')`
+- Design mockups in `/mockups/combined-themes.html`
 
 ### Test Infrastructure
 - Playwright test harness in `.tests/` with 14 passing tests (smoke + E2E)
@@ -33,7 +38,7 @@ A simple, fast year planner that works offline with local storage, supports 10 l
 - `generate-sri.mjs` for automated hash regeneration
 
 ### HTML Composition
-- 768-line `index.html` decomposed into 18 fragments in `.compose/`
+- `index.html` decomposed into 18 fragments in `.compose/`
 - GNU m4 with `-P` flag assembles fragments via `.compose/build.sh`
 - Composed output is byte-identical to committed `index.html`
 
@@ -53,6 +58,8 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 - [x] M002: JS Modularisation — Decomposed monolithic Vue controller, model, and API into focused ES6 modules; removed superagent, lodash, SquareUp CDN dependencies
 - [x] M003: Storage Modernisation — Migrated all persistence from cookies to localStorage, removed consent modal and @alt-javascript/cookies CDN dependency
 - [x] M004: Auth & API Contract — Replaced bespoke auth with federated sign-in (Google/Apple/Microsoft), defined OpenAPI 3.x sync spec, aligned sync client
+- [x] M005: UI/UX Design Research — Created 3 design mockups, applied hybrid of Ink & Paper + Crisp & Clear as dual-theme system
+- [x] M006: UI/UX Polish & Finalisation — Flex-fill grid, column alignment fix, marker/highlighter mode, modal cleanup
 
 ## Running Locally
 ```bash
