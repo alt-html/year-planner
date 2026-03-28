@@ -5,6 +5,8 @@ export const plannerState = {
     entry: '',
     entryType : 0,
     entryColour : 0,
+    entryNotes : '',
+    entryEmoji : '',
     shareUrl: window.location.origin,
     planner : null,
     identities : null,

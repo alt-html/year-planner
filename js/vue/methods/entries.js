@@ -42,6 +42,22 @@ export const entryMethods = {
         }
     },
 
+    getEntryNotes (mindex, day) {
+        if (this.planner[mindex] && this.planner[mindex]['' + day]) {
+            return this.planner[mindex]['' + day]['' + 3] || ''
+        } else {
+            return ''
+        }
+    },
+
+    getEntryEmoji (mindex, day) {
+        if (this.planner[mindex] && this.planner[mindex]['' + day]) {
+            return this.planner[mindex]['' + day]['' + 4] || ''
+        } else {
+            return ''
+        }
+    },
+
     getEntryTypeIcon (mindex, day) {
         if (this.getEntryType(mindex, day) == 1) {
             return '<i class="ph ph-bell"></i>'

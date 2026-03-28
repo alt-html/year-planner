@@ -167,22 +167,52 @@ export default class StorageLocal {
                             this.model.planner[m]['' + d]['' + 1] = planner[m]['' + d]['' + 1];
                         }
                     }
+                    if (planner[m]?.['' + d]?.['' + 3]) {
+                        if (this.model.planner[m]?.['' + d]?.['' + 3] && this.model.planner[m]?.['' + d]?.['' + 3] != planner[m]['' + d]['' + 3]) {
+                            if (!this.model.planner[m]) {
+                                this.model.planner[m] = {}
+                            }
+                            if (!this.model.planner[m]?.['' + d]) {
+                                this.model.planner[m]['' + d] = {}
+                            }
+                            this.model.planner[m]['' + d]['' + 3] = this.model.planner[m]['' + d]['' + 3] + '\n' + planner[m]['' + d]['' + 3];
+                        } else {
+                            if (!this.model.planner[m]) {
+                                this.model.planner[m] = {}
+                            }
+                            if (!this.model.planner[m]?.['' + d]) {
+                                this.model.planner[m]['' + d] = {}
+                            }
+                            this.model.planner[m]['' + d]['' + 3] = planner[m]['' + d]['' + 3];
+                        }
+                    }
+                    if (planner[m]?.['' + d]?.['' + 4]) {
+                        if (!this.model.planner[m]) {
+                            this.model.planner[m] = {}
+                        }
+                        if (!this.model.planner[m]?.['' + d]) {
+                            this.model.planner[m]['' + d] = {}
+                        }
+                        this.model.planner[m]['' + d]['' + 4] = planner[m]['' + d]['' + 4];
+                    }
                 }
             }
         }
         this.setLocalPlanner(this.model.uid, this.model.year, this.model.planner);
         this.setLocalPlannerLastUpdated(this.model.uid, this.model.year, Math.floor(DateTime.now().ts / 1000));
     }
-    updateLocalEntry (mindex, day, entry, entryType, entryColour) {
+    updateLocalEntry (mindex, day, entry, entryType, entryColour, notes = '', emoji = '') {
         if (!this.model.planner[mindex]) {
             this.model.planner[mindex] = {};
         }
         if (!this.model.planner[mindex]['' + day]) {
-            this.model.planner[mindex]['' + day] = {0: entryType, 1: entry, 2: entryColour};
+            this.model.planner[mindex]['' + day] = {0: entryType, 1: entry, 2: entryColour, 3: notes, 4: emoji};
         }
         this.model.planner[mindex]['' + day]['' + 0] = entryType;
         this.model.planner[mindex]['' + day]['' + 1] = entry;
         this.model.planner[mindex]['' + day]['' + 2] = entryColour;
+        this.model.planner[mindex]['' + day]['' + 3] = notes;
+        this.model.planner[mindex]['' + day]['' + 4] = emoji;
         this.model.entryColour = entryColour;
 
         this.model.updated = DateTime.now().ts;

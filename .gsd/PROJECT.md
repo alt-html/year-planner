@@ -12,13 +12,16 @@ A simple, fast year planner that works offline with local storage, supports 10 l
 
 **Active Milestone:** None — awaiting next milestone planning
 
+M007 (Boot v3 Uplift) is complete. The entire @alt-javascript CDN stack has been upgraded from v2 to v3.0.x. `main.js` uses `vueStarter` from boot-vue@3; `config.js` uses `ProfileAwareConfig` + `BrowserProfileResolver`; `contexts.js` uses `Context`/`Singleton` helpers from cdi@3. All 14 E2E tests pass with fully offline CDN fixture interception via a shared `cdn-routes.js` helper.
+
 Two switchable visual themes (Ink & Paper / Crisp & Clear) with light and dark modes are fully polished. Grid fills the viewport with flex layout, columns align precisely, and a marker/highlighter mode enables interactive cell colouring via the vertical rail.
 
 ## Architecture / Key Patterns
 
 ### Runtime Stack
 - Vue 3 (Options API) + Vue-i18n + Luxon + Bootstrap 4 loaded from CDN
-- @alt-javascript/cdi for dependency injection (constructor wiring via `contexts.js`)
+- @alt-javascript v3 (common, config, logger, cdi, boot, boot-vue) for CDI and app bootstrap
+- `vueStarter` from boot-vue@3 as the app entry point; `ProfileAwareConfig` + `BrowserProfileResolver` for environment config; `Context`/`Singleton` for CDI wiring
 - ES6 modules with bare CDN imports — no bundler, no build step
 
 ### Visual Theming
@@ -29,7 +32,7 @@ Two switchable visual themes (Ink & Paper / Crisp & Clear) with light and dark m
 
 ### Test Infrastructure
 - Playwright test harness in `.tests/` with 14 passing tests (smoke + E2E)
-- CDN fixture interception for deterministic offline testing
+- CDN fixture interception via shared `cdn-routes.js` helper (used by both per-test `cdn.js` fixture and `globalSetup.js`) — all 7 v3 ESM bundles + lodash-es served locally
 - `data-app-ready` attribute for reliable test synchronisation
 - GitHub Actions CI workflow at `.github/workflows/e2e.yml`
 
@@ -60,6 +63,7 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 - [x] M004: Auth & API Contract — Replaced bespoke auth with federated sign-in (Google/Apple/Microsoft), defined OpenAPI 3.x sync spec, aligned sync client
 - [x] M005: UI/UX Design Research — Created 3 design mockups, applied hybrid of Ink & Paper + Crisp & Clear as dual-theme system
 - [x] M006: UI/UX Polish & Finalisation — Flex-fill grid, column alignment fix, marker/highlighter mode, modal cleanup
+- [x] M007: Boot v3 Uplift — Replaced @alt-javascript v2 CDN stack with v3.0.x; vueStarter/ProfileAwareConfig/Context+Singleton pattern; fully offline E2E fixture coverage
 
 ## Running Locally
 ```bash
