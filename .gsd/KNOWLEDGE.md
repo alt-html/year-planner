@@ -33,3 +33,9 @@ The `.yp-entry-text` class had `min-height` and `resize: vertical` rules targeti
 
 ### updateEntry call sites: notes and emoji must come before the syncToRemote boolean
 `updateEntry(mindex, day, entry, entryType, colour, notes, emoji, syncToRemote)` — the boolean sync flag is last. There are 10 call sites in entry.html (9 colour dots + 1 save button) and 1 in scripts.html (applyMarkerToCell). When adding new parameters in the future, insert before syncToRemote or all call sites break silently (boolean coerces to string).
+
+### Forward references in the scripts.html IIFE: use typeof guard for mutual exclusion
+`scripts.html` is a single large IIFE. The emoji stamp mode block is declared after the marker mode block. Inside `activateMarkerMode()`, calling `deactivateEmojiMode()` is a forward reference. Even though JS var-hoists function declarations, use `if (typeof deactivateEmojiMode === 'function' && emojiActive) deactivateEmojiMode();` as the safe pattern. This avoids ReferenceError if the emoji block is ever removed or conditionally included.
+
+### New rail modes: mirror the marker mode pattern exactly
+The marker mode pattern (flyout button → flyout div → activate/deactivate functions → capture-phase mousedown/click/mousemove/mouseup handlers → outside-click close guard) is the established rail mode template. New rail modes should follow it exactly: same CSS class naming (`rail-flyout`, `flyout-active`, `open`, `active`), same capture-phase intercept approach, same DOM traversal via `applyXxxToCell`. The outside-click guard must be extended to include `!emojiActive` and `!emojiFlyout.contains(e.target)` checks for each new mode added — otherwise clicking into one mode's flyout will collapse a parallel mode.

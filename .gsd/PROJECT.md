@@ -10,11 +10,9 @@ A simple, fast year planner that works offline with local storage, supports 10 l
 
 ## Current State
 
-**Active Milestone:** M008 — Day data model extension (in progress, S01 ✅, S02 ✅, S03 pending)
+**Active Milestone:** M008 — Day data model extension (complete — all 3 slices done)
 
-The entry modal has been redesigned with three distinct fields: a tagline input (≤32 chars), a notes textarea, and an emoji input. Cell display now shows emoji + tagline preview in a single span. The `updateEntry` signature was extended to 8 args (notes, emoji before syncToRemote). All 14 E2E tests pass.
-
-S03 (Emoji stamp rail mode) is the remaining slice.
+The day data model has been extended with tagline (key `'1'`, ≤32 chars), long-form notes (key `'3'`), and a single emoji stamp (key `'4'`). The entry modal has three distinct fields (tagline, notes, emoji). Cells show emoji + tagline preview. The left rail has a fully functional emoji stamp mode: tabbed flyout (60 emoji across 5 categories), eraser, click/drag painting, mutually exclusive with the colour marker mode. All 14 E2E tests pass.
 
 ## Architecture / Key Patterns
 
@@ -64,6 +62,7 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 - [x] M005: UI/UX Design Research — Created 3 design mockups, applied hybrid of Ink & Paper + Crisp & Clear as dual-theme system
 - [x] M006: UI/UX Polish & Finalisation — Flex-fill grid, column alignment fix, marker/highlighter mode, modal cleanup
 - [x] M007: Boot v3 Uplift — Replaced @alt-javascript v2 CDN stack with v3.0.x; vueStarter/ProfileAwareConfig/Context+Singleton pattern; fully offline E2E fixture coverage
+- [x] M008: Day Data Model Extension — Extended day schema with tagline, notes, and emoji; redesigned entry modal; emoji stamp rail mode with tabbed picker and drag-paint
 
 ## Running Locally
 ```bash

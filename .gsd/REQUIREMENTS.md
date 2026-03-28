@@ -113,14 +113,14 @@
 ### MOD-10 — All 14 existing Playwright E2E tests pass after refactoring
 
 - Class: quality-attribute
-- Status: active
+- Status: validated
 - Description: The refactoring is behaviour-preserving. All 14 existing Playwright E2E tests (boot, entry CRUD, planner management, sync error, tooltip XSS, compose, harness) must pass without modification.
 - Why it matters: The E2E tests are the safety net proving no regressions. If they pass, the refactoring preserved behaviour.
 - Source: inferred
 - Primary owning slice: M002/S05
 - Supporting slices: M002/S01, M002/S02, M002/S03, M002/S04
-- Validation: unmapped
-- Notes: Tests run via `cd .tests && npx playwright test`. Currently 14 tests, ~12s.
+- Validation: Validated in M008 — all 14 Playwright E2E tests passed at completion of each M008 slice (S01: 6.3s, S02: 6.2s, S03: 6.2s; final verification: 7.0s). Schema extension was fully additive and backward-compatible; no test files were modified.
+- Notes: Tests run via `cd .tests && npx playwright test`. Currently 14 tests, ~7s.
 
 ### STO-01 — Replace cookie-based persistence with localStorage
 
@@ -423,7 +423,7 @@
 | MOD-07 | core-capability | active | M002/S04 | none | unmapped |
 | MOD-08 | core-capability | active | M002/S02 | M002/S05 | unmapped |
 | MOD-09 | core-capability | active | M002/S05 | none | unmapped |
-| MOD-10 | quality-attribute | active | M002/S05 | M002/S01-S04 | unmapped |
+| MOD-10 | quality-attribute | validated | M002/S05 | M002/S01-S04 | M008 — 14 E2E tests pass across all 3 slices |
 | STO-01 | core-capability | active | M003 | none | unmapped |
 | STO-02 | core-capability | active | M003 | none | unmapped |
 | STO-03 | constraint | active | M003 | none | unmapped |
