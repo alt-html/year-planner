@@ -228,8 +228,7 @@
                                              v-on:click="updateEntryState(mindex,n)">
                                             <a v-if="cyear == year && cmonth==mindex+1 && cday == n" class="yp-anchor" id="today" ></a>
                                             <span class="yp-cell-text" >{{DateTime.local(year, mindex+1, n).setLocale(lang).toLocaleString({day:'numeric'})}}&nbsp;</span>
-                                            <span class="yp-cell-text" data-toggle="tooltip" data-placement="bottom" :title="getEntry(mindex,n).trimStart()">
-                                                    {{getEntry(mindex,n).trimStart().substr(0,20)}}</span><span class="yp-cell-text">{{getEntry(mindex,n).trimStart().substr(20)}}</span>
+                                            <span class="yp-cell-text" data-toggle="tooltip" data-placement="bottom" :title="(getEntryEmoji(mindex,n) ? getEntryEmoji(mindex,n)+' ' : '')+getEntry(mindex,n).trimStart()">{{(getEntryEmoji(mindex,n) ? getEntryEmoji(mindex,n)+' ' : '')+getEntry(mindex,n).trimStart()}}</span>
 
                                         </div>
                                         <template v-if="37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1 > 0">
@@ -257,23 +256,26 @@
                         <span id="entryModalLabel">{{$t('month.'+monthsOfYear[month])+' '+day}}</span>
                         <button type="button" class="yp-entry-close" data-dismiss="modal" aria-label="Close"><i class="ph ph-x"></i></button>
                     </div>
-                    <textarea v-bind:placeholder="$t('label.entryplaceholder')" class="yp-entry-text" v-model="entry" id="yp-entry-textarea" rows="4" maxlength="256"
-                              v-bind:class="'yp-cell-c'+getEntryColour(month,day)"></textarea>
+                    <input type="text" v-model="entry" id="yp-entry-textarea" maxlength="32" class="yp-entry-text" v-bind:class="'yp-cell-c'+getEntryColour(month,day)" v-bind:placeholder="$t('label.taglineplaceholder')">
+                    <label class="yp-entry-field-label" for="yp-notes-textarea">{{$t('label.notesplaceholder')}}</label>
+                    <textarea v-model="entryNotes" id="yp-notes-textarea" class="yp-entry-notes" rows="3" v-bind:placeholder="$t('label.notesplaceholder')"></textarea>
+                    <label class="yp-entry-field-label" for="yp-emoji-input">{{$t('label.emojiplaceholder')}}</label>
+                    <input type="text" v-model="entryEmoji" id="yp-emoji-input" maxlength="4" class="yp-entry-emoji" v-bind:placeholder="$t('label.emojiplaceholder')">
                     <div class="yp-entry-tools">
                         <div class="yp-colour-dots">
-                            <button type="button" class="yp-dot yp-dot-clear" v-on:click="updateEntry(month,day,entry,entryType,0,true)" title="Clear"></button>
-                            <button type="button" class="yp-dot yp-dot-c1" v-on:click="updateEntry(month,day,entry,entryType,1,true)"></button>
-                            <button type="button" class="yp-dot yp-dot-c2" v-on:click="updateEntry(month,day,entry,entryType,2,true)"></button>
-                            <button type="button" class="yp-dot yp-dot-c3" v-on:click="updateEntry(month,day,entry,entryType,3,true)"></button>
-                            <button type="button" class="yp-dot yp-dot-c4" v-on:click="updateEntry(month,day,entry,entryType,4,true)"></button>
-                            <button type="button" class="yp-dot yp-dot-c5" v-on:click="updateEntry(month,day,entry,entryType,5,true)"></button>
-                            <button type="button" class="yp-dot yp-dot-c6" v-on:click="updateEntry(month,day,entry,entryType,6,true)"></button>
-                            <button type="button" class="yp-dot yp-dot-c7" v-on:click="updateEntry(month,day,entry,entryType,7,true)"></button>
-                            <button type="button" class="yp-dot yp-dot-c8" v-on:click="updateEntry(month,day,entry,entryType,8,true)"></button>
+                            <button type="button" class="yp-dot yp-dot-clear" v-on:click="updateEntry(month,day,entry,entryType,0,entryNotes,entryEmoji,true)" title="Clear"></button>
+                            <button type="button" class="yp-dot yp-dot-c1" v-on:click="updateEntry(month,day,entry,entryType,1,entryNotes,entryEmoji,true)"></button>
+                            <button type="button" class="yp-dot yp-dot-c2" v-on:click="updateEntry(month,day,entry,entryType,2,entryNotes,entryEmoji,true)"></button>
+                            <button type="button" class="yp-dot yp-dot-c3" v-on:click="updateEntry(month,day,entry,entryType,3,entryNotes,entryEmoji,true)"></button>
+                            <button type="button" class="yp-dot yp-dot-c4" v-on:click="updateEntry(month,day,entry,entryType,4,entryNotes,entryEmoji,true)"></button>
+                            <button type="button" class="yp-dot yp-dot-c5" v-on:click="updateEntry(month,day,entry,entryType,5,entryNotes,entryEmoji,true)"></button>
+                            <button type="button" class="yp-dot yp-dot-c6" v-on:click="updateEntry(month,day,entry,entryType,6,entryNotes,entryEmoji,true)"></button>
+                            <button type="button" class="yp-dot yp-dot-c7" v-on:click="updateEntry(month,day,entry,entryType,7,entryNotes,entryEmoji,true)"></button>
+                            <button type="button" class="yp-dot yp-dot-c8" v-on:click="updateEntry(month,day,entry,entryType,8,entryNotes,entryEmoji,true)"></button>
                         </div>
                         <div class="yp-entry-actions">
                             <button type="button" class="yp-action-dismiss" data-dismiss="modal">{{$t('label.close')}}</button>
-                            <button type="button" class="yp-action-save" data-dismiss="modal" v-on:click="updateEntry(month,day,entry,entryType,entryColour,true)">{{$t('label.update')}}</button>
+                            <button type="button" class="yp-action-save" data-dismiss="modal" v-on:click="updateEntry(month,day,entry,entryType,entryColour,entryNotes,entryEmoji,true)">{{$t('label.update')}}</button>
                         </div>
                     </div>
                 </div>
@@ -683,7 +685,9 @@
             // Use the same updateEntry path as the modal
             var entry = vueInstance.getEntry(mindex, day);
             var entryType = vueInstance.getEntryType(mindex, day);
-            vueInstance.updateEntry(mindex, day, entry, entryType, markerColour, true);
+            var notes = vueInstance.getEntryNotes(mindex, day);
+            var emoji = vueInstance.getEntryEmoji(mindex, day);
+            vueInstance.updateEntry(mindex, day, entry, entryType, markerColour, notes, emoji, true);
         }
 
         // Intercept grid cell interactions in marker mode

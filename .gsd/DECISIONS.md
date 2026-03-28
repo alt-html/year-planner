@@ -1,5 +1,14 @@
 # Decisions
 
+## D010 — Day object schema extended with keys '3' (notes) and '4' (emoji); merge semantics defined
+
+- **Date:** 2026-03-28
+- **Milestone:** M008
+- **Context:** Extending the day data model requires defining how conflicting values are resolved during importLocalPlanner (e.g. when syncing two planners that both have entries for the same day).
+- **Decision:** Key '3' (notes) uses concat-with-newline merge — same semantics as key '1' (tagline). Key '4' (emoji) uses last-write-wins — emoji doesn't accumulate across imports.
+- **Rationale:** Notes are prose content that the user may have written independently in two copies; concatenating preserves both. Emoji is a single decorative stamp; overwriting is the expected behaviour and accumulation would be confusing.
+- **Trade-offs:** Concat-merge for notes can produce duplicates if the same planner is imported twice. Last-write-wins for emoji means the most recently imported planner's emoji wins silently.
+
 ## D001 — Selected m4 for HTML composition over PostHTML, Nunjucks, and nginx SSI
 
 - **Date:** 2026-03-12

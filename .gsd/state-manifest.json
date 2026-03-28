@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-03-28T09:29:57.864Z",
+  "exported_at": "2026-03-28T09:45:56.807Z",
   "milestones": [
     {
       "id": "M001",
@@ -692,14 +692,14 @@
       "milestone_id": "M008",
       "id": "S01",
       "title": "Data layer — extend day schema",
-      "status": "pending",
+      "status": "complete",
       "risk": "low",
       "depends": [],
       "demo": "After this: new getters work, all fields persist to localStorage, 14 E2E tests green.",
       "created_at": "2026-03-28T09:10:10.222Z",
-      "completed_at": null,
-      "full_summary_md": "",
-      "full_uat_md": "",
+      "completed_at": "2026-03-28T09:31:27.187Z",
+      "full_summary_md": "---\nid: S01\nparent: M008\nmilestone: M008\nprovides:\n  - entryNotes and entryEmoji reactive state in plannerState\n  - getEntryNotes(mindex, day) and getEntryEmoji(mindex, day) getter methods\n  - StorageLocal persists notes to key '3' and emoji to key '4' in localStorage\n  - importLocalPlanner merges '3' (concat-newline) and '4' (last-write-wins)\nrequires:\n  []\naffects:\n  - S02\n  - S03\nkey_files:\n  - js/vue/model/planner.js\n  - js/vue/methods/entries.js\n  - js/service/StorageLocal.js\nkey_decisions:\n  - Key '3' (notes) uses concat-with-newline merge in importLocalPlanner — same pattern as key '1' (tagline). Key '4' (emoji) uses last-write-wins — emoji doesn't accumulate across imports.\n  - notes and emoji params inserted before syncToRemote in entries.js updateEntry, and there is no syncToRemote param in StorageLocal — preserving all existing 6-arg template call sites unchanged.\npatterns_established:\n  - Day object uses terse numeric string keys: '0'=entryType, '1'=tagline, '2'=colour, '3'=notes, '4'=emoji. New fields are always appended as optional params with default '' to maintain backward compat with existing callers.\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M008/slices/S01/tasks/T01-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-03-28T09:31:27.188Z\nblocker_discovered: false\n---\n\n# S01: Data layer — extend day schema\n\n**Extended the day data model with notes (key '3') and emoji (key '4') across model state, getters, write path, and import — all 14 E2E tests pass.**\n\n## What Happened\n\nSingle task (T01) covered all four change sites additively. `plannerState` in `js/vue/model/planner.js` gained two new reactive fields: `entryNotes: ''` and `entryEmoji: ''`. `js/vue/methods/entries.js` gained `getEntryNotes` and `getEntryEmoji` getter methods; `updateEntryState` now populates both fields from the stored day object; `updateEntry` signature was extended with optional `notes = ''` and `emoji = ''` params inserted before the existing `syncToRemote` parameter so all 6-arg callers remain valid. `js/service/StorageLocal.js`'s `updateLocalEntry` was extended to accept `notes = ''` and `emoji = ''` (after `entryColour`), write them to keys `'3'` and `'4'` on both the initial object literal and the individual field assignments. `importLocalPlanner` was extended to merge key `'3'` with the same concat-with-newline strategy used for key `'1'` (tagline), and key `'4'` with last-write-wins (emoji doesn't accumulate). No template files, test files, or existing callers were modified.\n\n## Verification\n\nRan `cd .tests && npx playwright test` twice — at task completion (6.3s) and again at slice close (6.1s). Both: 14 passed, 0 failed. All existing E2E tests (entry CRUD, planner management, sync error, tooltip XSS, compose, harness) remained green with no modifications.\n\n## Requirements Advanced\n\n- MOD-10 — All 14 E2E tests pass after additive schema extension — no regressions introduced.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nNone. Implementation matched the plan exactly including parameter ordering, merge semantics, and zero template changes.\n\n## Known Limitations\n\nThe `updateEntry` in entries.js still uses the 6-arg signature from the template (entry, entryType, entryColour, syncToRemote) — notes and emoji are not yet wired from any UI call site. That wiring belongs to S02 (cell display + entry modal).\n\n## Follow-ups\n\nS02 must add notes/emoji inputs to the entry modal and wire the updateEntry call to pass them. The `entryNotes`/`entryEmoji` reactive state is ready; getters are available as `getEntryNotes(mindex, day)` and `getEntryEmoji(mindex, day)`.\n\n## Files Created/Modified\n\n- `js/vue/model/planner.js` — Added entryNotes: '' and entryEmoji: '' reactive fields to plannerState\n- `js/vue/methods/entries.js` — Added getEntryNotes/getEntryEmoji getters; expanded updateEntryState to read keys '3'/'4'; extended updateEntry with optional notes/emoji params before syncToRemote\n- `js/service/StorageLocal.js` — Extended updateLocalEntry to write keys '3' (notes) and '4' (emoji); extended importLocalPlanner to merge '3' with concat-newline and '4' with last-write-wins\n",
+      "full_uat_md": "# S01: Data layer — extend day schema — UAT\n\n**Milestone:** M008\n**Written:** 2026-03-28T09:31:27.188Z\n\n## UAT: S01 — Data layer — extend day schema\n\n### Preconditions\n- App served from project root (or via `.tests` harness on port 8080)\n- localStorage cleared before each test case\n- Browser devtools open to Application > localStorage for inspection\n\n---\n\n### TC-01: New reactive fields exist in plannerState\n\n**Steps:**\n1. Open the app in a browser\n2. Open browser console\n3. Run: `document.querySelector('[data-app-ready]') !== null` — should return `true`\n4. Confirm the Vue app has mounted\n\n**Expected:** App boots without JS errors. The `data-app-ready` attribute is present on the mount element.\n\n---\n\n### TC-02: updateEntry persists notes and emoji to localStorage\n\n**Steps:**\n1. Open app, clear localStorage\n2. In console, call the Vue instance's updateEntry with notes and emoji:\n   - Identify a mounted day cell (e.g. month 0, day 1)\n   - Call `app.updateEntry(0, 1, 'Test entry', 1, '#ff0000', false)` (existing 6-arg form — notes/emoji default to '')\n3. Inspect localStorage key for the planner\n4. Parse the stored JSON and examine `planner[0][\"1\"]`\n\n**Expected:** Entry stored with shape `{0: 1, 1: 'Test entry', 2: '#ff0000', 3: '', 4: ''}` — keys '3' and '4' present with empty string values.\n\n---\n\n### TC-03: notes (key '3') and emoji (key '4') round-trip through localStorage\n\n**Steps:**\n1. Directly set a day entry in the planner model via `updateLocalEntry(0, 5, 'Birthday', 1, '#00ff00', 'Planning notes here', '🎂')`\n2. Inspect localStorage\n3. Parse the stored planner and examine `planner[0][\"5\"]`\n\n**Expected:** `{0: 1, 1: 'Birthday', 2: '#00ff00', 3: 'Planning notes here', 4: '🎂'}` — notes stored at key '3', emoji stored at key '4'.\n\n---\n\n### TC-04: getEntryNotes returns stored notes value\n\n**Steps:**\n1. Store an entry with notes at month 0, day 3 via updateLocalEntry\n2. Call `getEntryNotes(0, 3)` via the Vue app methods\n\n**Expected:** Returns the notes string that was stored. Returns `''` (empty string) when no entry or no notes exist for that day.\n\n---\n\n### TC-05: getEntryEmoji returns stored emoji value\n\n**Steps:**\n1. Store an entry with emoji '🎉' at month 1, day 10\n2. Call `getEntryEmoji(1, 10)` via the Vue app methods\n\n**Expected:** Returns `'🎉'`. Returns `''` when no entry exists.\n\n---\n\n### TC-06: Existing 6-arg updateEntry callers are unaffected\n\n**Steps:**\n1. Open `.compose/fragments/modals/entry.html`\n2. Confirm all `updateEntry` calls use the existing 6-arg form (entry, entryType, entryColour, syncToRemote)\n3. Run the full E2E suite: `cd .tests && npx playwright test`\n\n**Expected:** No template changes required. All 14 E2E tests pass. The entry CRUD test (E2E-02) creates, edits, and deletes entries without errors — notes/emoji default to ''.\n\n---\n\n### TC-07: importLocalPlanner merges key '3' with concat-newline\n\n**Steps:**\n1. Manually set `planner[0][\"1\"][3] = 'Existing notes'` in the in-memory model\n2. Call `importLocalPlanner` with a planner object where `[0][\"1\"][3] = 'Imported notes'`\n3. Inspect `planner[0][\"1\"][3]` after import\n\n**Expected:** Value is `'Existing notes\\nImported notes'` — same concat-with-newline behaviour as key '1' (tagline).\n\n---\n\n### TC-08: importLocalPlanner applies last-write-wins for key '4'\n\n**Steps:**\n1. Set `planner[0][\"1\"][4] = '🎈'` in the in-memory model\n2. Call `importLocalPlanner` with `[0][\"1\"][4] = '🎂'`\n3. Inspect `planner[0][\"1\"][4]` after import\n\n**Expected:** Value is `'🎂'` — imported emoji overwrites existing, no concatenation.\n\n---\n\n### TC-09: All 14 Playwright E2E tests pass\n\n**Steps:**\n1. `cd .tests && npx playwright test`\n\n**Expected:** Output shows `14 passed` with 0 failed. Tests cover: entry CRUD (E2E-02), planner management (E2E-03), sync error (SEC-04), tooltip XSS (SEC-03), compose (COMP-02), harness smoke tests (TEST-01 through TEST-04, E2E-01).\n\n---\n\n### Edge Cases\n\n**EC-01: Empty string defaults**\n- Call `updateLocalEntry(0, 1, 'Entry', 1, '#fff')` without notes/emoji args\n- Confirm stored object has `3: ''` and `4: ''` — no undefined values\n\n**EC-02: importLocalPlanner with missing key '3' or '4'**\n- Import a planner where some days have no '3' or '4' key\n- Confirm no JS errors and existing values for those keys are preserved\n\n**EC-03: Day with no prior entry receives notes+emoji on first write**\n- Call updateLocalEntry on a previously empty day with notes and emoji\n- Confirm the new `{0,1,2,3,4}` object is created with all five keys present\n\n",
       "goal": "Extend the day schema with `'3'` (notes) and `'4'` (emoji) keys, add corresponding reactive state and getters, expand the write path, and update importLocalPlanner — all additively, with no regressions in the existing 14 E2E tests.",
       "success_criteria": "- `plannerState` has `entryNotes: ''` and `entryEmoji: ''`\n- `getEntryNotes(mindex, day)` and `getEntryEmoji(mindex, day)` getters exist and read keys `'3'`/`'4'`\n- `updateEntry` accepts optional `notes` and `emoji` params (default `''`); threads them to `updateLocalEntry`\n- `updateEntryState` populates `this.entryNotes` and `this.entryEmoji` from planner\n- `updateLocalEntry` persists `'3'` and `'4'` alongside existing keys\n- `importLocalPlanner` merges `'3'` (notes concat) and `'4'` (emoji last-write-wins)\n- `cd .tests && npx playwright test` shows 14 passed, 0 failed",
       "proof_level": "contract — all 14 E2E tests pass; new getters verified via test assertions in the E2E suite",
@@ -722,11 +722,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Update grid cell to show emoji + tagline… (notes fallback). Redesign entry modal: tagline input (32-char + live counter), notes textarea, inline emoji show/clear. Wire all Vue bindings.",
-      "success_criteria": "Cells show correct prefix display. Modal saves tagline + notes + emoji independently. All 14 E2E tests pass. Compose build clean.",
-      "proof_level": "integration — open modal, fill all fields, save, confirm cell and localStorage update",
-      "integration_closure": "entry.html and grid.html are the only display surfaces. Both use S01 getters.",
-      "observability_impact": "None.",
+      "goal": "Connect the new entryNotes and entryEmoji reactive state (added in S01) to the UI: redesign the entry modal with three distinct fields (tagline, notes, emoji), update all call sites to pass notes/emoji, and update cell display to show emoji + tagline preview.",
+      "success_criteria": "Entry modal shows three distinct fields: tagline (input, 32 chars, id=yp-entry-textarea), notes (textarea), emoji (input). Cell display shows emoji + tagline in `.yp-cell-text.nth(1)`. All 14 E2E tests pass.",
+      "proof_level": "Real runtime required — Playwright E2E exercises the full wiring. Human/UAT not required (E2E covers the contract).",
+      "integration_closure": "Upstream: entryNotes/entryEmoji reactive state (planner.js), getEntryNotes/getEntryEmoji getters, StorageLocal 7-arg updateLocalEntry — all from S01. New wiring: entry.html call sites pass notes/emoji to updateEntry; scripts.html marker mode reads current notes/emoji before painting; entries.js updateEntry passes notes/emoji through to storage. After this slice: S03 (emoji stamp rail) can use the emoji field that is now fully wired.",
+      "observability_impact": "None — all changes are synchronous UI wiring with no async paths or new error surfaces.",
       "sequence": 0,
       "replan_triggered_at": null
     },
@@ -1478,6 +1478,71 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M008",
+      "slice_id": "S02",
+      "id": "T01",
+      "title": "Replaced single-textarea entry modal with three fields (tagline/notes/emoji), updated all 10 call sites and applyMarkerToCell, consolidated cell display to emoji+tagline in nth(1), added CSS and i18n — 14/14 E2E tests pass",
+      "status": "complete",
+      "one_liner": "Replaced single-textarea entry modal with three fields (tagline/notes/emoji), updated all 10 call sites and applyMarkerToCell, consolidated cell display to emoji+tagline in nth(1), added CSS and i18n — 14/14 E2E tests pass",
+      "narrative": "Six coordinated changes: (1) entries.js updateEntry extended to 8-arg signature with notes/emoji defaults, updateEntryState now populates entryNotes/entryEmoji; (2) entry.html modal replaced single textarea with input[tagline]+textarea[notes]+input[emoji], all 10 call sites updated; (3) grid.html cell reduced from 3 spans to 2 with emoji-prefixed tagline in nth(1); (4) scripts.html applyMarkerToCell reads current notes/emoji before painting; (5) css/main.css .yp-entry-text min-height/resize overridden for input element, added yp-entry-notes/yp-entry-emoji/yp-entry-field-label styles; (6) en.js taglineplaceholder/notesplaceholder/emojiplaceholder keys added. Build regenerated index.html successfully.",
+      "verification_result": "cd .tests && npx playwright test — 14 passed, 0 failed in 6.2s. E2E-02 entry CRUD test exercised #yp-entry-textarea fill and .yp-cell-text.nth(1) assertion — both pass with new structure.",
+      "duration": "",
+      "completed_at": "2026-03-28T09:45:56.791Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "js/vue/methods/entries.js",
+        ".compose/fragments/modals/entry.html",
+        ".compose/fragments/grid.html",
+        ".compose/fragments/scripts.html",
+        "css/main.css",
+        "js/vue/i18n/en.js",
+        "index.html"
+      ],
+      "key_decisions": [
+        "input[type=text] for tagline keeps #yp-entry-textarea id for E2E compat",
+        "Grid cell nth(1) uses conditional emoji prefix concat pattern",
+        ".yp-entry-text min-height/resize set to unset/none since element is now input not textarea",
+        "All updateEntry call sites pass (notes, emoji) before syncToRemote boolean"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S02\nmilestone: M008\nkey_files:\n  - js/vue/methods/entries.js\n  - .compose/fragments/modals/entry.html\n  - .compose/fragments/grid.html\n  - .compose/fragments/scripts.html\n  - css/main.css\n  - js/vue/i18n/en.js\n  - index.html\nkey_decisions:\n  - input[type=text] for tagline keeps #yp-entry-textarea id for E2E compat\n  - Grid cell nth(1) uses conditional emoji prefix concat pattern\n  - .yp-entry-text min-height/resize set to unset/none since element is now input not textarea\n  - All updateEntry call sites pass (notes, emoji) before syncToRemote boolean\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-03-28T09:45:56.792Z\nblocker_discovered: false\n---\n\n# T01: Replaced single-textarea entry modal with three fields (tagline/notes/emoji), updated all 10 call sites and applyMarkerToCell, consolidated cell display to emoji+tagline in nth(1), added CSS and i18n — 14/14 E2E tests pass\n\n**Replaced single-textarea entry modal with three fields (tagline/notes/emoji), updated all 10 call sites and applyMarkerToCell, consolidated cell display to emoji+tagline in nth(1), added CSS and i18n — 14/14 E2E tests pass**\n\n## What Happened\n\nSix coordinated changes: (1) entries.js updateEntry extended to 8-arg signature with notes/emoji defaults, updateEntryState now populates entryNotes/entryEmoji; (2) entry.html modal replaced single textarea with input[tagline]+textarea[notes]+input[emoji], all 10 call sites updated; (3) grid.html cell reduced from 3 spans to 2 with emoji-prefixed tagline in nth(1); (4) scripts.html applyMarkerToCell reads current notes/emoji before painting; (5) css/main.css .yp-entry-text min-height/resize overridden for input element, added yp-entry-notes/yp-entry-emoji/yp-entry-field-label styles; (6) en.js taglineplaceholder/notesplaceholder/emojiplaceholder keys added. Build regenerated index.html successfully.\n\n## Verification\n\ncd .tests && npx playwright test — 14 passed, 0 failed in 6.2s. E2E-02 entry CRUD test exercised #yp-entry-textarea fill and .yp-cell-text.nth(1) assertion — both pass with new structure.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `cd .tests && npx playwright test 2>&1 | tail -5` | 0 | ✅ pass | 6700ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `js/vue/methods/entries.js`\n- `.compose/fragments/modals/entry.html`\n- `.compose/fragments/grid.html`\n- `.compose/fragments/scripts.html`\n- `css/main.css`\n- `js/vue/i18n/en.js`\n- `index.html`\n",
+      "description": "Six coordinated edits that complete the S02 wiring: (1) extend entries.js updateEntry and updateEntryState, (2) redesign entry modal HTML with three fields and updated call sites, (3) update grid cell display, (4) fix marker mode, (5) add CSS styles, (6) add i18n labels. Then rebuild and run E2E.\n\n### Steps\n\n1. **entries.js** — two changes:\n   - `updateEntryState`: add `this.entryNotes = this.getEntryNotes(mindex, day);` and `this.entryEmoji = this.getEntryEmoji(mindex, day);` after the existing `this.entryColour` line.\n   - `updateEntry` signature: change from `(mindex, day, entry, entryType, entryColour, syncToRemote)` to `(mindex, day, entry, entryType, entryColour, notes = '', emoji = '', syncToRemote = false)`. Update the `storageLocal.updateLocalEntry(...)` call to pass `notes, emoji` after `entryColour`.\n\n2. **entry.html fragment** — replace the single `<textarea>` with three fields:\n   - Tagline: `<input type=\"text\" v-model=\"entry\" id=\"yp-entry-textarea\" maxlength=\"32\" class=\"yp-entry-text\" v-bind:class=\"'yp-cell-c'+getEntryColour(month,day)\" v-bind:placeholder=\"$t('label.taglineplaceholder')\">` — **must keep id=\"yp-entry-textarea\"**.\n   - Notes: `<textarea v-model=\"entryNotes\" id=\"yp-notes-textarea\" class=\"yp-entry-notes\" rows=\"3\" v-bind:placeholder=\"$t('label.notesplaceholder')\"></textarea>`\n   - Emoji: `<input type=\"text\" v-model=\"entryEmoji\" id=\"yp-emoji-input\" maxlength=\"4\" class=\"yp-entry-emoji\" v-bind:placeholder=\"$t('label.emojiplaceholder')\">` \n   - Update all 10 updateEntry call sites: 9 colour dots get `entryNotes, entryEmoji` before the final `true`, save button gets `entryNotes, entryEmoji` before `true`.\n   - Current dot pattern: `updateEntry(month,day,entry,entryType,N,true)` → `updateEntry(month,day,entry,entryType,N,entryNotes,entryEmoji,true)`\n   - Current save pattern: `updateEntry(month,day,entry,entryType,entryColour,true)` → `updateEntry(month,day,entry,entryType,entryColour,entryNotes,entryEmoji,true)`\n\n3. **grid.html fragment** — update cell display from 3 spans to 2:\n   - Keep span 1 (day number) unchanged.\n   - Replace spans 2+3 with a single span: `<span class=\"yp-cell-text\" data-toggle=\"tooltip\" data-placement=\"bottom\" :title=\"(getEntryEmoji(mindex,n) ? getEntryEmoji(mindex,n)+' ' : '')+getEntry(mindex,n).trimStart()\">{{(getEntryEmoji(mindex,n) ? getEntryEmoji(mindex,n)+' ' : '')+getEntry(mindex,n).trimStart()}}</span>`\n   - E2E constraint: `.yp-cell-text.nth(1)` must contain the tagline text — this span is nth(1) and uses `toContainText` substring match so emoji prefix is fine.\n\n4. **scripts.html fragment** — update applyMarkerToCell to preserve notes/emoji:\n   - Before the `vueInstance.updateEntry(...)` call, add:\n     ```js\n     var notes = vueInstance.getEntryNotes(mindex, day);\n     var emoji = vueInstance.getEntryEmoji(mindex, day);\n     ```\n   - Change the call from `vueInstance.updateEntry(mindex, day, entry, entryType, markerColour, true)` to `vueInstance.updateEntry(mindex, day, entry, entryType, markerColour, notes, emoji, true)`.\n\n5. **css/main.css** — add styles for new fields:\n   - `.yp-entry-text` already exists for the tagline input but has `min-height` and `resize` properties meant for textarea — add a rule to remove those for input type: keep existing `.yp-entry-text` class but override/adjust as needed since it's now on an `<input>`.\n   - Add `.yp-entry-notes` for the notes textarea (similar to existing `.yp-entry-text` style: same padding/border/radius, add `resize: vertical`, `min-height: 70px`).\n   - Add `.yp-entry-emoji` for the emoji input (narrow width ~80px, centered text, larger font ~1.4rem).\n   - Add `.yp-entry-field-label` for optional section labels (`font-size: 0.78rem; color: var(--text-light); margin: 8px 20px 2px; display: block;`).\n   - Add color class variants for `.yp-entry-notes` matching `.yp-entry-text.yp-cell-cN` pattern.\n\n6. **en.js** — add three keys to the `label` object:\n   ```js\n   taglineplaceholder: 'Tagline…',\n   notesplaceholder: 'Notes…',\n   emojiplaceholder: '😊',\n   ```\n\n7. Run `.compose/build.sh` to regenerate `index.html`.\n\n8. Run `cd .tests && npx playwright test` — must be 14 passed, 0 failed.",
+      "estimate": "1.5h",
+      "files": [
+        "js/vue/methods/entries.js",
+        ".compose/fragments/modals/entry.html",
+        ".compose/fragments/grid.html",
+        ".compose/fragments/scripts.html",
+        "css/main.css",
+        "js/vue/i18n/en.js",
+        "index.html"
+      ],
+      "verify": "cd .tests && npx playwright test 2>&1 | tail -5",
+      "inputs": [
+        "`js/vue/methods/entries.js` — current updateEntry/updateEntryState implementation",
+        "`.compose/fragments/modals/entry.html` — current modal with single textarea and 10 updateEntry call sites",
+        "`.compose/fragments/grid.html` — current cell display with 3 spans",
+        "`.compose/fragments/scripts.html` — current applyMarkerToCell calling updateEntry with 6 args",
+        "`css/main.css` — existing .yp-entry-text styles",
+        "`js/vue/i18n/en.js` — existing label keys",
+        "`js/vue/model/planner.js` — entryNotes/entryEmoji reactive fields (from S01)",
+        "`js/service/StorageLocal.js` — updateLocalEntry 7-arg signature (from S01)"
+      ],
+      "expected_output": [
+        "`js/vue/methods/entries.js` — updateEntryState populates entryNotes/entryEmoji; updateEntry accepts notes/emoji params and passes them to storage",
+        "`.compose/fragments/modals/entry.html` — three-field modal; all 10 updateEntry call sites pass entryNotes, entryEmoji",
+        "`.compose/fragments/grid.html` — 2-span cell display with emoji+tagline in nth(1)",
+        "`.compose/fragments/scripts.html` — applyMarkerToCell reads current notes/emoji before updating",
+        "`css/main.css` — styles for .yp-entry-notes and .yp-entry-emoji",
+        "`js/vue/i18n/en.js` — taglineplaceholder, notesplaceholder, emojiplaceholder keys",
+        "`index.html` — regenerated by build.sh"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [],
@@ -1492,6 +1557,17 @@
       "verdict": "✅ pass",
       "duration_ms": 6300,
       "created_at": "2026-03-28T09:29:57.857Z"
+    },
+    {
+      "id": 2,
+      "task_id": "T01",
+      "slice_id": "S02",
+      "milestone_id": "M008",
+      "command": "cd .tests && npx playwright test 2>&1 | tail -5",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 6700,
+      "created_at": "2026-03-28T09:45:56.791Z"
     }
   ]
 }

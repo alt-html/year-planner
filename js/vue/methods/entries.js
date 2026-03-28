@@ -2,8 +2,8 @@ import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.m
 
 export const entryMethods = {
 
-    updateEntry (mindex, day, entry, entryType, entryColour, syncToRemote) {
-        this.storageLocal.updateLocalEntry(mindex, day, entry, entryType, entryColour);
+    updateEntry (mindex, day, entry, entryType, entryColour, notes = '', emoji = '', syncToRemote = false) {
+        this.storageLocal.updateLocalEntry(mindex, day, entry, entryType, entryColour, notes, emoji);
         if (syncToRemote) {
             this.api.synchroniseToRemote();
         }
@@ -16,6 +16,8 @@ export const entryMethods = {
         this.entry = this.getEntry(mindex,day);
         this.entryType = this.getEntryType(mindex,day);
         this.entryColour = this.getEntryColour(mindex,day);
+        this.entryNotes = this.getEntryNotes(mindex,day);
+        this.entryEmoji = this.getEntryEmoji(mindex,day);
     },
 
     getEntry (mindex, day) {

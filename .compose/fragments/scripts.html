@@ -250,7 +250,9 @@
             // Use the same updateEntry path as the modal
             var entry = vueInstance.getEntry(mindex, day);
             var entryType = vueInstance.getEntryType(mindex, day);
-            vueInstance.updateEntry(mindex, day, entry, entryType, markerColour, true);
+            var notes = vueInstance.getEntryNotes(mindex, day);
+            var emoji = vueInstance.getEntryEmoji(mindex, day);
+            vueInstance.updateEntry(mindex, day, entry, entryType, markerColour, notes, emoji, true);
         }
 
         // Intercept grid cell interactions in marker mode

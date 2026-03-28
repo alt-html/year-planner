@@ -1011,8 +1011,8 @@ body.marker-dragging {
     width: calc(100% - 40px);
     margin: 10px 20px 0;
     padding: 12px 14px;
-    min-height: 110px;
-    resize: vertical;
+    min-height: unset;
+    resize: none;
     border: 1px solid var(--border);
     border-radius: 8px;
     background: var(--surface);
@@ -1136,6 +1136,82 @@ body.marker-dragging {
 .yp-entry-text.yp-cell-c6 { background-color: var(--c6); }
 .yp-entry-text.yp-cell-c7 { background-color: var(--c7); }
 .yp-entry-text.yp-cell-c8 { background-color: var(--c8); }
+
+/* Field label — subtle section divider above notes/emoji inputs */
+.yp-entry-field-label {
+    font-size: 0.78rem;
+    color: var(--text-light);
+    margin: 8px 20px 2px;
+    display: block;
+}
+
+/* Notes textarea */
+.yp-entry-notes {
+    display: block;
+    width: calc(100% - 40px);
+    margin: 0 20px;
+    padding: 10px 14px;
+    min-height: 70px;
+    resize: vertical;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+.yp-entry-notes:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+}
+
+.yp-entry-notes::placeholder {
+    color: var(--text-light);
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* Emoji input — narrow, centred, larger glyph */
+.yp-entry-emoji {
+    display: block;
+    width: 80px;
+    margin: 0 20px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 1.4rem;
+    text-align: center;
+    line-height: 1.4;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+.yp-entry-emoji:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+}
+
+.yp-entry-emoji::placeholder {
+    color: var(--text-light);
+    opacity: 0.7;
+}
+
+/* Notes colour variants (mirror entry-text pattern) */
+.yp-entry-notes.yp-cell-c0 { background-color: var(--surface); }
+.yp-entry-notes.yp-cell-c1 { background-color: var(--weekend); }
+.yp-entry-notes.yp-cell-c2 { background-color: var(--c2); }
+.yp-entry-notes.yp-cell-c3 { background-color: var(--c3); }
+.yp-entry-notes.yp-cell-c4 { background-color: var(--c4); }
+.yp-entry-notes.yp-cell-c5 { background-color: var(--c5); }
+.yp-entry-notes.yp-cell-c6 { background-color: var(--c6); }
+.yp-entry-notes.yp-cell-c7 { background-color: var(--c7); }
+.yp-entry-notes.yp-cell-c8 { background-color: var(--c8); }
 
 /* ---- BOOTSTRAP TOOLTIP — themed ---- */
 .tooltip-inner {
