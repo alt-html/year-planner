@@ -20,3 +20,16 @@ Playwright's per-test fixture mechanism strips SRI checks internally. `globalSet
 
 ### Grep for v2 references in both js/ and .tests/fixtures/cdn*.js
 When verifying that no v2 `@alt-javascript` references remain, check both source files (`js/`) and the CDN fixture configuration (`cdn*.js`). The fixture layer is part of the test contract — an intercepted v2 URL that maps to a v3 local file would pass tests but ship broken.
+
+---
+
+## M008 — Day data model extension (2026-03-28)
+
+### #yp-entry-textarea id must stay on the tagline input
+The E2E entry-crud test targets `#yp-entry-textarea` to fill the primary text entry. When the modal was redesigned in S02 to use `input[type=text]` instead of `textarea`, the id was preserved on the tagline input. Any future modal restructuring must keep this id on whichever element captures the tagline text, or update the E2E test at the same time.
+
+### Converting a textarea to input[type=text] requires explicit CSS override for min-height and resize
+The `.yp-entry-text` class had `min-height` and `resize: vertical` rules targeting it as a textarea. When the tagline field was changed to `input[type=text]`, those properties were explicitly overridden (`min-height: unset; resize: none`) to prevent the input from rendering with textarea-style dimensions. Always audit for textarea-specific CSS when changing element type.
+
+### updateEntry call sites: notes and emoji must come before the syncToRemote boolean
+`updateEntry(mindex, day, entry, entryType, colour, notes, emoji, syncToRemote)` — the boolean sync flag is last. There are 10 call sites in entry.html (9 colour dots + 1 save button) and 1 in scripts.html (applyMarkerToCell). When adding new parameters in the future, insert before syncToRemote or all call sites break silently (boolean coerces to string).

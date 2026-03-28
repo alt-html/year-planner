@@ -4,6 +4,7 @@
         <button class="active" title="Calendar" id="railCalendarBtn"><i class="ph ph-calendar-dots"></i></button>
         <button title="Share" id="railShareBtn"><i class="ph ph-share-network"></i></button>
         <button title="Highlighter" id="railMarkerBtn"><i class="ph ph-highlighter-circle"></i></button>
+        <button title="Emoji stamp" id="railEmojiBtn"><i class="ph ph-smiley-sticker"></i></button>
         <div class="yp-rail-spacer"></div>
         <div class="yp-rail-bottom">
             <button title="Language"><i class="ph ph-globe-simple"></i></button>
@@ -52,6 +53,89 @@
                 <button class="marker-dot yp-dot-c6" data-colour="6"></button>
                 <button class="marker-dot yp-dot-c7" data-colour="7"></button>
                 <button class="marker-dot yp-dot-c8" data-colour="8"></button>
+            </div>
+        </div>
+        <!-- Emoji stamp flyout -->
+        <div class="rail-flyout emoji-flyout" id="railEmojiFlyout">
+            <div class="emoji-eraser-row">
+                <button class="emoji-stamp-btn selected" data-emoji="" title="Eraser"><i class="ph ph-eraser"></i></button>
+            </div>
+            <div class="emoji-tab-bar">
+                <button class="emoji-tab-btn active" data-tab="faces">😀</button>
+                <button class="emoji-tab-btn" data-tab="nature">🌸</button>
+                <button class="emoji-tab-btn" data-tab="food">🍕</button>
+                <button class="emoji-tab-btn" data-tab="activity">🎉</button>
+                <button class="emoji-tab-btn" data-tab="objects">❤️</button>
+            </div>
+            <div class="emoji-tab-panel active" data-panel="faces">
+                <button class="emoji-stamp-btn" data-emoji="😀">😀</button>
+                <button class="emoji-stamp-btn" data-emoji="😂">😂</button>
+                <button class="emoji-stamp-btn" data-emoji="😍">😍</button>
+                <button class="emoji-stamp-btn" data-emoji="🥰">🥰</button>
+                <button class="emoji-stamp-btn" data-emoji="😎">😎</button>
+                <button class="emoji-stamp-btn" data-emoji="😢">😢</button>
+                <button class="emoji-stamp-btn" data-emoji="😡">😡</button>
+                <button class="emoji-stamp-btn" data-emoji="🤔">🤔</button>
+                <button class="emoji-stamp-btn" data-emoji="😴">😴</button>
+                <button class="emoji-stamp-btn" data-emoji="🤗">🤗</button>
+                <button class="emoji-stamp-btn" data-emoji="🙈">🙈</button>
+                <button class="emoji-stamp-btn" data-emoji="💀">💀</button>
+            </div>
+            <div class="emoji-tab-panel" data-panel="nature">
+                <button class="emoji-stamp-btn" data-emoji="🌸">🌸</button>
+                <button class="emoji-stamp-btn" data-emoji="🌿">🌿</button>
+                <button class="emoji-stamp-btn" data-emoji="🌈">🌈</button>
+                <button class="emoji-stamp-btn" data-emoji="⭐">⭐</button>
+                <button class="emoji-stamp-btn" data-emoji="🌙">🌙</button>
+                <button class="emoji-stamp-btn" data-emoji="☀️">☀️</button>
+                <button class="emoji-stamp-btn" data-emoji="🔥">🔥</button>
+                <button class="emoji-stamp-btn" data-emoji="💧">💧</button>
+                <button class="emoji-stamp-btn" data-emoji="🌊">🌊</button>
+                <button class="emoji-stamp-btn" data-emoji="⚡">⚡</button>
+                <button class="emoji-stamp-btn" data-emoji="🍀">🍀</button>
+                <button class="emoji-stamp-btn" data-emoji="🌺">🌺</button>
+            </div>
+            <div class="emoji-tab-panel" data-panel="food">
+                <button class="emoji-stamp-btn" data-emoji="🍕">🍕</button>
+                <button class="emoji-stamp-btn" data-emoji="🍔">🍔</button>
+                <button class="emoji-stamp-btn" data-emoji="🍣">🍣</button>
+                <button class="emoji-stamp-btn" data-emoji="🍰">🍰</button>
+                <button class="emoji-stamp-btn" data-emoji="🍦">🍦</button>
+                <button class="emoji-stamp-btn" data-emoji="🍺">🍺</button>
+                <button class="emoji-stamp-btn" data-emoji="🎂">🎂</button>
+                <button class="emoji-stamp-btn" data-emoji="🥗">🥗</button>
+                <button class="emoji-stamp-btn" data-emoji="🍎">🍎</button>
+                <button class="emoji-stamp-btn" data-emoji="🌮">🌮</button>
+                <button class="emoji-stamp-btn" data-emoji="☕">☕</button>
+                <button class="emoji-stamp-btn" data-emoji="🍩">🍩</button>
+            </div>
+            <div class="emoji-tab-panel" data-panel="activity">
+                <button class="emoji-stamp-btn" data-emoji="🎉">🎉</button>
+                <button class="emoji-stamp-btn" data-emoji="🎸">🎸</button>
+                <button class="emoji-stamp-btn" data-emoji="⚽">⚽</button>
+                <button class="emoji-stamp-btn" data-emoji="🏋️">🏋️</button>
+                <button class="emoji-stamp-btn" data-emoji="🎨">🎨</button>
+                <button class="emoji-stamp-btn" data-emoji="📚">📚</button>
+                <button class="emoji-stamp-btn" data-emoji="🎮">🎮</button>
+                <button class="emoji-stamp-btn" data-emoji="🚴">🚴</button>
+                <button class="emoji-stamp-btn" data-emoji="🎯">🎯</button>
+                <button class="emoji-stamp-btn" data-emoji="🏆">🏆</button>
+                <button class="emoji-stamp-btn" data-emoji="🎭">🎭</button>
+                <button class="emoji-stamp-btn" data-emoji="🧩">🧩</button>
+            </div>
+            <div class="emoji-tab-panel" data-panel="objects">
+                <button class="emoji-stamp-btn" data-emoji="❤️">❤️</button>
+                <button class="emoji-stamp-btn" data-emoji="💡">💡</button>
+                <button class="emoji-stamp-btn" data-emoji="🔑">🔑</button>
+                <button class="emoji-stamp-btn" data-emoji="📱">📱</button>
+                <button class="emoji-stamp-btn" data-emoji="💻">💻</button>
+                <button class="emoji-stamp-btn" data-emoji="✈️">✈️</button>
+                <button class="emoji-stamp-btn" data-emoji="🏠">🏠</button>
+                <button class="emoji-stamp-btn" data-emoji="💼">💼</button>
+                <button class="emoji-stamp-btn" data-emoji="🎁">🎁</button>
+                <button class="emoji-stamp-btn" data-emoji="🔔">🔔</button>
+                <button class="emoji-stamp-btn" data-emoji="📸">📸</button>
+                <button class="emoji-stamp-btn" data-emoji="⏰">⏰</button>
             </div>
         </div>
     </nav>

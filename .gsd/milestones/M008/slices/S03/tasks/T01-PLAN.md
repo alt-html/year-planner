@@ -1,10 +1,12 @@
-# S03: Emoji stamp rail mode
+---
+estimated_steps: 85
+estimated_files: 4
+skills_used: []
+---
 
-**Goal:** Add a fully functional emoji stamp mode to the left rail — pick an emoji from a tabbed flyout, then click or drag cells to stamp that emoji onto them. Mutually exclusive with the existing colour marker mode.
-**Demo:** After this: After this: full emoji stamp mode works end-to-end — pick, paint, persist.
+# T01: Implement emoji stamp rail mode — HTML, JS, CSS, rebuild
 
-## Tasks
-- [x] **T01: Added full emoji stamp mode to the left rail — tabbed flyout with 60 emoji across 5 categories, click/drag painting, eraser, and mutual exclusion with marker mode; all 14 E2E tests pass** — Add the emoji stamp button and flyout to `rail.html`, implement the full emoji stamp mode JS block in `scripts.html`, add CSS rules to `css/main.css`, then rebuild `index.html` via `.compose/build.sh` and verify all 14 E2E tests pass.
+Add the emoji stamp button and flyout to `rail.html`, implement the full emoji stamp mode JS block in `scripts.html`, add CSS rules to `css/main.css`, then rebuild `index.html` via `.compose/build.sh` and verify all 14 E2E tests pass.
 
 ### rail.html changes
 
@@ -99,6 +101,21 @@ body.emoji-dragging {
 ### Build and verify
 
 Run `.compose/build.sh` to regenerate `index.html`. Then run `cd .tests && npx playwright test` — must be 14 passed, 0 failed.
-  - Estimate: 1h
-  - Files: .compose/fragments/rail.html, .compose/fragments/scripts.html, css/main.css, index.html
-  - Verify: cd .tests && npx playwright test 2>&1 | tail -5
+
+## Inputs
+
+- `.compose/fragments/rail.html`
+- `.compose/fragments/scripts.html`
+- `css/main.css`
+- `.compose/build.sh`
+
+## Expected Output
+
+- `.compose/fragments/rail.html`
+- `.compose/fragments/scripts.html`
+- `css/main.css`
+- `index.html`
+
+## Verification
+
+cd .tests && npx playwright test 2>&1 | tail -5

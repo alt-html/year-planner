@@ -10,11 +10,11 @@ A simple, fast year planner that works offline with local storage, supports 10 l
 
 ## Current State
 
-**Active Milestone:** None — awaiting next milestone planning
+**Active Milestone:** M008 — Day data model extension (in progress, S01 ✅, S02 ✅, S03 pending)
 
-M007 (Boot v3 Uplift) is complete. The entire @alt-javascript CDN stack has been upgraded from v2 to v3.0.x. `main.js` uses `vueStarter` from boot-vue@3; `config.js` uses `ProfileAwareConfig` + `BrowserProfileResolver`; `contexts.js` uses `Context`/`Singleton` helpers from cdi@3. All 14 E2E tests pass with fully offline CDN fixture interception via a shared `cdn-routes.js` helper.
+The entry modal has been redesigned with three distinct fields: a tagline input (≤32 chars), a notes textarea, and an emoji input. Cell display now shows emoji + tagline preview in a single span. The `updateEntry` signature was extended to 8 args (notes, emoji before syncToRemote). All 14 E2E tests pass.
 
-Two switchable visual themes (Ink & Paper / Crisp & Clear) with light and dark modes are fully polished. Grid fills the viewport with flex layout, columns align precisely, and a marker/highlighter mode enables interactive cell colouring via the vertical rail.
+S03 (Emoji stamp rail mode) is the remaining slice.
 
 ## Architecture / Key Patterns
 

@@ -75,7 +75,8 @@
                 !railToggle.contains(e.target) &&
                 !(calendarFlyout && calendarFlyout.contains(e.target)) &&
                 !(markerFlyout && markerFlyout.contains(e.target)) &&
-                !markerActive) {
+                !(emojiFlyout && emojiFlyout.contains(e.target)) &&
+                !markerActive && !emojiActive) {
                 rail.classList.remove('open');
                 body.classList.remove('rail-open');
                 closeFlyout();
@@ -172,6 +173,7 @@
             if (railMarkerBtn) railMarkerBtn.classList.remove('flyout-active');
         }
         function activateMarkerMode() {
+            if (typeof deactivateEmojiMode === 'function' && emojiActive) deactivateEmojiMode();
             markerActive = true;
             body.classList.add('marker-mode');
             railMarkerBtn.classList.add('active');
@@ -312,6 +314,159 @@
 
         // Deactivate marker mode when rail closes
         var origRailToggleHandler = railToggle ? railToggle.onclick : null;
+
+        // ---- Emoji stamp mode ----
+        var railEmojiBtn  = document.getElementById('railEmojiBtn');
+        var emojiFlyout   = document.getElementById('railEmojiFlyout');
+        var emojiActive   = false;
+        var emojiSelected = '';
+        var emojiDragging = false;
+        var emojiLastCell = null;
+
+        function openEmojiFlyout() {
+            closeFlyout();  // close calendar flyout if open
+            if (emojiFlyout) emojiFlyout.classList.add('open');
+            if (railEmojiBtn) railEmojiBtn.classList.add('flyout-active');
+        }
+        function closeEmojiFlyout() {
+            if (emojiFlyout) emojiFlyout.classList.remove('open');
+            if (railEmojiBtn) railEmojiBtn.classList.remove('flyout-active');
+        }
+        function activateEmojiMode() {
+            if (markerActive) deactivateMarkerMode();
+            emojiActive = true;
+            body.classList.add('emoji-mode');
+            if (railEmojiBtn) railEmojiBtn.classList.add('active');
+            openEmojiFlyout();
+        }
+        function deactivateEmojiMode() {
+            emojiActive = false;
+            body.classList.remove('emoji-mode');
+            body.classList.remove('emoji-dragging');
+            if (railEmojiBtn) railEmojiBtn.classList.remove('active');
+            closeEmojiFlyout();
+            emojiDragging = false;
+            emojiLastCell = null;
+        }
+
+        if (railEmojiBtn) {
+            railEmojiBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (emojiActive) {
+                    deactivateEmojiMode();
+                } else {
+                    activateEmojiMode();
+                }
+            });
+        }
+
+        // Tab switching
+        if (emojiFlyout) {
+            emojiFlyout.querySelectorAll('.emoji-tab-btn').forEach(function(tabBtn) {
+                tabBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var tab = tabBtn.getAttribute('data-tab');
+                    emojiFlyout.querySelectorAll('.emoji-tab-btn').forEach(function(b) { b.classList.remove('active'); });
+                    emojiFlyout.querySelectorAll('.emoji-tab-panel').forEach(function(p) { p.classList.remove('active'); });
+                    tabBtn.classList.add('active');
+                    var panel = emojiFlyout.querySelector('[data-panel="' + tab + '"]');
+                    if (panel) panel.classList.add('active');
+                });
+            });
+
+            // Emoji selection
+            emojiFlyout.querySelectorAll('.emoji-stamp-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    emojiSelected = btn.getAttribute('data-emoji');
+                    emojiFlyout.querySelectorAll('.emoji-stamp-btn').forEach(function(b) { b.classList.remove('selected'); });
+                    btn.classList.add('selected');
+                });
+            });
+        }
+
+        // Apply emoji to a single grid cell via the Vue app
+        function applyEmojiToCell(cellEl) {
+            if (cellEl === emojiLastCell) return;
+            emojiLastCell = cellEl;
+
+            var appEl = document.getElementById('app');
+            if (!appEl || !appEl._vnode || !appEl._vnode.component) return;
+            var vueInstance = appEl._vnode.component.proxy;
+            if (!vueInstance) return;
+
+            var monthCol = cellEl.closest('[class*="col"]');
+            if (!monthCol) return;
+            var monthsRow = monthCol.parentElement;
+            if (!monthsRow) return;
+            var cols = monthsRow.querySelectorAll(':scope > [class*="col"]');
+            var mindex = -1;
+            for (var ci = 0; ci < cols.length; ci++) {
+                if (cols[ci] === monthCol) { mindex = ci; break; }
+            }
+            if (mindex < 0) return;
+
+            var daySpan = cellEl.querySelector('.yp-cell-text');
+            if (!daySpan) return;
+            var dayText = daySpan.textContent.trim().replace(/\u00a0/g, '');
+            var day = parseInt(dayText);
+            if (isNaN(day) || day < 1) return;
+
+            var entry      = vueInstance.getEntry(mindex, day);
+            var entryType  = vueInstance.getEntryType(mindex, day);
+            var colour     = vueInstance.getEntryColour(mindex, day);
+            var notes      = vueInstance.getEntryNotes(mindex, day);
+            vueInstance.updateEntry(mindex, day, entry, entryType, colour, notes, emojiSelected, true);
+        }
+
+        // Intercept grid cell interactions in emoji mode
+        document.addEventListener('mousedown', function(e) {
+            if (!emojiActive) return;
+            var cell = e.target.closest('#yp-months .yp-cell');
+            if (!cell) return;
+            e.preventDefault();
+            e.stopPropagation();
+            emojiDragging = true;
+            emojiLastCell = null;
+            body.classList.add('emoji-dragging');
+            applyEmojiToCell(cell);
+        }, true);
+
+        document.addEventListener('mousemove', function(e) {
+            if (!emojiDragging) return;
+            var cell = document.elementFromPoint(e.clientX, e.clientY);
+            if (cell) cell = cell.closest('#yp-months .yp-cell');
+            if (cell) applyEmojiToCell(cell);
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (emojiDragging) {
+                emojiDragging = false;
+                emojiLastCell = null;
+                body.classList.remove('emoji-dragging');
+            }
+        });
+
+        // Also handle single clicks in emoji mode (capture phase)
+        document.addEventListener('click', function(e) {
+            if (!emojiActive) return;
+            var cell = e.target.closest('#yp-months .yp-cell');
+            if (cell) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, true);
+
+        // Close emoji flyout when clicking outside (but not while actively stamping)
+        document.addEventListener('click', function(e) {
+            if (emojiActive) return;
+            if (emojiFlyout && emojiFlyout.classList.contains('open') &&
+                !emojiFlyout.contains(e.target) &&
+                e.target !== railEmojiBtn &&
+                !railEmojiBtn.contains(e.target)) {
+                closeEmojiFlyout();
+            }
+        });
 
         // ---- Rail → app bridge buttons ----
         var railShareBtn = document.getElementById('railShareBtn');
