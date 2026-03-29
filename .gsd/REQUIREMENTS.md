@@ -125,26 +125,24 @@
 ### STO-01 — Replace cookie-based persistence with localStorage
 
 - Class: core-capability
-- Status: active
+- Status: validated
 - Description: Replace all cookie read/write operations with localStorage API. StorageLocal class internals change but its interface to the rest of the app remains stable.
 - Why it matters: Cookies have 4KB limits, require consent modals, and are sent with every HTTP request. localStorage is simpler, has 5-10MB capacity, and needs no consent.
 - Source: user
-- Primary owning slice: M003 (provisional)
+- Primary owning slice: M003
 - Supporting slices: none
-- Validation: unmapped
-- Notes: M002 modularises the code first; M003 swaps the storage backend.
+- Validation: Delivered in M003. localStorage-backed StorageLocal.js in production. All 14 E2E tests pass.
 
-### STO-02 — Clean up data format with terse meaningful keys
+### STO-02 — Redesign localStorage schema with terse readable keys and HLC support
 
 - Class: core-capability
 - Status: active
-- Description: Replace numeric keys ('0', '1', '2') with terse but meaningful names in the storage data format. Drop LZString compression for localStorage (not needed with 5-10MB limit).
-- Why it matters: Numeric keys make the data opaque and hard to debug. Meaningful keys improve developer experience and debuggability.
-- Source: user
-- Primary owning slice: M003 (provisional)
+- Description: Replace the cookie-era localStorage schema entirely. New schema: `dev` (device UUID), `tok` (JWT), `ids` (identities map), `prefs:{uid}` (preferences), `plnr:{planner-uuid}` (planner document), `rev:{planner-uuid}` (dot-path fieldRevs), `base:{planner-uuid}` (base snapshot for 3-way merge), `sync:{planner-uuid}` (baseClock). Day object keys renamed from opaque numerics to readable abbreviations: `tp` (type), `tl` (tagline), `col` (colour), `notes` (notes), `emoji` (emoji).
+- Why it matters: The current schema is opaque (numeric keys), conflates user identity with device detection (uid = unix timestamp), has no HLC, and cannot support multi-device merge. The new schema supports the data-api sync protocol directly.
+- Source: design session 2026-03-28
+- Primary owning milestone: M009
 - Supporting slices: none
-- Validation: unmapped
-- Notes: Keys should be terse for the benefit of the share URL compressed string. Not verbose — think `uid`, `yr`, `lng`, `thm` rather than `userId`, `selectedYear`, `language`, `theme`.
+- Validation: All 14 E2E tests pass after migration. localStorage inspected in browser shows readable keys.
 
 ### STO-03 — Keep LZString compression for share URL feature
 
@@ -161,26 +159,24 @@
 ### STO-04 — Remove cookie consent modal and all cookie-related code
 
 - Class: core-capability
-- Status: active
+- Status: validated
 - Description: Remove the cookie consent modal (#cookieModal), the .compose/fragments/modals/cookie.html fragment, the acceptCookies/cookiesAccepted methods, and all cookie consent flow logic.
 - Why it matters: No cookies means no consent needed. Removes UX friction and dead code.
 - Source: user
-- Primary owning slice: M003 (provisional)
+- Primary owning slice: M003
 - Supporting slices: none
-- Validation: unmapped
-- Notes: The cookie modal is the first thing users see — removing it improves first-run experience.
+- Validation: Delivered in M003. Cookie modal removed. TEST-04 (app auto-initialises without consent modal) validates this.
 
 ### STO-05 — Remove @alt-javascript/cookies CDN dependency
 
 - Class: core-capability
-- Status: active
+- Status: validated
 - Description: Remove the @alt-javascript/cookies package from CDN imports and CDI wiring. All cookie operations replaced by localStorage in STO-01.
 - Why it matters: Eliminates a CDN dependency that is no longer needed.
 - Source: user
-- Primary owning slice: M003 (provisional)
+- Primary owning slice: M003
 - Supporting slices: none
-- Validation: unmapped
-- Notes: Currently wired through CDI as `Cookies` class.
+- Validation: Delivered in M003. No @alt-javascript/cookies import in index.html.
 
 ### AUTH-01 — Working Google Sign-In (GIS) federated auth flow
 
@@ -230,29 +226,107 @@
 - Validation: unmapped
 - Notes: Large removal — register modal, signin modal, reset password modal, recover username modal, profile modal password/username/email change sections.
 
-### AUTH-05 — OpenAPI 3.x spec defining the sync API contract
+### AUTH-05 — Sync API contract defined via data-api
+
+- Class: core-capability
+- Status: deferred
+- Description: Originally: produce a formal OpenAPI 3.x spec. Superseded by the data-api project which IS the sync contract. The year-planner uses data-api's `POST /year-planner/sync` endpoint directly. No separate OpenAPI spec file is needed in the year-planner repo.
+- Why it matters: N/A — superseded.
+- Source: user
+- Primary owning milestone: deferred
+- Validation: n/a — superseded by SYNC-01 through SYNC-08.
+
+### AUTH-06 — Sync layer aligned to data-api protocol
 
 - Class: core-capability
 - Status: active
-- Description: Produce a formal OpenAPI 3.x specification file defining the sync API endpoints, request/response schemas, auth headers, and error responses. This spec is the contract for the separate backend project.
-- Why it matters: The backend project needs a formal target to implement against. An OpenAPI spec enables server stub generation and client validation.
-- Source: user
-- Primary owning slice: M004 (provisional)
-- Supporting slices: none
-- Validation: unmapped
-- Notes: Covers planner CRUD, sync push/pull, and federated auth token exchange.
+- Description: Rewrite the client-side sync layer (Api.js, StorageRemote.js) to use the data-api sync protocol: `POST /year-planner/sync` with HLC-clocked dot-path fieldRevs, `clientClock`, `changes` array, and `serverChanges` response. Replace the current raw-localStorage-dump push/pull pattern entirely.
+- Why it matters: The current Api.js pushes the entire raw localStorage blob and receives a full replace. The data-api protocol is bidirectional, field-level, and merge-safe across multiple devices.
+- Source: user (updated 2026-03-28)
+- Primary owning milestone: M010
+- Validation: Playwright E2E sync test: two devices edit different planner days offline, both sync, final state on each device contains both edits with zero data loss.
 
-### AUTH-06 — Sync layer aligned to new API contract
+## Sync
+
+### SYNC-01 — Stable device UUID generated on first load
 
 - Class: core-capability
 - Status: active
-- Description: Rewrite the client-side sync layer to call the endpoints defined in the OpenAPI spec, using federated auth tokens instead of bespoke session cookies.
-- Why it matters: The sync layer must match the new API contract for the frontend and backend to eventually connect.
-- Source: user
-- Primary owning slice: M004 (provisional)
-- Supporting slices: none
-- Validation: unmapped
-- Notes: May use mock responses during development until the backend project implements the spec.
+- Description: On first load, generate a UUID v4 via `crypto.randomUUID()` and persist it as `dev` in localStorage. This UUID is the HLC node ID for this device and is used as the planner UUID for the initial default planner. It never changes for the lifetime of that browser profile.
+- Why it matters: The current uid is a unix timestamp — not a stable identifier and prone to collision across devices. A UUID is the correct identity primitive for a distributed sync system.
+- Source: design session 2026-03-28
+- Primary owning milestone: M009
+- Validation: On fresh load, `localStorage.getItem('dev')` returns a UUID v4 string. On subsequent loads, the same value is returned.
+
+### SYNC-02 — Multi-planner support: each planner is a UUID-keyed document
+
+- Class: core-capability
+- Status: active
+- Description: A user can have multiple planners for the same year (e.g. "Work 2026", "Home 2026"). Each planner is a UUID-keyed document in the `planners` collection: `plnr:{planner-uuid}` in localStorage, key `{planner-uuid}` in `POST /year-planner/sync`. The planner switcher UI maps to listing local `plnr:*` keys. Creating a new planner creates a new UUID (client-generated via `crypto.randomUUID()`). Deleting a planner removes the local `plnr:`, `rev:`, `base:`, `sync:` keys for that UUID.
+- Why it matters: The existing planner switcher already supports multiple planners per user. The new schema must preserve this capability and extend it to the sync layer.
+- Source: design session 2026-03-28
+- Primary owning milestone: M009
+- Validation: User can create two planners for the same year, add entries to each, and both persist independently. Planner switcher shows both.
+
+### SYNC-03 — Planner document structure: nested map with ISO date keys
+
+- Class: constraint
+- Status: active
+- Description: Each planner document has the shape `{ meta: { name, year, lang, theme, dark, created }, days: { "YYYY-MM-DD": { tp, tl, col, notes, emoji } } }`. `days` is a plain object keyed by ISO date string — not an array. Only days with data are present (sparse). This shape is stored verbatim in `plnr:{uuid}` and sent as the sync document body.
+- Why it matters: Maps are dot-path addressable by the data-api merge engine. Arrays are not. Sparse maps keep the document small (~5KB for a year with 50 active days).
+- Source: design session 2026-03-28
+- Primary owning milestone: M009
+- Validation: `plnr:{uuid}` in localStorage parses to `{ meta: {...}, days: { "2026-03-28": {...} } }`. No arrays in the structure.
+
+### SYNC-04 — HLC fieldRevs maintained per planner in localStorage
+
+- Class: core-capability
+- Status: active
+- Description: For each planner, maintain a `rev:{planner-uuid}` key in localStorage containing a dot-path fieldRevs map: `{ "days.2026-03-28.tl": hlcString, "meta.name": hlcString, ... }`. Each time a field is edited, advance the device HLC via `HLC.tick()` and update the corresponding dot-path entry. Also maintain `sync:{planner-uuid}` as the baseClock (last `serverClock` received from the server for that planner).
+- Why it matters: Without per-field HLC revision tracking, the sync engine cannot determine which side's change is newer for a given field. fieldRevs are the causal foundation of the merge protocol.
+- Source: design session 2026-03-28
+- Primary owning milestone: M009
+- Validation: After editing a day entry, `rev:{uuid}` contains a dot-path entry for each changed field with an HLC string value.
+
+### SYNC-05 — Base snapshot maintained per planner for 3-way text merge
+
+- Class: core-capability
+- Status: active
+- Description: After each successful sync, persist a `base:{planner-uuid}` snapshot of the planner document as received from the server. This base is used by the data-api merge engine for 3-way text merge of the `notes` field — without it, concurrent notes edits on two devices fall back to HLC winner instead of auto-merging.
+- Why it matters: The notes field is the most likely to be concurrently edited on two devices (both devices add notes about the same day). 3-way text merge preserves both sets of additions; HLC winner discards one.
+- Source: design session 2026-03-28
+- Primary owning milestone: M009
+- Validation: After sync, `base:{uuid}` exists and matches the last serverChanges document for that planner.
+
+### SYNC-06 — SyncClient wraps data-api protocol in year-planner
+
+- Class: core-capability
+- Status: active
+- Description: Implement `js/service/SyncClient.js` that wraps the data-api sync protocol for the year-planner. Uses `HLC` and `flatten` from the local `data-api-core.esm.js` bundle. Manages `baseClock`, `fieldRevs`, and `baseSnapshot` per planner. Exposes `sync(plannerId)` (push local changes + apply server delta), `markEdited(plannerId, dayKey, fieldName)` (advance HLC and record fieldRev), and `prune(plannerId)` (reset baseClock to `HLC.zero()`, drop `rev:` and `base:` for that planner). `StorageLocal.js` delegates all sync state management to `SyncClient`.
+- Why it matters: Clean separation between storage (StorageLocal) and sync protocol (SyncClient). SyncClient is independently testable and can be reused by future native mobile clients.
+- Source: design session 2026-03-28
+- Primary owning milestone: M010
+- Validation: Unit test (no DOM): SyncClient.markEdited advances HLC and records dot-path entry. SyncClient.prune resets baseClock to HLC.zero(). Integration test: sync round-trip against a local data-api server returns serverChanges.
+
+### SYNC-07 — One-time migration of existing localStorage data on first M009 load
+
+- Class: core-capability
+- Status: active
+- Description: On first load after M009 is deployed, detect the old schema (presence of key `'0'` — the old identities array) and migrate: generate a `dev` UUID, create a default planner UUID (or use the existing unix-timestamp uid as a seed), rewrite all `uid-yearM` month blobs into `plnr:{uuid}` nested map format (renaming day object keys `'0'→tp, '1'→tl, '2'→col, '3'→notes, '4'→emoji`), initialise `rev:`, `base:`, `sync:` as empty/zero, remove all old-schema keys. Migration is idempotent — running it twice is safe.
+- Why it matters: Existing users have planner data in the old schema. Migration must preserve it without data loss.
+- Source: design session 2026-03-28
+- Primary owning milestone: M009
+- Validation: Playwright test: seed localStorage with old-schema data, reload app, verify old keys gone, new keys present, all day entries readable with new field names, no data lost.
+
+### SYNC-08 — Local pruning without server-side delete
+
+- Class: core-capability
+- Status: active
+- Description: When localStorage approaches ~4MB (measured by estimating serialised size of all `plnr:` entries), automatically prune planners not accessed in the last 12 months: drop `plnr:`, `rev:`, `base:` for old planners and reset `sync:` to `HLC.zero()`. On next sync for a pruned planner, `clientClock: HLC.zero()` triggers a full pull from the server. The server retains full history — pruning is a purely local compaction. No data is deleted from the server or other devices.
+- Why it matters: localStorage is ~5MB. A user with multiple planners across multiple years will eventually hit the limit. Silent pruning of old data prevents app breakage.
+- Source: design session 2026-03-28
+- Primary owning milestone: M010
+- Validation: Integration test: client prunes a planner, re-syncs with `clientClock: HLC.zero()`, receives full planner document back from server. Local state after sync matches server state.
 
 ## Validated
 
@@ -424,17 +498,25 @@
 | MOD-08 | core-capability | active | M002/S02 | M002/S05 | unmapped |
 | MOD-09 | core-capability | active | M002/S05 | none | unmapped |
 | MOD-10 | quality-attribute | validated | M002/S05 | M002/S01-S04 | M008 — 14 E2E tests pass across all 3 slices |
-| STO-01 | core-capability | active | M003 | none | unmapped |
-| STO-02 | core-capability | active | M003 | none | unmapped |
+| STO-01 | core-capability | validated | M003 | none | M003 — localStorage in production |
+| STO-02 | core-capability | active | M009 | none | unmapped |
 | STO-03 | constraint | active | M003 | none | unmapped |
-| STO-04 | core-capability | active | M003 | none | unmapped |
-| STO-05 | core-capability | active | M003 | none | unmapped |
+| STO-04 | core-capability | validated | M003 | none | M003 — cookie modal removed |
+| STO-05 | core-capability | validated | M003 | none | M003 — cookies CDN removed |
 | AUTH-01 | core-capability | active | M004 | none | unmapped |
 | AUTH-02 | core-capability | active | M004 | none | unmapped |
 | AUTH-03 | core-capability | active | M004 | none | unmapped |
 | AUTH-04 | core-capability | active | M004 | none | unmapped |
-| AUTH-05 | core-capability | active | M004 | none | unmapped |
-| AUTH-06 | core-capability | active | M004 | none | unmapped |
+| AUTH-05 | core-capability | deferred | — | none | superseded by SYNC-01..08 |
+| AUTH-06 | core-capability | active | M010 | none | unmapped |
+| SYNC-01 | core-capability | active | M009 | none | unmapped |
+| SYNC-02 | core-capability | active | M009 | none | unmapped |
+| SYNC-03 | constraint | active | M009 | none | unmapped |
+| SYNC-04 | core-capability | active | M009 | none | unmapped |
+| SYNC-05 | core-capability | active | M009 | none | unmapped |
+| SYNC-06 | core-capability | active | M010 | none | unmapped |
+| SYNC-07 | core-capability | active | M009 | none | unmapped |
+| SYNC-08 | core-capability | active | M010 | none | unmapped |
 | TEST-01 | core-capability | validated | M001/S01 | none | validated |
 | TEST-02 | core-capability | validated | M001/S01 | none | validated |
 | TEST-03 | core-capability | validated | M001/S01 | none | validated |
@@ -455,8 +537,8 @@
 
 ## Coverage Summary
 
-- Active requirements: 21
-- Mapped to slices: 10 (M002)
-- Provisionally mapped: 11 (M003, M004)
-- Validated: 14
-- Unmapped active requirements: 0
+- Active requirements: 24
+- Validated: 17
+- Deferred: 1 (AUTH-05 — superseded)
+- Out of scope: 3
+- Unmapped active: 14 (SYNC-01..08, AUTH-06, AUTH-01..04, STO-02)

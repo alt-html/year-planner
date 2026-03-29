@@ -55,7 +55,7 @@
                                              v-on:click="updateEntryState(mindex,n)">
                                             <a v-if="cyear == year && cmonth==mindex+1 && cday == n" class="yp-anchor" id="today" ></a>
                                             <span class="yp-cell-text" >{{DateTime.local(year, mindex+1, n).setLocale(lang).toLocaleString({day:'numeric'})}}&nbsp;</span>
-                                            <span class="yp-cell-text" data-toggle="tooltip" data-placement="bottom" :title="(getEntryEmoji(mindex,n) ? getEntryEmoji(mindex,n)+' ' : '')+getEntry(mindex,n).trimStart()">{{(getEntryEmoji(mindex,n) ? getEntryEmoji(mindex,n)+' ' : '')+getEntry(mindex,n).trimStart()}}</span>
+                                            <span class="yp-cell-text" data-toggle="tooltip" data-placement="bottom" :title="(getEntryEmoji(mindex,n) ? getEntryEmoji(mindex,n)+' ' : '')+(getEntry(mindex,n).trimStart() || getEntryNotes(mindex,n).slice(0,32))">{{(getEntryEmoji(mindex,n) ? getEntryEmoji(mindex,n)+' ' : '')+(getEntry(mindex,n).trimStart() || getEntryNotes(mindex,n).slice(0,32))}}</span>
 
                                         </div>
                                         <template v-if="37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1 > 0">

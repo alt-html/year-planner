@@ -39,3 +39,21 @@ The `.yp-entry-text` class had `min-height` and `resize: vertical` rules targeti
 
 ### New rail modes: mirror the marker mode pattern exactly
 The marker mode pattern (flyout button → flyout div → activate/deactivate functions → capture-phase mousedown/click/mousemove/mouseup handlers → outside-click close guard) is the established rail mode template. New rail modes should follow it exactly: same CSS class naming (`rail-flyout`, `flyout-active`, `open`, `active`), same capture-phase intercept approach, same DOM traversal via `applyXxxToCell`. The outside-click guard must be extended to include `!emojiActive` and `!emojiFlyout.contains(e.target)` checks for each new mode added — otherwise clicking into one mode's flyout will collapse a parallel mode.
+
+
+## M009 — localStorage Schema Redesign (2026-03-28)
+
+### CDI init() fires before Vue mounted() — migration must be eager
+`@alt-javascript/cdi` calls `init()` on singletons during `Boot.boot()`, which happens before `vueApp.mount()`. Any code that depends on `initialised()` / `refresh()` / `mounted()` fires too late for CDI-driven reads. Fix: call `migrate()` eagerly from every read entry point (`getLocalIdentities`, `getLocalPreferences`, `getLocalPlanner`) so it fires before any storage consumer reads, regardless of who calls first.
+
+### addInitScript runs on every navigation in a Playwright context
+`context.addInitScript()` fires on EVERY page navigation, including app-initiated redirects. If a test seeds localStorage in `addInitScript`, the seed runs again on the redirect — potentially undoing migration. Guard with a `sessionStorage` flag: `if (sessionStorage.getItem('_seeded')) return; sessionStorage.setItem('_seeded', '1');`.
+
+### setLocalIdentities compat-write of '0' must be dev-guarded
+`setLocalIdentities` writes `'0'` for migration-detection compat. If this write is unconditional, the second page load (after redirect) finds `'0'` and triggers migrate() again, creating duplicate planners. Guard: only write `'0'` when `dev` doesn't exist yet (pre-migration path).
+
+### globalSetup.js waitForFunction must match the schema the app actually writes
+`globalSetup.js` saves `consent.json` after a wait for localStorage state. If the condition (`localStorage.getItem('0') !== null`) doesn't match the new schema, globalSetup hangs or saves wrong state. Update the condition whenever the schema changes. M009 condition: `localStorage.getItem('dev') !== null || localStorage.getItem('0') !== null`.
+
+### Playwright doesn't forward browser console.log to test reporter by default
+Add `page.on('console', msg => logs.push(msg.text()))` to capture browser-side logs in tests. Without this, `console.log` calls in StorageLocal.js are invisible during test runs.

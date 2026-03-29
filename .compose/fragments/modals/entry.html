@@ -8,8 +8,6 @@
                     <input type="text" v-model="entry" id="yp-entry-textarea" maxlength="32" class="yp-entry-text" v-bind:class="'yp-cell-c'+getEntryColour(month,day)" v-bind:placeholder="$t('label.taglineplaceholder')">
                     <label class="yp-entry-field-label" for="yp-notes-textarea">{{$t('label.notesplaceholder')}}</label>
                     <textarea v-model="entryNotes" id="yp-notes-textarea" class="yp-entry-notes" rows="3" v-bind:placeholder="$t('label.notesplaceholder')"></textarea>
-                    <label class="yp-entry-field-label" for="yp-emoji-input">{{$t('label.emojiplaceholder')}}</label>
-                    <input type="text" v-model="entryEmoji" id="yp-emoji-input" maxlength="4" class="yp-entry-emoji" v-bind:placeholder="$t('label.emojiplaceholder')">
                     <div class="yp-entry-tools">
                         <div class="yp-colour-dots">
                             <button type="button" class="yp-dot yp-dot-clear" v-on:click="updateEntry(month,day,entry,entryType,0,entryNotes,entryEmoji,true)" title="Clear"></button>

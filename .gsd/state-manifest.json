@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-03-28T09:59:44.061Z",
+  "exported_at": "2026-03-28T12:54:48.257Z",
   "milestones": [
     {
       "id": "M001",
@@ -231,6 +231,70 @@
       ],
       "requirement_coverage": "New capability. Enriches per-day data contract ahead of sync backend (M009+).",
       "boundary_map_markdown": "### S01 → S02\nProduces:\n- `js/vue/model/planner.js` — `entryTagline`, `entryNotes`, `entryEmoji` state fields added\n- `js/vue/methods/entries.js` — `getEntryTagline`, `getEntryNotes`, `getEntryEmoji`, `getEntryCellDisplay`; `updateEntry` accepts emoji+notes; `updateEntryState` populates new fields\n- `js/service/StorageLocal.js` — `updateLocalEntry` persists `'1'`=tagline, `'3'`=notes, `'4'`=emoji\n\nConsumes: nothing\n\n### S02 → S03\nProduces:\n- `.compose/fragments/grid.html` — cell uses `getEntryCellDisplay(mindex,n)`\n- `.compose/fragments/modals/entry.html` — tagline + notes + inline emoji display with clear button\n- Recomposed `index.html`\n\nConsumes:\n- S01: stable getter/setter API, updated `updateEntry` signature\n\n### S03\nProduces:\n- `.compose/fragments/rail.html` — emoji stamp button + tabbed flyout\n- `.compose/fragments/scripts.html` — stamp mode JS with mutual exclusion\n- `css/` — stamp flyout styles\n- Recomposed `index.html`\n\nConsumes:\n- S01: `updateEntry` with emoji field\n- S02: cell renders emoji so stamp result is immediately visible"
+    },
+    {
+      "id": "M009",
+      "title": "",
+      "status": "complete",
+      "depends_on": [],
+      "created_at": "2026-03-28T11:17:57.933Z",
+      "completed_at": "2026-03-28T12:54:48.240Z",
+      "vision": "Replace the cookie-era localStorage schema with a clean, HLC-ready, human-readable schema that directly supports the data-api sync protocol. Introduce stable device UUIDs, multi-planner-per-user-per-year support, dot-path fieldRevs per planner, base snapshots for 3-way text merge, and a one-time migration that preserves all existing user data. The app runs correctly on both fresh installs and migrated data. All 14 E2E tests pass.",
+      "success_criteria": [
+        "dev key contains a stable UUID v4 on every load",
+        "plnr:{uuid} stores planner as { meta:{name,year,...}, days:{'YYYY-MM-DD':{tp,tl,col,notes,emoji}} } — sparse map, no arrays",
+        "Day object field names are tp/tl/col/notes/emoji throughout the codebase — no '0'..'4' numeric keys remain",
+        "rev:{uuid} is updated with a dot-path HLC entry for each field edited",
+        "sync:{uuid} baseClock initialised to HLC.zero() on new planners",
+        "Existing old-schema data (key '0' identities array) is migrated transparently on first load — no data lost",
+        "Multi-planner support preserved: planner switcher lists all plnr:* keys, each with its own UUID",
+        "All 14 Playwright E2E tests pass — no test files modified",
+        "data-api-core.esm.js imported successfully from js/vendor/ (smoke test in browser)"
+      ],
+      "key_risks": [
+        {
+          "risk": "Migration silently drops data for edge-case old-schema shapes",
+          "whyItMatters": "Existing users lose planner entries. Unrecoverable."
+        },
+        {
+          "risk": "E2E tests depend on specific localStorage key patterns (e.g. StorageLocal internals)",
+          "whyItMatters": "Any key name change that breaks E2E test setup/teardown causes false failures."
+        },
+        {
+          "risk": "HLC import from vendor bundle fails in the no-bundler CDN environment",
+          "whyItMatters": "The entire new schema depends on HLC.tick() being callable. If the import fails, nothing works."
+        }
+      ],
+      "proof_strategy": [
+        {
+          "riskOrUnknown": "Migration data fidelity",
+          "retireIn": "S03 — migration E2E test",
+          "whatWillBeProven": "Playwright test seeds old-schema data, reloads, verifies new keys present and all day entries readable"
+        },
+        {
+          "riskOrUnknown": "E2E test compatibility with new schema",
+          "retireIn": "S01, S02, S03 — run suite after each slice",
+          "whatWillBeProven": "All 14 existing tests pass after StorageLocal rewrite"
+        },
+        {
+          "riskOrUnknown": "HLC vendor bundle import",
+          "retireIn": "S01 — vendor bundle smoke test",
+          "whatWillBeProven": "Playwright harness test imports HLC from vendor bundle, creates a clock, advances it"
+        }
+      ],
+      "verification_contract": "All 14 Playwright E2E tests pass. Migration test passes. HLC vendor smoke test passes. No numeric day-object keys ('0'..'4') remain in any source file.",
+      "verification_integration": "StorageLocal correctly reads and writes plnr:{uuid} documents. rev:{uuid} updated on every entry edit. planner switcher correctly enumerates plnr:* keys.",
+      "verification_operational": "Manual browser inspection: localStorage shows readable keys (dev, plnr:uuid, rev:uuid). Old-schema keys ('0', uid-yearM) absent after migration.",
+      "verification_uat": "Create an entry, reload, verify it persists. Create a second planner, verify both listed in switcher. Inspect localStorage keys in browser DevTools.",
+      "definition_of_done": [
+        "S01 complete: vendor bundle importable, HLC available, StorageLocal scaffold with new key constants",
+        "S02 complete: full StorageLocal rewrite — all reads/writes use new schema, all 14 E2E tests pass",
+        "S03 complete: migration on first load from old schema, migration E2E test passes",
+        "No numeric day-object keys ('0'..'4') remain anywhere in .compose/ or js/ source files",
+        "All 14 E2E tests pass in final verification run"
+      ],
+      "requirement_coverage": "Covers: SYNC-01 (device UUID), SYNC-02 (multi-planner), SYNC-03 (planner doc structure), SYNC-04 (HLC fieldRevs), SYNC-05 (base snapshot), SYNC-07 (migration), STO-02 (schema redesign). Does not cover: SYNC-06 (SyncClient — M010), SYNC-08 (pruning — M010), AUTH-06 (sync wire-up — M010).",
+      "boundary_map_markdown": "| In | Out |\\n|---|---|\\n| js/service/StorageLocal.js — full rewrite | js/service/SyncClient.js (M010) |\\n| js/service/Storage.js — read/update for new key names | js/service/Api.js (M010) |\\n| js/vue/model/planner.js — field name constants | .compose/ templates (no change) |\\n| js/vendor/data-api-core.esm.js — new vendor asset | css/ (no change) |\\n| .tests/e2e/entry-crud.spec.js — read only, verify compat | index.html (rebuild via build.sh) |\\n| .tests/smoke/harness.spec.js — add HLC vendor smoke test | |"
     }
   ],
   "slices": [
@@ -750,6 +814,70 @@
       "proof_level": "Real runtime required: yes (browser renders the feature). Human/UAT optional — E2E suite is the gate.",
       "integration_closure": "Upstream: `getEntryNotes(mindex, day)`, `getEntryEmoji(mindex, day)`, `updateEntry` 8-arg signature (all from S01/S02). New wiring: emoji stamp IIFE block in `scripts.html` calls these via `appEl._vnode.component.proxy`. Milestone is usable end-to-end after this slice.",
       "observability_impact": "None — all changes are plain-JS event handlers in the existing IIFE. No new async or error paths.",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M009",
+      "id": "S01",
+      "title": "Vendor bundle integration + schema constants",
+      "status": "complete",
+      "risk": "low",
+      "depends": [],
+      "demo": "After this: HLC available in app. Key constants defined. Harness test green.",
+      "created_at": "2026-03-28T12:09:16.766Z",
+      "completed_at": "2026-03-28T12:22:01.101Z",
+      "full_summary_md": "---\nid: S01\nparent: M009\nmilestone: M009\nprovides:\n  - js/service/storage-schema.js with all key/field constants for S02 import\nrequires:\n  []\naffects:\n  - S02\nkey_files:\n  - js/service/storage-schema.js\n  - .tests/smoke/harness.spec.js\nkey_decisions:\n  - data-api-core.esm.js already in js/vendor/ — no index.html changes needed\n  - SYNC-01 uses dynamic import in browser evaluate to verify the vendor bundle\npatterns_established:\n  - storage-schema.js is the single source of truth for all localStorage key names and day field names\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M009/slices/S01/tasks/T01-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-03-28T12:22:01.101Z\nblocker_discovered: false\n---\n\n# S01: Vendor bundle integration + schema constants\n\n**Schema constants module + SYNC-01 smoke test in place; 15/15 tests pass**\n\n## What Happened\n\nCreated the schema constants module and verified the HLC vendor bundle is accessible in the browser. No index.html or fragment changes needed because data-api-core.esm.js is already in js/vendor/. All 15 tests pass.\n\n## Verification\n\nAll 15 tests pass: cd .tests && npx playwright test (15 passed in 6.7s)\n\n## Requirements Advanced\n\nNone.\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nNone.\n\n## Known Limitations\n\nNone.\n\n## Follow-ups\n\nNone.\n\n## Files Created/Modified\n\n- `js/service/storage-schema.js` — New file: localStorage key builders, field name constants, HLC_ZERO, HLC re-export\n- `.tests/smoke/harness.spec.js` — Added SYNC-01 smoke test verifying HLC importable from vendor bundle\n",
+      "full_uat_md": "# S01: Vendor bundle integration + schema constants — UAT\n\n**Milestone:** M009\n**Written:** 2026-03-28T12:22:01.101Z\n\n## SYNC-01 — HLC vendor bundle accessible\\n\\n| Step | Action | Expected | Result |\\n|------|--------|----------|--------|\\n| 1 | Navigate to app | App loads, [data-app-ready] set | ✅ |\\n| 2 | Dynamically import /js/vendor/data-api-core.esm.js in browser | HLC exported | ✅ |\\n| 3 | Create and tick HLC clock | ticked > clock (string comparison) | ✅ |\\n\\nAll 15 tests pass: `cd .tests && npx playwright test`\"\n",
+      "goal": "Import HLC from the vendor bundle and create the schema constants module; add and pass the SYNC-01 smoke test",
+      "success_criteria": "- `js/service/storage-schema.js` exports all key builders and field name constants\n- `js/vendor/data-api-core.esm.js` is importable in the browser at `/js/vendor/data-api-core.esm.js`\n- SYNC-01 smoke test passes\n- All 14 existing tests still pass (15 total)",
+      "proof_level": "E2E smoke test + full suite",
+      "integration_closure": "storage-schema.js is ready for import by StorageLocal.js in S02",
+      "observability_impact": "None",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M009",
+      "id": "S02",
+      "title": "StorageLocal full rewrite",
+      "status": "complete",
+      "risk": "medium",
+      "depends": [
+        "S01"
+      ],
+      "demo": "After this: all 14 tests green. localStorage in browser shows plnr:uuid keys with readable day objects.",
+      "created_at": "2026-03-28T12:09:16.767Z",
+      "completed_at": "2026-03-28T12:28:35.912Z",
+      "full_summary_md": "---\nid: S02\nparent: M009\nmilestone: M009\nprovides:\n  - StorageLocal with new M009 schema\n  - plnr:{uuid} sparse-map planner documents\n  - rev:{uuid} dot-path fieldRevs updated on every entry edit\n  - prefs:{uid} in new format with legacy compat read/write\n  - New day field names tp/tl/col/notes/emoji throughout js/service/ and js/vue/methods/\nrequires:\n  []\naffects:\n  - S03\nkey_files:\n  - js/service/StorageLocal.js\n  - js/vue/methods/entries.js\n  - js/service/Storage.js\nkey_decisions:\n  - Dual-mode uid/uuid handling in setLocalPlanner/getLocalPlanner — numeric uid (no '-') triggers find-or-create planner lookup\n  - Preferences translated between old {0,1,2,3} and new {year,lang,theme,dark,names} on every read/write\n  - Day field names tp/tl/col/notes/emoji used throughout — no numeric string keys remain in entries.js or Storage.js\npatterns_established:\n  - Dual-mode uid/uuid detection: no '-' in identifier = legacy uid, treat as uid for planner lookup. Use for any future migration-compatible API.\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M009/slices/S02/tasks/T01-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-03-28T12:28:35.912Z\nblocker_discovered: false\n---\n\n# S02: StorageLocal full rewrite\n\n**StorageLocal fully rewritten to new M009 schema; day field names updated throughout; 15/15 tests pass.**\n\n## What Happened\n\nFull StorageLocal rewrite delivered in a single task. The new implementation reads/writes plnr:{uuid} documents in { meta, days: { 'YYYY-MM-DD': {tp,tl,col,notes,emoji} } } format, converts to/from the runtime [mindex][day] months array for Vue reactivity, and maintains rev:{uuid} dot-path fieldRevs on every edit. entries.js and Storage.js updated to use new field names throughout.\n\n## Verification\n\ncd .tests && npx playwright test — 15 passed (6.1s). Full E2E suite green including entry CRUD, planner management, sync error, tooltip XSS, boot, compose, harness, and HLC vendor smoke test.\n\n## Requirements Advanced\n\n- SYNC-02 — StorageLocal now writes plnr:{uuid} documents with stable UUID keys and HLC fieldRevs\n- SYNC-03 — Planner docs are sparse {days: {'YYYY-MM-DD': {...}}} maps, not arrays\n- SYNC-04 — rev:{uuid} updated with dot-path HLC entry per field on every updateLocalEntry call\n- STO-02 — Day objects use tp/tl/col/notes/emoji throughout the codebase\n\n## Requirements Validated\n\nNone.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nsetLocalPlanner/getLocalPlanner made smart about legacy uid vs planner UUID. Preferences round-trip in both formats to maintain compat with planner.js callers.\n\n## Known Limitations\n\nNone for S02 scope.\n\n## Follow-ups\n\nS03 migration adds the one-time old-schema detection and migration logic. updateEntryState in entries.js still calls api.synchroniseToLocal on every modal open — that will be cleaned up in M010.\n\n## Files Created/Modified\n\n- `js/service/StorageLocal.js` — Full rewrite to new M009 schema — plnr:uuid, rev:uuid, prefs:uid, dev, HLC fieldRevs, sparse-map planner docs\n- `js/vue/methods/entries.js` — Day field accessors updated: '0'->tp, '1'->tl, '2'->col, '3'->notes, '4'->emoji\n- `js/service/Storage.js` — Day field accessors updated to match new names\n",
+      "full_uat_md": "# S02: StorageLocal full rewrite — UAT\n\n**Milestone:** M009\n**Written:** 2026-03-28T12:28:35.912Z\n\n## UAT — S02: StorageLocal full rewrite\\n\\n### Manual checks\\n1. Open app, create an entry on a day — inspect localStorage in DevTools\\n   - Expected: key `plnr:{uuid}` exists with `{ meta: {...}, days: { 'YYYY-MM-DD': { tp, tl, col, notes, emoji } } }`\\n   - Expected: key `rev:{uuid}` exists with dot-path HLC entries\\n   - Expected: no keys like `1234567890-20261` (old schema)\\n2. Create a second planner — two `plnr:*` keys should exist\\n3. Reload page — all entries preserved\\n\\n### Automated\\n- `cd .tests && npx playwright test` — 15 passed\"\n",
+      "goal": "Rewrite StorageLocal.js to use the new localStorage schema (plnr:uuid, rev:uuid, dev, prefs:uid etc.) and update entries.js and Storage.js to use new day field names (tp/tl/col/notes/emoji). All 15 tests must pass.",
+      "success_criteria": "All 15 E2E/smoke tests pass. No numeric day-object keys ('0'..'4') remain in js/service/ or js/vue/methods/. plnr:{uuid} written on entry update. rev:{uuid} updated with HLC entry per field.",
+      "proof_level": "Full Playwright test suite pass.",
+      "integration_closure": "entries.js getters updated for new field names. Storage.js updated. StorageLocal converts between plnr: sparse-map format and runtime [mindex][day] array format. No template changes needed.",
+      "observability_impact": "None.",
+      "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M009",
+      "id": "S03",
+      "title": "One-time migration from old schema",
+      "status": "complete",
+      "risk": "medium",
+      "depends": [
+        "S02"
+      ],
+      "demo": "After this: existing user data survives upgrade. Migration test green. All 14 tests green.",
+      "created_at": "2026-03-28T12:09:16.767Z",
+      "completed_at": "2026-03-28T12:53:50.514Z",
+      "full_summary_md": "---\nid: S03\nparent: M009\nmilestone: M009\nprovides:\n  - One-time migration from old schema: uid-yearM blobs → plnr:uuid sparse-map docs\n  - Old keys removed: '0', uid, uid-year*\n  - New keys written: dev, prefs:uid, plnr:uuid, rev:uuid, base:uuid, sync:uuid\n  - Day entries migrated with new field names: tp/tl/col/notes/emoji\nrequires:\n  - slice: S02\n    provides: StorageLocal with new schema write methods\naffects:\n  []\nkey_files:\n  - js/service/StorageLocal.js\n  - .tests/e2e/migration.spec.js\n  - .tests/globalSetup.js\nkey_decisions:\n  - Eager migrate() in read methods pattern — required because CDI lifecycle calls storage reads before Vue mounted()\n  - migrate() dev-exists guard: removes stale '0' and returns cleanly rather than skipping entirely\n  - sessionStorage flag in migration test prevents addInitScript re-seeding on redirect\npatterns_established:\n  - Eager migration trigger pattern: call migrate() from read methods (getLocalIdentities, getLocalPreferences, getLocalPlanner) so migration fires before any storage read regardless of caller order\nobservability_surfaces:\n  - none\ndrill_down_paths:\n  - .gsd/milestones/M009/slices/S03/tasks/T01-SUMMARY.md\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-03-28T12:53:50.515Z\nblocker_discovered: false\n---\n\n# S03: One-time migration from old schema\n\n**One-time migration from old schema to M009 implemented and tested; 16/16 tests pass.**\n\n## What Happened\n\nOne-time migration from old cookie-era schema fully implemented. The critical insight was that CDI calls Application.init() (which reads storage) before Vue's mounted() lifecycle triggers initialised()/refresh(). Solved by calling migrate() eagerly from every storage read entry point. The migrate() guard was refined: if dev exists, just clean up stale '0' and return. globalSetup updated. 16/16 tests pass including the dedicated migration E2E test.\n\n## Verification\n\ncd .tests && npx playwright test — 16 passed (6.1s).\n\n## Requirements Advanced\n\n- STO-02 — migrate() converts old uid-yearM blobs to new day objects with tp/tl/col/notes/emoji keys\n\n## Requirements Validated\n\n- SYNC-07 — Playwright migration test: seeds old-schema data, reloads, verifies old keys absent and day entries intact with new field names. 16/16 tests pass.\n\n## New Requirements Surfaced\n\nNone.\n\n## Requirements Invalidated or Re-scoped\n\nNone.\n\n## Deviations\n\nmigrate() called eagerly from read methods (getLocalIdentities/getLocalPreferences/getLocalPlanner) rather than only from initialised() — required because CDI Application.init() reads storage before Vue mount triggers initialised(). globalSetup.js updated to wait for dev OR '0'. Migration test uses sessionStorage flag to prevent re-seeding on redirect.\n\n## Known Limitations\n\nNone.\n\n## Follow-ups\n\nNone.\n\n## Files Created/Modified\n\n- `js/service/StorageLocal.js` — Added migrate() method + eager migrate() calls in read methods + migrate() guard updated\n- `.tests/e2e/migration.spec.js` — Migration Playwright E2E test\n- `.tests/globalSetup.js` — Wait for dev OR '0' (M009 schema compat)\n",
+      "full_uat_md": "# S03: One-time migration from old schema — UAT\n\n**Milestone:** M009\n**Written:** 2026-03-28T12:53:50.515Z\n\n## UAT — S03: One-time migration\\n\\n### Manual check\\n1. Open DevTools, set localStorage: `localStorage.setItem('0', '[{\\\"0\\\":1000000,\\\"1\\\":\\\"agent\\\",\\\"2\\\":0,\\\"3\\\":0}]')` and a month key `localStorage.setItem('1000000-20261', '{\\\"15\\\":{\\\"0\\\":0,\\\"1\\\":\\\"test\\\",\\\"2\\\":1}}')`\\n2. Reload page\\n3. Verify: `'0'` key gone, `dev` key present, `plnr:*` key present with `days['2026-01-15'].tl === 'test'`\\n\\n### Automated\\n- `cd .tests && npx playwright test` — 16 passed\"\n",
+      "goal": "Add one-time migration from old-schema localStorage data on first load. Detect key '0' (old identities array), convert all uid-yearM month blobs to plnr:uuid docs with new field names, remove old keys. Add Playwright migration test.",
+      "success_criteria": "Migration test: old-schema data seeded, app reloaded, old keys absent, new plnr: keys present, day entry data intact (tl='test entry', col=2, emoji='😀'). All 16 tests pass.",
+      "proof_level": "Dedicated Playwright migration test + full suite pass.",
+      "integration_closure": "Migration called from StorageLocal.initialised() check path in lifecycle.js refresh(). After migration, all subsequent reads use new schema.",
+      "observability_impact": "None.",
       "sequence": 0,
       "replan_triggered_at": null
     }
@@ -1593,9 +1721,245 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M009",
+      "slice_id": "S01",
+      "id": "T01",
+      "title": "Created storage-schema.js with all M009 key/field constants; added SYNC-01 smoke test — 15/15 pass",
+      "status": "complete",
+      "one_liner": "Created storage-schema.js with all M009 key/field constants; added SYNC-01 smoke test — 15/15 pass",
+      "narrative": "Created js/service/storage-schema.js exporting all localStorage key constants (KEY_DEV, KEY_TOK, KEY_IDS, keyPrefs, keyPlnr, keyRev, keyBase, keySync) and day field name constants (F_TYPE, F_TL, F_COL, F_NOTES, F_EMOJI) plus HLC_ZERO and re-exported HLC. Added SYNC-01 smoke test to harness.spec.js — it navigates to the app, then dynamically imports /js/vendor/data-api-core.esm.js in browser context, creates a clock, ticks it, and verifies the ticked clock is greater than the original. All 15 tests pass (14 existing + 1 new).",
+      "verification_result": "cd .tests && npx playwright test — 15 passed (6.7s)",
+      "duration": "",
+      "completed_at": "2026-03-28T12:21:44.534Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "js/service/storage-schema.js",
+        ".tests/smoke/harness.spec.js"
+      ],
+      "key_decisions": [
+        "Imported HLC via relative path ../vendor/data-api-core.esm.js from storage-schema.js (js/service/ to js/vendor/)",
+        "No changes needed to index.html or .compose/ fragments — data-api-core.esm.js is already in js/vendor/ and served by http-server",
+        "SYNC-01 smoke test uses page.evaluate() to dynamically import the vendor bundle at runtime"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S01\nmilestone: M009\nkey_files:\n  - js/service/storage-schema.js\n  - .tests/smoke/harness.spec.js\nkey_decisions:\n  - Imported HLC via relative path ../vendor/data-api-core.esm.js from storage-schema.js (js/service/ to js/vendor/)\n  - No changes needed to index.html or .compose/ fragments — data-api-core.esm.js is already in js/vendor/ and served by http-server\n  - SYNC-01 smoke test uses page.evaluate() to dynamically import the vendor bundle at runtime\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-03-28T12:21:44.535Z\nblocker_discovered: false\n---\n\n# T01: Created storage-schema.js with all M009 key/field constants; added SYNC-01 smoke test — 15/15 pass\n\n**Created storage-schema.js with all M009 key/field constants; added SYNC-01 smoke test — 15/15 pass**\n\n## What Happened\n\nCreated js/service/storage-schema.js exporting all localStorage key constants (KEY_DEV, KEY_TOK, KEY_IDS, keyPrefs, keyPlnr, keyRev, keyBase, keySync) and day field name constants (F_TYPE, F_TL, F_COL, F_NOTES, F_EMOJI) plus HLC_ZERO and re-exported HLC. Added SYNC-01 smoke test to harness.spec.js — it navigates to the app, then dynamically imports /js/vendor/data-api-core.esm.js in browser context, creates a clock, ticks it, and verifies the ticked clock is greater than the original. All 15 tests pass (14 existing + 1 new).\n\n## Verification\n\ncd .tests && npx playwright test — 15 passed (6.7s)\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `cd .tests && npx playwright test` | 0 | ✅ pass | 6700ms |\n\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `js/service/storage-schema.js`\n- `.tests/smoke/harness.spec.js`\n",
+      "description": "1. Create js/service/storage-schema.js with all key constants and field name exports, importing HLC from ../vendor/data-api-core.esm.js\\n2. Add SYNC-01 smoke test to .tests/smoke/harness.spec.js\\n3. Run full test suite to verify all 15 tests pass",
+      "estimate": "30m",
+      "files": [
+        "js/service/storage-schema.js",
+        ".tests/smoke/harness.spec.js"
+      ],
+      "verify": "cd .tests && npx playwright test",
+      "inputs": [
+        "js/vendor/data-api-core.esm.js",
+        ".tests/smoke/harness.spec.js"
+      ],
+      "expected_output": [
+        "js/service/storage-schema.js",
+        "updated .tests/smoke/harness.spec.js"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M009",
+      "slice_id": "S02",
+      "id": "T01",
+      "title": "Rewrote StorageLocal.js to new M009 schema; updated entries.js and Storage.js field names; all 15 tests pass.",
+      "status": "complete",
+      "one_liner": "Rewrote StorageLocal.js to new M009 schema; updated entries.js and Storage.js field names; all 15 tests pass.",
+      "narrative": "Rewrote StorageLocal.js to the new M009 schema: plnr:{uuid} for planner documents, rev:{uuid} for dot-path fieldRevs, prefs:{uid} for preferences, dev for device UUID. The class converts between the new sparse-map planner document format and the runtime months array format the Vue model expects. Updated entries.js and Storage.js to use new day field names (tp/tl/col/notes/emoji instead of '0'..'4'). Key challenge: legacy callers pass uid (numeric timestamp, no dashes) to setLocalPlanner/getLocalPlanner — handled transparently by detecting the absence of '-' in the identifier. Preferences round-trip in both old and new format. 15/15 tests pass.",
+      "verification_result": "cd .tests && npx playwright test — 15 passed (6.1s). All 15 tests green including new HLC vendor smoke test and full E2E suite (entry CRUD, planner management, sync error, tooltip XSS, boot, compose, harness).",
+      "duration": "",
+      "completed_at": "2026-03-28T12:28:08.931Z",
+      "blocker_discovered": false,
+      "deviations": "setLocalPlanner/getLocalPlanner made smart about legacy uid vs planner UUID (no '-' in uid = numeric timestamp). setLocalPreferences preserves the '3' (names) key in old-format preferences and returns old-format from getLocalPreferences so callers expecting {0,1,2,3} continue to work.",
+      "known_issues": "None.",
+      "key_files": [
+        "js/service/StorageLocal.js",
+        "js/vue/methods/entries.js",
+        "js/service/Storage.js"
+      ],
+      "key_decisions": [
+        "StorageLocal handles both legacy uid (numeric, no dashes) and new UUID (has dashes) in setLocalPlanner/getLocalPlanner — callers in lifecycle.js pass uid, not uuid",
+        "setLocalPreferences/getLocalPreferences translate between new internal {year,lang,theme,dark,names} format and old {0,1,2,3} format expected by planner.js callers",
+        "Day field names changed: '0'->tp, '1'->tl, '2'->col, '3'->notes, '4'->emoji in entries.js and Storage.js"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S02\nmilestone: M009\nkey_files:\n  - js/service/StorageLocal.js\n  - js/vue/methods/entries.js\n  - js/service/Storage.js\nkey_decisions:\n  - StorageLocal handles both legacy uid (numeric, no dashes) and new UUID (has dashes) in setLocalPlanner/getLocalPlanner — callers in lifecycle.js pass uid, not uuid\n  - setLocalPreferences/getLocalPreferences translate between new internal {year,lang,theme,dark,names} format and old {0,1,2,3} format expected by planner.js callers\n  - Day field names changed: '0'->tp, '1'->tl, '2'->col, '3'->notes, '4'->emoji in entries.js and Storage.js\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-03-28T12:28:08.931Z\nblocker_discovered: false\n---\n\n# T01: Rewrote StorageLocal.js to new M009 schema; updated entries.js and Storage.js field names; all 15 tests pass.\n\n**Rewrote StorageLocal.js to new M009 schema; updated entries.js and Storage.js field names; all 15 tests pass.**\n\n## What Happened\n\nRewrote StorageLocal.js to the new M009 schema: plnr:{uuid} for planner documents, rev:{uuid} for dot-path fieldRevs, prefs:{uid} for preferences, dev for device UUID. The class converts between the new sparse-map planner document format and the runtime months array format the Vue model expects. Updated entries.js and Storage.js to use new day field names (tp/tl/col/notes/emoji instead of '0'..'4'). Key challenge: legacy callers pass uid (numeric timestamp, no dashes) to setLocalPlanner/getLocalPlanner — handled transparently by detecting the absence of '-' in the identifier. Preferences round-trip in both old and new format. 15/15 tests pass.\n\n## Verification\n\ncd .tests && npx playwright test — 15 passed (6.1s). All 15 tests green including new HLC vendor smoke test and full E2E suite (entry CRUD, planner management, sync error, tooltip XSS, boot, compose, harness).\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `cd .tests && npx playwright test` | 0 | ✅ pass — 15 passed | 6100ms |\n\n\n## Deviations\n\nsetLocalPlanner/getLocalPlanner made smart about legacy uid vs planner UUID (no '-' in uid = numeric timestamp). setLocalPreferences preserves the '3' (names) key in old-format preferences and returns old-format from getLocalPreferences so callers expecting {0,1,2,3} continue to work.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `js/service/StorageLocal.js`\n- `js/vue/methods/entries.js`\n- `js/service/Storage.js`\n",
+      "description": "Full rewrite of StorageLocal.js to new schema. Update entries.js day field accessors. Update Storage.js field accessors.",
+      "estimate": "2h",
+      "files": [
+        "js/service/StorageLocal.js",
+        "js/vue/methods/entries.js",
+        "js/service/Storage.js"
+      ],
+      "verify": "cd .tests && npx playwright test -- 15 passed",
+      "inputs": [
+        "js/service/StorageLocal.js",
+        "js/vue/methods/entries.js",
+        "js/service/Storage.js",
+        "js/service/storage-schema.js",
+        "js/vue/methods/planner.js",
+        "js/vue/methods/lifecycle.js"
+      ],
+      "expected_output": [
+        "js/service/StorageLocal.js rewritten",
+        "js/vue/methods/entries.js updated",
+        "js/service/Storage.js updated"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M009",
+      "slice_id": "S03",
+      "id": "T01",
+      "title": "Migration from old-schema to M009 implemented; all 16 tests pass including dedicated migration E2E test.",
+      "status": "complete",
+      "one_liner": "Migration from old-schema to M009 implemented; all 16 tests pass including dedicated migration E2E test.",
+      "narrative": "Added migrate() to StorageLocal.js. The core challenge was ordering: CDI calls Application.init() before Vue mounts, so storage reads happen before initialised() triggers migrate(). Fixed by calling migrate() eagerly from getLocalIdentities, getLocalPreferences, and getLocalPlanner. The compat write of '0' in setLocalIdentities was conditional on dev not existing. The migrate() dev-exists guard was updated to do a quick cleanup of stale '0' rather than a full skip. globalSetup.js updated to wait for the new dev key. Migration test uses sessionStorage flag to prevent re-seeding on redirect navigation. 16/16 tests pass.",
+      "verification_result": "cd .tests && npx playwright test — 16 passed (6.1s). Migration test verifies old keys removed, new keys present, day entries intact with new field names (tl, col, notes, emoji).",
+      "duration": "",
+      "completed_at": "2026-03-28T12:53:17.430Z",
+      "blocker_discovered": false,
+      "deviations": "migrate() needed to be called from getLocalIdentities(), getLocalPreferences(), and getLocalPlanner() in addition to initialised() — because CDI's init() lifecycle calls Application.init() which reads storage BEFORE Vue mounted() calls refresh()/initialised(). The migration had to be triggered eagerly on any first read, not just on initialised(). The setLocalIdentities compat write of '0' had to be conditional on dev not existing. The migrate() guard was changed to: if dev exists, just clean up any stale '0' and return (rather than skipping entirely). globalSetup.js updated to wait for dev OR '0'. Migration test needed sessionStorage flag to prevent addInitScript re-seeding on redirect.",
+      "known_issues": "None.",
+      "key_files": [
+        "js/service/StorageLocal.js",
+        ".tests/e2e/migration.spec.js",
+        ".tests/globalSetup.js"
+      ],
+      "key_decisions": [
+        "migrate() called from getLocalIdentities/getLocalPreferences/getLocalPlanner so it fires before CDI Application.init() reads storage",
+        "migrate() guard: if dev exists, remove stale '0' and return — handles transitional state where setLocalIdentities wrote '0' compat key",
+        "setLocalIdentities only writes '0' compat key when dev doesn't exist yet (pre-migration path only)",
+        "Migration test uses sessionStorage flag to seed old data only on first navigation (not on redirect)",
+        "globalSetup.js waits for dev OR '0' to support M009 schema"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S03\nmilestone: M009\nkey_files:\n  - js/service/StorageLocal.js\n  - .tests/e2e/migration.spec.js\n  - .tests/globalSetup.js\nkey_decisions:\n  - migrate() called from getLocalIdentities/getLocalPreferences/getLocalPlanner so it fires before CDI Application.init() reads storage\n  - migrate() guard: if dev exists, remove stale '0' and return — handles transitional state where setLocalIdentities wrote '0' compat key\n  - setLocalIdentities only writes '0' compat key when dev doesn't exist yet (pre-migration path only)\n  - Migration test uses sessionStorage flag to seed old data only on first navigation (not on redirect)\n  - globalSetup.js waits for dev OR '0' to support M009 schema\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-03-28T12:53:17.430Z\nblocker_discovered: false\n---\n\n# T01: Migration from old-schema to M009 implemented; all 16 tests pass including dedicated migration E2E test.\n\n**Migration from old-schema to M009 implemented; all 16 tests pass including dedicated migration E2E test.**\n\n## What Happened\n\nAdded migrate() to StorageLocal.js. The core challenge was ordering: CDI calls Application.init() before Vue mounts, so storage reads happen before initialised() triggers migrate(). Fixed by calling migrate() eagerly from getLocalIdentities, getLocalPreferences, and getLocalPlanner. The compat write of '0' in setLocalIdentities was conditional on dev not existing. The migrate() dev-exists guard was updated to do a quick cleanup of stale '0' rather than a full skip. globalSetup.js updated to wait for the new dev key. Migration test uses sessionStorage flag to prevent re-seeding on redirect navigation. 16/16 tests pass.\n\n## Verification\n\ncd .tests && npx playwright test — 16 passed (6.1s). Migration test verifies old keys removed, new keys present, day entries intact with new field names (tl, col, notes, emoji).\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `cd .tests && npx playwright test` | 0 | ✅ pass — 16 passed | 6100ms |\n\n\n## Deviations\n\nmigrate() needed to be called from getLocalIdentities(), getLocalPreferences(), and getLocalPlanner() in addition to initialised() — because CDI's init() lifecycle calls Application.init() which reads storage BEFORE Vue mounted() calls refresh()/initialised(). The migration had to be triggered eagerly on any first read, not just on initialised(). The setLocalIdentities compat write of '0' had to be conditional on dev not existing. The migrate() guard was changed to: if dev exists, just clean up any stale '0' and return (rather than skipping entirely). globalSetup.js updated to wait for dev OR '0'. Migration test needed sessionStorage flag to prevent addInitScript re-seeding on redirect.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `js/service/StorageLocal.js`\n- `.tests/e2e/migration.spec.js`\n- `.tests/globalSetup.js`\n",
+      "description": "Add migrate() method to StorageLocal.js. Detects old-schema key '0', converts all uid-yearM month blobs to new plnr:uuid docs, writes prefs:uid, writes dev UUID, removes old keys. Idempotent.",
+      "estimate": "30m",
+      "files": [
+        "js/service/StorageLocal.js"
+      ],
+      "verify": "cd .tests && npx playwright test",
+      "inputs": [
+        "js/service/StorageLocal.js",
+        "js/service/storage-schema.js"
+      ],
+      "expected_output": [
+        "migrate() method in StorageLocal.js"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M009",
+      "slice_id": "S03",
+      "id": "T02",
+      "title": "migrate() wired into bootstrap via eager-call pattern in storage read methods.",
+      "status": "complete",
+      "one_liner": "migrate() wired into bootstrap via eager-call pattern in storage read methods.",
+      "narrative": "Wiring was part of T01. No separate work needed.",
+      "verification_result": "cd .tests && npx playwright test — 16 passed.",
+      "duration": "",
+      "completed_at": "2026-03-28T12:53:25.836Z",
+      "blocker_discovered": false,
+      "deviations": "T02 merged into T01 — wiring migrate() into the bootstrap was part of the same change.",
+      "known_issues": "None.",
+      "key_files": [
+        "js/service/StorageLocal.js"
+      ],
+      "key_decisions": [
+        "migrate() wired into getLocalIdentities/getLocalPreferences/getLocalPlanner rather than just initialised()"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S03\nmilestone: M009\nkey_files:\n  - js/service/StorageLocal.js\nkey_decisions:\n  - migrate() wired into getLocalIdentities/getLocalPreferences/getLocalPlanner rather than just initialised()\nduration: \"\"\nverification_result: passed\ncompleted_at: 2026-03-28T12:53:25.836Z\nblocker_discovered: false\n---\n\n# T02: migrate() wired into bootstrap via eager-call pattern in storage read methods.\n\n**migrate() wired into bootstrap via eager-call pattern in storage read methods.**\n\n## What Happened\n\nWiring was part of T01. No separate work needed.\n\n## Verification\n\ncd .tests && npx playwright test — 16 passed.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `cd .tests && npx playwright test` | 0 | ✅ pass — 16 passed | 6100ms |\n\n\n## Deviations\n\nT02 merged into T01 — wiring migrate() into the bootstrap was part of the same change.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `js/service/StorageLocal.js`\n",
+      "description": "Wire migrate() into initialise() flow so it runs on first load before any reads.",
+      "estimate": "10m",
+      "files": [
+        "js/service/StorageLocal.js"
+      ],
+      "verify": "cd .tests && npx playwright test -- 16 passed",
+      "inputs": [
+        "js/service/StorageLocal.js",
+        "js/vue/methods/lifecycle.js"
+      ],
+      "expected_output": [
+        "js/service/StorageLocal.js with migrate() wired"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
-  "decisions": [],
+  "decisions": [
+    {
+      "seq": 1,
+      "id": "D001",
+      "when_context": "Design session 2026-03-28, data-api sync integration planning",
+      "scope": "architecture",
+      "decision": "localStorage schema redesign: replace cookie-era opaque-key schema with HLC-ready terse-readable schema",
+      "choice": "New schema: dev (device UUID), tok (JWT), ids (identities map), prefs:{uid} (preferences), plnr:{uuid} (planner doc), rev:{uuid} (dot-path fieldRevs), base:{uuid} (base snapshot), sync:{uuid} (baseClock). Day object keys: tp/tl/col/notes/emoji.",
+      "rationale": "The current schema uses unix timestamps as UIDs, opaque numeric keys ('0'..'4') on day objects, and no HLC tracking. It cannot support multi-device merge. The new schema is directly compatible with the data-api sync protocol: plnr: documents are sent verbatim as sync payloads, rev: provides the dot-path fieldRevs, sync: provides the baseClock.",
+      "revisable": "No — changing the schema again would require another migration. Lock it in M009.",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 2,
+      "id": "D002",
+      "when_context": "Design session 2026-03-28, data-api sync integration planning",
+      "scope": "data-model",
+      "decision": "Planner document structure for sync: nested map vs per-day documents vs per-month documents",
+      "choice": "One document per planner, shape: { meta: { name, year, lang, theme, dark, created }, days: { 'YYYY-MM-DD': { tp, tl, col, notes, emoji } } }. Days is a sparse map keyed by ISO date string.",
+      "rationale": "One document per planner is human-readable at the API level (hittiing the sync endpoint directly shows the full planner), maps are dot-path addressable by the data-api merge engine (arrays are not), sparse days keep documents small (~5KB for 50 active days). changesSince returns the full doc on any change but the document is bounded (one year, ~50KB max) so this is acceptable.",
+      "revisable": "Yes — if multi-year planners or very dense planners are added, per-day documents could be revisited.",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 3,
+      "id": "D003",
+      "when_context": "Design session 2026-03-28, data-api sync integration planning",
+      "scope": "data-model",
+      "decision": "Planner UUID generation: client-generated vs server-assigned",
+      "choice": "Client generates UUID via crypto.randomUUID() at planner creation time. Same mechanism for the device UUID (dev key).",
+      "rationale": "Offline-first design principle — the planner must be usable before the first sync. Client-generated UUIDs eliminate a server round-trip dependency for creation. Every node (browser, mobile, server) generates its own IDs. Collision probability with UUIDv4 is negligible.",
+      "revisable": "No — changing this would require coordinating UUID generation across all existing clients.",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 4,
+      "id": "D004",
+      "when_context": "Design session 2026-03-28, supersedes AUTH-05",
+      "scope": "architecture",
+      "decision": "Sync API contract: separate OpenAPI spec (AUTH-05) vs data-api protocol",
+      "choice": "data-api IS the sync API. year-planner uses POST /year-planner/sync directly. No separate OpenAPI spec file in year-planner.",
+      "rationale": "AUTH-05 was written before the data-api project existed as a concrete deliverable. Now that data-api M001-M005 are complete with a tested, documented protocol, a separate OpenAPI spec would be redundant. The data-api README and test suite are the living contract.",
+      "revisable": "Yes — if a third-party backend integration requires a formal OpenAPI spec, AUTH-05 can be reinstated.",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 5,
+      "id": "D005",
+      "when_context": "Design session 2026-03-28",
+      "scope": "architecture",
+      "decision": "Where sync protocol logic lives in year-planner: inside StorageLocal.js vs a separate SyncClient.js",
+      "choice": "SyncClient.js in js/service/. Uses data-api-core.esm.js bundle (local asset initially). Manages baseClock/fieldRevs/baseSnapshot per planner. StorageLocal delegates sync state to SyncClient.",
+      "rationale": "Separation of concerns: StorageLocal handles persistence (reading/writing localStorage), SyncClient handles the sync protocol (HLC, fieldRevs, baseClock, server communication). SyncClient is independently testable without a DOM. Mirrors the data-api-core SyncClient design (D006 in data-api decisions).",
+      "revisable": "Yes — if the CDI wiring becomes cumbersome, the two could be merged back.",
+      "made_by": "collaborative",
+      "superseded_by": null
+    }
+  ],
   "verification_evidence": [
     {
       "id": 1,
@@ -1629,6 +1993,50 @@
       "verdict": "✅ pass",
       "duration_ms": 6700,
       "created_at": "2026-03-28T09:54:09.932Z"
+    },
+    {
+      "id": 4,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M009",
+      "command": "cd .tests && npx playwright test",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 6700,
+      "created_at": "2026-03-28T12:21:44.534Z"
+    },
+    {
+      "id": 5,
+      "task_id": "T01",
+      "slice_id": "S02",
+      "milestone_id": "M009",
+      "command": "cd .tests && npx playwright test",
+      "exit_code": 0,
+      "verdict": "✅ pass — 15 passed",
+      "duration_ms": 6100,
+      "created_at": "2026-03-28T12:28:08.931Z"
+    },
+    {
+      "id": 6,
+      "task_id": "T01",
+      "slice_id": "S03",
+      "milestone_id": "M009",
+      "command": "cd .tests && npx playwright test",
+      "exit_code": 0,
+      "verdict": "✅ pass — 16 passed",
+      "duration_ms": 6100,
+      "created_at": "2026-03-28T12:53:17.430Z"
+    },
+    {
+      "id": 7,
+      "task_id": "T02",
+      "slice_id": "S03",
+      "milestone_id": "M009",
+      "command": "cd .tests && npx playwright test",
+      "exit_code": 0,
+      "verdict": "✅ pass — 16 passed",
+      "duration_ms": 6100,
+      "created_at": "2026-03-28T12:53:25.836Z"
     }
   ]
 }

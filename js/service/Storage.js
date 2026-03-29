@@ -15,7 +15,7 @@ export default class Storage {
     }
     getEntry (mindex, day) {
         if (this.model.planner[mindex] && this.model.planner[mindex]['' + day]) {
-            return this.model.planner[mindex]['' + day]['' + 1] || ''
+            return this.model.planner[mindex]['' + day]['tl'] || ''
         } else {
             return ''
         }
@@ -23,7 +23,7 @@ export default class Storage {
 
     getEntryType (mindex, day) {
         if (this.model.planner[mindex] && this.model.planner[mindex]['' + day]) {
-            return this.model.planner[mindex]['' + day]['' + 0] || ''
+            return this.model.planner[mindex]['' + day]['tp'] || ''
         } else {
             return ''
         }
@@ -31,7 +31,7 @@ export default class Storage {
 
     getEntryColour (mindex, day) {
         if (this.model.planner[mindex] && this.model.planner[mindex]['' + day]) {
-            return this.model.planner[mindex]['' + day]['' + 2] || ''
+            return this.model.planner[mindex]['' + day]['col'] || ''
         } else {
             return ''
         }

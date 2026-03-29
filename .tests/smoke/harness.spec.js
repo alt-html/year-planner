@@ -25,3 +25,17 @@ test('app auto-initialises without consent modal (TEST-04)', async ({ page }) =>
   const modal = page.locator('#cookieModal');
   await expect(modal).toHaveCount(0);
 });
+
+test('data-api-core HLC importable from vendor bundle (SYNC-01)', async ({ page }) => {
+  // The app must already be running (webServer). Navigate to it.
+  await page.goto('http://localhost:8080');
+  await page.waitForSelector('[data-app-ready]');
+  // Evaluate HLC in browser context
+  const result = await page.evaluate(async () => {
+    const { HLC } = await import('/js/vendor/data-api-core.esm.js');
+    const clock = HLC.create('test-node', Date.now());
+    const ticked = HLC.tick(clock, Date.now());
+    return { clock, ticked, valid: typeof clock === 'string' && ticked > clock };
+  });
+  expect(result.valid).toBe(true);
+});

@@ -21,8 +21,11 @@ module.exports = async function globalSetup(config) {
   // Wait for CDI initialisation — requires data-app-ready from main.js
   await page.waitForSelector('[data-app-ready]', { timeout: 30000 });
 
-  // App auto-initialises on first visit (writes identities to localStorage).
-  await page.waitForFunction(() => localStorage.getItem('0') !== null);
+  // App auto-initialises on first visit — M009 schema uses 'dev' key
+  // (pre-M009 used '0' — kept as fallback for any legacy path)
+  await page.waitForFunction(() =>
+    localStorage.getItem('dev') !== null || localStorage.getItem('0') !== null
+  );
 
   // Save full browser state: localStorage
   await context.storageState({

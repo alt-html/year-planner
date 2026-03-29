@@ -22,7 +22,7 @@ export const entryMethods = {
 
     getEntry (mindex, day) {
         if (this.planner[mindex] && this.planner[mindex]['' + day]) {
-            return this.planner[mindex]['' + day]['' + 1] || ''
+            return this.planner[mindex]['' + day]['tl'] || ''
         } else {
             return ''
         }
@@ -30,7 +30,7 @@ export const entryMethods = {
 
     getEntryType (mindex, day) {
         if (this.planner[mindex] && this.planner[mindex]['' + day]) {
-            return this.planner[mindex]['' + day]['' + 0] || ''
+            return this.planner[mindex]['' + day]['tp'] || ''
         } else {
             return ''
         }
@@ -38,7 +38,7 @@ export const entryMethods = {
 
     getEntryColour (mindex, day) {
         if (this.planner[mindex] && this.planner[mindex]['' + day]) {
-            return this.planner[mindex]['' + day]['' + 2] || ''
+            return this.planner[mindex]['' + day]['col'] || ''
         } else {
             return ''
         }
@@ -46,7 +46,7 @@ export const entryMethods = {
 
     getEntryNotes (mindex, day) {
         if (this.planner[mindex] && this.planner[mindex]['' + day]) {
-            return this.planner[mindex]['' + day]['' + 3] || ''
+            return this.planner[mindex]['' + day]['notes'] || ''
         } else {
             return ''
         }
@@ -54,7 +54,7 @@ export const entryMethods = {
 
     getEntryEmoji (mindex, day) {
         if (this.planner[mindex] && this.planner[mindex]['' + day]) {
-            return this.planner[mindex]['' + day]['' + 4] || ''
+            return this.planner[mindex]['' + day]['emoji'] || ''
         } else {
             return ''
         }
