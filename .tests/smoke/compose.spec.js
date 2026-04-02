@@ -7,9 +7,9 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..', '..');
 
 test('compose build produces identical index.html (COMP-02)', () => {
-  const before = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const before = fs.readFileSync(path.join(ROOT, 'site', 'index.html'), 'utf8');
   execSync('bash .compose/build.sh', { cwd: ROOT });
-  const after = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const after = fs.readFileSync(path.join(ROOT, 'site', 'index.html'), 'utf8');
   expect(after).toBe(before);
 });
 

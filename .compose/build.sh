@@ -14,6 +14,6 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 cd "$PROJECT_ROOT"
 
-m4 -P .compose/index.html.m4 > index.html
+m4 -P .compose/index.html.m4 > site/index.html
 
-echo "✓ index.html composed from .compose/ fragments ($(wc -l < index.html | tr -d ' ') lines)"
+echo "✓ site/index.html composed from .compose/ fragments ($(wc -l < site/index.html | tr -d ' ') lines)"

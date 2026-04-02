@@ -1,6 +1,6 @@
 # Prepare nginx
 FROM nginx:1.16.0-alpine
-COPY .  /usr/share/nginx/html
+COPY site/ /usr/share/nginx/html
 
 # Fire up nginx
 EXPOSE 80

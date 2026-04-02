@@ -4,7 +4,7 @@ const { defineConfig } = require('@playwright/test');
 module.exports = defineConfig({
   globalSetup: require.resolve('./globalSetup.js'),
   webServer: {
-    command: 'npx http-server .. -p 8080 -c-1',
+    command: 'npx http-server ../site -p 8080 -c-1',
     url: 'http://localhost:8080',
     reuseExistingServer: false,
     timeout: 30000,
