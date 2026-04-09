@@ -96,3 +96,9 @@ The `if (plannerId && this.syncClient)` guard in `entries.js` is correct, but `g
 
 ### Tests that verify write-path side effects (rev:, sync:) must clear localStorage like sync-payload.spec.js
 Any E2E test that needs to observe rev:, base:, or sync: localStorage writes must start from a clean localStorage (addInitScript with localStorage.clear(), guarded by sessionStorage._seeded). Using the globalSetup storageState alone is not sufficient — the planner won't be created, getActivePlnrUuid returns null, and the write-path guard silently skips the HLC write. Pattern: `if (sessionStorage.getItem('_seeded')) return; sessionStorage.setItem('_seeded', '1'); localStorage.clear();`
+
+### Orphan compose fragment audit: verify non-inclusion in .m4 templates before deletion
+Before deleting any file from `.compose/fragments/`, confirm it is not referenced by any `.m4` template and that `bash .compose/build.sh` produces identical output before and after. The build output line count is the reliable indicator — if it changes, something was still included. Seven orphan modal fragments accumulated silently across M002–M004 (pay.html, signin.html, register.html, reset-password.html, recover-username.html, cookie.html, settings.html). Periodic audits prevent this accumulation.
+
+### api.sync(plannerId) fire-and-forget is a deliberate UX contract
+All 9 Vue call sites that replaced synchroniseToLocal/synchroniseToRemote use `this.api.sync(plannerId)` without await. This is intentional — UI must not block on sync. When adding new call sites in future, preserve the fire-and-forget pattern. Adding await anywhere changes the UX contract and could cause visible loading delays on every user interaction.
