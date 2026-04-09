@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-09T10:22:32.560Z",
+  "exported_at": "2026-04-09T10:58:06.672Z",
   "milestones": [
     {
       "id": "M001",
@@ -1021,7 +1021,7 @@
     {
       "milestone_id": "M011",
       "id": "S01",
-      "title": "SyncClient.js + jsmdma sync API",
+      "title": "S01",
       "status": "pending",
       "risk": "high",
       "depends": [],
@@ -1030,11 +1030,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Build SyncClient.js, rewrite Api.js to use POST /year-planner/sync, delete StorageRemote.js, update contexts.js, and write the Playwright sync integration test.",
-      "success_criteria": "1. SyncClient.js exists with markEdited(), sync(), prune(). 2. Api.js calls POST /year-planner/sync not POST /api/planner. 3. StorageRemote.js deleted; contexts.js updated. 4. Playwright mock test: endpoint receives {clientClock, deviceId, changes:[{id,doc,fieldRevs}]} shape. 5. sync-error.spec.js still passes.",
-      "proof_level": "Contract: Playwright mock test verifies payload shape. Static: file existence checks.",
-      "integration_closure": "contexts.js updated; CDI wiring verified by boot smoke test.",
-      "observability_impact": "model.error surface for sync failures unchanged; new error.syncfailed path in SyncClient.",
+      "goal": "Create SyncClient.js, rewrite Api.js to POST /year-planner/sync with jsmdma payload shape, update all 9 sync call sites in Vue methods and Storage.js, delete StorageRemote.js, update contexts.js, and verify payload shape with a new Playwright test.",
+      "success_criteria": "SyncClient.js is CDI-registered and owns all HLC sync state management; Api.js exposes a single async sync(plannerId) method; StorageRemote.js is gone from the codebase and contexts.js; all 16 existing Playwright tests pass; sync-payload.spec.js passes with payload shape asserted.",
+      "proof_level": "contract — Playwright mocks the /year-planner/sync endpoint and verifies both payload shape (sync-payload.spec.js) and error-surface behavior (sync-error.spec.js). No live server required.",
+      "integration_closure": "Upstream: data-api-core.esm.js vendor bundle (HLC, flatten, diff, merge, unflatten), storage-schema.js, StorageLocal (getActivePlnrUuid, _getPlnrDoc, getDevId, signedin), AuthProvider._authHeaders(). New wiring: SyncClient registered in CDI context as syncClient; Api constructor takes syncClient instead of storageRemote; StorageLocal exposes getActivePlnrUuid(); Vue methods call api.sync(plannerId) in place of the two old methods. What remains: S02 wires StorageLocal.markEdited() into updateLocalEntry() and other write paths; S03 handles MOD audit cleanup.",
+      "observability_impact": "SyncClient catches HTTP errors and rethrows with status code so Api.sync can map 404→error.apinotavailable, 401→error.unauthorized, else→error.syncfailed — same model.error surface as before. SyncClient writes sync:{uuid} (serverClock), base:{uuid} (merged snapshot), and rev:{uuid} (field HLC stamps) to localStorage — all inspectable via browser devtools Application tab during manual debugging.",
       "sequence": 1,
       "replan_triggered_at": null
     },
@@ -2247,6 +2247,160 @@
       "observability_impact": "",
       "full_plan_md": "",
       "sequence": 0
+    },
+    {
+      "milestone_id": "M011",
+      "slice_id": "S01",
+      "id": "T01",
+      "title": "Created SyncClient.js with markEdited/sync/prune and added StorageLocal.getActivePlnrUuid()",
+      "status": "complete",
+      "one_liner": "Created SyncClient.js with markEdited/sync/prune and added StorageLocal.getActivePlnrUuid()",
+      "narrative": "Read StorageLocal.js, storage-schema.js, Api.js, and the data-api-core.esm.js export list before writing. Created site/js/service/SyncClient.js with a module-level fetchJSON helper matching the Api.js pattern, and class SyncClient with: markEdited() (ticks HLC per-field clock into rev:{uuid}), async sync() (builds jsmdma payload, POSTs to year-planner/sync, runs 3-way merge, writes sync:/base:/rev: to localStorage), and prune() (removes all three keys). Added getActivePlnrUuid(uid, year) to StorageLocal.js as a thin public wrapper over _findPlnrUuid().",
+      "verification_result": "All four task-plan verification commands pass: getActivePlnrUuid present in StorageLocal.js, SyncClient.js exists, markEdited present in SyncClient.js, year-planner/sync present in SyncClient.js.",
+      "duration": "",
+      "completed_at": "2026-04-09T10:46:52.256Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "site/js/service/SyncClient.js",
+        "site/js/service/StorageLocal.js"
+      ],
+      "key_decisions": [
+        "Import HLC_ZERO from storage-schema.js (re-exported there) instead of calling HLC.zero() in SyncClient to avoid duplicate zero-clock instantiation",
+        "markEdited ticks from existing field clock (fallback baseClock) not always from sync clock — ensures monotonically increasing stamps offline",
+        "When serverChanges is empty, write current plannerDoc as new base snapshot so next sync has an accurate baseline"
+      ],
+      "full_summary_md": "---\nid: T01\nparent: S01\nmilestone: M011\nkey_files:\n  - site/js/service/SyncClient.js\n  - site/js/service/StorageLocal.js\nkey_decisions:\n  - Import HLC_ZERO from storage-schema.js (re-exported there) instead of calling HLC.zero() in SyncClient to avoid duplicate zero-clock instantiation\n  - markEdited ticks from existing field clock (fallback baseClock) not always from sync clock — ensures monotonically increasing stamps offline\n  - When serverChanges is empty, write current plannerDoc as new base snapshot so next sync has an accurate baseline\nduration: \nverification_result: passed\ncompleted_at: 2026-04-09T10:46:52.255Z\nblocker_discovered: false\n---\n\n# T01: Created SyncClient.js with markEdited/sync/prune and added StorageLocal.getActivePlnrUuid()\n\n**Created SyncClient.js with markEdited/sync/prune and added StorageLocal.getActivePlnrUuid()**\n\n## What Happened\n\nRead StorageLocal.js, storage-schema.js, Api.js, and the data-api-core.esm.js export list before writing. Created site/js/service/SyncClient.js with a module-level fetchJSON helper matching the Api.js pattern, and class SyncClient with: markEdited() (ticks HLC per-field clock into rev:{uuid}), async sync() (builds jsmdma payload, POSTs to year-planner/sync, runs 3-way merge, writes sync:/base:/rev: to localStorage), and prune() (removes all three keys). Added getActivePlnrUuid(uid, year) to StorageLocal.js as a thin public wrapper over _findPlnrUuid().\n\n## Verification\n\nAll four task-plan verification commands pass: getActivePlnrUuid present in StorageLocal.js, SyncClient.js exists, markEdited present in SyncClient.js, year-planner/sync present in SyncClient.js.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `grep -q 'getActivePlnrUuid' site/js/service/StorageLocal.js` | 0 | ✅ pass | 50ms |\n| 2 | `test -f site/js/service/SyncClient.js` | 0 | ✅ pass | 10ms |\n| 3 | `grep -q 'markEdited' site/js/service/SyncClient.js` | 0 | ✅ pass | 20ms |\n| 4 | `grep -q 'year-planner/sync' site/js/service/SyncClient.js` | 0 | ✅ pass | 20ms |\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `site/js/service/SyncClient.js`\n- `site/js/service/StorageLocal.js`\n",
+      "description": "Create the new SyncClient.js service that owns all jsmdma HLC sync state management, and add a public getActivePlnrUuid() method to StorageLocal so Vue call sites can resolve the current planner UUID.\n\nSteps:\n1. Create `site/js/service/SyncClient.js` with:\n   - `import { HLC, flatten, diff, merge, unflatten } from '../vendor/data-api-core.esm.js'`\n   - `import { keySync, keyRev, keyBase } from './storage-schema.js'`\n   - Constructor: `constructor(model, storageLocal)` — CDI will register this as `syncClient`\n   - Field: `this.url = '${api.url}'` (same CDI config injection pattern as Api.js)\n   - Field: `this.qualifier = '@alt-html/year-planner/SyncClient'`\n   - `markEdited(plannerId, dotPath)`: reads `rev:{plannerId}` from localStorage, ticks HLC with `HLC.tick(clock, Date.now())`, writes back. For S01 this is a working implementation so S02 can call it from updateLocalEntry. Read existing rev, get current clock from sync:{plannerId} or HLC.zero(), tick it, write `rev:{plannerId}[dotPath] = newClock`.\n   - `async sync(plannerId, plannerDoc, authHeaders)`: (a) read `sync:{plannerId}` → clientClock (fallback `HLC.zero()`); (b) read `rev:{plannerId}` → fieldRevs (fallback {}); (c) read `base:{plannerId}` → base (fallback {}); (d) build payload `{ clientClock, deviceId: this.storageLocal.getDevId(), changes: [{ id: plannerId, doc: plannerDoc, fieldRevs }] }`; (e) POST `${this.url}year-planner/sync` with authHeaders and JSON payload; (f) on success response `{ serverClock, serverChanges }`: for each serverChange, call `merge(base, { doc: plannerDoc, fieldRevs }, { doc: serverChange.doc, fieldRevs: serverChange.fieldRevs })` to get `{ merged }`; write `base:{plannerId}` = merged; write `sync:{plannerId}` = serverClock; return merged; (g) throw on HTTP error (set err.status for Api to catch).\n   - `prune(plannerId)`: removes `rev:{plannerId}`, `base:{plannerId}`, `sync:{plannerId}` from localStorage.\n   - fetchJSON helper (same pattern as Api.js) inside SyncClient for the HTTP POST.\n\n2. In `site/js/service/StorageLocal.js`, add one public method after the existing `_findPlnrUuid` method:\n   ```js\n   getActivePlnrUuid(uid, year) {\n       return this._findPlnrUuid(uid, year);\n   }\n   ```\n\nConstraints:\n- SyncClient's `markEdited` stub must be functional (not a no-op) — S02 will call it from updateLocalEntry. The method should write to `rev:{plannerId}` correctly.\n- `merge` from data-api-core is exported as `merge` (aliased from merge2 internally): `merge(base, local, remote)` where local/remote are `{ doc, fieldRevs }`. Base is a plain object (the days content from base:{uuid}).\n- If serverChanges is empty or absent, skip the merge loop and still write `sync:{plannerId}` = serverClock.\n- Use the same fetchJSON function pattern as the existing Api.js (check response.ok, throw with err.status set).\n- HLC_ZERO is exported from storage-schema.js — use that instead of `HLC.zero()` for the fallback to avoid re-importing HLC separately.",
+      "estimate": "45m",
+      "files": [
+        "site/js/service/SyncClient.js",
+        "site/js/service/StorageLocal.js"
+      ],
+      "verify": "grep -q 'getActivePlnrUuid' site/js/service/StorageLocal.js && test -f site/js/service/SyncClient.js && grep -q 'markEdited' site/js/service/SyncClient.js && grep -q 'year-planner/sync' site/js/service/SyncClient.js",
+      "inputs": [
+        "site/js/service/StorageLocal.js",
+        "site/js/service/storage-schema.js",
+        "site/js/vendor/data-api-core.esm.js"
+      ],
+      "expected_output": [
+        "site/js/service/SyncClient.js",
+        "site/js/service/StorageLocal.js"
+      ],
+      "observability_impact": "SyncClient.sync writes sync:{uuid}, base:{uuid}, rev:{uuid} to localStorage on every successful sync — inspectable in browser devtools. Throws with err.status set on HTTP failure so Api.sync can map to model.error.",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M011",
+      "slice_id": "S01",
+      "id": "T02",
+      "title": "Rewrote Api.js with a single async sync(plannerId) method, replaced all 9 old synchroniseToLocal/synchroniseToRemote call sites, deleted StorageRemote.js, and registered SyncClient in contexts.js",
+      "status": "complete",
+      "one_liner": "Rewrote Api.js with a single async sync(plannerId) method, replaced all 9 old synchroniseToLocal/synchroniseToRemote call sites, deleted StorageRemote.js, and registered SyncClient in contexts.js",
+      "narrative": "Read all 10 input files before making changes. Rewrote Api.js: replaced constructor(model, storageLocal, storageRemote, authProvider) with constructor(model, storageLocal, syncClient, authProvider), removed both old sync methods, and added async sync(plannerId) that guards on signedin+plannerId, calls this.syncClient.sync(), and maps HTTP errors to model.error strings (404→apinotavailable, 401→unauthorized, else→syncfailed). Kept fetchJSON at module level so deleteAccount() can continue using it. Updated all 9 call sites across 5 files. Deleted StorageRemote.js. Updated contexts.js to add SyncClient and remove StorageRemote. All 9 smoke tests continue to pass.",
+      "verification_result": "Ran the task-plan composite verification command (StorageRemote.js absent, syncClient present in Api.js, storageRemote absent from Api.js, StorageRemote absent from contexts.js, no old sync method names in any of the 5 call-site files) — all checks passed. Then ran 9 Playwright smoke tests — all passed in 4.8s.",
+      "duration": "",
+      "completed_at": "2026-04-09T10:49:46.898Z",
+      "blocker_discovered": false,
+      "deviations": "None.",
+      "known_issues": "None.",
+      "key_files": [
+        "site/js/service/Api.js",
+        "site/js/config/contexts.js",
+        "site/js/vue/methods/lifecycle.js",
+        "site/js/vue/methods/planner.js",
+        "site/js/vue/methods/auth.js",
+        "site/js/vue/methods/entries.js",
+        "site/js/service/Storage.js"
+      ],
+      "key_decisions": [
+        "Kept module-level fetchJSON in Api.js so deleteAccount() can still use it — SyncClient has its own internal fetchJSON",
+        "Storage.js deletePlannerByYear: removed synchroniseToRemote entirely — no point syncing a planner being deleted",
+        "Fire-and-forget call pattern preserved for all Vue method call sites (no await added, matching original behavior)"
+      ],
+      "full_summary_md": "---\nid: T02\nparent: S01\nmilestone: M011\nkey_files:\n  - site/js/service/Api.js\n  - site/js/config/contexts.js\n  - site/js/vue/methods/lifecycle.js\n  - site/js/vue/methods/planner.js\n  - site/js/vue/methods/auth.js\n  - site/js/vue/methods/entries.js\n  - site/js/service/Storage.js\nkey_decisions:\n  - Kept module-level fetchJSON in Api.js so deleteAccount() can still use it — SyncClient has its own internal fetchJSON\n  - Storage.js deletePlannerByYear: removed synchroniseToRemote entirely — no point syncing a planner being deleted\n  - Fire-and-forget call pattern preserved for all Vue method call sites (no await added, matching original behavior)\nduration: \nverification_result: passed\ncompleted_at: 2026-04-09T10:49:46.897Z\nblocker_discovered: false\n---\n\n# T02: Rewrote Api.js with a single async sync(plannerId) method, replaced all 9 old synchroniseToLocal/synchroniseToRemote call sites, deleted StorageRemote.js, and registered SyncClient in contexts.js\n\n**Rewrote Api.js with a single async sync(plannerId) method, replaced all 9 old synchroniseToLocal/synchroniseToRemote call sites, deleted StorageRemote.js, and registered SyncClient in contexts.js**\n\n## What Happened\n\nRead all 10 input files before making changes. Rewrote Api.js: replaced constructor(model, storageLocal, storageRemote, authProvider) with constructor(model, storageLocal, syncClient, authProvider), removed both old sync methods, and added async sync(plannerId) that guards on signedin+plannerId, calls this.syncClient.sync(), and maps HTTP errors to model.error strings (404→apinotavailable, 401→unauthorized, else→syncfailed). Kept fetchJSON at module level so deleteAccount() can continue using it. Updated all 9 call sites across 5 files. Deleted StorageRemote.js. Updated contexts.js to add SyncClient and remove StorageRemote. All 9 smoke tests continue to pass.\n\n## Verification\n\nRan the task-plan composite verification command (StorageRemote.js absent, syncClient present in Api.js, storageRemote absent from Api.js, StorageRemote absent from contexts.js, no old sync method names in any of the 5 call-site files) — all checks passed. Then ran 9 Playwright smoke tests — all passed in 4.8s.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `! test -f site/js/service/StorageRemote.js && grep -q 'syncClient' site/js/service/Api.js && ! grep -q 'storageRemote' site/js/service/Api.js && ! grep -q 'StorageRemote' site/js/config/contexts.js && ! grep -q 'synchroniseToLocal|synchroniseToRemote' site/js/vue/methods/lifecycle.js site/js/vue/methods/planner.js site/js/vue/methods/auth.js site/js/vue/methods/entries.js site/js/service/Storage.js` | 0 | ✅ pass | 75ms |\n| 2 | `cd .tests && npx playwright test smoke/ --reporter=line` | 0 | ✅ pass | 4800ms |\n\n## Deviations\n\nNone.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `site/js/service/Api.js`\n- `site/js/config/contexts.js`\n- `site/js/vue/methods/lifecycle.js`\n- `site/js/vue/methods/planner.js`\n- `site/js/vue/methods/auth.js`\n- `site/js/vue/methods/entries.js`\n- `site/js/service/Storage.js`\n",
+      "description": "Rewrite Api.js to replace the two old sync methods with a single async sync(plannerId) that delegates to syncClient. Update all 9 call sites across Vue methods and Storage.js. Delete StorageRemote.js. Update contexts.js to register SyncClient and remove StorageRemote.\n\nSteps:\n\n1. Rewrite `site/js/service/Api.js`:\n   - Constructor: `constructor(model, storageLocal, syncClient, authProvider)` — note: `storageRemote` parameter removed, `syncClient` added\n   - Keep: `this.url = '${api.url}'`, `this.qualifier`, `this.model`, `this.storageLocal`, `this.authProvider`\n   - Add: `this.syncClient = syncClient`\n   - Remove: `this.storageRemote = storageRemote`\n   - Keep `_authHeaders()` and `deleteAccount()` unchanged\n   - Keep `modalErr()` unchanged\n   - Remove `synchroniseToLocal(syncPrefs)` method entirely\n   - Remove `synchroniseToRemote()` method entirely\n   - Add `async sync(plannerId)` method:\n     ```js\n     async sync(plannerId) {\n         if (!this.storageLocal.signedin() || !plannerId) return;\n         try {\n             const doc = this.storageLocal._getPlnrDoc(plannerId);\n             await this.syncClient.sync(plannerId, doc.days || {}, this._authHeaders());\n         } catch (err) {\n             if (err.status == 404)\n                 this.model.error = 'error.apinotavailable';\n             else if (err.status == 401)\n                 this.model.error = 'error.unauthorized';\n             else\n                 this.model.error = 'error.syncfailed';\n         }\n     }\n     ```\n\n2. Update 9 call sites (all become `this.api.sync(plannerId)` with plannerId resolved first):\n   - `site/js/vue/methods/lifecycle.js` line 8 in `refresh()`: replace `this.api.synchroniseToLocal(false)` with:\n     ```js\n     const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year);\n     this.api.sync(plannerId);\n     ```\n   - `site/js/vue/methods/planner.js` line 6 in `createPlanner()`: replace `this.api.synchroniseToLocal(false)` with `const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year); this.api.sync(plannerId);`\n   - `site/js/vue/methods/planner.js` line 8 in `createPlanner()`: replace `this.api.synchroniseToRemote()` with `this.api.sync(plannerId);` (reuse the plannerId already resolved above)\n   - `site/js/vue/methods/planner.js` line 41 in `showRenamePlanner()`: replace `this.api.synchroniseToLocal(false)` with `const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year); this.api.sync(plannerId);`\n   - `site/js/vue/methods/planner.js` line 54 in `renamePlanner()`: replace `this.api.synchroniseToRemote()` with `const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year); this.api.sync(plannerId);`\n   - `site/js/vue/methods/auth.js` line 14 in `signInWith()`: replace `this.api.synchroniseToLocal(true)` with `const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year); this.api.sync(plannerId);`\n   - `site/js/vue/methods/entries.js` line 8 in `updateEntry()` (inside the `if (syncToRemote)` block): replace `this.api.synchroniseToRemote()` with `const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year); this.api.sync(plannerId);`\n   - `site/js/vue/methods/entries.js` line 13 in `updateEntryState()`: replace `this.api.synchroniseToLocal(false)` with `const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year); this.api.sync(plannerId);`\n   - `site/js/service/Storage.js` line 42 in `deletePlannerByYear()`: remove `this.api.synchroniseToRemote();` entirely — there is no point syncing a planner that is being deleted locally.\n\n3. Delete `site/js/service/StorageRemote.js` (remove the file entirely).\n\n4. Update `site/js/config/contexts.js`:\n   - Add `import SyncClient from '../service/SyncClient.js';` (after the existing service imports)\n   - Add `new Singleton(SyncClient),` to the context array\n   - Remove `import StorageRemote from '../service/StorageRemote.js';`\n   - Remove `new Singleton(StorageRemote),` from the context array\n\nConstraints:\n- CDI constructor parameter names must exactly match registered singleton names. The class `SyncClient` registers as `syncClient` (camelCase first letter). The `Api` constructor parameter must be `syncClient` (matching exactly).\n- `api.sync()` must guard on BOTH `!this.storageLocal.signedin()` and `!plannerId` — returning silently for either (same silent no-op behavior as the original code when not signed in).\n- The `createPlanner()` method in planner.js has BOTH a synchroniseToLocal AND a synchroniseToRemote call — both should be replaced. The plannerId resolution only needs to happen once: resolve before the first call, reuse for the second.\n- Do NOT add `await` before `this.api.sync(plannerId)` in Vue methods unless the original call was awaited — the original calls were fire-and-forget. Keep the same pattern.\n- The import of `model` at the top of Api.js (used only by `modalErr()`) should be kept.",
+      "estimate": "45m",
+      "files": [
+        "site/js/service/Api.js",
+        "site/js/config/contexts.js",
+        "site/js/service/StorageRemote.js",
+        "site/js/vue/methods/lifecycle.js",
+        "site/js/vue/methods/planner.js",
+        "site/js/vue/methods/auth.js",
+        "site/js/vue/methods/entries.js",
+        "site/js/service/Storage.js"
+      ],
+      "verify": "! test -f site/js/service/StorageRemote.js && grep -q 'syncClient' site/js/service/Api.js && ! grep -q 'storageRemote' site/js/service/Api.js && ! grep -q 'StorageRemote' site/js/config/contexts.js && ! grep -q 'synchroniseToLocal\\|synchroniseToRemote' site/js/vue/methods/lifecycle.js site/js/vue/methods/planner.js site/js/vue/methods/auth.js site/js/vue/methods/entries.js site/js/service/Storage.js",
+      "inputs": [
+        "site/js/service/SyncClient.js",
+        "site/js/service/StorageLocal.js",
+        "site/js/service/Api.js",
+        "site/js/config/contexts.js",
+        "site/js/service/StorageRemote.js",
+        "site/js/vue/methods/lifecycle.js",
+        "site/js/vue/methods/planner.js",
+        "site/js/vue/methods/auth.js",
+        "site/js/vue/methods/entries.js",
+        "site/js/service/Storage.js"
+      ],
+      "expected_output": [
+        "site/js/service/Api.js",
+        "site/js/config/contexts.js",
+        "site/js/vue/methods/lifecycle.js",
+        "site/js/vue/methods/planner.js",
+        "site/js/vue/methods/auth.js",
+        "site/js/vue/methods/entries.js",
+        "site/js/service/Storage.js"
+      ],
+      "observability_impact": "Api.sync catches and maps HTTP error codes to model.error strings (same surface as before). Fire-and-forget call pattern preserved — errors are visible via Vue-rendered .alert-danger element.",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M011",
+      "slice_id": "S01",
+      "id": "T03",
+      "title": "Updated sync-error.spec.js route glob to **/year-planner/sync and added sync-payload.spec.js verifying jsmdma POST body shape; all 17 tests pass",
+      "status": "complete",
+      "one_liner": "Updated sync-error.spec.js route glob to **/year-planner/sync and added sync-payload.spec.js verifying jsmdma POST body shape; all 17 tests pass",
+      "narrative": "Updated the page.route() glob in sync-error.spec.js from '**/api/planner/**' to '**/year-planner/sync' to match the new SyncClient endpoint. Wrote sync-payload.spec.js to verify the jsmdma POST body shape (clientClock, deviceId, changes[] with id/doc/fieldRevs). Initial implementation matched the task plan exactly but the test failed because the route intercept never fired — api.sync() was returning early due to a null plannerId. Root cause: globalSetup.js seeds the shared storageState with a 'dev' key, so StorageLocal.initialised() returns true, lifecycle.refresh() skips initialise(), and getActivePlnrUuid(12345, 2026) returns null. Fixed by adding localStorage.clear() at the start of addInitScript (guarded by the _seeded sessionStorage flag) to force a clean slate so initialise() always runs and creates the planner before api.sync() is called. All 17 tests (16 existing + 1 new) pass.",
+      "verification_result": "Ran full Playwright suite: `cd .tests && npx playwright test --reporter=line` — 17 passed (6.9s). Both sync-error.spec.js (updated glob) and sync-payload.spec.js (new test) pass. The sync-payload test confirms the route intercept fires and capturedBody has the expected clientClock/deviceId/changes[] shape.",
+      "duration": "",
+      "completed_at": "2026-04-09T10:58:06.642Z",
+      "blocker_discovered": false,
+      "deviations": "Task plan addInitScript did not include localStorage.clear(). Added after discovering the global storageState dev key prevents initialise() from running, leaving no planner UUID. The _seeded sessionStorage guard from task plan constraints was preserved.",
+      "known_issues": "None.",
+      "key_files": [
+        ".tests/e2e/sync-error.spec.js",
+        ".tests/e2e/sync-payload.spec.js"
+      ],
+      "key_decisions": [
+        "Added localStorage.clear() in addInitScript before injecting session so initialised() returns false and lifecycle.initialise() runs unconditionally, creating the planner for uid=12345/year=2026 before api.sync() fires"
+      ],
+      "full_summary_md": "---\nid: T03\nparent: S01\nmilestone: M011\nkey_files:\n  - .tests/e2e/sync-error.spec.js\n  - .tests/e2e/sync-payload.spec.js\nkey_decisions:\n  - Added localStorage.clear() in addInitScript before injecting session so initialised() returns false and lifecycle.initialise() runs unconditionally, creating the planner for uid=12345/year=2026 before api.sync() fires\nduration: \nverification_result: passed\ncompleted_at: 2026-04-09T10:58:06.640Z\nblocker_discovered: false\n---\n\n# T03: Updated sync-error.spec.js route glob to **/year-planner/sync and added sync-payload.spec.js verifying jsmdma POST body shape; all 17 tests pass\n\n**Updated sync-error.spec.js route glob to **/year-planner/sync and added sync-payload.spec.js verifying jsmdma POST body shape; all 17 tests pass**\n\n## What Happened\n\nUpdated the page.route() glob in sync-error.spec.js from '**/api/planner/**' to '**/year-planner/sync' to match the new SyncClient endpoint. Wrote sync-payload.spec.js to verify the jsmdma POST body shape (clientClock, deviceId, changes[] with id/doc/fieldRevs). Initial implementation matched the task plan exactly but the test failed because the route intercept never fired — api.sync() was returning early due to a null plannerId. Root cause: globalSetup.js seeds the shared storageState with a 'dev' key, so StorageLocal.initialised() returns true, lifecycle.refresh() skips initialise(), and getActivePlnrUuid(12345, 2026) returns null. Fixed by adding localStorage.clear() at the start of addInitScript (guarded by the _seeded sessionStorage flag) to force a clean slate so initialise() always runs and creates the planner before api.sync() is called. All 17 tests (16 existing + 1 new) pass.\n\n## Verification\n\nRan full Playwright suite: `cd .tests && npx playwright test --reporter=line` — 17 passed (6.9s). Both sync-error.spec.js (updated glob) and sync-payload.spec.js (new test) pass. The sync-payload test confirms the route intercept fires and capturedBody has the expected clientClock/deviceId/changes[] shape.\n\n## Verification Evidence\n\n| # | Command | Exit Code | Verdict | Duration |\n|---|---------|-----------|---------|----------|\n| 1 | `cd .tests && npx playwright test --reporter=line 2>&1 | grep -E 'passed|failed'` | 0 | ✅ pass | 7300ms |\n\n## Deviations\n\nTask plan addInitScript did not include localStorage.clear(). Added after discovering the global storageState dev key prevents initialise() from running, leaving no planner UUID. The _seeded sessionStorage guard from task plan constraints was preserved.\n\n## Known Issues\n\nNone.\n\n## Files Created/Modified\n\n- `.tests/e2e/sync-error.spec.js`\n- `.tests/e2e/sync-payload.spec.js`\n",
+      "description": "Update the existing sync-error test to intercept the new /year-planner/sync endpoint. Write a new sync-payload.spec.js Playwright test that verifies the jsmdma payload shape (clientClock, deviceId, changes array with id/doc/fieldRevs). Run the full suite and confirm all tests pass.\n\nSteps:\n\n1. Update `.tests/e2e/sync-error.spec.js`:\n   - Change the page.route() glob from `'**/api/planner/**'` to `'**/year-planner/sync'`\n   - Keep everything else unchanged: SESSION_JSON injection, goto('/'), waitForSelector('[data-app-ready]'), waitForTimeout(1000), expect(.alert-danger).toBeVisible()\n\n2. Write `.tests/e2e/sync-payload.spec.js`:\n   ```js\n   // .tests/e2e/sync-payload.spec.js\n   // Verifies: POST /year-planner/sync carries the correct jsmdma payload shape (D007).\n   const { test, expect } = require('../fixtures/cdn');\n\n   const SESSION_JSON = JSON.stringify({\"0\":\"test-uuid\",\"1\":0});\n\n   test('sync POST carries jsmdma payload shape (D007)', async ({ page }) => {\n     let capturedBody = null;\n\n     // Inject signed-in session. Guard against double-run on navigation with sessionStorage flag.\n     await page.addInitScript((sessionData) => {\n       if (sessionStorage.getItem('_seeded')) return;\n       sessionStorage.setItem('_seeded', '1');\n       localStorage.setItem('1', sessionData);\n     }, SESSION_JSON);\n\n     // Intercept /year-planner/sync, capture request body, return minimal valid response.\n     await page.route('**/year-planner/sync', async (route) => {\n       const req = route.request();\n       capturedBody = JSON.parse(req.postData() || 'null');\n       await route.fulfill({\n         status: 200,\n         contentType: 'application/json',\n         body: JSON.stringify({ serverClock: '0000000000001-000000-00000000', serverChanges: [] }),\n       });\n     });\n\n     await page.goto('/?uid=12345&year=2026');\n     await page.waitForSelector('[data-app-ready]');\n\n     // Wait for the async startup sync to fire\n     await page.waitForTimeout(2000);\n\n     // Verify payload was captured and has the correct jsmdma shape\n     expect(capturedBody).not.toBeNull();\n     expect(typeof capturedBody.clientClock).toBe('string');\n     expect(typeof capturedBody.deviceId).toBe('string');\n     expect(Array.isArray(capturedBody.changes)).toBe(true);\n     if (capturedBody.changes.length > 0) {\n       const change = capturedBody.changes[0];\n       expect(typeof change.id).toBe('string');\n       expect(change.doc !== undefined).toBe(true);\n       expect(change.fieldRevs !== undefined).toBe(true);\n     }\n   });\n   ```\n\n3. Run the full test suite and confirm all tests pass:\n   ```\n   cd .tests && npx playwright test --reporter=line\n   ```\n   Expected: 17 tests pass (16 existing + 1 new sync-payload test).\n\nConstraints:\n- The `addInitScript` guard (`sessionStorage._seeded`) is required per M009 KNOWLEDGE — without it the seed re-runs on app-internal redirects and can cause test flakiness.\n- The test navigates to `/?uid=12345&year=2026` so the app has explicit uid+year, avoiding the need to pre-seed a planner. The app's `initialise()` in lifecycle.js runs before `api.sync()` (confirmed in code), creating the planner first. Then `getActivePlnrUuid(12345, 2026)` returns the created UUID, so `api.sync()` fires.\n- The waitForTimeout(2000) is intentional — same pattern as sync-error.spec.js (1s) but slightly longer since we're also waiting for planner creation in initialise().\n- The payload shape check allows `changes` to be empty (a fresh planner has no entries, so `doc` is empty and changes may be `[{ id, doc: {}, fieldRevs: {} }]` or `[]` depending on implementation). The test should handle both cases — the critical assertion is that the outer shape (clientClock, deviceId, changes array) is always present.",
+      "estimate": "30m",
+      "files": [
+        ".tests/e2e/sync-error.spec.js",
+        ".tests/e2e/sync-payload.spec.js"
+      ],
+      "verify": "cd .tests && npx playwright test --reporter=line 2>&1 | grep -E 'passed|failed'",
+      "inputs": [
+        "site/js/service/Api.js",
+        "site/js/service/SyncClient.js",
+        ".tests/e2e/sync-error.spec.js",
+        ".tests/fixtures/cdn.js"
+      ],
+      "expected_output": [
+        ".tests/e2e/sync-error.spec.js",
+        ".tests/e2e/sync-payload.spec.js"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
     }
   ],
   "decisions": [
@@ -2307,6 +2461,54 @@
       "choice": "SyncClient.js in js/service/. Uses data-api-core.esm.js bundle (local asset initially). Manages baseClock/fieldRevs/baseSnapshot per planner. StorageLocal delegates sync state to SyncClient.",
       "rationale": "Separation of concerns: StorageLocal handles persistence (reading/writing localStorage), SyncClient handles the sync protocol (HLC, fieldRevs, baseClock, server communication). SyncClient is independently testable without a DOM. Mirrors the data-api-core SyncClient design (D006 in data-api decisions).",
       "revisable": "Yes — if the CDI wiring becomes cumbersome, the two could be merged back.",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 6,
+      "id": "D006",
+      "when_context": "M011",
+      "scope": "architecture",
+      "decision": "SyncClient.js service design and CDI registration",
+      "choice": "New `site/js/service/SyncClient.js` CDI-registered service. Constructor: `constructor(model, storageLocal)`. Exposes `markEdited(plannerId, dotPath)`, `async sync(plannerId, plannerDoc, authHeaders)`, `prune(plannerId)`. Injected into `Api` and called from `StorageLocal`.",
+      "rationale": "D005 specifies this pattern. Keeps sync state management (baseClock, fieldRevs, baseSnapshot) separate from storage CRUD and HTTP concerns. StorageLocal delegates to SyncClient — not the other way around.",
+      "revisable": "Yes — if sync state needs to become more complex (e.g. multi-device clock merge on startup)",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 7,
+      "id": "D007",
+      "when_context": "M011",
+      "scope": "architecture",
+      "decision": "jsmdma sync payload shape for POST /year-planner/sync",
+      "choice": "Request: `{ clientClock: string, deviceId: string, changes: [{ id: string, doc: object, fieldRevs: object }] }`. Response: `{ serverClock: string, serverChanges: [{ id: string, doc: object, fieldRevs: object }] }`. clientClock read fresh from `sync:{uuid}` (or `HLC.zero()` if absent). serverClock written back to `sync:{uuid}` after successful sync.",
+      "rationale": "Per D004 and confirmed in M011 discussion: jsmdma IS the sync protocol. The data-api-core.esm.js merge() function expects {doc, fieldRevs} shape. Reading clientClock fresh from localStorage each call is crash-safe and avoids in-memory/on-disk divergence.",
+      "revisable": "No — this is the jsmdma protocol contract",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 8,
+      "id": "D008",
+      "when_context": "M011/S01",
+      "scope": "architecture",
+      "decision": "StorageRemote.js disposal",
+      "choice": "Delete `site/js/service/StorageRemote.js` entirely. Remove from `contexts.js`. No stub retained.",
+      "rationale": "StorageRemote.js references the obsolete uid-year schema replaced by M009. No method is compatible with the plnr:{uuid} schema. Keeping dead files creates confusion.",
+      "revisable": "No",
+      "made_by": "collaborative",
+      "superseded_by": null
+    },
+    {
+      "seq": 9,
+      "id": "D009",
+      "when_context": "M011/S03",
+      "scope": "pattern",
+      "decision": "MOD-05-09 cleanup approach",
+      "choice": "Audit first (grep + read) to determine per-item status (done/pending/deferred), then write fix tasks only for pending items.",
+      "rationale": "Several MOD items from M002 may have been partially resolved in M003-M010 without requirement status being updated. Auditing prevents wasted rework on already-done items.",
+      "revisable": "Yes",
       "made_by": "collaborative",
       "superseded_by": null
     }
@@ -2443,6 +2645,83 @@
       "verdict": "✅ pass — 16/16",
       "duration_ms": 11000,
       "created_at": "2026-04-02T22:49:38.283Z"
+    },
+    {
+      "id": 13,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M011",
+      "command": "grep -q 'getActivePlnrUuid' site/js/service/StorageLocal.js",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 50,
+      "created_at": "2026-04-09T10:46:52.256Z"
+    },
+    {
+      "id": 14,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M011",
+      "command": "test -f site/js/service/SyncClient.js",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 10,
+      "created_at": "2026-04-09T10:46:52.256Z"
+    },
+    {
+      "id": 15,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M011",
+      "command": "grep -q 'markEdited' site/js/service/SyncClient.js",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 20,
+      "created_at": "2026-04-09T10:46:52.256Z"
+    },
+    {
+      "id": 16,
+      "task_id": "T01",
+      "slice_id": "S01",
+      "milestone_id": "M011",
+      "command": "grep -q 'year-planner/sync' site/js/service/SyncClient.js",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 20,
+      "created_at": "2026-04-09T10:46:52.256Z"
+    },
+    {
+      "id": 17,
+      "task_id": "T02",
+      "slice_id": "S01",
+      "milestone_id": "M011",
+      "command": "! test -f site/js/service/StorageRemote.js && grep -q 'syncClient' site/js/service/Api.js && ! grep -q 'storageRemote' site/js/service/Api.js && ! grep -q 'StorageRemote' site/js/config/contexts.js && ! grep -q 'synchroniseToLocal|synchroniseToRemote' site/js/vue/methods/lifecycle.js site/js/vue/methods/planner.js site/js/vue/methods/auth.js site/js/vue/methods/entries.js site/js/service/Storage.js",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 75,
+      "created_at": "2026-04-09T10:49:46.898Z"
+    },
+    {
+      "id": 18,
+      "task_id": "T02",
+      "slice_id": "S01",
+      "milestone_id": "M011",
+      "command": "cd .tests && npx playwright test smoke/ --reporter=line",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 4800,
+      "created_at": "2026-04-09T10:49:46.898Z"
+    },
+    {
+      "id": 19,
+      "task_id": "T03",
+      "slice_id": "S01",
+      "milestone_id": "M011",
+      "command": "cd .tests && npx playwright test --reporter=line 2>&1 | grep -E 'passed|failed'",
+      "exit_code": 0,
+      "verdict": "✅ pass",
+      "duration_ms": 7300,
+      "created_at": "2026-04-09T10:58:06.642Z"
     }
   ]
 }

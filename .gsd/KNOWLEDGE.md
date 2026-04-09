@@ -57,3 +57,13 @@ The marker mode pattern (flyout button → flyout div → activate/deactivate fu
 
 ### Playwright doesn't forward browser console.log to test reporter by default
 Add `page.on('console', msg => logs.push(msg.text()))` to capture browser-side logs in tests. Without this, `console.log` calls in StorageLocal.js are invisible during test runs.
+
+---
+
+## M011 — SyncClient / jsmdma Sync Rewrite (2026-04-09)
+
+### globalSetup storageState has `dev` key — tests that need initialise() to run must clear localStorage first
+`globalSetup.js` saves `.auth/consent.json` after booting the app once. This storageState includes the `dev` key. Every test starts with this state injected. When a test navigates to `/?uid=X&year=Y`, `StorageLocal.initialised()` returns true (because `dev` exists), so `lifecycle.refresh()` skips `this.initialise()`. `initialise()` is what calls `setLocalPlanner(uid, year, ...)` which creates the planner document. Without it, `getActivePlnrUuid(X, Y)` returns null, and `api.sync(null)` returns early. Fix: call `localStorage.clear()` at the start of `addInitScript` (before setting any session/seed keys), guarded by `sessionStorage._seeded` to avoid re-clearing on app-internal redirects.
+
+### SyncClient.sync() is a no-op when plannerId is null — guard is silent
+`Api.sync(plannerId)` silently returns when `!plannerId`. No error is thrown, no model.error is set. This makes the "sync didn't fire" scenario invisible during testing — the route intercept simply never fires. When debugging missing sync requests, first verify `getActivePlnrUuid(uid, year)` returns a non-null UUID, then verify `signedin()` returns true.

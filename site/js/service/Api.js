@@ -21,14 +21,14 @@ async function fetchJSON(url, options = {}) {
 //  Client SDK to server side sync API
 //  See api/openapi.yaml for the API contract
 export default class Api {
-    constructor(model, storageLocal, storageRemote, authProvider) {
+    constructor(model, storageLocal, syncClient, authProvider) {
         this.qualifier = '@alt-html/year-planner/Api'
         this.logger = null;
 
         this.url = '${api.url}';
         this.model = model;
         this.storageLocal = storageLocal;
-        this.storageRemote = storageRemote;
+        this.syncClient = syncClient;
         this.authProvider = authProvider;
     }
 
@@ -39,50 +39,19 @@ export default class Api {
         return { 'Authorization': 'Bearer ' + token };
     }
 
-    // POST /api/planner — push local data to server
-    synchroniseToRemote() {
-        if (this.storageLocal.signedin()) {
-            let localData = this.storageLocal.getLocalStorageData();
-            fetchJSON(`${this.url}api/planner`, {
-                method: 'POST',
-                headers: this._authHeaders(),
-                body: JSON.stringify(localData),
-            })
-                .then(body => {
-                    this.storageLocal.extendLocalSession();
-                })
-                .catch(err => {
-                    if (err.status == 404)
-                        this.model.error = 'error.apinotavailable';
-                    else if (err.status == 401)
-                        this.model.error = 'error.unauthorized';
-                    else
-                        this.model.error = 'error.syncfailed';
-                })
-        }
-    }
-
-    // GET /api/planner — pull data from server
-    synchroniseToLocal(syncPrefs) {
-        if (this.storageLocal.signedin()) {
-            fetchJSON(`${this.url}api/planner`, {
-                method: 'GET',
-                headers: this._authHeaders(),
-            })
-                .then(body => {
-                    this.model.response = body;
-                    this.model.uuid = body.uuid;
-                    this.storageLocal.extendLocalSession();
-                    this.storageRemote.synchroniseLocalPlanners(body.data, syncPrefs);
-                })
-                .catch(err => {
-                    if (err.status == 405)
-                        this.model.error = 'error.apinotavailable';
-                    else if (err.status == 400)
-                        this.model.error = 'error.usernotavailable';
-                    else
-                        this.model.error = 'error.syncfailed';
-                });
+    // POST /year-planner/sync — 3-way merge sync via SyncClient
+    async sync(plannerId) {
+        if (!this.storageLocal.signedin() || !plannerId) return;
+        try {
+            const doc = this.storageLocal._getPlnrDoc(plannerId);
+            await this.syncClient.sync(plannerId, doc.days || {}, this._authHeaders());
+        } catch (err) {
+            if (err.status == 404)
+                this.model.error = 'error.apinotavailable';
+            else if (err.status == 401)
+                this.model.error = 'error.unauthorized';
+            else
+                this.model.error = 'error.syncfailed';
         }
     }
 

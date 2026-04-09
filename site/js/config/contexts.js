@@ -5,7 +5,7 @@ import Application from '../Application.js';
 import AuthProvider from '../service/AuthProvider.js';
 import Storage from '../service/Storage.js';
 import StorageLocal from '../service/StorageLocal.js';
-import StorageRemote from '../service/StorageRemote.js';
+import SyncClient from '../service/SyncClient.js';
 import { feature } from '../vue/model-features.js';
 import { messages } from '../vue/i18n/messages.js';
 import { model } from '../vue/model.js';
@@ -17,7 +17,7 @@ export default new Context([
     new Singleton(AuthProvider),
     new Singleton(Storage),
     new Singleton(StorageLocal),
-    new Singleton(StorageRemote),
+    new Singleton(SyncClient),
 
     { name: 'feature',  Reference: feature },
     { name: 'messages', Reference: messages },

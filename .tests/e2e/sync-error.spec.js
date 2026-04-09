@@ -19,10 +19,10 @@ test('sync failure shows visible error alert (SEC-04)', async ({ page }) => {
     localStorage.setItem('1', sessionData);
   }, SESSION_JSON);
 
-  // Intercept all API calls and return 500 to simulate sync failure.
-  // On app startup, synchroniseToLocal() is called — this will return 500
+  // Intercept the new sync endpoint and return 500 to simulate sync failure.
+  // On app startup, api.sync() POSTs to /year-planner/sync — this will return 500
   // and trigger the else-fallback: model.error = 'error.syncfailed'
-  await page.route('**/api/planner/**', (route) => route.fulfill({
+  await page.route('**/year-planner/sync', (route) => route.fulfill({
     status: 500,
     body: JSON.stringify({ error: 'Internal Server Error' }),
     contentType: 'application/json',

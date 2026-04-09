@@ -5,7 +5,8 @@ export const lifecycleMethods = {
         if (!this.storageLocal.initialised()){
             this.initialise();
         }
-        this.api.synchroniseToLocal(false);
+        const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year);
+        this.api.sync(plannerId);
         this.storageLocal.setLocalFromModel();
         if (!window.location.href.includes('?uid=')){
             window.location.href = window.location.origin +'?uid='+this.uid+'&year='+this.year+'&lang='+this.lang+'&theme='+this.theme;

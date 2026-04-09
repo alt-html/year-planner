@@ -5,12 +5,14 @@ export const entryMethods = {
     updateEntry (mindex, day, entry, entryType, entryColour, notes = '', emoji = '', syncToRemote = false) {
         this.storageLocal.updateLocalEntry(mindex, day, entry, entryType, entryColour, notes, emoji);
         if (syncToRemote) {
-            this.api.synchroniseToRemote();
+            const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year);
+            this.api.sync(plannerId);
         }
     },
 
      updateEntryState  (mindex,day){
-        this.api.synchroniseToLocal(false);
+        const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year);
+        this.api.sync(plannerId);
         this.month = mindex;
         this.day = day;
         this.entry = this.getEntry(mindex,day);

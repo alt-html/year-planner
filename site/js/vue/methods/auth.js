@@ -11,7 +11,8 @@ export const authMethods = {
             await this.authProvider.signIn(provider);
             $('#authModal').modal('hide');
             this.signedin = true;
-            this.api.synchroniseToLocal(true);
+            const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year);
+            this.api.sync(plannerId);
         } catch (err) {
             this.modalError = err.message || 'error.syncfailed';
         }

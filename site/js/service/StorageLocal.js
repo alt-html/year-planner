@@ -170,6 +170,12 @@ export default class StorageLocal {
         return null;
     }
 
+    // Public accessor so Vue call sites can resolve the active planner UUID
+    // without directly touching the private _findPlnrUuid implementation.
+    getActivePlnrUuid(uid, year) {
+        return this._findPlnrUuid(uid, year);
+    }
+
     // Create a new planner document, return its UUID
     _createPlnr(uid, year, lang, theme, dark) {
         const uuid = crypto.randomUUID();

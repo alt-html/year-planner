@@ -3,9 +3,10 @@ import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.m
 export const plannerMethods = {
 
      createPlanner (){
-        this.api.synchroniseToLocal(false);
+        const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year);
+        this.api.sync(plannerId);
         this.createLocalPlanner();
-        this.api.synchroniseToRemote();
+        this.api.sync(plannerId);
     },
 
     createLocalPlanner(){
@@ -38,7 +39,8 @@ export const plannerMethods = {
     },
 
      showRenamePlanner() {
-        this.api.synchroniseToLocal(false);
+        const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year);
+        this.api.sync(plannerId);
         this.rename=true;
         $('#rename').show();
         $('#title').focus();
@@ -51,7 +53,8 @@ export const plannerMethods = {
         this.rename=false;
         this.storageLocal.setLocalPreferences(this.uid,this.preferences);
         this.updated = DateTime.now().ts;
-        this.api.synchroniseToRemote();
+        const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year);
+        this.api.sync(plannerId);
     },
 
      getPlannerName() {

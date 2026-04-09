@@ -39,7 +39,6 @@ export default class Storage {
 
     deletePlannerByYear (uid, year) {
         this.storageLocal.deleteLocalPlannerByYear(uid, year);
-        this.api.synchroniseToRemote();
     }
     exportPlannerToJSON (){
         return JSON.stringify(this.model.planner);
