@@ -4,8 +4,18 @@ export const entryMethods = {
 
     updateEntry (mindex, day, entry, entryType, entryColour, notes = '', emoji = '', syncToRemote = false) {
         this.storageLocal.updateLocalEntry(mindex, day, entry, entryType, entryColour, notes, emoji);
+        // Wire HLC field tracking for jsmdma sync (SYNC-04)
+        const year = this.year;
+        const month = String(mindex + 1).padStart(2, '0');
+        const d = String(day).padStart(2, '0');
+        const isoDate = `${year}-${month}-${d}`;
+        const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, year);
+        if (plannerId && this.syncClient) {
+            for (const field of ['tp', 'tl', 'col', 'notes', 'emoji']) {
+                this.syncClient.markEdited(plannerId, `days.${isoDate}.${field}`);
+            }
+        }
         if (syncToRemote) {
-            const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year);
             this.api.sync(plannerId);
         }
     },

@@ -17,8 +17,8 @@ Offline-first local planner that works without an account, and syncs bidirection
 - localStorage schema at M009 level: `dev`, `tok`, `plnr:{uuid}`, `rev:{uuid}`, `base:{uuid}`, `sync:{uuid}` — HLC-ready
 - Federated auth (Google/Apple/Microsoft) skeleton in `AuthProvider.js` — client IDs not yet configured
 - **M011/S01 complete:** New jsmdma sync protocol wired end-to-end — `SyncClient.js` CDI-registered; `Api.js` POSTs to `/year-planner/sync` with `{clientClock, deviceId, changes[]}` payload; `StorageRemote.js` deleted; all 17 Playwright tests pass
-- Field-level HLC clocks (rev:{uuid}) not yet advanced on edits — wiring into write paths is M011/S02 work
-- 17 Playwright E2E tests pass (16 existing + 1 new sync-payload shape test); test harness in `.tests/`
+- **M011/S02 complete:** HLC write-path wired — `entries.js` calls `syncClient.markEdited()` for all 5 day fields on every edit; `_updateRev()` removed from `StorageLocal.js`; `hlc-write.spec.js` Playwright test confirms `rev:{uuid}` populated with dot-path HLC entries after edit; all 18 Playwright tests pass
+- 18 Playwright E2E tests pass; test harness in `.tests/`
 
 ## Architecture / Key Patterns
 
@@ -28,6 +28,7 @@ Offline-first local planner that works without an account, and syncs bidirection
 - **Vue layer:** `app.js`, grouped methods (`methods/auth.js`, `calendar.js`, `entries.js`, `lifecycle.js`, `planner.js`), grouped model (`model/auth.js`, `calendar.js`, `planner.js`, `ui.js`)
 - **jsmdma protocol:** `site/js/vendor/data-api-core.esm.js` — local bundle; exports `HLC`, `flatten`, `merge`, `unflatten`, `diff`, `textMerge`; `HLC_ZERO` re-exported from `storage-schema.js`
 - **Sync call pattern:** all Vue call sites call `api.sync(plannerId)` fire-and-forget (no await); plannerId resolved via `storageLocal.getActivePlnrUuid(uid, year)` at call site
+- **HLC write-path:** `entries.js updateEntry()` calls `syncClient.markEdited(plannerId, days.${isoDate}.${field})` for all 5 fields unconditionally (not gated on syncToRemote); rev:{uuid} localStorage key populated with per-field dot-path HLC strings after every edit
 - **Tests:** Playwright E2E in `.tests/`; CDN routes intercepted via `fixtures/cdn-routes.js`; global setup creates seeded `storageState`; tests needing `initialise()` to run must call `localStorage.clear()` in `addInitScript` (guarded by `sessionStorage._seeded`)
 
 ## Capability Contract
@@ -46,4 +47,4 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 - [x] M008: Day Data Model Extension — Add notes and emoji fields to day objects
 - [x] M009: localStorage Schema Redesign & Migration — HLC-ready schema; one-time migration from old schema
 - [x] M010: Source Root Tidy — Move web assets to site/
-- [ ] M011: jsmdma Sync Protocol & MOD Cleanup — S01 ✅ (SyncClient + Api rewrite + StorageRemote deleted); S02 pending (HLC write wiring); S03 pending (MOD audit)
+- [ ] M011: jsmdma Sync Protocol & MOD Cleanup — S01 ✅ S02 ✅; S03 pending (MOD audit)

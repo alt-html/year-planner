@@ -86,3 +86,13 @@ All 9 call sites that previously called `synchroniseToLocal()` / `synchroniseToR
 
 ### deletePlannerByYear: remove the sync call, not replace it
 When a planner is deleted locally, the sync call that previously followed the delete should be removed entirely rather than replaced with `api.sync(plannerId)`. Syncing after a local delete makes no sense — the document is gone. This is a simplification, not an oversight.
+
+---
+
+## M011 — SyncClient / jsmdma Sync Rewrite, S02 (2026-04-10)
+
+### markEdited() returns empty rev:{uuid} when getActivePlnrUuid() returns null
+The `if (plannerId && this.syncClient)` guard in `entries.js` is correct, but `getActivePlnrUuid(uid, year)` returns null when `initialise()` didn't run. This happens in any test that starts from globalSetup's storageState (which includes the `dev` key, making `initialised()` return true). When debugging empty `rev:*` in tests, first confirm `localStorage.clear()` is called in `addInitScript` before page load — this forces the app to re-run `initialise()` and create the planner.
+
+### Tests that verify write-path side effects (rev:, sync:) must clear localStorage like sync-payload.spec.js
+Any E2E test that needs to observe rev:, base:, or sync: localStorage writes must start from a clean localStorage (addInitScript with localStorage.clear(), guarded by sessionStorage._seeded). Using the globalSetup storageState alone is not sufficient — the planner won't be created, getActivePlnrUuid returns null, and the write-path guard silently skips the HLC write. Pattern: `if (sessionStorage.getItem('_seeded')) return; sessionStorage.setItem('_seeded', '1'); localStorage.clear();`
