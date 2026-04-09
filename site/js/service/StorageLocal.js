@@ -190,21 +190,6 @@ export default class StorageLocal {
         return uuid;
     }
 
-    // ── fieldRevs update ─────────────────────────────────────────────────────
-
-    _updateRev(uuid, isoDate, dayObj) {
-        const devId = this.getDevId();
-        const raw = localStorage.getItem(keyRev(uuid));
-        const revs = raw ? JSON.parse(raw) : {};
-        const syncRaw = localStorage.getItem(keySync(uuid));
-        let clock = syncRaw || HLC.create(devId, Date.now());
-        for (const field of [F_TYPE, F_TL, F_COL, F_NOTES, F_EMOJI]) {
-            clock = HLC.tick(clock, Date.now());
-            revs[`days.${isoDate}.${field}`] = clock;
-        }
-        localStorage.setItem(keyRev(uuid), JSON.stringify(revs));
-    }
-
     // ── Entry update ─────────────────────────────────────────────────────────
 
     updateLocalEntry(mindex, day, entry, entryType, entryColour, notes = '', emoji = '') {
@@ -231,8 +216,7 @@ export default class StorageLocal {
 
         // Persist to storage
         this.setLocalPlanner(uuid, year, this.model.planner);
-        // Update fieldRevs
-        this._updateRev(uuid, isoDate, this.model.planner[mindex][String(day)]);
+        // fieldRevs are now updated by SyncClient.markEdited() in entries.js (SYNC-04)
     }
 
     // ── Preferences ──────────────────────────────────────────────────────────
