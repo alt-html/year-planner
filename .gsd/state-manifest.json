@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-09T17:20:31.378Z",
+  "exported_at": "2026-04-09T17:50:49.370Z",
   "milestones": [
     {
       "id": "M001",
@@ -1052,11 +1052,11 @@
       "completed_at": null,
       "full_summary_md": "",
       "full_uat_md": "",
-      "goal": "Wire SyncClient.markEdited() into every StorageLocal method that mutates planner field data. All 14 existing tests pass.",
-      "success_criteria": "1. After setDayEntry(), localStorage.getItem('rev:' + plannerId) contains dot-path entry with valid HLC string. 2. All 14 existing E2E tests pass without modification.",
-      "proof_level": "Integration: Playwright test reads rev:{uuid} after edit. Regression: 14 existing tests.",
-      "integration_closure": "StorageLocal.markEdited() delegates to syncClient.markEdited(); CDI injection verified.",
-      "observability_impact": "rev:{uuid} in localStorage is now observable evidence of tracked edits.",
+      "goal": "Wire SyncClient.markEdited() into every StorageLocal write path so that editing any day entry writes a correct per-field HLC dot-path entry to rev:{uuid} in localStorage. Remove the flawed _updateRev() method.",
+      "success_criteria": "- `.tests/e2e/hlc-write.spec.js` passes: after editing a day entry, `localStorage.getItem('rev:{uuid}')` contains keys matching `days.YYYY-MM-DD.{field}` with valid non-empty HLC strings\n- `_updateRev` is gone from `StorageLocal.js`\n- `markEdited` calls appear in `entries.js`\n- All 18 Playwright tests pass (17 existing + 1 new)",
+      "proof_level": "Integration — real browser localStorage writes verified by Playwright",
+      "integration_closure": "S02 closes the write-path gap: markEdited() was built in S01 but never called on edits. After S02, fieldRevs in sync payloads will contain real per-field HLC stamps instead of empty {}.",
+      "observability_impact": "Browser devtools Application tab: rev:{uuid} localStorage key now populated with per-field HLC entries after any day edit.",
       "sequence": 2,
       "replan_triggered_at": null
     },
@@ -2397,6 +2397,82 @@
       "expected_output": [
         ".tests/e2e/sync-error.spec.js",
         ".tests/e2e/sync-payload.spec.js"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M011",
+      "slice_id": "S02",
+      "id": "T01",
+      "title": "Wire markEdited into entry write path (model.js, StorageLocal.js, entries.js)",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Three surgical edits that replace the flawed _updateRev() with correct delegation to syncClient.markEdited().\n\n1. **model.js** — add `syncClient: null` so the CDI-injected singleton is accessible as `this.syncClient` in all Vue methods (same pattern as `api: null` and `storageLocal: null` already there).\n\n2. **StorageLocal.js** — remove the `this._updateRev(...)` call at the end of `updateLocalEntry()` (line ~235), then delete the `_updateRev()` method body (lines ~195–207). No constructor change needed — avoids the circular CDI dependency documented in S02-RESEARCH.md.\n\n3. **entries.js** — in `updateEntry()`, after `this.storageLocal.updateLocalEntry(...)`, add HLC tracking:\n```js\n// Wire HLC field tracking for jsmdma sync (SYNC-04)\nconst year = this.year;\nconst month = String(mindex + 1).padStart(2, '0');\nconst d = String(day).padStart(2, '0');\nconst isoDate = `${year}-${month}-${d}`;\nconst plannerId = this.storageLocal.getActivePlnrUuid(this.uid, year);\nif (plannerId && this.syncClient) {\n    for (const field of ['tp', 'tl', 'col', 'notes', 'emoji']) {\n        this.syncClient.markEdited(plannerId, `days.${isoDate}.${field}`);\n    }\n}\n```\nThen update the `if (syncToRemote)` block below to reuse the `plannerId` already computed:\n```js\nif (syncToRemote) {\n    this.api.sync(plannerId);\n}\n```\n\nImportant constraints:\n- Use string literals `'tp', 'tl', 'col', 'notes', 'emoji'` — entries.js does not import storage-schema.js constants\n- Guard with `if (plannerId && this.syncClient)` for safety against null state\n- markEdited runs unconditionally (regardless of syncToRemote) — HLC tracking must happen on every edit, not only when signed in\n- The plannerId computed here replaces the separate `getActivePlnrUuid` call inside the old `if (syncToRemote)` block — consolidate to one call",
+      "estimate": "25m",
+      "files": [
+        "site/js/vue/model.js",
+        "site/js/service/StorageLocal.js",
+        "site/js/vue/methods/entries.js"
+      ],
+      "verify": "grep -q 'syncClient' site/js/vue/model.js && echo OK: model.js has syncClient; grep -q '_updateRev' site/js/service/StorageLocal.js && echo FAIL: _updateRev still present || echo OK: _updateRev removed; grep -q 'markEdited' site/js/vue/methods/entries.js && echo OK: markEdited wired || echo FAIL: markEdited missing; cd .tests && npx playwright test --reporter=line",
+      "inputs": [
+        "site/js/vue/model.js",
+        "site/js/service/StorageLocal.js",
+        "site/js/vue/methods/entries.js",
+        "site/js/service/SyncClient.js"
+      ],
+      "expected_output": [
+        "site/js/vue/model.js",
+        "site/js/service/StorageLocal.js",
+        "site/js/vue/methods/entries.js"
+      ],
+      "observability_impact": "",
+      "full_plan_md": "",
+      "sequence": 0
+    },
+    {
+      "milestone_id": "M011",
+      "slice_id": "S02",
+      "id": "T02",
+      "title": "Write hlc-write.spec.js Playwright test and confirm 18 tests pass",
+      "status": "pending",
+      "one_liner": "",
+      "narrative": "",
+      "verification_result": "",
+      "duration": "",
+      "completed_at": null,
+      "blocker_discovered": false,
+      "deviations": "",
+      "known_issues": "",
+      "key_files": [],
+      "key_decisions": [],
+      "full_summary_md": "",
+      "description": "Write `.tests/e2e/hlc-write.spec.js` that edits a day entry and asserts the `rev:{uuid}` localStorage key contains valid per-field HLC dot-path entries.\n\nTest pattern (follow `entry-crud.spec.js` — no localStorage.clear() needed because globalSetup seeds the planner):\n\n```js\n// .tests/e2e/hlc-write.spec.js\nconst { test, expect } = require('../fixtures/cdn');\n\ntest('editing a day entry writes HLC dot-path to rev:{uuid} (SYNC-04)', async ({ page }) => {\n    await page.goto('/?uid=12345&year=2026');\n    await page.waitForSelector('[data-app-ready]');\n\n    // Edit Jan day 1 (same selector pattern as entry-crud.spec.js)\n    const janColumn = page.locator('#yp-months .col-xs-12.col-sm-6.col-md-4.col-lg-3.col-xl-1').first();\n    const day1Cell = janColumn.locator('.yp-cell').filter({ hasText: /^1\\s/ }).first();\n    await day1Cell.click();\n    await page.waitForSelector('#entryModal.show');\n    await page.fill('#yp-entry-textarea', 'HLC test entry');\n    await page.click('#entryModal .yp-action-save');\n    await expect(page.locator('#entryModal')).not.toBeVisible();\n\n    // Read rev:{uuid} from localStorage\n    const revEntry = await page.evaluate(() => {\n        for (let i = 0; i < localStorage.length; i++) {\n            const key = localStorage.key(i);\n            if (key && key.startsWith('rev:')) {\n                const raw = localStorage.getItem(key);\n                return { key, revs: raw ? JSON.parse(raw) : {} };\n            }\n        }\n        return null;\n    });\n\n    expect(revEntry).not.toBeNull();\n    const keys = Object.keys(revEntry.revs);\n    expect(keys.length).toBeGreaterThan(0);\n    // Keys must match days.YYYY-MM-DD.{field} pattern\n    const dayKeys = keys.filter(k => /^days\\.\\d{4}-\\d{2}-\\d{2}\\./.test(k));\n    expect(dayKeys.length).toBeGreaterThan(0);\n    // Values must be non-empty HLC strings\n    for (const k of dayKeys) {\n        expect(typeof revEntry.revs[k]).toBe('string');\n        expect(revEntry.revs[k].length).toBeGreaterThan(0);\n    }\n});\n```\n\nAfter writing, run the full test suite and confirm 18 tests pass (17 from S01 + this new one).\n\nIf the test fails because `rev:*` key is absent, the most likely cause is that T01 wiring is not working — check that `syncClient` appears in `model.js` and that `markEdited` is being called in `entries.js`.",
+      "estimate": "20m",
+      "files": [
+        ".tests/e2e/hlc-write.spec.js"
+      ],
+      "verify": "cd .tests && npx playwright test --reporter=line 2>&1 | tail -5",
+      "inputs": [
+        "site/js/vue/methods/entries.js",
+        "site/js/service/SyncClient.js",
+        ".tests/e2e/entry-crud.spec.js",
+        ".tests/fixtures/cdn.js"
+      ],
+      "expected_output": [
+        ".tests/e2e/hlc-write.spec.js"
       ],
       "observability_impact": "",
       "full_plan_md": "",
