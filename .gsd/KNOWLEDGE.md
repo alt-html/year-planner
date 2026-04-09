@@ -67,3 +67,22 @@ Add `page.on('console', msg => logs.push(msg.text()))` to capture browser-side l
 
 ### SyncClient.sync() is a no-op when plannerId is null — guard is silent
 `Api.sync(plannerId)` silently returns when `!plannerId`. No error is thrown, no model.error is set. This makes the "sync didn't fire" scenario invisible during testing — the route intercept simply never fires. When debugging missing sync requests, first verify `getActivePlnrUuid(uid, year)` returns a non-null UUID, then verify `signedin()` returns true.
+
+---
+
+## M011 — SyncClient / jsmdma Sync Rewrite, continued (2026-04-09)
+
+### SyncClient fetchJSON is module-private; Api.js fetchJSON stays module-level for deleteAccount
+SyncClient.js defines its own module-level fetchJSON helper for the POST /year-planner/sync call. Api.js retains its own module-level fetchJSON because deleteAccount() still needs it. Do NOT share a single fetchJSON across both files via an import — they have different error handling needs and keeping them independent avoids coupling a new module to Api.js internals.
+
+### markEdited() ticks HLC from the existing field clock, not always from sync:{uuid}
+In SyncClient.markEdited(plannerId, dotPath), the per-field HLC tick reads `rev:{plannerId}[dotPath]` first and ticks from that clock (fallback: baseClock from sync:{uuid}, fallback: HLC_ZERO). This ensures monotonically increasing stamps even while offline — the field clock advances relative to its own history, not relative to the last server sync. Ticking always from sync:{uuid} would produce identical stamps for rapid offline edits to the same field.
+
+### HLC_ZERO is re-exported from storage-schema.js — use that, not HLC.zero()
+`storage-schema.js` re-exports `HLC_ZERO` from data-api-core. Use `import { HLC_ZERO } from './storage-schema.js'` in SyncClient instead of importing and calling `HLC.zero()`. This avoids a duplicate HLC instantiation and keeps all storage-related constants in one place.
+
+### api.sync() Vue call sites are fire-and-forget — do not add await
+All 9 call sites that previously called `synchroniseToLocal()` / `synchroniseToRemote()` are fire-and-forget (no await). When replacing them with `this.api.sync(plannerId)`, preserve the fire-and-forget pattern. The original behavior was intentional — UI should not block on sync. Adding await would change the UX contract and potentially cause loading delays.
+
+### deletePlannerByYear: remove the sync call, not replace it
+When a planner is deleted locally, the sync call that previously followed the delete should be removed entirely rather than replaced with `api.sync(plannerId)`. Syncing after a local delete makes no sense — the document is gone. This is a simplification, not an oversight.
