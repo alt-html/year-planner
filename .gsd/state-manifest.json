@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "exported_at": "2026-04-02T22:50:23.421Z",
+  "exported_at": "2026-04-09T10:22:32.560Z",
   "milestones": [
     {
       "id": "M001",
@@ -347,6 +347,71 @@
       ],
       "requirement_coverage": "Covers STRUCT-01 (new). All other requirements unaffected — no functional changes.",
       "boundary_map_markdown": "### S01 (only slice)\\nProduces:\\n- site/ directory with all web assets\\n- Updated .compose/build.sh targeting site/index.html\\n- Updated .tests/playwright.config.js serving site/\\n- Updated .docker/Dockerfile-nginx-16-alpine copying site/\\n- Updated AGENTS.md dev server command\\n\\nConsumes: nothing (leaf node)"
+    },
+    {
+      "id": "M011",
+      "title": "jsmdma Sync Protocol & MOD Cleanup",
+      "status": "active",
+      "depends_on": [],
+      "created_at": "2026-04-09T10:22:32.542Z",
+      "completed_at": null,
+      "vision": "Replace the obsolete push/pull sync layer with a proper jsmdma HLC-based bidirectional sync: build SyncClient.js, rewrite Api.js to POST /year-planner/sync, wire HLC field tracking into every StorageLocal write, delete the dead StorageRemote.js, and resolve outstanding MOD-02 era cleanup items. When complete, field-level HLC clocks are tracked on every edit and the sync payload is shaped correctly for the jsmdma backend — ready to wire to a live server the moment client IDs are configured.",
+      "success_criteria": [
+        "SyncClient.js exists with markEdited(), sync(), prune() methods wired through CDI",
+        "Api.js posts to POST /year-planner/sync with jsmdma payload shape (clientClock, deviceId, changes array)",
+        "Editing any day entry updates rev:{uuid} in localStorage with a valid HLC dot-path entry",
+        "base:{uuid} and sync:{uuid} updated after a successful sync call",
+        "StorageRemote.js deleted; contexts.js does not reference it",
+        "All 14 existing E2E tests pass unchanged",
+        "New Playwright sync integration test (mocked endpoint) passes",
+        "MOD-05-09 audit complete; all actionable items resolved or explicitly deferred with rationale"
+      ],
+      "key_risks": [
+        {
+          "risk": "StorageLocal write paths are not fully enumerated before S02 starts",
+          "whyItMatters": "Missing a write path means edits go untracked by HLC — silent data loss on sync"
+        },
+        {
+          "risk": "MOD-05 (SquareUp) may already be done; other MOD items may be partially done",
+          "whyItMatters": "Coding against a stale requirement wastes time and risks reverting already-done work"
+        },
+        {
+          "risk": "sync:{uuid} key absent for existing planners after M009 migration",
+          "whyItMatters": "SyncClient must handle missing baseClock gracefully; HLC.zero() fallback must be exercised"
+        }
+      ],
+      "proof_strategy": [
+        {
+          "riskOrUnknown": "StorageLocal write paths not enumerated",
+          "retireIn": "S01",
+          "whatWillBeProven": "S01-PLAN explicitly lists every StorageLocal method that mutates planner data; S02 tasks are written against that list"
+        },
+        {
+          "riskOrUnknown": "MOD items partially done",
+          "retireIn": "S03",
+          "whatWillBeProven": "S03 audit task produces per-item verdict (done/pending/deferred) backed by grep evidence"
+        },
+        {
+          "riskOrUnknown": "Missing sync:{uuid} after migration",
+          "retireIn": "S01",
+          "whatWillBeProven": "SyncClient.sync() uses HLC.zero() when sync:{uuid} is absent; Playwright test exercises first-sync path with empty key"
+        }
+      ],
+      "verification_contract": "Playwright integration test with mocked POST /year-planner/sync verifies correct payload shape and localStorage state after sync. All 14 existing E2E tests pass.",
+      "verification_integration": "rev:{uuid} updated on setDayEntry; base:{uuid} and sync:{uuid} updated after sync response applied; merge() output written to plnr:{uuid}.",
+      "verification_operational": "none",
+      "verification_uat": "none",
+      "definition_of_done": [
+        "All slice deliverables are complete",
+        "SyncClient.js, updated Api.js, and wired StorageLocal are all deployed in site/js/service/",
+        "StorageRemote.js is absent from the repo",
+        "New sync integration Playwright test passes",
+        "All 14 existing E2E tests pass",
+        "MOD audit documented in S03 summary; all actionable items closed or deferred with rationale",
+        "Success criteria re-checked: rev:{uuid} updated after edit; POST /year-planner/sync payload shape verified"
+      ],
+      "requirement_coverage": "Covers: SYNC-04, SYNC-05, SYNC-06, AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-08, MOD-09. Partially covers: SYNC-01, SYNC-02, SYNC-03 (already validated in M009). Leaves for later: SYNC-08 (pruning, deferred), AUTH-01-04 (federated auth wiring). Orphan risks: none.",
+      "boundary_map_markdown": "### S01 → S02\n\nProduces:\n- `site/js/service/SyncClient.js` — class with `markEdited(plannerId, dotPath)`, `async sync(plannerId, plannerDoc, authHeaders)`, `prune(plannerId)`\n- `site/js/config/contexts.js` — updated CDI registrations: `syncClient` added, `storageRemote` removed, `storageLocal` and `api` constructors updated\n- Updated `site/js/service/Api.js` — `sync(plannerId)` replaces old `synchroniseToRemote` / `synchroniseToLocal`\n- Enumerated list of StorageLocal write methods that need `markEdited` wiring (documented in S01-PLAN)\n\nConsumes:\n- nothing (first slice)\n\n### S01 → S03\n\nProduces:\n- Same outputs as S01 → S02 above\n- `StorageRemote.js` deleted from `site/js/service/`\n\nConsumes:\n- nothing (first slice)\n\n### S02 → milestone\n\nProduces:\n- `StorageLocal.markEdited(plannerId, dotPath)` — delegates to `syncClient.markEdited()`; called from all identified write paths\n- `rev:{uuid}` localStorage key updated on every planner field edit\n\nConsumes from S01:\n- `SyncClient.markEdited(plannerId, dotPath)` — must exist and be CDI-injectable as `syncClient`\n- Enumerated list of write methods from S01-PLAN\n\n### S03 → milestone\n\nProduces:\n- MOD audit document (in S03-SUMMARY.md)\n- Resolved or explicitly deferred status for MOD-05 through MOD-09\n- Any code changes required by pending MOD items\n\nConsumes from S01:\n- Updated `contexts.js` (S03 cleanup may touch contexts.js; needs to build on S01's version)"
     }
   ],
   "slices": [
@@ -951,6 +1016,70 @@
       "integration_closure": "Playwright boots the app from site/ and data-app-ready fires; all smoke tests pass.",
       "observability_impact": "none",
       "sequence": 0,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M011",
+      "id": "S01",
+      "title": "SyncClient.js + jsmdma sync API",
+      "status": "pending",
+      "risk": "high",
+      "depends": [],
+      "demo": "After this: SyncClient.js is CDI-registered; Api.js posts to /year-planner/sync with jsmdma payload shape; StorageRemote.js is gone; Playwright mock test verifies payload shape and passes alongside existing sync-error test.",
+      "created_at": "2026-04-09T10:22:32.543Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Build SyncClient.js, rewrite Api.js to use POST /year-planner/sync, delete StorageRemote.js, update contexts.js, and write the Playwright sync integration test.",
+      "success_criteria": "1. SyncClient.js exists with markEdited(), sync(), prune(). 2. Api.js calls POST /year-planner/sync not POST /api/planner. 3. StorageRemote.js deleted; contexts.js updated. 4. Playwright mock test: endpoint receives {clientClock, deviceId, changes:[{id,doc,fieldRevs}]} shape. 5. sync-error.spec.js still passes.",
+      "proof_level": "Contract: Playwright mock test verifies payload shape. Static: file existence checks.",
+      "integration_closure": "contexts.js updated; CDI wiring verified by boot smoke test.",
+      "observability_impact": "model.error surface for sync failures unchanged; new error.syncfailed path in SyncClient.",
+      "sequence": 1,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M011",
+      "id": "S02",
+      "title": "StorageLocal HLC write wiring",
+      "status": "pending",
+      "risk": "medium",
+      "depends": [
+        "S01"
+      ],
+      "demo": "After this: editing any day entry writes a dot-path HLC entry to rev:{uuid} in localStorage; Playwright test confirms this; all 14 E2E tests pass.",
+      "created_at": "2026-04-09T10:22:32.543Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Wire SyncClient.markEdited() into every StorageLocal method that mutates planner field data. All 14 existing tests pass.",
+      "success_criteria": "1. After setDayEntry(), localStorage.getItem('rev:' + plannerId) contains dot-path entry with valid HLC string. 2. All 14 existing E2E tests pass without modification.",
+      "proof_level": "Integration: Playwright test reads rev:{uuid} after edit. Regression: 14 existing tests.",
+      "integration_closure": "StorageLocal.markEdited() delegates to syncClient.markEdited(); CDI injection verified.",
+      "observability_impact": "rev:{uuid} in localStorage is now observable evidence of tracked edits.",
+      "sequence": 2,
+      "replan_triggered_at": null
+    },
+    {
+      "milestone_id": "M011",
+      "id": "S03",
+      "title": "MOD audit + cleanup",
+      "status": "pending",
+      "risk": "low",
+      "depends": [
+        "S01"
+      ],
+      "demo": "After this: MOD audit is documented; all pending MOD-05–09 items are resolved or explicitly deferred with rationale; all 14 tests pass.",
+      "created_at": "2026-04-09T10:22:32.543Z",
+      "completed_at": null,
+      "full_summary_md": "",
+      "full_uat_md": "",
+      "goal": "Audit MOD-05 through MOD-09 to determine what is actually pending vs already done, then resolve all pending items. 14 E2E tests pass after each fix.",
+      "success_criteria": "1. Audit documents per-item verdict for MOD-05-09 (done/pending/deferred). 2. Each pending item resolved in a task. 3. Each deferred item has written rationale. 4. All 14 E2E tests pass after each fix.",
+      "proof_level": "Static: grep evidence for each MOD item. Regression: 14 existing Playwright tests.",
+      "integration_closure": "No new integration points; all changes are refactors within existing modules.",
+      "observability_impact": "none — MOD cleanup is internal code quality; no observable runtime change.",
+      "sequence": 3,
       "replan_triggered_at": null
     }
   ],

@@ -1,53 +1,32 @@
-# Year Planner — Project Status
+# Year Planner
 
 ## What This Is
 
-A multi-lingual, responsive Progressive Web App (PWA) for personal and student year planning. Pure ES6 modules loaded via CDN — no build step. Optional cloud sync via REST API.
+A multi-lingual, offline-first progressive web app (PWA) year planner. Renders a weeks-by-months calendar grid where users can add diary entries (tagline, colour, notes, emoji, type) per day. Data is stored in browser localStorage. Supports 10 languages, light/dark themes, planner sharing via URL-encoded compressed state, and optional server-side sync for registered users using the jsmdma HLC-based sync protocol.
+
+Live at: https://d1uamxeylh4qir.cloudfront.net/
 
 ## Core Value
 
-A simple, fast year planner that works offline with local storage, supports 10 languages, and optionally syncs to the cloud.
+Offline-first local planner that works without an account, and syncs bidirectionally when signed in — without data loss across devices.
 
 ## Current State
 
-**Active Milestone:** M008 — Day data model extension (complete — all 3 slices done)
-
-The day data model has been extended with tagline (key `'1'`, ≤32 chars), long-form notes (key `'3'`), and a single emoji stamp (key `'4'`). The entry modal has three distinct fields (tagline, notes, emoji). Cells show emoji + tagline preview. The left rail has a fully functional emoji stamp mode: tabbed flyout (60 emoji across 5 categories), eraser, click/drag painting, mutually exclusive with the colour marker mode. All 14 E2E tests pass.
+- Vanilla ES module browser app, no bundler, dependencies from CDN (`jsdelivr.net`)
+- All web assets in `site/` (index.html, css/, js/, manifest.json, icons)
+- localStorage schema at M009 level: `dev`, `tok`, `plnr:{uuid}`, `rev:{uuid}`, `base:{uuid}`, `sync:{uuid}` — HLC-ready
+- Federated auth (Google/Apple/Microsoft) skeleton in `AuthProvider.js` — client IDs not yet configured
+- Old sync protocol still in place: `Api.js` uses `POST /api/planner` dump approach; `StorageRemote.js` uses obsolete uid-year schema
+- 14 Playwright E2E tests pass; test harness in `.tests/`
 
 ## Architecture / Key Patterns
 
-### Runtime Stack
-- Vue 3 (Options API) + Vue-i18n + Luxon + Bootstrap 4 loaded from CDN
-- @alt-javascript v3 (common, config, logger, cdi, boot, boot-vue) for CDI and app bootstrap
-- `vueStarter` from boot-vue@3 as the app entry point; `ProfileAwareConfig` + `BrowserProfileResolver` for environment config; `Context`/`Singleton` for CDI wiring
-- ES6 modules with bare CDN imports — no bundler, no build step
-
-### Visual Theming
-- Two themes via CSS custom properties on `<body data-theme="ink|nordic">`
-- Dark mode via `.yp-dark` class on `<body>`
-- Theme stored in `localStorage('style_theme')`
-- Design mockups in `/mockups/combined-themes.html`
-
-### Test Infrastructure
-- Playwright test harness in `.tests/` with 14 passing tests (smoke + E2E)
-- CDN fixture interception via shared `cdn-routes.js` helper (used by both per-test `cdn.js` fixture and `globalSetup.js`) — all 7 v3 ESM bundles + lodash-es served locally
-- `data-app-ready` attribute for reliable test synchronisation
-- GitHub Actions CI workflow at `.github/workflows/e2e.yml`
-
-### Security
-- All CDN resources pinned with SRI integrity hashes
-- `generate-sri.mjs` for automated hash regeneration
-
-### HTML Composition
-- `index.html` decomposed into 18 fragments in `.compose/`
-- GNU m4 with `-P` flag assembles fragments via `.compose/build.sh`
-- Composed output is byte-identical to committed `index.html`
-
-### Key Conventions
-- Hidden directories for tooling: `.tests/`, `.compose/`, `.docker/`, `.skaffold/`
-- No root-level `package.json` — test dependencies isolated in `.tests/`
-- CDN fixture interception via custom Playwright fixture (`cdn.js`)
-- m4 `-P` with `changequote([[[, ]]])` for safe HTML macro processing
+- **Entry:** `site/index.html` → `site/js/main.js` → `@alt-javascript/boot-vue` CDI bootstrap → Vue 3 Options API mount
+- **CDI wiring:** `site/js/config/contexts.js` registers all services as singletons; constructor parameter names must match registered names
+- **Service layer:** `Storage`, `StorageLocal` (633 lines, full schema impl), `StorageRemote` (84 lines, dead — to be deleted in M011), `Api`, `AuthProvider`, `SyncClient` (planned M011)
+- **Vue layer:** `app.js`, grouped methods (`methods/auth.js`, `calendar.js`, `entries.js`, `lifecycle.js`, `planner.js`), grouped model (`model/auth.js`, `calendar.js`, `planner.js`, `ui.js`)
+- **jsmdma protocol:** `site/js/vendor/data-api-core.esm.js` — local bundle; exports `HLC`, `flatten`, `merge`, `unflatten`, `diff`, `textMerge`
+- **Tests:** Playwright E2E in `.tests/`; CDN routes intercepted via `fixtures/cdn-routes.js`; global setup creates seeded `storageState`
 
 ## Capability Contract
 
@@ -55,23 +34,14 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 ## Milestone Sequence
 
-- [x] M001: Migration — Test infrastructure, E2E coverage, security hardening, and HTML composition pipeline
-- [x] M002: JS Modularisation — Decomposed monolithic Vue controller, model, and API into focused ES6 modules; removed superagent, lodash, SquareUp CDN dependencies
-- [x] M003: Storage Modernisation — Migrated all persistence from cookies to localStorage, removed consent modal and @alt-javascript/cookies CDN dependency
-- [x] M004: Auth & API Contract — Replaced bespoke auth with federated sign-in (Google/Apple/Microsoft), defined OpenAPI 3.x sync spec, aligned sync client
-- [x] M005: UI/UX Design Research — Created 3 design mockups, applied hybrid of Ink & Paper + Crisp & Clear as dual-theme system
-- [x] M006: UI/UX Polish & Finalisation — Flex-fill grid, column alignment fix, marker/highlighter mode, modal cleanup
-- [x] M007: Boot v3 Uplift — Replaced @alt-javascript v2 CDN stack with v3.0.x; vueStarter/ProfileAwareConfig/Context+Singleton pattern; fully offline E2E fixture coverage
-- [x] M008: Day Data Model Extension — Extended day schema with tagline, notes, and emoji; redesigned entry modal; emoji stamp rail mode with tabbed picker and drag-paint
-
-## Running Locally
-```bash
-# Docker (nginx)
-.docker/bin/build && .docker/bin/run   # serves on http://localhost:8080
-
-# Tests
-cd .tests && npx playwright test       # 14 tests, ~12s
-
-# Compose HTML (after editing fragments)
-.compose/build.sh
-```
+- [x] M001: Migration — Move from old server-rendered to client-side Vue app
+- [x] M002: JS Modularisation — Split monolithic controller, model, Api into domain modules
+- [x] M003: Storage Modernisation — Replace cookies with localStorage; remove consent modal
+- [x] M004: Auth & API Contract — Federated auth skeleton; OpenAPI contract groundwork
+- [x] M005: UI/UX Design Research — Design direction and component research
+- [x] M006: UI/UX Polish & Finalisation — Visual polish, theme, typography
+- [x] M007: Boot v3 Uplift — Upgrade to @alt-javascript/boot-vue@3; fix test harness
+- [x] M008: Day Data Model Extension — Add notes and emoji fields to day objects
+- [x] M009: localStorage Schema Redesign & Migration — HLC-ready schema; one-time migration from old schema
+- [x] M010: Source Root Tidy — Move web assets to site/
+- [ ] M011: jsmdma Sync Protocol & MOD Cleanup — SyncClient.js + jsmdma HLC sync + StorageRemote retired + MOD-05–09 resolved

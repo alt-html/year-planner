@@ -32,3 +32,4 @@
 {"cmd":"complete-task","params":{"milestoneId":"M010","sliceId":"S01","taskId":"T03"},"ts":"2026-04-02T22:49:38.290Z","actor":"agent","hash":"8355585704e98688","session_id":"889108cc-511e-4a6c-8f92-fe84babe90c4"}
 {"cmd":"complete-slice","params":{"milestoneId":"M010","sliceId":"S01"},"ts":"2026-04-02T22:50:00.277Z","actor":"agent","hash":"0ec1ff4fc36b9fd7","session_id":"889108cc-511e-4a6c-8f92-fe84babe90c4"}
 {"cmd":"complete-milestone","params":{"milestoneId":"M010"},"ts":"2026-04-02T22:50:23.423Z","actor":"agent","hash":"d46813b3d02af93c","session_id":"889108cc-511e-4a6c-8f92-fe84babe90c4"}
+{"v":2,"cmd":"plan-milestone","params":{"milestoneId":"M011"},"ts":"2026-04-09T10:22:32.562Z","actor":"agent","hash":"8da5bd1f6d8be219","session_id":"91e0583e-109d-4c56-82e3-724fa63b44e9"}
