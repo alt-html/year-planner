@@ -39,3 +39,4 @@ tmp/
 
 # ── GSD baseline (auto-generated) ──
 .gsd-id
+.superpowers/
