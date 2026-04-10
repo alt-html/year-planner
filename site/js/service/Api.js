@@ -45,13 +45,16 @@ export default class Api {
         try {
             const doc = this.storageLocal._getPlnrDoc(plannerId);
             await this.syncClient.sync(plannerId, doc.days || {}, this._authHeaders());
+            this.model.error = ''; // clear any stale error on successful sync
         } catch (err) {
             if (err.status == 404)
                 this.model.error = 'error.apinotavailable';
             else if (err.status == 401) {
+                const authTime = parseInt(localStorage.getItem('auth_time') || '0');
+                const tokenIsStale = (Date.now() - authTime) > 300000; // > 5 minutes
                 this.authProvider?.signOut?.();
                 this.model.signedin = false;
-                this.model.error = 'error.unauthorized';
+                this.model.error = tokenIsStale ? 'error.unauthorized' : 'error.syncfailed';
             }
             else
                 this.model.error = 'error.syncfailed';

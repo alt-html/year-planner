@@ -59,6 +59,7 @@ export default class AuthProvider {
     _storeAuth(provider, token) {
         localStorage.setItem('auth_token', token);
         localStorage.setItem('auth_provider', provider);
+        localStorage.setItem('auth_time', Date.now().toString());
         this.model.signedin = true;
         // Create a session compatible with existing sync flow
         this.storageLocal.setLocalSession(token, 0); // expires=0 means "remember me"
