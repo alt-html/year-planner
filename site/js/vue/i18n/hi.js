@@ -46,7 +46,7 @@ export default {
     error: {
         apinotavailable: 'दूरस्थ वर्ष प्लानर एपीआई उपलब्ध नहीं है',
         usernotavailable: 'उपयोगकर्ता नाम उपलब्ध नहीं है',
-        unauthorized: 'उपयोगकर्ता नाम या पासवर्ड सही नहीं है',
+        unauthorized: 'साइन-इन समाप्त हो गया — कृपया फिर से साइन इन करें',
         passwordincorrect: 'पासवर्ड सही नहीं है',
         syncfailed: 'Sync failed. Please check your connection.',
     },

@@ -48,8 +48,11 @@ export default class Api {
         } catch (err) {
             if (err.status == 404)
                 this.model.error = 'error.apinotavailable';
-            else if (err.status == 401)
+            else if (err.status == 401) {
+                this.authProvider?.signOut?.();
+                this.model.signedin = false;
                 this.model.error = 'error.unauthorized';
+            }
             else
                 this.model.error = 'error.syncfailed';
         }

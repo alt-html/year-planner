@@ -46,7 +46,7 @@ export default {
     error: {
         apinotavailable: 'واجهة برمجة تطبيقات مخطط السنة البعيدة غير متاحة',
         usernotavailable: 'اسم المستخدم غير متوفر',
-        unauthorized: 'اسم المستخدم أو كلمة المرور غير صحيحة',
+        unauthorized: 'انتهت صلاحية تسجيل الدخول — يرجى تسجيل الدخول مرة أخرى',
         passwordincorrect: 'كلمة المرور غير صحيحة',
         syncfailed: 'Sync failed. Please check your connection.',
     },

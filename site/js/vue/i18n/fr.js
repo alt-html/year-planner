@@ -46,7 +46,7 @@ export default {
     error: {
         apinotavailable: 'L\'API du planificateur d\'année à distance n\'est pas disponible',
         usernotavailable: 'Le nom d\'utilisateur n\'est pas disponible',
-        unauthorized: 'Le nom d\'utilisateur ou le mot de passe n\'est pas correct',
+        unauthorized: 'Session expirée — veuillez vous reconnecter',
         passwordincorrect: 'Le mot de passe n\'est pas correct',
         syncfailed: 'Sync failed. Please check your connection.',
     },

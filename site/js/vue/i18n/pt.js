@@ -46,7 +46,7 @@ export default {
     error: {
         apinotavailable: 'A API do planejador anual remoto não está disponível',
         usernotavailable: 'O nome de usuário não está disponível',
-        unauthorized: 'Nome de usuário ou senha incorretos',
+        unauthorized: 'Sessão expirada — por favor faça login novamente',
         passwordincorrect: 'Senha incorreta',
         syncfailed: 'Sync failed. Please check your connection.',
     },

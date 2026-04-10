@@ -44,7 +44,7 @@ export default {
     error: {
         apinotavailable: 'Ol API toktok bilong yia API no stap long hap',
         usernotavailable: 'Nem bilong yusim ol bilong sam narapela',
-        unauthorized: 'Ol nem bilong yusim na hait wod emi nogut'
+        unauthorized: 'Sainin i pinis — plis sainin gen'
     },
     month : {
         January: 'Jenueri', February: 'Februeri', March : 'Mars', April:'Epril', May:'Me',June:'Jun',July:'Julai',August:'Ogas',September:'Septemba',October:'Oktoba',November:'Novemba',December:'Disemba'

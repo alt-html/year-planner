@@ -46,7 +46,7 @@ export default {
     error: {
         apinotavailable: 'API perencana tahun jarak jauh tidak tersedia',
         usernotavailable: 'Nama pengguna tidak tersedia',
-        unauthorized: 'Nama pengguna atau kata sandi salah',
+        unauthorized: 'Sesi habis — silakan masuk kembali',
         passwordincorrect: 'Kata sandi salah',
         syncfailed: 'Sync failed. Please check your connection.',
     },

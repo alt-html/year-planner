@@ -46,7 +46,7 @@ export default {
     error: {
         apinotavailable: 'リモートイヤープランナーAPIは利用できません',
         usernotavailable: 'ユーザー名は利用できません',
-        unauthorized: 'ユーザー名またはパスワードが正しくありません',
+        unauthorized: 'ログインの有効期限が切れました — 再度サインインしてください',
         passwordincorrect: 'パスワードが正しくありません',
         syncfailed: 'Sync failed. Please check your connection.',
     },

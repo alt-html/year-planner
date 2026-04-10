@@ -46,7 +46,7 @@ export default {
     error: {
         apinotavailable: 'API удаленного планировщика года недоступен',
             usernotavailable: 'Имя пользователя недоступно',
-            unauthorized: 'Имя пользователя или пароль неверны',
+            unauthorized: 'Сеанс истёк — пожалуйста, войдите снова',
             passwordincorrect: 'Пароль неверный',
             syncfailed: 'Sync failed. Please check your connection.',
     },

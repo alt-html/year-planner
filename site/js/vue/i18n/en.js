@@ -52,7 +52,7 @@ export default {
         general: 'An error occurred',
         apinotavailable: 'The remote year planner API is not available',
         usernotavailable: 'The username is not available',
-        unauthorized: 'Username or password is not correct',
+        unauthorized: 'Sign-in expired — please sign in again',
         passwordincorrect: 'Password is not correct',
         paymentfailed: 'Payment failed',
         syncfailed: 'Sync failed. Please check your connection.',

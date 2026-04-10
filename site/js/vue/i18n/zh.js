@@ -47,7 +47,7 @@ export default {
     error: {
         apinotavailable: '遠程年計劃器API不可用',
         usernotavailable: '用戶名不可用',
-        unauthorized: '用戶名或密碼不正確',
+        unauthorized: '登錄已過期 — 請重新登錄',
         syncfailed: 'Sync failed. Please check your connection.',
     },
     month : {
