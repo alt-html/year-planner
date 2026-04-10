@@ -16,9 +16,6 @@ test('sync POST carries jsmdma payload shape (D007)', async ({ page }) => {
   let capturedBody = null;
 
   await page.addInitScript((token) => {
-    if (sessionStorage.getItem('_seeded')) return;
-    sessionStorage.setItem('_seeded', '1');
-    localStorage.clear();
     localStorage.setItem('auth_token', token);
   }, makeFakeJwt());
 
