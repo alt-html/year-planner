@@ -551,10 +551,7 @@
                             </button>
                         </div>
                         <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('google')">
-                                <i class="ph ph-google-logo me-2"></i> Sign in with Google
-                            </button>
-                            <div id="google-signin-button" style="margin-top:0.5rem;min-height:0;display:none"></div>
+                            <div id="google-signin-button" style="margin-top:0.5rem;min-height:44px"></div>
                             <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('apple')">
                                 <i class="ph ph-apple-logo me-2"></i> Sign in with Apple
                             </button>
@@ -1134,6 +1131,19 @@
         if (railSigninBtn) {
             railSigninBtn.addEventListener('click', function() {
                 $('#authModal').modal('show');
+            });
+        }
+
+        var authModalEl = document.getElementById('authModal');
+        if (authModalEl) {
+            authModalEl.addEventListener('show.bs.modal', function() {
+                var appEl = document.getElementById('app');
+                if (appEl && appEl.__vue_app__ && appEl.__vue_app__._instance) {
+                    var proxy = appEl.__vue_app__._instance.proxy;
+                    if (proxy && proxy.signInWith) {
+                        proxy.signInWith('google');
+                    }
+                }
             });
         }
     })();
