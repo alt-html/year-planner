@@ -69,6 +69,12 @@ export default class AuthProvider {
     async _signInGoogle() {
         await this._loadSDK('google', 'https://accounts.google.com/gsi/client');
         return new Promise((resolve, reject) => {
+            const container = document.getElementById('google-signin-button');
+            if (!container) {
+                reject(new Error('Google sign-in not available — #google-signin-button container missing'));
+                return;
+            }
+
             window.google.accounts.id.initialize({
                 client_id: authConfig.google.clientId,
                 callback: (response) => {
@@ -82,28 +88,18 @@ export default class AuthProvider {
                 cancel_on_tap_outside: true,
             });
 
-            // Try One Tap first (works in production environments).
-            // When suppressed (localhost, browser policy), fall back to the
-            // rendered button — renderButton() renders the Google-branded button
-            // into #google-signin-button; the user clicks it to complete auth.
-            window.google.accounts.id.prompt((notification) => {
-                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                    const container = document.getElementById('google-signin-button');
-                    if (container) {
-                        try {
-                            window.google.accounts.id.renderButton(container, {
-                                theme: 'outline',
-                                size: 'large',
-                                width: 280,
-                            });
-                        } catch (err) {
-                            reject(new Error(`Google sign-in button failed to render: ${err.message}`));
-                        }
-                    } else {
-                        reject(new Error('Google sign-in not available — #google-signin-button container missing'));
-                    }
-                }
+            // Render the branded button immediately — always visible in the modal.
+            // renderButton does not depend on Google servers; it renders synchronously.
+            container.innerHTML = '';
+            window.google.accounts.id.renderButton(container, {
+                theme: 'outline',
+                size: 'large',
+                width: 300,
             });
+
+            // Also attempt One Tap overlay (shows in production; silently suppressed
+            // in incognito/localhost — the rendered button above is the reliable fallback).
+            window.google.accounts.id.prompt();
         });
     }
 

@@ -19,6 +19,13 @@ const app = {
     },
     mounted() {
         this.refresh();
+        // Bootstrap 4 fires modal events via jQuery's $.trigger(), not native DOM events.
+        // Must use jQuery .on() — addEventListener() will never catch them.
+        if (window.jQuery) {
+            window.jQuery('#authModal').on('shown.bs.modal', () => {
+                this.signInWith('google');
+            });
+        }
     }
 };
 

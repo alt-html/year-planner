@@ -6,7 +6,7 @@ module.exports = defineConfig({
   webServer: {
     command: 'npx http-server ../site -p 8080 -c-1',
     url: 'http://localhost:8080',
-    reuseExistingServer: false,
+    reuseExistingServer: !process.env.CI,
     timeout: 30000,
   },
   use: {
