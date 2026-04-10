@@ -44,7 +44,6 @@ export default class AuthProvider {
         ClientAuthSession.clear();
         localStorage.removeItem('auth_provider');
         this.model.signedin = false;
-        this.storageLocal.deleteLocalSession();
     }
 
     // Get the current auth token (null if not signed in)
@@ -62,7 +61,6 @@ export default class AuthProvider {
         ClientAuthSession.store(token);
         localStorage.setItem('auth_provider', provider);
         this.model.signedin = true;
-        this.storageLocal.setLocalSession(token, 0);
     }
 
     // --- Provider-specific sign-in flows ---

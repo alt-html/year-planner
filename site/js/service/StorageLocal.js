@@ -238,14 +238,13 @@ export default class StorageLocal {
         this.model.lang = prefs.lang || preferences['1'] || 'en';
         this.model.theme = prefs.theme || (preferences['2'] == 1 ? 'dark' : 'light');
 
-        localStorage.setItem(keyPrefs(uid), JSON.stringify(prefs));
+        PreferencesStore.set(String(uid), prefs);
     }
 
     getLocalPreferences(uid) {
         this.migrate(); // ensure migration has run before first read
-        const raw = localStorage.getItem(keyPrefs(uid));
-        if (!raw) return null;
-        const prefs = JSON.parse(raw);
+        const prefs = PreferencesStore.get(String(uid));
+        if (!prefs || Object.keys(prefs).length === 0) return null;
         // Return in legacy format so callers expecting {0,1,2,3} still work
         if (prefs.year !== undefined && prefs['0'] === undefined) {
             return {
@@ -312,31 +311,6 @@ export default class StorageLocal {
         const ids = this.getLocalIdentities();
         if (!ids) return null;
         return ids.find(id => id['0'] == uid) || null;
-    }
-
-    // ── Session (simplified — M010 handles JWT properly) ────────────────────
-
-    setLocalSession(uuid, expires) {
-        localStorage.setItem('1', JSON.stringify({ 0: uuid, 1: expires, 2: this.model.uid, 3: this.model.year }));
-    }
-
-    getLocalSession() {
-        const raw = localStorage.getItem('1');
-        return raw ? JSON.parse(raw) : null;
-    }
-
-    expireLocalSession() {
-        localStorage.setItem('1', JSON.stringify({ 0: this.model.uuid, 1: 1 }));
-    }
-
-    deleteLocalSession() {
-        localStorage.removeItem('1');
-    }
-
-    extendLocalSession() {
-        if (this.signedin() && this.getLocalSession()?.['1'] > 0) {
-            this.setLocalSession(this.model.uuid, DateTime.local().plus({ minutes: 30 }).ts);
-        }
     }
 
     signedin() {
