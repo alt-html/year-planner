@@ -162,8 +162,274 @@ var HttpClient = class {
   }
 };
 
+// ../core/hlc.js
+var MS_PAD = 13;
+var SEQ_PAD = 6;
+function encode(state) {
+  const msPart = Math.floor(state.ms).toString(16).padStart(MS_PAD, "0");
+  const seqPart = Math.floor(state.seq).toString(16).padStart(SEQ_PAD, "0");
+  return `${msPart}-${seqPart}-${state.node}`;
+}
+function decode(str) {
+  const first = str.indexOf("-");
+  const second = str.indexOf("-", first + 1);
+  if (first === -1 || second === -1) {
+    throw new Error(`HLC.decode: invalid format "${str}"`);
+  }
+  const ms = parseInt(str.slice(0, first), 16);
+  const seq = parseInt(str.slice(first + 1, second), 16);
+  const node = str.slice(second + 1);
+  return { ms, seq, node };
+}
+function zero() {
+  return `${"0".repeat(MS_PAD)}-${"0".repeat(SEQ_PAD)}-00000000`;
+}
+function tick(current, wallMs) {
+  const c = typeof current === "string" ? decode(current) : current;
+  const wall = Math.floor(wallMs);
+  if (wall > c.ms) {
+    return encode({ ms: wall, seq: 0, node: c.node });
+  }
+  return encode({ ms: c.ms, seq: c.seq + 1, node: c.node });
+}
+function recv(local, remote, wallMs) {
+  const l = typeof local === "string" ? decode(local) : local;
+  const r = typeof remote === "string" ? decode(remote) : remote;
+  const wall = Math.floor(wallMs);
+  const maxMs = Math.max(l.ms, r.ms, wall);
+  if (maxMs === wall && wall > l.ms && wall > r.ms) {
+    return encode({ ms: wall, seq: 0, node: l.node });
+  }
+  if (maxMs === l.ms && l.ms === r.ms) {
+    return encode({ ms: maxMs, seq: Math.max(l.seq, r.seq) + 1, node: l.node });
+  }
+  if (maxMs === l.ms) {
+    return encode({ ms: maxMs, seq: l.seq + 1, node: l.node });
+  }
+  return encode({ ms: maxMs, seq: r.seq + 1, node: l.node });
+}
+function merge(a, b) {
+  return compare(a, b) >= 0 ? a : b;
+}
+function compare(a, b) {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+}
+function create(nodeId, wallMs) {
+  const ms = wallMs !== void 0 ? Math.floor(wallMs) : 0;
+  return encode({ ms, seq: 0, node: nodeId });
+}
+var HLC = { encode, decode, zero, tick, recv, merge, compare, create };
+var hlc_default = HLC;
+
+// ../core/textMerge.js
+function splitLines(text) {
+  if (text == null || text === "") return { lines: [], trailingNewline: false };
+  const trailingNewline = text.endsWith("\n");
+  const raw = trailingNewline ? text.slice(0, -1) : text;
+  return { lines: raw.split("\n"), trailingNewline };
+}
+function lcsTable(a, b) {
+  const m = a.length;
+  const n = b.length;
+  const table = new Array((m + 1) * (n + 1)).fill(0);
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      table[i * (n + 1) + j] = a[i - 1] === b[j - 1] ? table[(i - 1) * (n + 1) + (j - 1)] + 1 : Math.max(table[(i - 1) * (n + 1) + j], table[i * (n + 1) + (j - 1)]);
+    }
+  }
+  return table;
+}
+function computeHunks(base, modified) {
+  const m = base.length;
+  const n = modified.length;
+  const table = lcsTable(base, modified);
+  const ops = [];
+  let i = m;
+  let j = n;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && base[i - 1] === modified[j - 1]) {
+      ops.push({ type: "keep", baseLine: i - 1 });
+      i--;
+      j--;
+    } else if (j > 0 && (i === 0 || table[i * (n + 1) + (j - 1)] >= table[(i - 1) * (n + 1) + j])) {
+      ops.push({ type: "insert", modLine: modified[j - 1] });
+      j--;
+    } else {
+      ops.push({ type: "delete", baseLine: i - 1 });
+      i--;
+    }
+  }
+  ops.reverse();
+  const hunks = [];
+  let opIdx = 0;
+  while (opIdx < ops.length) {
+    const op = ops[opIdx];
+    if (op.type === "keep") {
+      opIdx++;
+      continue;
+    }
+    let baseStart = null;
+    let baseEnd = null;
+    const hunkLines = [];
+    while (opIdx < ops.length && ops[opIdx].type !== "keep") {
+      const cur = ops[opIdx];
+      if (cur.type === "delete") {
+        if (baseStart === null) baseStart = cur.baseLine;
+        baseEnd = cur.baseLine + 1;
+      } else {
+        hunkLines.push(cur.modLine);
+      }
+      opIdx++;
+    }
+    if (baseStart === null) {
+      let insertPoint = 0;
+      for (let k = opIdx - 1; k >= 0; k--) {
+        if (ops[k] && ops[k].type === "keep") {
+          insertPoint = ops[k].baseLine + 1;
+          break;
+        }
+      }
+      baseStart = insertPoint;
+      baseEnd = insertPoint;
+    }
+    hunks.push({ baseStart, baseEnd, lines: hunkLines });
+  }
+  return hunks;
+}
+function haveOverlap(hunksA, hunksB) {
+  for (const a of hunksA) {
+    for (const b of hunksB) {
+      const aStart = a.baseStart;
+      const aEnd = a.baseEnd;
+      const bStart = b.baseStart;
+      const bEnd = b.baseEnd;
+      if (aStart === aEnd && bStart === bEnd) {
+        if (aStart === bStart) return true;
+        continue;
+      }
+      if (aStart < bEnd && bStart < aEnd) return true;
+      if (aStart === aEnd && aStart > bStart && aStart < bEnd) return true;
+      if (bStart === bEnd && bStart > aStart && bStart < aEnd) return true;
+    }
+  }
+  return false;
+}
+function applyHunks(baseLines, hunks) {
+  const result = baseLines.slice();
+  const sorted = hunks.slice().sort((a, b) => b.baseStart - a.baseStart);
+  for (const hunk of sorted) {
+    result.splice(hunk.baseStart, hunk.baseEnd - hunk.baseStart, ...hunk.lines);
+  }
+  return result;
+}
+function mergeHunks(baseLines, localHunks, remoteHunks) {
+  const all = [...localHunks];
+  for (const rh of remoteHunks) {
+    const duplicate = localHunks.some(
+      (lh) => lh.baseStart === rh.baseStart && lh.baseEnd === rh.baseEnd && lh.lines.join("\n") === rh.lines.join("\n")
+    );
+    if (!duplicate) all.push(rh);
+  }
+  return applyHunks(baseLines, all);
+}
+function textMerge(base, local, remote) {
+  const { lines: baseLines } = splitLines(base);
+  const { lines: localLines } = splitLines(local);
+  const { lines: remoteLines, trailingNewline: remoteTrail } = splitLines(remote);
+  const { trailingNewline: localTrail } = splitLines(local);
+  const { trailingNewline: baseTrail } = splitLines(base);
+  if (local === base || local == null && base == null) {
+    return { merged: remote ?? "", autoMerged: true };
+  }
+  if (remote === base || remote == null && base == null) {
+    return { merged: local ?? "", autoMerged: true };
+  }
+  if (local === remote) {
+    return { merged: local, autoMerged: true };
+  }
+  const localHunks = computeHunks(baseLines, localLines);
+  const remoteHunks = computeHunks(baseLines, remoteLines);
+  if (haveOverlap(localHunks, remoteHunks)) {
+    return { merged: null, autoMerged: false };
+  }
+  const mergedLines = mergeHunks(baseLines, localHunks, remoteHunks);
+  const trailingNewline = localTrail || remoteTrail || baseTrail;
+  const merged = mergedLines.join("\n") + (trailingNewline ? "\n" : "");
+  return { merged, autoMerged: true };
+}
+
+// ../core/merge.js
+function merge2(base, local, remote) {
+  const localDoc = local.doc ?? {};
+  const remoteDoc = remote.doc ?? {};
+  const localRevs = local.fieldRevs ?? {};
+  const remoteRevs = remote.fieldRevs ?? {};
+  const baseDoc = base ?? {};
+  const allFields = /* @__PURE__ */ new Set([
+    ...Object.keys(localDoc),
+    ...Object.keys(remoteDoc),
+    ...Object.keys(baseDoc)
+  ]);
+  const merged = {};
+  const conflicts = [];
+  for (const field of allFields) {
+    if (field.startsWith("_")) continue;
+    const baseVal = baseDoc[field];
+    const localVal = localDoc[field];
+    const remoteVal = remoteDoc[field];
+    const localChanged = localVal !== baseVal;
+    const remoteChanged = remoteVal !== baseVal;
+    if (!localChanged && !remoteChanged) {
+      merged[field] = baseVal;
+      continue;
+    }
+    if (localChanged && !remoteChanged) {
+      merged[field] = localVal;
+      continue;
+    }
+    if (!localChanged && remoteChanged) {
+      merged[field] = remoteVal;
+      continue;
+    }
+    const localRev = localRevs[field] ?? hlc_default.zero();
+    const remoteRev = remoteRevs[field] ?? hlc_default.zero();
+    if (typeof localVal === "string" && typeof remoteVal === "string") {
+      const baseStr = typeof baseVal === "string" ? baseVal : "";
+      const { merged: autoMergedText, autoMerged } = textMerge(baseStr, localVal, remoteVal);
+      if (autoMerged) {
+        merged[field] = autoMergedText;
+        conflicts.push({
+          field,
+          localRev,
+          remoteRev,
+          localValue: localVal,
+          remoteValue: remoteVal,
+          winner: "auto-merged",
+          winnerValue: autoMergedText,
+          mergeStrategy: "text-auto-merged"
+        });
+        continue;
+      }
+    }
+    const winner = hlc_default.compare(localRev, remoteRev) >= 0 ? "local" : "remote";
+    const winnerValue = winner === "local" ? localVal : remoteVal;
+    merged[field] = winnerValue;
+    conflicts.push({
+      field,
+      localRev,
+      remoteRev,
+      localValue: localVal,
+      remoteValue: remoteVal,
+      winner,
+      winnerValue
+    });
+  }
+  return { merged, conflicts };
+}
+
 // SyncClientAdapter.js
-import { HLC, merge } from "@alt-javascript/jsmdma-core";
 var SyncClientAdapter = class {
   /**
    * @param {import('./DocumentStore.js').default} documentStore
@@ -200,9 +466,9 @@ var SyncClientAdapter = class {
     const rawRev = localStorage.getItem(this._revKey(docId));
     const revs = rawRev ? JSON.parse(rawRev) : {};
     const syncRaw = localStorage.getItem(this._syncKey(docId));
-    const baseClock = syncRaw || HLC.zero();
+    const baseClock = syncRaw || hlc_default.zero();
     const existing = revs[dotPath] || baseClock;
-    revs[dotPath] = HLC.tick(existing, Date.now());
+    revs[dotPath] = hlc_default.tick(existing, Date.now());
     localStorage.setItem(this._revKey(docId), JSON.stringify(revs));
   }
   /**
@@ -216,7 +482,7 @@ var SyncClientAdapter = class {
    * @throws {{ status: number }} on HTTP error
    */
   async sync(docId, doc, authHeaders, syncUrl) {
-    const clientClock = localStorage.getItem(this._syncKey(docId)) || HLC.zero();
+    const clientClock = localStorage.getItem(this._syncKey(docId)) || hlc_default.zero();
     const fieldRevs = JSON.parse(localStorage.getItem(this._revKey(docId)) ?? "{}");
     const base = JSON.parse(localStorage.getItem(this._baseKey(docId)) ?? "{}");
     const payload = {
@@ -239,7 +505,7 @@ var SyncClientAdapter = class {
     for (const serverChange of serverChanges) {
       const { _key, _rev, _fieldRevs, ...serverDoc } = serverChange;
       if (_key === docId) {
-        const result = merge(
+        const result = merge2(
           base,
           { doc, fieldRevs },
           { doc: serverDoc, fieldRevs: _fieldRevs ?? {} }

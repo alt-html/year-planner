@@ -1,35 +1,15 @@
-import { HLC, merge, flatten, diff, unflatten } from '../vendor/data-api-core.esm.js';
-import { keySync, keyRev, keyBase, HLC_ZERO } from './storage-schema.js';
-
-//  SyncClient — owns all jsmdma HLC sync state management (M009 schema, D007).
-//
-//  Writes to localStorage on every successful sync:
-//    sync:{uuid}  — serverClock (last known server HLC clock string)
-//    base:{uuid}  — merged snapshot (plain days object, base for next 3-way merge)
-//    rev:{uuid}   — fieldRevs map { "days.YYYY-MM-DD.tl": hlcString, ... }
-//
-//  On HTTP error, throws with err.status set so Api.sync() can map:
-//    404 → error.apinotavailable
-//    401 → error.unauthorized
-//    else → error.syncfailed
-
-async function fetchJSON(url, options = {}) {
-    const headers = {
-        'Accept': 'application/json',
-        ...options.headers,
-    };
-    if (options.body && typeof options.body === 'string') {
-        headers['Content-Type'] = headers['Content-Type'] || 'application/json';
-    }
-    const response = await fetch(url, { ...options, headers });
-    if (!response.ok) {
-        const err = new Error(`HTTP ${response.status}`);
-        err.status = response.status;
-        throw err;
-    }
-    const text = await response.text();
-    return text ? JSON.parse(text) : {};
-}
+/**
+ * SyncClient.js — thin wrapper over jsmdma-client SyncClientAdapter.
+ *
+ * DocumentStore (namespace='plnr') shares the plnr:{uuid} key space with
+ * StorageLocal, so foreign documents written by the adapter are immediately
+ * visible to StorageLocal.getLocalPlanners().
+ *
+ * The only year-planner-specific logic kept here is "new-device adoption":
+ * if the own planner is empty after sync, and a foreign planner arrived with
+ * the same uid+year, adopt the foreign planner's data.
+ */
+import { DocumentStore, SyncClientAdapter } from '../vendor/jsmdma-client.esm.js';
 
 export default class SyncClient {
     constructor(model, storageLocal) {
@@ -38,110 +18,60 @@ export default class SyncClient {
         this.url = '${api.url}';
         this.model = model;
         this.storageLocal = storageLocal;
+        this._docStore = new DocumentStore({ namespace: 'plnr' });
+        this._adapter  = new SyncClientAdapter(this._docStore, { collection: 'planners' });
     }
 
     // ── markEdited ───────────────────────────────────────────────────────────
-    //
-    // Ticks the HLC clock for the given dot-path field and writes it into
-    // rev:{plannerId}. Called by StorageLocal.updateLocalEntry() on every edit
-    // so that the field has a monotonically increasing revision stamp for
-    // 3-way merge (merge2 in data-api-core).
-    //
-    // markEdited(plannerId: string, dotPath: string): void
-    //   e.g. markEdited(uuid, 'days.2026-03-28.tl')
 
     markEdited(plannerId, dotPath) {
-        // Read current rev map (or start fresh)
-        const rawRev = localStorage.getItem(keyRev(plannerId));
-        const revs = rawRev ? JSON.parse(rawRev) : {};
-
-        // Get the current "base" clock from sync:{plannerId} as the reference
-        // so the new clock is guaranteed to be > the last server clock.
-        const syncRaw = localStorage.getItem(keySync(plannerId));
-        const baseClock = syncRaw || HLC_ZERO;
-
-        // Tick the clock forward from the existing field rev (or the base clock)
-        // to produce a new, strictly larger HLC stamp.
-        const existingFieldClock = revs[dotPath] || baseClock;
-        const newClock = HLC.tick(existingFieldClock, Date.now());
-
-        revs[dotPath] = newClock;
-        localStorage.setItem(keyRev(plannerId), JSON.stringify(revs));
+        this._adapter.markEdited(plannerId, dotPath);
     }
 
     // ── sync ─────────────────────────────────────────────────────────────────
-    //
-    // POST ${url}year-planner/sync with jsmdma payload.
-    // On success: write sync:{plannerId}, base:{plannerId}, rev:{plannerId}.
-    // On HTTP error: throws with err.status set.
-    //
-    // async sync(plannerId: string, plannerDoc: object, authHeaders: object): Promise<object>
-    //   plannerDoc — the days object from _getPlnrDoc(plannerId).days
-    //   authHeaders — { Authorization: 'Bearer ...' } or {}
-    //   returns merged days object (or plannerDoc unchanged if no serverChanges)
 
     async sync(plannerId, plannerDoc, authHeaders) {
-        // (a) Read client clock fallback to HLC_ZERO
-        const clientClock = localStorage.getItem(keySync(plannerId)) || HLC_ZERO;
+        const syncUrl  = this._getApiUrl() + 'year-planner/sync';
+        const myUid    = plannerDoc.meta?.uid;
+        const myYear   = plannerDoc.meta?.year;
+        const ownIsEmpty = !plannerDoc.days || Object.keys(plannerDoc.days).length === 0;
 
-        // (b) Read fieldRevs fallback to {}
-        const rawRev = localStorage.getItem(keyRev(plannerId));
-        const fieldRevs = rawRev ? JSON.parse(rawRev) : {};
+        // Delegate to adapter: 3-way merge, foreign doc storage, clock persistence.
+        const merged = await this._adapter.sync(plannerId, plannerDoc, authHeaders, syncUrl);
 
-        // (c) Read base snapshot fallback to {}
-        const rawBase = localStorage.getItem(keyBase(plannerId));
-        const base = rawBase ? JSON.parse(rawBase) : {};
-
-        // (d) Build jsmdma payload
-        const payload = {
-            collection: 'planners',
-            clientClock,
-            changes: [{ key: plannerId, doc: plannerDoc, fieldRevs, baseClock: clientClock }],
-        };
-
-        // (e) POST to /year-planner/sync — throws with err.status on HTTP error
-        const response = await fetchJSON(`${this.url}year-planner/sync`, {
-            method: 'POST',
-            headers: authHeaders,
-            body: JSON.stringify(payload),
-        });
-
-        // (f) Process server response { serverClock, serverChanges }
-        const { serverClock, serverChanges } = response;
-
-        let merged = plannerDoc;
-
-        if (serverChanges && serverChanges.length > 0) {
-            // 3-way merge each server change and accumulate the merged doc
-            for (const serverChange of serverChanges) {
-                const result = merge(
-                    base,
-                    { doc: plannerDoc, fieldRevs },
-                    { doc: serverChange.doc, fieldRevs: serverChange.fieldRevs },
-                );
-                merged = result.merged;
+        // New-device adoption: if our planner was empty and a foreign device had
+        // data for the same uid+year, adopt the richest foreign planner.
+        if (ownIsEmpty) {
+            let best = null;
+            for (const { uuid, doc } of this._docStore.list()) {
+                if (uuid === plannerId) continue;
+                if (doc.meta?.uid == myUid && doc.meta?.year == myYear) {
+                    const days     = Object.keys(doc.days || {}).length;
+                    const bestDays = Object.keys(best?.days || {}).length;
+                    if (days > bestDays) best = doc;
+                }
             }
-            // Write the final merged snapshot as new base
-            localStorage.setItem(keyBase(plannerId), JSON.stringify(merged));
-        } else {
-            // No server changes — keep current plannerDoc as base
-            localStorage.setItem(keyBase(plannerId), JSON.stringify(plannerDoc));
+            if (best) return best;
         }
-
-        // Write the server clock
-        localStorage.setItem(keySync(plannerId), serverClock);
 
         return merged;
     }
 
     // ── prune ────────────────────────────────────────────────────────────────
-    //
-    // Remove all sync state for a planner (call on planner deletion).
-    // prune(plannerId: string): void
 
     prune(plannerId) {
-        localStorage.removeItem(keyRev(plannerId));
-        localStorage.removeItem(keyBase(plannerId));
-        localStorage.removeItem(keySync(plannerId));
+        this._adapter.prune(plannerId);
+    }
+
+    pruneAll() {
+        this._adapter.pruneAll();
+    }
+
+    // ── helpers ──────────────────────────────────────────────────────────────
+
+    _getApiUrl() {
+        const raw = this.url;
+        if (!raw || raw.startsWith('${')) return 'http://127.0.0.1:8081/';
+        return raw.endsWith('/') ? raw : raw + '/';
     }
 }
