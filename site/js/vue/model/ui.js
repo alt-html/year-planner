@@ -9,4 +9,5 @@ export const uiState = {
     loaded : false,
     touch : '',
     _showSigninPester : false,
+    railCollapsed : false,
 }

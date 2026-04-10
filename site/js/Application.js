@@ -1,6 +1,6 @@
 import { urlParam } from './util/urlparam.js';
 import { getNavigatorLanguage } from "./vue/i18n.js";
-import { ClientAuthSession } from './vendor/jsmdma-auth-client.esm.js';
+import { ClientAuthSession, PreferencesStore } from './vendor/jsmdma-auth-client.esm.js';
 
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 
@@ -94,6 +94,10 @@ export default class Application {
                 this.model._showSigninPester = true;
             }
         }
+
+        // Restore rail collapsed state from saved preferences
+        const savedPrefs = PreferencesStore.get(String(this.model.uid));
+        this.model.railCollapsed = (savedPrefs?.railOpen === false);
     }
 
     static async _handleOAuthCallback(oauthCode, oauthState) {
@@ -145,8 +149,26 @@ export default class Application {
         document.title = this.i18n.global.t('label.yearplanner');
         document.documentElement.lang = this.model.lang;
 
+        // Apply initial rail state
+        const rail = document.getElementById('rail');
+        if (rail && this.model.railCollapsed) rail.classList.add('yp-rail--collapsed');
+
+        // Wire toggle event
+        const self = this;
+        document.addEventListener('yp-rail-toggle', () => {
+            Application.handleRailToggle(self.model, self.storageLocal);
+            const r = document.getElementById('rail');
+            if (r) r.classList.toggle('yp-rail--collapsed', self.model.railCollapsed);
+        });
+
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
         })
+    }
+
+    static handleRailToggle(model, storageLocal) {
+        model.railCollapsed = !model.railCollapsed;
+        const existing = PreferencesStore.get(String(model.uid)) || {};
+        PreferencesStore.set(String(model.uid), { ...existing, railOpen: !model.railCollapsed });
     }
 }
