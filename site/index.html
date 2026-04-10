@@ -550,12 +550,14 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
+                        <div style="display:flex;justify-content:center;margin-bottom:0.75rem;">
+                            <div id="google-signin-button"></div>
+                        </div>
                         <div class="d-grid gap-2">
-                            <div id="google-signin-button" style="margin-top:0.5rem;min-height:44px"></div>
-                            <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('apple')">
+                            <button type="button" class="btn btn-outline-dark btn-block mb-2" data-dismiss="modal" v-on:click="signInWith('apple')">
                                 <i class="ph ph-apple-logo me-2"></i> Sign in with Apple
                             </button>
-                            <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('microsoft')">
+                            <button type="button" class="btn btn-outline-dark btn-block mb-2" data-dismiss="modal" v-on:click="signInWith('microsoft')">
                                 <i class="ph ph-microsoft-outlook-logo me-2"></i> Sign in with Microsoft
                             </button>
                         </div>
@@ -1136,7 +1138,7 @@
 
         var authModalEl = document.getElementById('authModal');
         if (authModalEl) {
-            authModalEl.addEventListener('show.bs.modal', function() {
+            authModalEl.addEventListener('shown.bs.modal', function() {
                 var appEl = document.getElementById('app');
                 if (appEl && appEl.__vue_app__ && appEl.__vue_app__._instance) {
                     var proxy = appEl.__vue_app__._instance.proxy;

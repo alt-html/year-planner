@@ -497,7 +497,7 @@
 
         var authModalEl = document.getElementById('authModal');
         if (authModalEl) {
-            authModalEl.addEventListener('show.bs.modal', function() {
+            authModalEl.addEventListener('shown.bs.modal', function() {
                 var appEl = document.getElementById('app');
                 if (appEl && appEl.__vue_app__ && appEl.__vue_app__._instance) {
                     var proxy = appEl.__vue_app__._instance.proxy;
