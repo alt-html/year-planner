@@ -94,9 +94,9 @@ export default class SyncClient {
 
         // (d) Build jsmdma payload
         const payload = {
+            collection: 'planners',
             clientClock,
-            deviceId: this.storageLocal.getDevId(),
-            changes: [{ id: plannerId, doc: plannerDoc, fieldRevs }],
+            changes: [{ key: plannerId, doc: plannerDoc, fieldRevs, baseClock: clientClock }],
         };
 
         // (e) POST to /year-planner/sync — throws with err.status on HTTP error
