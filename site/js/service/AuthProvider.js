@@ -79,7 +79,7 @@ export default class AuthProvider {
                         reject(new Error('Google sign-in failed'));
                     }
                 },
-                cancel_on_tap_outside: false,
+                cancel_on_tap_outside: true,
             });
 
             // Try One Tap first (works in production environments).
@@ -90,11 +90,15 @@ export default class AuthProvider {
                 if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
                     const container = document.getElementById('google-signin-button');
                     if (container) {
-                        window.google.accounts.id.renderButton(container, {
-                            theme: 'outline',
-                            size: 'large',
-                            width: '280',
-                        });
+                        try {
+                            window.google.accounts.id.renderButton(container, {
+                                theme: 'outline',
+                                size: 'large',
+                                width: 280,
+                            });
+                        } catch (err) {
+                            reject(new Error(`Google sign-in button failed to render: ${err.message}`));
+                        }
                     } else {
                         reject(new Error('Google sign-in not available — #google-signin-button container missing'));
                     }
