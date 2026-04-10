@@ -8,6 +8,7 @@ export default class AuthProvider {
         this.qualifier = '@alt-html/year-planner/AuthProvider'
         this.logger = null;
 
+        this.url = '${api.url}';
         this.model = model;
         this.storageLocal = storageLocal;
         this._sdkLoaded = {};

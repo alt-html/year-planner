@@ -92,6 +92,17 @@ export default class Application {
         sessionStorage.removeItem('oauth_state');
         sessionStorage.removeItem('oauth_code_verifier');
 
+        // Guard: abort if sessionStorage was empty (fresh tab, cleared storage, or CSRF probe).
+        // The state stored here must match the state returned by the provider — if it doesn't,
+        // the request is likely stale or tampered. Clean up the URL and bail out.
+        if (!storedState || storedState !== oauthState) {
+            const cleanUrl = new URL(window.location.href);
+            cleanUrl.searchParams.delete('code');
+            cleanUrl.searchParams.delete('state');
+            window.history.replaceState({}, '', cleanUrl.toString());
+            return;
+        }
+
         const apiUrl = 'http://127.0.0.1:8081/';
         try {
             const res = await fetch(
