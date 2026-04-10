@@ -572,9 +572,19 @@ export default class StorageLocal {
     }
 
     wipe() {
-        for (const uid of (this.getRemoteIdentities() || []).map(id => id['0'])) {
-            this.deleteLocalPlanner(uid);
+        const toRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (!k) continue;
+            if (k.startsWith('plnr:') || k.startsWith('rev:') ||
+                k.startsWith('base:') || k.startsWith('sync:') ||
+                k.startsWith('prefs:')) {
+                toRemove.push(k);
+            }
         }
+        for (const k of toRemove) localStorage.removeItem(k);
+        localStorage.removeItem('ids');
+        localStorage.removeItem('anon_uid');
         window.location.href = window.location.origin;
     }
 

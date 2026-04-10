@@ -26,6 +26,9 @@ const app = {
                 this.signInWith('google');
             });
         }
+        // E2E test hook: exposes signout() on window so Playwright can call it
+        // without needing to navigate hidden UI elements.
+        window.__testSignout = () => this.signout();
     }
 };
 
