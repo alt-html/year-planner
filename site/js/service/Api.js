@@ -44,17 +44,20 @@ export default class Api {
         if (!this.storageLocal.signedin() || !plannerId) return;
         try {
             const doc = this.storageLocal._getPlnrDoc(plannerId);
-            await this.syncClient.sync(plannerId, doc.days || {}, this._authHeaders());
+            const merged = await this.syncClient.sync(plannerId, doc, this._authHeaders());
+            if (merged) {
+                this.storageLocal._setPlnrDoc(plannerId, merged);
+                this.model.planner = this.storageLocal._docToMonthArray(merged);
+            }
             this.model.error = ''; // clear any stale error on successful sync
         } catch (err) {
+            console.error(`[Api.sync] sync failed: status=${err.status} message=${err.message}`);
             if (err.status == 404)
                 this.model.error = 'error.apinotavailable';
             else if (err.status == 401) {
-                const authTime = parseInt(localStorage.getItem('auth_time') || '0');
-                const tokenIsStale = (Date.now() - authTime) > 300000; // > 5 minutes
                 this.authProvider?.signOut?.();
                 this.model.signedin = false;
-                this.model.error = tokenIsStale ? 'error.unauthorized' : 'error.syncfailed';
+                this.model.error = 'error.unauthorized';
             }
             else
                 this.model.error = 'error.syncfailed';

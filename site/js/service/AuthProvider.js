@@ -1,4 +1,5 @@
 import { authConfig } from '../config/auth-config.js';
+import { ClientAuthSession } from '../vendor/jsmdma-auth-client.esm.js';
 
 // Federated auth provider abstraction.
 // Wraps Google, Apple, and Microsoft sign-in behind a common interface.
@@ -40,7 +41,7 @@ export default class AuthProvider {
 
     // Sign out — clear auth token from localStorage
     signOut() {
-        localStorage.removeItem('auth_token');
+        ClientAuthSession.clear();
         localStorage.removeItem('auth_provider');
         this.model.signedin = false;
         this.storageLocal.deleteLocalSession();
@@ -48,7 +49,7 @@ export default class AuthProvider {
 
     // Get the current auth token (null if not signed in)
     getToken() {
-        return localStorage.getItem('auth_token');
+        return ClientAuthSession.getToken();
     }
 
     // Get the current auth provider name (null if not signed in)
@@ -58,12 +59,10 @@ export default class AuthProvider {
 
     // Store auth result after successful sign-in
     _storeAuth(provider, token) {
-        localStorage.setItem('auth_token', token);
+        ClientAuthSession.store(token);
         localStorage.setItem('auth_provider', provider);
-        localStorage.setItem('auth_time', Date.now().toString());
         this.model.signedin = true;
-        // Create a session compatible with existing sync flow
-        this.storageLocal.setLocalSession(token, 0); // expires=0 means "remember me"
+        this.storageLocal.setLocalSession(token, 0);
     }
 
     // --- Provider-specific sign-in flows ---

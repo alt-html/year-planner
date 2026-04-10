@@ -7,6 +7,7 @@ import {
     F_TYPE, F_TL, F_COL, F_NOTES, F_EMOJI,
     HLC_ZERO,
 } from './storage-schema.js';
+import { ClientAuthSession, DeviceSession, PreferencesStore } from '../vendor/jsmdma-auth-client.esm.js';
 
 //  Interface to localStorage-based persistence — M009 schema
 //
@@ -34,12 +35,7 @@ export default class StorageLocal {
     // ── Device UUID ──────────────────────────────────────────────────────────
 
     getDevId() {
-        let id = localStorage.getItem(KEY_DEV);
-        if (!id) {
-            id = crypto.randomUUID();
-            localStorage.setItem(KEY_DEV, id);
-        }
-        return id;
+        return DeviceSession.getDeviceId();
     }
 
     // ── Planner enumeration ──────────────────────────────────────────────────
@@ -117,7 +113,14 @@ export default class StorageLocal {
                 if (isEmpty) continue;
                 const month = String(m + 1).padStart(2, '0');
                 const d = String(day).padStart(2, '0');
-                days[`${year}-${month}-${d}`] = dayObj;
+                // Coerce tp/col to integers — schema requires integer, Vue may store '' or string
+                const tp  = parseInt(dayObj[F_TYPE], 10);
+                const col = parseInt(dayObj[F_COL],  10);
+                days[`${year}-${month}-${d}`] = {
+                    ...dayObj,
+                    [F_TYPE]: Number.isFinite(tp)  ? tp  : 0,
+                    [F_COL]:  Number.isFinite(col) ? col : 0,
+                };
             }
         }
         return days;
@@ -337,12 +340,11 @@ export default class StorageLocal {
     }
 
     signedin() {
-        const expires = this.getLocalSession()?.['1'];
-        return expires != null && ((expires > 0 && expires >= DateTime.now().ts) || expires == 0);
+        return ClientAuthSession.isSignedIn();
     }
 
     registered() {
-        return !!this.getLocalSession();
+        return !!ClientAuthSession.getToken();
     }
 
     // ── Bootstrap ────────────────────────────────────────────────────────────

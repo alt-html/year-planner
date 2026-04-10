@@ -12,12 +12,22 @@ function makeFakeJwt(sub = 'test-uuid') {
          b64u({ sub, iat: now, iat_session: now }) + '.fakesig';
 }
 
+const PLANNER_UUID = 'aaaaaaaa-0000-4000-8000-000000012345';
+
 test('sync POST carries jsmdma payload shape (D007)', async ({ page }) => {
   let capturedBody = null;
 
-  await page.addInitScript((token) => {
+  await page.addInitScript(({ token, uuid }) => {
     localStorage.setItem('auth_token', token);
-  }, makeFakeJwt());
+    // Seed a planner for uid=12345, year=2026 so getActivePlnrUuid returns it
+    localStorage.setItem('plnr:' + uuid, JSON.stringify({
+      meta: { name: '2026', year: 2026, lang: 'en', theme: 'light', dark: false, uid: 12345 },
+      days: { '2026-04-01': { tp: 1, tl: 'Test', col: 0, notes: '', emoji: '' } },
+    }));
+    localStorage.setItem('rev:' + uuid, JSON.stringify({}));
+    localStorage.setItem('base:' + uuid, JSON.stringify({}));
+    localStorage.setItem('sync:' + uuid, '0000000000000-000000-00000000');
+  }, { token: makeFakeJwt(), uuid: PLANNER_UUID });
 
   await page.route('**/year-planner/sync', async (route) => {
     const req = route.request();

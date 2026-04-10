@@ -1,5 +1,6 @@
 import { urlParam } from './util/urlparam.js';
 import { getNavigatorLanguage } from "./vue/i18n.js";
+import { ClientAuthSession } from './vendor/jsmdma-auth-client.esm.js';
 
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 
@@ -33,9 +34,8 @@ export default class Application {
         // Handle OAuth callback: server sends JWT as ?token= after /auth/:provider/callback
         const urlToken = urlParam('token');
         if (urlToken) {
-            localStorage.setItem('auth_token', urlToken);
-            localStorage.setItem('auth_time', Date.now().toString());
-            // Remove ?token= from URL without triggering a reload
+            ClientAuthSession.store(urlToken);
+            localStorage.setItem('auth_provider', localStorage.getItem('auth_provider') || 'google');
             const cleanUrl = new URL(window.location.href);
             cleanUrl.searchParams.delete('token');
             window.history.replaceState({}, '', cleanUrl.toString());
@@ -114,8 +114,8 @@ export default class Application {
             if (res.ok) {
                 const body = await res.json();
                 if (body.token) {
-                    localStorage.setItem('auth_token', body.token);
-                    localStorage.setItem('auth_time', Date.now().toString());
+                    ClientAuthSession.store(body.token);
+                    localStorage.setItem('auth_provider', 'google');
                 }
             }
         } catch { /* silent — auth failed, user stays signed out */ }
