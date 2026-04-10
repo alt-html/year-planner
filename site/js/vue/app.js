@@ -28,7 +28,9 @@ const app = {
         }
         // E2E test hook: exposes signout() on window so Playwright can call it
         // without needing to navigate hidden UI elements.
-        window.__testSignout = () => this.signout();
+        if (window.__e2eEnabled) {
+            window.__testSignout = () => this.signout();
+        }
     }
 };
 

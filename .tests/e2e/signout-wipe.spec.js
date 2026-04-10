@@ -21,6 +21,7 @@ test('sign-out clears all localStorage except dev key', async ({ page }) => {
   // addInitScript runs on every navigation (including the post-signout redirect).
   // Guard with a sentinel so we only seed on the first load.
   await page.addInitScript((token) => {
+    window.__e2eEnabled = true;
     if (localStorage.getItem('__test_seeded')) return;
     localStorage.setItem('__test_seeded', '1');
     localStorage.setItem('dev', 'stable-device-uuid');
