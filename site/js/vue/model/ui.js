@@ -8,4 +8,5 @@ export const uiState = {
     modalSuccess : '',
     loaded : false,
     touch : '',
+    _showSigninPester : false,
 }

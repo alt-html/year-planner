@@ -17,6 +17,10 @@ export const lifecycleMethods = {
             document.body.classList.remove("yp-dark");
         }
         this.loaded=true;
+        if (this._showSigninPester) {
+            this._showSigninPester = false;
+            this.$nextTick(() => { jQuery('#authModal').modal('show'); });
+        }
     },
 
     initialise() {

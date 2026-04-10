@@ -12,6 +12,8 @@ test('editing a day entry writes HLC dot-path to rev:{uuid} (SYNC-04)', async ({
         if (sessionStorage.getItem('_seeded')) return;
         sessionStorage.setItem('_seeded', '1');
         localStorage.clear();
+        // Suppress pester modal so it doesn't intercept clicks in this test
+        localStorage.setItem('pester_signin', String(Date.now()));
     });
 
     await page.goto('/?uid=12345&year=2026');

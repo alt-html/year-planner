@@ -9,6 +9,8 @@ const { test, expect } = require('../fixtures/cdn');
 // and the SDK script URL is stubbed to fire onload with no real payload.
 async function mockGoogleSdk(page) {
     await page.addInitScript(() => {
+        // Suppress pester modal so this test can control the auth modal itself
+        localStorage.setItem('pester_signin', String(Date.now()));
         window._googleRenderButtonCalled = false;
         window.google = {
             accounts: {

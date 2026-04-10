@@ -84,6 +84,16 @@ export default class Application {
         this.storage.setModelFromImportString(this.model.share);
 
         this.messages[this.model.lang]['label']['name_'+this.model.year] = this.model.name;
+
+        // Sign-in pester: show auth modal once every 30 days if not signed in
+        if (!this.model.signedin) {
+            const lastPester = parseInt(localStorage.getItem('pester_signin') || '0', 10);
+            const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+            if (Date.now() - lastPester > thirtyDaysMs) {
+                localStorage.setItem('pester_signin', String(Date.now()));
+                this.model._showSigninPester = true;
+            }
+        }
     }
 
     static async _handleOAuthCallback(oauthCode, oauthState) {
