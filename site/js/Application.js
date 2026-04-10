@@ -30,6 +30,24 @@ export default class Application {
 
     init(){
 
+        // Handle OAuth callback: server sends JWT as ?token= after /auth/:provider/callback
+        const urlToken = urlParam('token');
+        if (urlToken) {
+            localStorage.setItem('auth_token', urlToken);
+            localStorage.setItem('auth_time', Date.now().toString());
+            // Remove ?token= from URL without triggering a reload
+            const cleanUrl = new URL(window.location.href);
+            cleanUrl.searchParams.delete('token');
+            window.history.replaceState({}, '', cleanUrl.toString());
+        }
+
+        // Handle OAuth redirect: Google sends ?code=&state= back to the SPA
+        const oauthCode  = urlParam('code');
+        const oauthState = urlParam('state');
+        if (oauthCode && oauthState) {
+            Application._handleOAuthCallback(oauthCode, oauthState);
+        }
+
         this.model.uid = parseInt( urlParam('uid') ) || this.storageLocal.getLocalUid() || Math.floor(this.pageLoadTime.ts/1000);
         this.model.uuid = this.storageLocal.getLocalSession()?.['0']||'',
         this.model.pageLoadTime = this.pageLoadTime;
@@ -66,6 +84,36 @@ export default class Application {
         this.storage.setModelFromImportString(this.model.share);
 
         this.messages[this.model.lang]['label']['name_'+this.model.year] = this.model.name;
+    }
+
+    static async _handleOAuthCallback(oauthCode, oauthState) {
+        const storedState  = sessionStorage.getItem('oauth_state');
+        const codeVerifier = sessionStorage.getItem('oauth_code_verifier');
+        sessionStorage.removeItem('oauth_state');
+        sessionStorage.removeItem('oauth_code_verifier');
+
+        const apiUrl = 'http://127.0.0.1:8081/';
+        try {
+            const res = await fetch(
+                `${apiUrl}auth/google/callback?code=${encodeURIComponent(oauthCode)}` +
+                `&state=${encodeURIComponent(oauthState)}` +
+                `&stored_state=${encodeURIComponent(storedState ?? '')}` +
+                `&code_verifier=${encodeURIComponent(codeVerifier ?? '')}`,
+            );
+            if (res.ok) {
+                const body = await res.json();
+                if (body.token) {
+                    localStorage.setItem('auth_token', body.token);
+                    localStorage.setItem('auth_time', Date.now().toString());
+                }
+            }
+        } catch { /* silent — auth failed, user stays signed out */ }
+
+        // Clean up URL
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('code');
+        cleanUrl.searchParams.delete('state');
+        window.history.replaceState({}, '', cleanUrl.toString());
     }
 
     async run (vueApp) {

@@ -68,40 +68,39 @@ export default class AuthProvider {
     // --- Provider-specific sign-in flows ---
 
     async _signInGoogle() {
-        await this._loadSDK('google', 'https://accounts.google.com/gsi/client');
-        return new Promise((resolve, reject) => {
-            const container = document.getElementById('google-signin-button');
-            if (!container) {
-                reject(new Error('Google sign-in not available — #google-signin-button container missing'));
-                return;
-            }
+        // Step 1: ask the server to begin the OAuth flow
+        const apiUrl = this._getApiUrl();
+        let beginResult;
+        try {
+            const res = await fetch(`${apiUrl}auth/google`);
+            if (!res.ok) throw new Error(`Server returned ${res.status}`);
+            beginResult = await res.json();
+        } catch (err) {
+            throw new Error(`Google sign-in failed: could not reach auth server (${err.message})`);
+        }
 
-            window.google.accounts.id.initialize({
-                client_id: authConfig.google.clientId,
-                callback: (response) => {
-                    if (response.credential) {
-                        this._storeAuth('google', response.credential);
-                        resolve(response.credential);
-                    } else {
-                        reject(new Error('Google sign-in failed'));
-                    }
-                },
-                cancel_on_tap_outside: true,
-            });
+        const { authorizationURL, state, codeVerifier } = beginResult;
+        if (!authorizationURL) throw new Error('Google sign-in failed: no authorizationURL from server');
 
-            // Render the branded button immediately — always visible in the modal.
-            // renderButton does not depend on Google servers; it renders synchronously.
-            container.innerHTML = '';
-            window.google.accounts.id.renderButton(container, {
-                theme: 'outline',
-                size: 'large',
-                width: 300,
-            });
+        // Step 2: store PKCE params in sessionStorage for the callback handler
+        sessionStorage.setItem('oauth_state',         state);
+        sessionStorage.setItem('oauth_code_verifier', codeVerifier);
 
-            // Also attempt One Tap overlay (shows in production; silently suppressed
-            // in incognito/localhost — the rendered button above is the reliable fallback).
-            window.google.accounts.id.prompt();
-        });
+        // Step 3: redirect browser to Google
+        window.location.href = authorizationURL;
+
+        // This promise never resolves — the page navigates away.
+        // The ?token= URL handler in Application.js completes the flow on return.
+        return new Promise(() => {});
+    }
+
+    // Helper to read the configured API base URL
+    _getApiUrl() {
+        const raw = this.url || '${api.url}';
+        // In production, this is replaced by the build system.
+        // For local dev, fall back to the known local server URL.
+        if (raw.startsWith('${')) return 'http://127.0.0.1:8081/';
+        return raw.endsWith('/') ? raw : raw + '/';
     }
 
     async _signInApple() {
