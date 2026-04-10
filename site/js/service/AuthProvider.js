@@ -68,12 +68,7 @@ export default class AuthProvider {
 
     async _signInGoogle() {
         await this._loadSDK('google', 'https://accounts.google.com/gsi/client');
-
         return new Promise((resolve, reject) => {
-            if (!window.google?.accounts?.id) {
-                reject(new Error('Google Identity Services SDK not available'));
-                return;
-            }
             window.google.accounts.id.initialize({
                 client_id: authConfig.google.clientId,
                 callback: (response) => {
@@ -84,12 +79,25 @@ export default class AuthProvider {
                         reject(new Error('Google sign-in failed'));
                     }
                 },
+                cancel_on_tap_outside: false,
             });
+
+            // Try One Tap first (works in production environments).
+            // When suppressed (localhost, browser policy), fall back to the
+            // rendered button — renderButton() renders the Google-branded button
+            // into #google-signin-button; the user clicks it to complete auth.
             window.google.accounts.id.prompt((notification) => {
                 if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                    // One Tap not available, fall back to button-based flow
-                    // In a real implementation, this would render a sign-in button
-                    reject(new Error('Google One Tap not available — configure popup flow'));
+                    const container = document.getElementById('google-signin-button');
+                    if (container) {
+                        window.google.accounts.id.renderButton(container, {
+                            theme: 'outline',
+                            size: 'large',
+                            width: '280',
+                        });
+                    } else {
+                        reject(new Error('Google sign-in not available — #google-signin-button container missing'));
+                    }
                 }
             });
         });
