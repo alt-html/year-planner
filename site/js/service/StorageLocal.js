@@ -75,7 +75,15 @@ export default class StorageLocal {
     // Read planner document { meta, days } from storage
     _getPlnrDoc(uuid) {
         const raw = localStorage.getItem(keyPlnr(uuid));
-        return raw ? JSON.parse(raw) : { meta: {}, days: {} };
+        if (!raw) return { meta: {}, days: {} };
+        const doc = JSON.parse(raw);
+        for (const dayObj of Object.values(doc.days || {})) {
+            const tp  = parseInt(dayObj[F_TYPE], 10);
+            const col = parseInt(dayObj[F_COL],  10);
+            if (!Number.isFinite(tp))  dayObj[F_TYPE] = 0;
+            if (!Number.isFinite(col)) dayObj[F_COL]  = 0;
+        }
+        return doc;
     }
 
     // Write planner document to storage
