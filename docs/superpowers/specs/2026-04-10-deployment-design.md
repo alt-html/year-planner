@@ -143,7 +143,7 @@ Outputs:
 
 | Key | Pattern | Example |
 |---|---|---|
-| `pk` (partition) | `{app}#{userId}` | `year-planner#google:1234567890` |
+| `pk` (partition) | `{app}#{userId}` | `year-planner#usr_a1b2c3d4` |
 | `sk` (sort) | `{docId}` | `planner-uuid-here` |
 | `doc` | JSON object — the planner document | `{ "meta": {...}, "days": {...} }` |
 | `fieldRevs` | JSON object — dot-path HLC stamps | `{ "days.2026-04-10.tl": "00001-..." }` |
@@ -151,6 +151,8 @@ Outputs:
 | `updatedAt` | ISO 8601 | `2026-04-10T17:00:00.000Z` |
 
 The `DeletionPolicy: Retain` on the table prevents accidental data loss on stack deletion.
+
+**userId is provider-decoupled.** The `userId` in the pk is an internal identifier assigned by `AuthService` on first login — not the OIDC subject claim. The AuthService maps provider identity (`google:1234567890`, `apple:xyz`, etc.) to a stable internal `userId` (e.g. `usr_a1b2c3d4`). This allows a user to link or switch auth providers without losing their data — the pk never changes even if the provider does.
 
 > **Verify during Phase 14:** The `pk`/`sk` key names above are assumed based on common jsnosqlc patterns. Confirm the actual attribute names expected by `jsnosqlc-dynamodb` before provisioning the table — check `DynamoCollection.js` in the jsnoslqc repo. The key schema in `template.yaml` must match exactly.
 
@@ -267,17 +269,17 @@ Steps:
 
 ### Phase 13 — jsmdma publish (jsmdma repo)
 
-**Goal:** All 6 packages published to npm under `@alt-javascript` org. Backend can install from npm.
+**Goal:** All 6 packages published to npm under `@alt-javascript` org in lock-step. Backend can install from npm.
 
-Publish order (dependency graph):
-1. `@alt-javascript/jsmdma-core` (no internal deps)
-2. `@alt-javascript/jsmdma-auth-core` (no internal deps)
-3. `@alt-javascript/jsmdma-server` (depends on core)
-4. `@alt-javascript/jsmdma-auth-server` (depends on auth-core)
-5. `@alt-javascript/jsmdma-hono` (depends on server)
-6. `@alt-javascript/jsmdma-auth-hono` (depends on auth-server + auth-core)
+All packages publish together as a single versioned release:
 
-Each: `npm publish -w packages/{name} --access public`
+```bash
+npm publish --workspaces --access public
+```
+
+Packages: `jsmdma-core`, `jsmdma-auth-core`, `jsmdma-server`, `jsmdma-auth-server`, `jsmdma-hono`, `jsmdma-auth-hono`.
+
+The workspace interdependencies use `"*"` version ranges, so all packages must be published at the same version before any consumer can install cleanly.
 
 ### Phase 14 — Backend instance project (new jsmdma-apps repo)
 
