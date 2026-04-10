@@ -487,5 +487,12 @@
                 }
             });
         }
+
+        var railSigninBtn = document.getElementById('railSigninBtn');
+        if (railSigninBtn) {
+            railSigninBtn.addEventListener('click', function() {
+                $('#authModal').modal('show');
+            });
+        }
     })();
     </script>
