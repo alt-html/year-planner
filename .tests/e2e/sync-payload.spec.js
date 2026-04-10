@@ -26,18 +26,20 @@ test('sync POST carries jsmdma payload shape (D007)', async ({ page }) => {
 
   await page.goto('/?uid=12345&year=2026');
   await page.waitForSelector('[data-app-ready]');
-  await page.waitForTimeout(2000);
-
+  // Poll until sync POST fires (instead of sleeping fixed 2s)
+  const deadline = Date.now() + 5000;
+  while (capturedBody === null && Date.now() < deadline) {
+    await page.waitForTimeout(100);
+  }
   expect(capturedBody).not.toBeNull();
   expect(capturedBody.collection).toBe('planners');
   expect(typeof capturedBody.clientClock).toBe('string');
   expect(Array.isArray(capturedBody.changes)).toBe(true);
-  if (capturedBody.changes.length > 0) {
-    const change = capturedBody.changes[0];
-    expect(typeof change.key).toBe('string');
-    expect(change.id).toBeUndefined();
-    expect(change.doc !== undefined).toBe(true);
-    expect(change.fieldRevs !== undefined).toBe(true);
-    expect(typeof change.baseClock).toBe('string');
-  }
+  expect(capturedBody.changes.length).toBeGreaterThan(0);
+  const change = capturedBody.changes[0];
+  expect(typeof change.key).toBe('string');
+  expect(change.id).toBeUndefined();
+  expect(change.doc !== undefined).toBe(true);
+  expect(change.fieldRevs !== undefined).toBe(true);
+  expect(typeof change.baseClock).toBe('string');
 });
