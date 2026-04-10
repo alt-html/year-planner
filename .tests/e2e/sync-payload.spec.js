@@ -2,17 +2,25 @@
 // Verifies: POST /year-planner/sync carries the correct jsmdma payload shape (D007).
 const { test, expect } = require('../fixtures/cdn');
 
-const SESSION_JSON = JSON.stringify({"0":"test-uuid","1":0});
+/** Build a fake but structurally valid JWT (client-side decodeJwt doesn't verify signature) */
+function makeFakeJwt(sub = 'test-uuid') {
+  function b64u(obj) {
+    return Buffer.from(JSON.stringify(obj)).toString('base64url');
+  }
+  const now = Math.floor(Date.now() / 1000);
+  return b64u({ alg: 'HS256', typ: 'JWT' }) + '.' +
+         b64u({ sub, iat: now, iat_session: now }) + '.fakesig';
+}
 
 test('sync POST carries jsmdma payload shape (D007)', async ({ page }) => {
   let capturedBody = null;
 
-  await page.addInitScript((sessionData) => {
+  await page.addInitScript((token) => {
     if (sessionStorage.getItem('_seeded')) return;
     sessionStorage.setItem('_seeded', '1');
     localStorage.clear();
-    localStorage.setItem('1', sessionData);
-  }, SESSION_JSON);
+    localStorage.setItem('auth_token', token);
+  }, makeFakeJwt());
 
   await page.route('**/year-planner/sync', async (route) => {
     const req = route.request();
@@ -26,7 +34,6 @@ test('sync POST carries jsmdma payload shape (D007)', async ({ page }) => {
 
   await page.goto('/?uid=12345&year=2026');
   await page.waitForSelector('[data-app-ready]');
-  // Poll until sync POST fires (instead of sleeping fixed 2s)
   const deadline = Date.now() + 5000;
   while (capturedBody === null && Date.now() < deadline) {
     await page.waitForTimeout(100);
