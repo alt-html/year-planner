@@ -56,6 +56,9 @@ export default class Api {
                 this.authProvider?.signOut?.();
                 this.model.signedin = false;
                 this.model.error = 'error.unauthorized';
+            } else if (err.status === 400) {
+                // 400 = bad request / validation rejection — silent failure, don't alarm the user
+                this.logger?.warn?.('[Api.sync] server rejected payload (400) — skipping');
             } else {
                 this.model.error = 'error.syncfailed';
             }
