@@ -1,22 +1,22 @@
 export const lifecycleMethods = {
 
     refresh() {
+        this.logger?.debug?.(`[lifecycle.refresh] uid=${this.uid} userKey=${this.userKey} year=${this.year} signedin=${this.signedin}`);
         this.setYear(this.year);
-        if (!this.storageLocal.initialised()){
+        if (!this.storageLocal.initialised()) {
+            this.logger?.debug?.('[lifecycle.refresh] not initialised — calling initialise()');
             this.initialise();
         }
-        const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year);
-        this.api.sync(plannerId);
+        const userKey = this.plannerStore.getUserKey();
+        this.userKey      = userKey;
+        this.activeDocUuid = this.plannerStore.activateDoc(userKey, this.year);
         this.storageLocal.setLocalFromModel();
-        if (!window.location.href.includes('?uid=')){
-            window.location.href = window.location.origin +'?uid='+this.uid+'&year='+this.year+'&lang='+this.lang+'&theme='+this.theme;
+        if (this.theme === 'dark') {
+            document.body.classList.add('yp-dark');
+        } else {
+            document.body.classList.remove('yp-dark');
         }
-        if (this.theme =='dark'){
-            document.body.classList.add("yp-dark");
-        }else{
-            document.body.classList.remove("yp-dark");
-        }
-        this.loaded=true;
+        this.loaded = true;
         if (this._showSigninPester) {
             this._showSigninPester = false;
             this.$nextTick(() => { jQuery('#authModal').modal('show'); });
@@ -24,12 +24,15 @@ export const lifecycleMethods = {
     },
 
     initialise() {
-        this.storageLocal.setLocalIdentities (this.identities);
-        this.storageLocal.setLocalPreferences(this.uid,{0:this.year,1:this.lang,2:(this.theme == 'dark'?1:0),3:this.preferences['3']||null});
-        this.storageLocal.setLocalPlanner(this.uid,this.year,this.planner);
+        this.storageLocal.setLocalIdentities(this.identities);
+        this.storageLocal.setLocalPreferences(this.uid, {
+            0: this.year, 1: this.lang,
+            2: (this.theme === 'dark' ? 1 : 0),
+            3: this.preferences['3'] || null,
+        });
     },
 
-     clearError () {
+    clearError() {
         this.error = '';
     },
 }
