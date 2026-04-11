@@ -37,31 +37,8 @@ export default class Storage {
             }
             this.model.preferences = importer[1];
             this.model.year = importer[2];
-            const imported = importer[3];
-            // Clear existing days (mutate in-place to preserve Vue reactive proxy)
-            Object.keys(this.model.days).forEach(k => delete this.model.days[k]);
-            if (Array.isArray(imported)) {
-                // Old share format: 12-element month array [m][day] = dayObj
-                for (let m = 0; m < 12; m++) {
-                    if (!imported[m]) continue;
-                    for (const [day, dayObj] of Object.entries(imported[m])) {
-                        if (!dayObj) continue;
-                        const month = String(m + 1).padStart(2, '0');
-                        const d = String(day).padStart(2, '0');
-                        const isoDate = `${importer[2]}-${month}-${d}`;
-                        this.model.days[isoDate] = {
-                            tp:    dayObj['0'] !== undefined ? dayObj['0'] : (dayObj.tp    || 0),
-                            tl:    dayObj['1'] !== undefined ? dayObj['1'] : (dayObj.tl    || ''),
-                            col:   dayObj['2'] !== undefined ? dayObj['2'] : (dayObj.col   || 0),
-                            notes: dayObj['3'] !== undefined ? dayObj['3'] : (dayObj.notes || ''),
-                            emoji: dayObj['4'] !== undefined ? dayObj['4'] : (dayObj.emoji || ''),
-                        };
-                    }
-                }
-            } else if (imported && typeof imported === 'object') {
-                // New share format: ISO-date map
-                Object.assign(this.model.days, imported);
-            }
+            // Store raw imported data — PlannerStore.importDays applies it after activateDoc
+            this.model._pendingImport = importer[3];
             this.model.lang = this.model.preferences['1'];
             this.model.theme = this.model.preferences['2'] == 1 ? 'dark' : 'light';
         }

@@ -10,6 +10,10 @@ export const lifecycleMethods = {
         const userKey = this.plannerStore.getUserKey();
         this.userKey      = userKey;
         this.activeDocUuid = this.plannerStore.activateDoc(userKey, this.year);
+        if (this.model._pendingImport) {
+            this.plannerStore.importDays(this.year, this.model._pendingImport);
+            this.model._pendingImport = null;
+        }
         this.storageLocal.setLocalFromModel();
         if (this.theme === 'dark') {
             document.body.classList.add('yp-dark');
