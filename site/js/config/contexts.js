@@ -3,21 +3,23 @@ import { Context, Singleton } from 'https://cdn.jsdelivr.net/npm/@alt-javascript
 import Api from '../service/Api.js';
 import Application from '../Application.js';
 import AuthProvider from '../service/AuthProvider.js';
+import PlannerStore from '../service/PlannerStore.js';
 import Storage from '../service/Storage.js';
 import StorageLocal from '../service/StorageLocal.js';
-import SyncClient from '../service/SyncClient.js';
+import SyncScheduler from '../service/SyncScheduler.js';
 import { feature } from '../vue/model-features.js';
 import { messages } from '../vue/i18n/messages.js';
 import { model } from '../vue/model.js';
 import { i18n } from '../vue/i18n.js';
 
 export default new Context([
+    new Singleton(PlannerStore),
     new Singleton(Api),
     new Singleton(Application),
     new Singleton(AuthProvider),
     new Singleton(Storage),
     new Singleton(StorageLocal),
-    new Singleton(SyncClient),
+    new Singleton(SyncScheduler),
 
     { name: 'feature',  Reference: feature },
     { name: 'messages', Reference: messages },
