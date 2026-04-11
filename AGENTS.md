@@ -51,7 +51,9 @@ cd .tests && npm install && npx playwright install
 ### Service Layer (`js/service/`)
 
 - **`Storage`** — facade over StorageLocal; handles planner read/write, LZ-string compressed import/export
-- **`StorageLocal`** — localStorage persistence using M009 schema (UUID-keyed planner documents with HLC clocks for CRDT sync). Contains migration logic from legacy numeric-key schema
+- **`StorageLocal`** — localStorage persistence using M009 schema (UUID-keyed planner documents with HLC clocks for CRDT sync). Owns preferences, identities, wipe, and migration. Does **not** own planner read/write (delegated to `PlannerStore`). Contains migration logic from legacy numeric-key schema
+- **`PlannerStore`** — anti-corruption layer between jsmdma DocumentStore and Vue. Single writer of `plnr:*` localStorage keys. Exposes `model.days` as Vue reactive surface. CDI singleton
+- **`SyncScheduler`** — event-driven sync triggers (online/visibilitychange/300ms debounce). Call `start()` once in `Application.run()`. CDI singleton
 - **`StorageRemote`** — server sync (API-backed)
 - **`Api`** — HTTP client for the backend API (spec in `api/openapi.yaml`)
 - **`AuthProvider`** — authentication flows
@@ -68,7 +70,7 @@ cd .tests && npm install && npx playwright install
 ### Key Data Concepts
 
 - **Planner document** (`plnr:{uuid}`) — `{ meta: {name, year, lang, theme, uid, created}, days: { "YYYY-MM-DD": {tp, tl, col, notes, emoji} } }`
-- **Runtime model** uses `planner[mindex][day]` (0-indexed month array) — `StorageLocal` converts between this and the ISO-date keyed storage format
+- **Runtime model** uses `model.days['YYYY-MM-DD']` (ISO-date keyed flat object) — `PlannerStore` owns this reactive surface and maps directly to the storage format
 - **Day fields** use short keys: `tp` (type), `tl` (tagline), `col` (colour), `notes`, `emoji`. Legacy schema used numeric keys `0`-`4`
 - **HLC (Hybrid Logical Clock)** from `@alt-javascript/data-api-core` — used for CRDT field-level revision tracking (`rev:{uuid}`)
 
