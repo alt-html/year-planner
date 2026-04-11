@@ -17,6 +17,11 @@ export const plannerMethods = {
 
     deletePlannerByYear(userKey, year) {
         this.plannerStore.deletePlanner(userKey, year);
+        // Clear name from preferences so the deleted planner's name doesn't survive the reload
+        if (this.preferences?.['3']?.[String(year)]) {
+            delete this.preferences['3'][String(year)];
+        }
+        this.storageLocal.setLocalPreferences(this.uid, this.preferences);
         window.location.href = window.location.origin + '?uid=' + this.uid +
             '&year=' + this.year + '&lang=' + this.lang + '&theme=' + this.theme;
     },

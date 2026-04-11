@@ -11,6 +11,7 @@ export const plannerState = {
     entryEmoji : '',
     shareUrl: window.location.origin,
     days : {},            // ISO-date keyed: { 'YYYY-MM-DD': { tp, tl, col, notes, emoji } }
+    _pendingImport : null,  // set by Storage.setModelFromImportString() before mount; consumed and cleared by refresh()
     identities : null,
     preferences : null,
     updated : null,

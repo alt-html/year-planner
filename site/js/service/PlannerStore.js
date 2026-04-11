@@ -103,8 +103,20 @@ export default class PlannerStore {
     async syncActive(authHeaders) {
         if (!this._activeUuid) return null;
         const syncUrl = this._getApiUrl() + 'year-planner/sync';
-        const doc = this._docStore.get(this._activeUuid) || { meta: {}, days: {} };
-        this.logger?.debug?.(`[PlannerStore] sync start uuid=${this._activeUuid} days=${Object.keys(doc.days || {}).length}`);
+        const raw = this._docStore.get(this._activeUuid) || { meta: {}, days: {} };
+        // Coerce tp/col from legacy empty-string storage before sync
+        const normalizedDays = {};
+        for (const [date, day] of Object.entries(raw.days || {})) {
+            const tp  = parseInt(day.tp,  10);
+            const col = parseInt(day.col, 10);
+            normalizedDays[date] = {
+                ...day,
+                tp:  Number.isFinite(tp)  ? tp  : 0,
+                col: Number.isFinite(col) ? col : 0,
+            };
+        }
+        const doc = { ...raw, days: normalizedDays };
+        this.logger?.debug?.(`[PlannerStore] sync start uuid=${this._activeUuid} days=${Object.keys(doc.days).length}`);
         const merged = await this._adapter.sync(this._activeUuid, doc, authHeaders, syncUrl);
         if (merged) {
             this._docStore.set(this._activeUuid, merged);

@@ -10,9 +10,9 @@ export const lifecycleMethods = {
         const userKey = this.plannerStore.getUserKey();
         this.userKey      = userKey;
         this.activeDocUuid = this.plannerStore.activateDoc(userKey, this.year);
-        if (this.model._pendingImport) {
-            this.plannerStore.importDays(this.year, this.model._pendingImport);
-            this.model._pendingImport = null;
+        if (this._pendingImport) {
+            this.plannerStore.importDays(this.year, this._pendingImport);
+            this._pendingImport = null;
         }
         this.storageLocal.setLocalFromModel();
         if (this.theme === 'dark') {
@@ -21,6 +21,7 @@ export const lifecycleMethods = {
             document.body.classList.remove('yp-dark');
         }
         this.loaded = true;
+        this.syncScheduler.markDirty();
         if (this._showSigninPester) {
             this._showSigninPester = false;
             this.$nextTick(() => { jQuery('#authModal').modal('show'); });
