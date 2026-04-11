@@ -237,6 +237,7 @@ export default class PlannerStore {
         const uuid = crypto.randomUUID();
         const doc  = {
             meta: {
+                name:    this.model?.name || String(year),
                 userKey, year,
                 lang:    this.model?.lang    || 'en',
                 theme:   this.model?.theme   || 'light',
