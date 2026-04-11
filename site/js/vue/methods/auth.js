@@ -11,8 +11,11 @@ export const authMethods = {
             await this.authProvider.signIn(provider);
             $('#authModal').modal('hide');
             this.signedin = true;
-            const plannerId = this.storageLocal.getActivePlnrUuid(this.uid, this.year);
-            this.api.sync(plannerId);
+            const userKey = this.plannerStore.getUserKey();
+            this.userKey       = userKey;
+            this.activeDocUuid = this.plannerStore.activateDoc(userKey, this.year);
+            this.plannerStore.adoptIfEmpty(userKey, this.year);
+            this.syncScheduler.markDirty();
         } catch (err) {
             this.modalError = err.message || 'error.syncfailed';
         }
@@ -20,15 +23,15 @@ export const authMethods = {
 
     signout() {
         this.authProvider.signOut();
-        this.uuid = '';
+        this.uuid     = '';
         this.signedin = false;
         this.storageLocal.wipe();
     },
 
     clearModalAlert() {
-        this.modalError = '';
+        this.modalError       = '';
         this.modalErrorTarget = null;
-        this.modalWarning = '';
-        this.modalSuccess = '';
+        this.modalWarning     = '';
+        this.modalSuccess     = '';
     },
 }
