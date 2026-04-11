@@ -1,6 +1,6 @@
 import { urlParam } from './util/urlparam.js';
 import { getNavigatorLanguage } from "./vue/i18n.js";
-import { ClientAuthSession, PreferencesStore } from './vendor/jsmdma-auth-client.esm.js';
+import { ClientAuthSession, DeviceSession, PreferencesStore } from './vendor/jsmdma-auth-client.esm.js';
 
 import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.min.js';
 
@@ -36,20 +36,15 @@ export default class Application {
         if (urlToken) {
             ClientAuthSession.store(urlToken);
             localStorage.setItem('auth_provider', localStorage.getItem('auth_provider') || 'google');
+            this.logger?.debug?.('[Application.init] ?token= received — stored JWT, auth_provider set');
             const cleanUrl = new URL(window.location.href);
             cleanUrl.searchParams.delete('token');
             window.history.replaceState({}, '', cleanUrl.toString());
         }
 
-        // Handle OAuth redirect: Google sends ?code=&state= back to the SPA
-        const oauthCode  = urlParam('code');
-        const oauthState = urlParam('state');
-        if (oauthCode && oauthState) {
-            Application._handleOAuthCallback(oauthCode, oauthState);
-        }
-
         this.model.uid = parseInt( urlParam('uid') ) || this.storageLocal.getLocalUid() || Math.floor(this.pageLoadTime.ts/1000);
         this.model.uuid = ClientAuthSession.getUserUuid() || '',
+        this.model.userKey = ClientAuthSession.getUserUuid() || DeviceSession.getDeviceId();
         this.model.pageLoadTime = this.pageLoadTime;
         this.model.identities = this.storageLocal.getLocalIdentities() || [{0:this.model.uid,1:window.navigator.userAgent,2:0,3:0}],
 
@@ -79,7 +74,20 @@ export default class Application {
 
         this.model.registered = this.storageLocal.registered(),
         this.model.signedin = this.storageLocal.signedin(),
-        this.model.planner = this.storage.getPlanner(this.model.uid, this.model.year),
+
+        this.logger?.debug?.(`[Application.init] uid=${this.model.uid} uuid=${this.model.uuid} year=${this.model.year} signedin=${this.model.signedin} registered=${this.model.registered} url=${window.location.href}`);
+
+        // Pre-set canonical URL (?uid=&year=) via replaceState so refresh() doesn't do a
+        // hard navigation that would abort any in-flight sync fetch.
+        if (!window.location.href.includes('?uid=')) {
+            const canonical = new URL(window.location.origin + '/');
+            canonical.searchParams.set('uid',   String(this.model.uid));
+            canonical.searchParams.set('year',  String(this.model.year));
+            canonical.searchParams.set('lang',  this.model.lang);
+            canonical.searchParams.set('theme', this.model.theme);
+            this.logger?.debug?.(`[Application.init] replaceState → canonical URL ${canonical.toString()}`);
+            window.history.replaceState({}, '', canonical.toString());
+        }
 
         this.storage.setModelFromImportString(this.model.share);
 
@@ -98,47 +106,7 @@ export default class Application {
         // Restore rail collapsed state from saved preferences
         const savedPrefs = PreferencesStore.get(String(this.model.uid));
         this.model.railCollapsed = (savedPrefs?.railOpen === false);
-    }
-
-    static async _handleOAuthCallback(oauthCode, oauthState) {
-        const storedState  = sessionStorage.getItem('oauth_state');
-        const codeVerifier = sessionStorage.getItem('oauth_code_verifier');
-        sessionStorage.removeItem('oauth_state');
-        sessionStorage.removeItem('oauth_code_verifier');
-
-        // Guard: abort if sessionStorage was empty (fresh tab, cleared storage, or CSRF probe).
-        // The state stored here must match the state returned by the provider — if it doesn't,
-        // the request is likely stale or tampered. Clean up the URL and bail out.
-        if (!storedState || storedState !== oauthState) {
-            const cleanUrl = new URL(window.location.href);
-            cleanUrl.searchParams.delete('code');
-            cleanUrl.searchParams.delete('state');
-            window.history.replaceState({}, '', cleanUrl.toString());
-            return;
-        }
-
-        const apiUrl = 'http://127.0.0.1:8081/';
-        try {
-            const res = await fetch(
-                `${apiUrl}auth/google/callback?code=${encodeURIComponent(oauthCode)}` +
-                `&state=${encodeURIComponent(oauthState)}` +
-                `&stored_state=${encodeURIComponent(storedState ?? '')}` +
-                `&code_verifier=${encodeURIComponent(codeVerifier ?? '')}`,
-            );
-            if (res.ok) {
-                const body = await res.json();
-                if (body.token) {
-                    ClientAuthSession.store(body.token);
-                    localStorage.setItem('auth_provider', 'google');
-                }
-            }
-        } catch { /* silent — auth failed, user stays signed out */ }
-
-        // Clean up URL
-        const cleanUrl = new URL(window.location.href);
-        cleanUrl.searchParams.delete('code');
-        cleanUrl.searchParams.delete('state');
-        window.history.replaceState({}, '', cleanUrl.toString());
+        this.logger?.debug?.(`[Application.init] complete — railCollapsed=${this.model.railCollapsed}`);
     }
 
     async run (vueApp) {
@@ -164,6 +132,9 @@ export default class Application {
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
         })
+
+        // Start sync scheduler — fires on online / visibilitychange events
+        this.model.syncScheduler?.start();
     }
 
     static handleRailToggle(model, storageLocal) {

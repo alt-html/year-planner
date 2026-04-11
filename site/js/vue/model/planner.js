@@ -1,5 +1,7 @@
 export const plannerState = {
-    uid : null,
+    uid : null,           // legacy numeric id — kept for URL params and display only
+    userKey : null,       // JWT uuid (signed-in) or device UUID (anonymous) — planner ownership key
+    activeDocUuid : null, // UUID of the active planner document
     month : 0,
     day : 1,
     entry: '',
@@ -8,7 +10,7 @@ export const plannerState = {
     entryNotes : '',
     entryEmoji : '',
     shareUrl: window.location.origin,
-    planner : null,
+    days : {},            // ISO-date keyed: { 'YYYY-MM-DD': { tp, tl, col, notes, emoji } }
     identities : null,
     preferences : null,
     updated : null,

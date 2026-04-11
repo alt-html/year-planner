@@ -12,7 +12,8 @@ const model = {
     messages : null,
     storage : null,
     storageLocal : null,
-    syncClient : null,
+    plannerStore : null,
+    syncScheduler : null,
 
     feature : feature,
 
