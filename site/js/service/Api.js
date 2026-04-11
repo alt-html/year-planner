@@ -1,5 +1,3 @@
-import { model } from "../vue/model.js";
-
 async function fetchJSON(url, options = {}) {
     const headers = {
         'Accept': 'application/json',
@@ -21,14 +19,14 @@ async function fetchJSON(url, options = {}) {
 //  Client SDK to server side sync API
 //  See api/openapi.yaml for the API contract
 export default class Api {
-    constructor(model, storageLocal, syncClient, authProvider) {
-        this.qualifier = '@alt-html/year-planner/Api'
+    constructor(model, storageLocal, plannerStore, authProvider) {
+        this.qualifier = '@alt-html/year-planner/Api';
         this.logger = null;
 
         this.url = '${api.url}';
         this.model = model;
         this.storageLocal = storageLocal;
-        this.syncClient = syncClient;
+        this.plannerStore = plannerStore;
         this.authProvider = authProvider;
     }
 
@@ -39,28 +37,28 @@ export default class Api {
         return { 'Authorization': 'Bearer ' + token };
     }
 
-    // POST /year-planner/sync — 3-way merge sync via SyncClient
-    async sync(plannerId) {
-        if (!this.storageLocal.signedin() || !plannerId) return;
+    // POST /year-planner/sync — delegates to PlannerStore.syncActive()
+    async sync() {
+        const signedin = this.storageLocal.signedin();
+        this.logger?.debug?.(`[Api.sync] called signedin=${signedin}`);
+        if (!signedin) {
+            this.logger?.warn?.('[Api.sync] skipping — not signed in');
+            return;
+        }
         try {
-            const doc = this.storageLocal._getPlnrDoc(plannerId);
-            const merged = await this.syncClient.sync(plannerId, doc, this._authHeaders());
-            if (merged) {
-                this.storageLocal._setPlnrDoc(plannerId, merged);
-                this.model.planner = this.storageLocal._docToMonthArray(merged);
-            }
-            this.model.error = ''; // clear any stale error on successful sync
+            const merged = await this.plannerStore.syncActive(this._authHeaders());
+            if (merged) this.model.error = '';
         } catch (err) {
-            console.error(`[Api.sync] sync failed: status=${err.status} message=${err.message}`);
-            if (err.status == 404)
+            this.logger?.error?.(`[Api.sync] failed status=${err.status} message=${err.message}`);
+            if (err.status === 404) {
                 this.model.error = 'error.apinotavailable';
-            else if (err.status == 401) {
+            } else if (err.status === 401) {
                 this.authProvider?.signOut?.();
                 this.model.signedin = false;
                 this.model.error = 'error.unauthorized';
-            }
-            else
+            } else {
                 this.model.error = 'error.syncfailed';
+            }
         }
     }
 
@@ -74,16 +72,16 @@ export default class Api {
                 this.model.response = body;
                 this.model.uuid = '';
             })
-            .catch(err => {
+            .catch(() => {
                 this.model.error = 'error.syncfailed';
             });
     }
 
     modalErr(target, err) {
-        if (!model.modalErrorTarget) {
-            model.modalErrorTarget = {};
+        if (!this.model.modalErrorTarget) {
+            this.model.modalErrorTarget = {};
         }
-        model.modalErrorTarget[target] = err;
-        model.touch = model.touch ? '' : ' ';
+        this.model.modalErrorTarget[target] = err;
+        this.model.touch = this.model.touch ? '' : ' ';
     }
 }
