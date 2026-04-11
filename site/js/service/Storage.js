@@ -2,7 +2,7 @@ import LZString from 'https://cdn.jsdelivr.net/npm/lz-string/libs/lz-string.min.
 
 export default class Storage {
 
-    constructor(api,model, storageLocal) {
+    constructor(api, model, storageLocal) {
         this.qualifier = '@alt-html/year-planner/Storage'
         this.logger = null;
 
@@ -10,78 +10,70 @@ export default class Storage {
         this.model = model;
         this.storageLocal = storageLocal;
     }
-    getPlanner (uid, year) {
-        return this.storageLocal.getLocalPlanner(uid, year);
-    }
-    getEntry (mindex, day) {
-        if (this.model.planner[mindex] && this.model.planner[mindex]['' + day]) {
-            return this.model.planner[mindex]['' + day]['tl'] || ''
-        } else {
-            return ''
-        }
+
+    exportPlannerToJSON() {
+        return JSON.stringify(this.model.days);
     }
 
-    getEntryType (mindex, day) {
-        if (this.model.planner[mindex] && this.model.planner[mindex]['' + day]) {
-            return this.model.planner[mindex]['' + day]['tp'] || ''
-        } else {
-            return ''
-        }
-    }
-
-    getEntryColour (mindex, day) {
-        if (this.model.planner[mindex] && this.model.planner[mindex]['' + day]) {
-            return this.model.planner[mindex]['' + day]['col'] || ''
-        } else {
-            return ''
-        }
-    }
-
-    deletePlannerByYear (uid, year) {
-        this.storageLocal.deleteLocalPlannerByYear(uid, year);
-    }
-    exportPlannerToJSON (){
-        return JSON.stringify(this.model.planner);
-    }
-    exportPlannerToBase64 (){
+    exportPlannerToBase64() {
         return LZString.compressToBase64(this.exportPlannerToJSON());
     }
-    setPlanner (uid, year, planner) {
-        this.storageLocal.setLocalPlanner(uid, year, planner);
-    }
-    getExportString (){
+
+    getExportString() {
         let exporter = [];
         exporter.push(this.storageLocal.getLocalIdentity(this.model.uid));
         exporter.push(this.model.preferences);
         exporter.push(this.model.year);
-        exporter.push(this.model.planner);
+        exporter.push(this.model.days);
         return LZString.compressToEncodedURIComponent(JSON.stringify(exporter));
     }
-    setModelFromImportString (importUrlParam) {
+
+    setModelFromImportString(importUrlParam) {
         if ('' != importUrlParam) {
             let importer = JSON.parse(LZString.decompressFromEncodedURIComponent(importUrlParam));
             this.model.uid = importer[0]['0'];
             if (!this.storageLocal.getLocalIdentity(this.model.uid)) {
                 this.model.identities.push(importer[0]);
             }
-            this.model.preferences = importer[1]
+            this.model.preferences = importer[1];
             this.model.year = importer[2];
-            this.model.planner = importer[3];
+            const imported = importer[3];
+            // Clear existing days (mutate in-place to preserve Vue reactive proxy)
+            Object.keys(this.model.days).forEach(k => delete this.model.days[k]);
+            if (Array.isArray(imported)) {
+                // Old share format: 12-element month array [m][day] = dayObj
+                for (let m = 0; m < 12; m++) {
+                    if (!imported[m]) continue;
+                    for (const [day, dayObj] of Object.entries(imported[m])) {
+                        if (!dayObj) continue;
+                        const month = String(m + 1).padStart(2, '0');
+                        const d = String(day).padStart(2, '0');
+                        const isoDate = `${importer[2]}-${month}-${d}`;
+                        this.model.days[isoDate] = {
+                            tp:    dayObj['0'] !== undefined ? dayObj['0'] : (dayObj.tp    || 0),
+                            tl:    dayObj['1'] !== undefined ? dayObj['1'] : (dayObj.tl    || ''),
+                            col:   dayObj['2'] !== undefined ? dayObj['2'] : (dayObj.col   || 0),
+                            notes: dayObj['3'] !== undefined ? dayObj['3'] : (dayObj.notes || ''),
+                            emoji: dayObj['4'] !== undefined ? dayObj['4'] : (dayObj.emoji || ''),
+                        };
+                    }
+                }
+            } else if (imported && typeof imported === 'object') {
+                // New share format: ISO-date map
+                Object.assign(this.model.days, imported);
+            }
             this.model.lang = this.model.preferences['1'];
             this.model.theme = this.model.preferences['2'] == 1 ? 'dark' : 'light';
-            let theme = this.model.theme;
         }
     }
+
     download(filename, contentType, text) {
         let element = document.createElement('a');
         element.setAttribute('href', 'data:' + contentType + ';charset=utf-8,' + encodeURIComponent(text));
         element.setAttribute('download', filename);
-
         element.style.display = 'none';
         document.body.appendChild(element);
-
         element.click();
-
         document.body.removeChild(element);
     }
 }
