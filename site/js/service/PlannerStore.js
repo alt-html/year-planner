@@ -85,8 +85,10 @@ export default class PlannerStore {
             this.model.days[isoDate] = entry;
         }
 
-        for (const field of ['tp', 'tl', 'col', 'notes', 'emoji']) {
-            this._adapter.markEdited(this._activeUuid, `days.${isoDate}.${field}`);
+        if (!isEmpty) {
+            for (const field of ['tp', 'tl', 'col', 'notes', 'emoji']) {
+                this._adapter.markEdited(this._activeUuid, `days.${isoDate}.${field}`);
+            }
         }
         this.model.updated = Date.now();
         this.logger?.debug?.(`[PlannerStore] setDay ${isoDate} tl="${entry.tl}"`);
@@ -120,6 +122,7 @@ export default class PlannerStore {
      * @param {number} year
      */
     adoptIfEmpty(userKey, year) {
+        if (!this._activeUuid) return;
         const doc = this._docStore.get(this._activeUuid);
         if (doc?.days && Object.keys(doc.days).length > 0) return;
 
@@ -163,7 +166,7 @@ export default class PlannerStore {
     deletePlanner(userKey, year) {
         const uuid = this._findDoc(userKey, year);
         if (!uuid) return;
-        localStorage.removeItem(`plnr:${uuid}`);
+        this._docStore.delete(uuid);
         this._adapter.prune(uuid);
         if (this._activeUuid === uuid) {
             this._activeUuid = null;
@@ -203,9 +206,9 @@ export default class PlannerStore {
 
     _findDoc(userKey, year) {
         for (const { uuid, doc } of this._docStore.list()) {
-            if (doc.meta?.userKey === userKey && doc.meta?.year == year) return uuid;
+            if (doc.meta?.userKey === userKey && doc.meta?.year == year) return uuid; // loose == intentional: allows numeric year to match string year
             // Migration compat: accept old docs with numeric meta.uid
-            if (doc.meta?.uid && String(doc.meta.uid) === String(userKey) && doc.meta?.year == year) return uuid;
+            if (doc.meta?.uid && String(doc.meta.uid) === String(userKey) && doc.meta?.year == year) return uuid; // loose == intentional: allows numeric year to match string year
         }
         return null;
     }
