@@ -432,7 +432,7 @@ function merge2(base, local, remote) {
 // SyncClientAdapter.js
 var SyncClientAdapter = class {
   /**
-   * @param {import('./DocumentStore.js').default} documentStore
+   * @param {import('./SyncDocumentStore.js').default} syncDocumentStore
    * @param {{
    *   clockKey?: string,
    *   revKey?: string,
@@ -440,8 +440,9 @@ var SyncClientAdapter = class {
    *   collection?: string,
    * }} [options]
    */
-  constructor(documentStore, options = {}) {
-    this.documentStore = documentStore;
+  constructor(syncDocumentStore, options = {}) {
+    this.syncDocumentStore = syncDocumentStore;
+    this.documentStore = syncDocumentStore;
     this.clockKey = options.clockKey ?? "sync";
     this.revKey = options.revKey ?? "rev";
     this.baseKey = options.baseKey ?? "base";
@@ -458,8 +459,7 @@ var SyncClientAdapter = class {
   }
   /**
    * Tick HLC for a dot-path field on a document. Call on every user edit.
-   *
-   * @param {string} docId — document UUID
+   * @param {string} docId
    * @param {string} dotPath — e.g. 'days.2026-03-28.tl'
    */
   markEdited(docId, dotPath) {
@@ -472,23 +472,30 @@ var SyncClientAdapter = class {
     localStorage.setItem(this._revKey(docId), JSON.stringify(revs));
   }
   /**
-   * POST to syncUrl with jsmdma payload, apply 3-way merge, persist result.
+   * Sync all documents owned by userId in a single HTTP request.
    *
-   * @param {string} docId
-   * @param {object} doc — current full document
+   * @param {string} userId — authenticated user UUID
    * @param {object} authHeaders — e.g. { Authorization: 'Bearer ...' }
    * @param {string} syncUrl — e.g. 'http://127.0.0.1:8081/year-planner/sync'
-   * @returns {Promise<object>} merged document
+   * @returns {Promise<Object<string, object>>} map of docId → merged document
    * @throws {{ status: number }} on HTTP error
    */
-  async sync(docId, doc, authHeaders, syncUrl) {
-    const clientClock = localStorage.getItem(this._syncKey(docId)) || hlc_default.zero();
-    const fieldRevs = JSON.parse(localStorage.getItem(this._revKey(docId)) ?? "{}");
-    const base = JSON.parse(localStorage.getItem(this._baseKey(docId)) ?? "{}");
+  async sync(userId, authHeaders, syncUrl) {
+    const syncableDocs = this.syncDocumentStore.listSyncable(userId);
+    const changes = [];
+    let maxClientClock = hlc_default.zero();
+    for (const { uuid, doc } of syncableDocs) {
+      const clientClock = localStorage.getItem(this._syncKey(uuid)) || hlc_default.zero();
+      const fieldRevs = JSON.parse(localStorage.getItem(this._revKey(uuid)) ?? "{}");
+      if (hlc_default.compare(clientClock, maxClientClock) > 0) {
+        maxClientClock = clientClock;
+      }
+      changes.push({ key: uuid, doc, fieldRevs, baseClock: clientClock });
+    }
     const payload = {
       collection: this.collection,
-      clientClock,
-      changes: [{ key: docId, doc, fieldRevs, baseClock: clientClock }]
+      clientClock: maxClientClock,
+      changes
     };
     const response = await fetch(syncUrl, {
       method: "POST",
@@ -501,47 +508,82 @@ var SyncClientAdapter = class {
       throw err;
     }
     const { serverClock, serverChanges = [] } = await response.json();
-    let merged = doc;
+    const localDocMap = new Map(syncableDocs.map(({ uuid, doc }) => [uuid, doc]));
+    const results = {};
     for (const serverChange of serverChanges) {
       const { _key, _rev, _fieldRevs, ...serverDoc } = serverChange;
-      if (_key === docId) {
+      if (localDocMap.has(_key)) {
+        const localDoc = localDocMap.get(_key);
+        const base = JSON.parse(localStorage.getItem(this._baseKey(_key)) ?? "{}");
+        const fieldRevs = JSON.parse(localStorage.getItem(this._revKey(_key)) ?? "{}");
         const result = merge2(
           base,
-          { doc, fieldRevs },
+          { doc: localDoc, fieldRevs },
           { doc: serverDoc, fieldRevs: _fieldRevs ?? {} }
         );
-        merged = result.merged;
+        results[_key] = result.merged;
       } else {
-        if (this.documentStore.get(_key) === null) {
-          this.documentStore.set(_key, serverDoc);
-        }
+        this.syncDocumentStore.set(_key, serverDoc);
       }
     }
-    localStorage.setItem(this._syncKey(docId), serverClock);
-    localStorage.setItem(this._baseKey(docId), JSON.stringify(merged));
-    localStorage.setItem(this._revKey(docId), "{}");
-    return merged;
+    for (const { uuid } of syncableDocs) {
+      localStorage.setItem(this._syncKey(uuid), serverClock);
+      const merged = results[uuid] || localDocMap.get(uuid);
+      localStorage.setItem(this._baseKey(uuid), JSON.stringify(merged));
+      localStorage.setItem(this._revKey(uuid), "{}");
+    }
+    return results;
   }
-  /**
-   * Remove all sync state for a document.
-   * @param {string} docId
-   */
+  /** Remove all sync state for a document. */
   prune(docId) {
     localStorage.removeItem(this._syncKey(docId));
     localStorage.removeItem(this._revKey(docId));
     localStorage.removeItem(this._baseKey(docId));
   }
-  /**
-   * Remove sync state for ALL documents in the DocumentStore.
-   */
+  /** Remove sync state for ALL documents in the store. */
   pruneAll() {
-    for (const { uuid } of this.documentStore.list()) {
+    for (const { uuid } of this.syncDocumentStore.list()) {
       this.prune(uuid);
     }
+  }
+};
+
+// SyncDocumentStore.js
+var SyncDocumentStore = class {
+  constructor({ namespace } = {}) {
+    this._store = new DocumentStore({ namespace });
+  }
+  get(uuid) {
+    return this._store.get(uuid);
+  }
+  set(uuid, doc) {
+    this._store.set(uuid, doc);
+  }
+  delete(uuid) {
+    this._store.delete(uuid);
+  }
+  list() {
+    return this._store.list();
+  }
+  find(predicate) {
+    return this._store.find(predicate);
+  }
+  listSyncable(userId) {
+    return this._store.list().filter(({ doc }) => doc.meta?.userKey === userId);
+  }
+  listLocal() {
+    return this._store.list();
+  }
+  takeOwnership(uuid, userId) {
+    const doc = this._store.get(uuid);
+    if (!doc) return;
+    doc.meta = { ...doc.meta, userKey: userId };
+    this._store.set(uuid, doc);
   }
 };
 export {
   DocumentStore,
   HttpClient,
-  SyncClientAdapter
+  SyncClientAdapter,
+  SyncDocumentStore
 };
