@@ -11,10 +11,7 @@ export const authMethods = {
             await this.authProvider.signIn(provider);
             $('#authModal').modal('hide');
             this.signedin = true;
-            const userKey = this.plannerStore.getUserKey();
-            this.userKey       = userKey;
-            this.activeDocUuid = this.plannerStore.activateDoc(userKey, this.year);
-            this.plannerStore.adoptIfEmpty(userKey, this.year);
+            this.userKey = this.plannerStore.getUserKey();
             this.syncScheduler.markDirty();
         } catch (err) {
             this.modalError = err.message || 'error.syncfailed';

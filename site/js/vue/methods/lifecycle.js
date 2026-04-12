@@ -7,10 +7,16 @@ export const lifecycleMethods = {
             this.logger?.debug?.('[lifecycle.refresh] not initialised — calling initialise()');
             this.initialise();
         }
-        const userKey = this.plannerStore.getUserKey();
-        this.userKey      = userKey;
-        this.activeDocUuid = this.plannerStore.activateDoc(userKey, this.year);
-        if (this._pendingImport) {
+        this.userKey = this.plannerStore.getUserKey();
+
+        // Restore last active planner, or show selector
+        const restored = this.plannerStore.restoreActive();
+        if (restored) {
+            this.activeDocUuid = restored;
+        }
+        // If no active planner, selector will open after sync populates docs
+
+        if (this._pendingImport && this.activeDocUuid) {
             this.plannerStore.importDays(this.year, this._pendingImport);
             this._pendingImport = null;
         }
