@@ -3,27 +3,41 @@ import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.m
 export const plannerMethods = {
 
     createPlanner() {
-        this.createLocalPlanner();
-    },
-
-    createLocalPlanner() {
-        // New anonymous planner: userKey stays the same (device UUID)
-        // Just create a new year entry
         const userKey = this.plannerStore.getUserKey();
-        this.userKey      = userKey;
-        this.activeDocUuid = this.plannerStore.activateDoc(userKey, this.year);
-        this.refresh();
+        const uuid = this.plannerStore.createDoc(userKey, this.year, '');
+        this.plannerStore.activateDoc(uuid);
+        this.activeDocUuid = uuid;
+        this.syncScheduler.markDirty();
     },
 
-    deletePlannerByYear(userKey, year) {
-        this.plannerStore.deletePlanner(userKey, year);
-        // Clear name from preferences so the deleted planner's name doesn't survive the reload
-        if (this.preferences?.['3']?.[String(year)]) {
-            delete this.preferences['3'][String(year)];
+    selectPlanner(uuid) {
+        this.plannerStore.activateDoc(uuid);
+        this.activeDocUuid = uuid;
+        // Update year/name from the selected planner's meta
+        const planners = this.plannerStore.listPlanners();
+        const selected = planners.find(p => p.uuid === uuid);
+        if (selected?.meta) {
+            this.year = selected.meta.year || this.year;
+            this.name = selected.meta.name || '';
+            this.setYear(this.year);
         }
-        this.storageLocal.setLocalPreferences(this.uid, this.preferences);
-        window.location.href = window.location.origin + '?uid=' + this.uid +
-            '&year=' + this.year + '&lang=' + this.lang + '&theme=' + this.theme;
+    },
+
+    deletePlannerByUuid(uuid) {
+        this.plannerStore.deletePlanner(uuid);
+        // If we just deleted the active planner, try to activate another
+        if (this.activeDocUuid === uuid) {
+            this.activeDocUuid = null;
+            const remaining = this.plannerStore.listPlanners();
+            if (remaining.length > 0) {
+                this.selectPlanner(remaining[0].uuid);
+            }
+        }
+    },
+
+    takeOwnership(uuid) {
+        this.plannerStore.takeOwnership(uuid);
+        this.syncScheduler.markDirty();
     },
 
     showRenamePlanner() {
@@ -54,7 +68,7 @@ export const plannerMethods = {
     },
 
     getPlannerYears() {
-        return this.plannerStore.getLocalPlannerYears();
+        return this.plannerStore.listPlanners();
     },
 
     sharePlanner() {
