@@ -44,6 +44,6 @@ export default class SyncScheduler {
     }
 
     _sync() {
-        if (this.plannerStore?.getActiveUuid()) this.api.sync();
+        this.api.sync();
     }
 }

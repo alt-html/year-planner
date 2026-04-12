@@ -37,7 +37,7 @@ export default class Api {
         return { 'Authorization': 'Bearer ' + token };
     }
 
-    // POST /year-planner/sync — delegates to PlannerStore.syncActive()
+    // POST /year-planner/sync — delegates to PlannerStore.sync()
     async sync() {
         const signedin = this.storageLocal.signedin();
         this.logger?.debug?.(`[Api.sync] called signedin=${signedin}`);
@@ -46,8 +46,8 @@ export default class Api {
             return;
         }
         try {
-            const merged = await this.plannerStore.syncActive(this._authHeaders());
-            if (merged) this.model.error = '';
+            const results = await this.plannerStore.sync(this._authHeaders());
+            if (results) this.model.error = '';
         } catch (err) {
             this.logger?.error?.(`[Api.sync] failed status=${err.status} message=${err.message}`);
             if (err.status === 404) {
