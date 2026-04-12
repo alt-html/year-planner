@@ -22,6 +22,7 @@ export default {
         updated : 'Updated',
         none : 'None',
         rename : 'Rename',untitled : 'Untitled',
+        planners: 'My Planners', synctocloud: 'Sync to cloud', localonly: 'Local only',
         month:'Month',year:'Year',week:'Week',semester:'Semester',term:'Term',today:'Today',
         theme:'Theme',light:'Light',dark:'Dark',
         register: 'Register', username: 'Username', password : 'Password', email: 'Email', mobile :'Mobile',haveaccount:'Already have an account?',
