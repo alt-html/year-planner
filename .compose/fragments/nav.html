@@ -30,10 +30,26 @@
                             <i class="ph ph-list"></i>
                           </button>
                           <div class="nav-settings dropdown-menu dropdown-menu-right">
+                                <h6 class="dropdown-header">{{$t('label.planners')}}</h6>
+                                <template v-for="planner in plannerStore.listPlanners().sort((a,b) => (b.meta.year||0)-(a.meta.year||0) || (a.meta.name||'').localeCompare(b.meta.name||''))">
+                                  <a class="dropdown-item d-flex align-items-center" href="#"
+                                     v-bind:class="{'dropdown-item-checked': planner.uuid === activeDocUuid}"
+                                     v-on:click.prevent="selectPlanner(planner.uuid)">
+                                    <span class="mr-auto text-truncate">{{ planner.meta.name || ($t('label.untitled') + ' ' + (planner.meta.year || '')) }}</span>
+                                    <small class="text-muted ml-2">{{ planner.meta.year }}</small>
+                                    <i v-if="planner.meta.userKey === userKey && signedin" class="ph ph-cloud ml-1" title="Synced"></i>
+                                    <i v-else class="ph ph-device-mobile ml-1" :title="$t('label.localonly')"></i>
+                                  </a>
+                                  <a v-if="signedin && planner.meta.userKey !== userKey" class="dropdown-item small pl-5" href="#"
+                                     v-on:click.prevent="takeOwnership(planner.uuid)">
+                                    <i class="ph ph-cloud-arrow-up"></i> {{$t('label.synctocloud')}}
+                                  </a>
+                                </template>
+                                <div class="dropdown-divider"></div>
                                 <a  class="dropdown-item" href="#" v-on:click="sharePlanner()">{{$t('label.share')}}…</a>
                                 <a  class="dropdown-item" href="#" v-on:click="showRenamePlanner()">{{$t('label.rename')}}</a>
                                 <a  class="dropdown-item" href="#" v-on:click="createPlanner()">{{$t('label.new')}}</a>
-                                <a  class="dropdown-item" href="#"  data-toggle="modal" data-target="#deleteModal">{{$t('label.delete')}}…</a>
+                                <a  class="dropdown-item" href="#" v-if="activeDocUuid" v-on:click="deletePlannerByUuid(activeDocUuid)">{{$t('label.delete')}}…</a>
                                 <div class="dropdown-divider"></div>
                                 <h6 class="dropdown-header">{{$t('label.theme')}}</h6>
                                 <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':theme=='light'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=light'">{{$t('label.light')}}</a>

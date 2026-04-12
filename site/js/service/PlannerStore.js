@@ -219,11 +219,23 @@ export default class PlannerStore {
     _syncModelDays() {
         const doc  = this._docStore.get(this._activeUuid);
         const days = doc?.days || {};
+        let normalized = false;
         for (const k of Object.keys(this.model.days)) {
             if (!days[k]) delete this.model.days[k];
         }
         for (const [k, v] of Object.entries(days)) {
+            // Coerce legacy tp/col from empty-string storage
+            const tp  = parseInt(v.tp,  10);
+            const col = parseInt(v.col, 10);
+            if (v.tp !== (Number.isFinite(tp) ? tp : 0) || v.col !== (Number.isFinite(col) ? col : 0)) {
+                v.tp  = Number.isFinite(tp)  ? tp  : 0;
+                v.col = Number.isFinite(col) ? col : 0;
+                normalized = true;
+            }
             this.model.days[k] = v;
+        }
+        if (normalized && doc) {
+            this._docStore.set(this._activeUuid, doc);
         }
     }
 

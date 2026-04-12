@@ -20,7 +20,7 @@ test('sync payload sends tp/col as integers not empty strings', async ({ page })
     // Seed a planner with tp/col stored as empty strings (legacy Vue bug)
     const uuid = 'test-planner-tp-col';
     const doc = {
-      meta: { uid: 12345, year: 2026, name: '2026', lang: 'en', theme: 'light', dark: false },
+      meta: { userKey: 'test-uuid', year: 2026, name: '2026', lang: 'en', theme: 'light' },
       days: {
         '2026-03-01': { tp: '', tl: 'work day', col: '', notes: '', emoji: '' },
         '2026-03-02': { tp: 1,  tl: 'event',    col: 2,  notes: '', emoji: '' },
@@ -30,6 +30,7 @@ test('sync payload sends tp/col as integers not empty strings', async ({ page })
     localStorage.setItem(`sync:${uuid}`, '0000000000000-000000-00000000');
     localStorage.setItem(`rev:${uuid}`,  '{}');
     localStorage.setItem(`base:${uuid}`, '{}');
+    localStorage.setItem('active-planner', uuid);
   }, makeFakeJwt());
 
   await page.route('**/year-planner/sync', async (route) => {

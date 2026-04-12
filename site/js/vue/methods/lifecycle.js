@@ -9,12 +9,16 @@ export const lifecycleMethods = {
         }
         this.userKey = this.plannerStore.getUserKey();
 
-        // Restore last active planner, or show selector
+        // Restore last active planner, or auto-create on first visit
         const restored = this.plannerStore.restoreActive();
         if (restored) {
             this.activeDocUuid = restored;
+        } else if (this.plannerStore.listPlanners().length === 0) {
+            // First visit — create a default planner so the user can start editing
+            const uuid = this.plannerStore.createDoc(this.userKey, this.year, '');
+            this.plannerStore.activateDoc(uuid);
+            this.activeDocUuid = uuid;
         }
-        // If no active planner, selector will open after sync populates docs
 
         if (this._pendingImport && this.activeDocUuid) {
             this.plannerStore.importDays(this.year, this._pendingImport);
