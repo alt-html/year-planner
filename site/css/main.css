@@ -2,7 +2,7 @@
    YEAR PLANNER — MAIN STYLESHEET
    Two themes via CSS custom properties on <body>:
      Ink & Paper  (data-theme="ink")
-     Crisp & Clear (data-theme="nordic")
+     Crisp & Clear (data-theme="crisp")
    Dark mode via .yp-dark class on <body>
    ============================================================ */
 
@@ -59,7 +59,7 @@
 }
 
 /* ---- THEME B: Crisp & Clear ---- */
-[data-theme="nordic"] {
+[data-theme="crisp"] {
     --font-display: 'DM Sans', -apple-system, sans-serif;
     --font-body: 'DM Sans', -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
@@ -448,6 +448,32 @@ a.navbar-brand {
 
 .rail-flyout-input:focus {
     border-color: var(--accent);
+}
+
+.rail-flyout-header {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--rail-text);
+    opacity: 0.6;
+    padding: 4px 14px 2px;
+}
+
+.rail-flyout-item-active {
+    background: var(--rail-active-bg, rgba(255,255,255,0.1));
+    font-weight: 600;
+}
+
+.rail-planner-section {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.settings-flyout {
+    bottom: 40px;
+    top: auto;
+    width: 140px;
 }
 
 .yp-rail button.flyout-active {
