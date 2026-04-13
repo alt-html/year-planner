@@ -53,12 +53,11 @@ export const railMethods = {
     },
 
     selectEmojiTab(tab) {
-        if (!this.$el) return;
-        this.$el.querySelectorAll('.emoji-tab-btn').forEach(b => b.classList.remove('active'));
-        this.$el.querySelectorAll('.emoji-tab-panel').forEach(p => p.classList.remove('active'));
-        const btn = this.$el.querySelector(`.emoji-tab-btn[data-tab="${tab}"]`);
+        document.querySelectorAll('.emoji-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.emoji-tab-panel').forEach(p => p.classList.remove('active'));
+        const btn = document.querySelector(`.emoji-tab-btn[data-tab="${tab}"]`);
         if (btn) btn.classList.add('active');
-        const panel = this.$el.querySelector(`.emoji-tab-panel[data-panel="${tab}"]`);
+        const panel = document.querySelector(`.emoji-tab-panel[data-panel="${tab}"]`);
         if (panel) panel.classList.add('active');
     },
 
@@ -74,7 +73,7 @@ export const railMethods = {
             this._closeNavMenu = null;
             setTimeout(() => {
                 this._closeNavMenu = (e) => {
-                    const btnGroup = this.$el ? this.$el.querySelector('.btn-group') : null;
+                    const btnGroup = document.querySelector('.btn-group');
                     if (btnGroup && !btnGroup.contains(e.target)) {
                         this.navMenuOpen = false;
                         document.removeEventListener('click', this._closeNavMenu);
@@ -251,14 +250,14 @@ export const railMethods = {
     },
 
     toggleRail() {
-        const rail = this.$el ? this.$el.querySelector('#rail') : null;
+        const rail = document.getElementById('rail');
         if (rail) rail.classList.toggle('open');
         document.body.classList.toggle('rail-open');
         this.railFlyout = null;
     },
 
     doDarkToggle() {
-        const rail = this.$el ? this.$el.querySelector('#rail') : null;
+        const rail = document.getElementById('rail');
         if (rail && rail.classList.contains('open')) {
             sessionStorage.setItem('rail_open', '1');
         }
@@ -285,7 +284,7 @@ export const railMethods = {
     },
 
     navigateToYear(event) {
-        const input = event ? event.target : (this.$el ? this.$el.querySelector('.rail-flyout-input') : null);
+        const input = event ? event.target : document.querySelector('.rail-flyout-input');
         if (!input) return;
         const yr = parseInt(input.value);
         if (!isNaN(yr) && yr > 0 && yr < 10000) {

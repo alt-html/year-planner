@@ -45,7 +45,7 @@ export const plannerMethods = {
         this.rename = true;
         this.renameVisible = true;
         this.$nextTick(() => {
-            const titleInput = this.$el.querySelector('#title');
+            const titleInput = document.getElementById('title');
             if (titleInput) titleInput.focus();
         });
     },
