@@ -89,4 +89,8 @@ export const plannerMethods = {
         copyText.setSelectionRange(0, 99999);
         document.execCommand('copy');
     },
+
+    closeFeatureModal() {
+        this.showFeatureModal = false;
+    },
 }

@@ -3,7 +3,7 @@
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Year Planner">
     <meta name="author" content="Craig Parravicini">
 
@@ -91,12 +91,12 @@
                   <a class="rail-flyout-item d-flex align-items-center" href="#"
                      v-bind:class="{'rail-flyout-item-active': planner.uuid === activeDocUuid}"
                      v-on:click.prevent="selectPlanner(planner.uuid); toggleFlyout(null)">
-                    <span class="mr-auto text-truncate">{{ planner.meta.name || ($t('label.untitled') + ' ' + (planner.meta.year || '')) }}</span>
-                    <small class="text-muted ml-2">{{ planner.meta.year }}</small>
-                    <i v-if="planner.meta.userKey === userKey && signedin" class="ph ph-cloud ml-1" title="Synced"></i>
-                    <i v-else class="ph ph-device-mobile ml-1" v-bind:title="$t('label.localonly')"></i>
+                    <span class="me-auto text-truncate">{{ planner.meta.name || ($t('label.untitled') + ' ' + (planner.meta.year || '')) }}</span>
+                    <small class="text-body-secondary ms-2">{{ planner.meta.year }}</small>
+                    <i v-if="planner.meta.userKey === userKey && signedin" class="ph ph-cloud ms-1" title="Synced"></i>
+                    <i v-else class="ph ph-device-mobile ms-1" v-bind:title="$t('label.localonly')"></i>
                   </a>
-                  <a v-if="signedin && planner.meta.userKey !== userKey" class="rail-flyout-item small pl-3" href="#"
+                  <a v-if="signedin && planner.meta.userKey !== userKey" class="rail-flyout-item small ps-3" href="#"
                      v-on:click.prevent="takeOwnership(planner.uuid)">
                     <i class="ph ph-cloud-arrow-up"></i> {{$t('label.synctocloud')}}
                   </a>
@@ -358,19 +358,17 @@
 
         <div class="text-light text-center pt-5" v-bind:class="{'d-none':loaded}" >
             <div id="spinner" class="spinner-border m-5" style="width: 5rem; height: 5rem;" role="status">
-                <span class="sr-only">Loading</span>
+                <span class="visually-hidden">Loading</span>
             </div>
         </div>
 
         <nav class="navbar navbar-expand sticky-top d-none" v-bind:class="{'d-flex':loaded}" >
 
-            <a class="navbar-brand" data-toggle="tooltip" data-placement="bottom" :title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
+            <a class="navbar-brand" :title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
 
-            <form id="rename" class="form-inline" v-show="renameVisible">
+            <form id="rename" class="d-flex align-items-center gap-2" v-show="renameVisible">
                 <div class="input-group"><input id="title" maxlength="64" class="form-control form-control-sm" type="text" v-bind:placeholder="$t('label.untitled')" aria-label="Name" v-model="name" v-on:keyup="" v-on:focusout="renamePlanner()">
-                    <div class="input-group-append">
                         <button class="navbar-brand navbar-brand-support btn btn-outline-secondary py-0 my-0" type="button" v-on:click="renamePlanner()" ><i class="ph ph-floppy-disk" aria-hidden="true"></i></button>
-                    </div>
                 </div>
             </form>
 
@@ -390,18 +388,16 @@
         </nav>
 
        <main class="d-none" v-bind:class="{'d-block':loaded}">
-            <div class="jumbotron">
+            <div class="yp-jumbotron">
                 <div class="container">
                     <div class="fade" v-if="error" v-bind:class="{'alert alert-danger alert-dismissible show': error != ''}" role="alert" >
                         <p>{{$t(error)}}</p>
-                        <button type="button" class="close" v-on:click="clearError" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" v-on:click="clearError" aria-label="Close"></button>
                     </div>
 
                     <div v-if="feature.debug">
                             <div>&nbsp</div>
-                            <div class="row no-gutters">
+                            <div class="row g-0">
                                 <div class="col-xs-12">
                                     <div class="row tst-cell d-sm-none">Extra Small (xs) < 576px</div>
                                     <div class="row tst-cell d-none d-sm-inline d-md-none">Small (sm) >= 576</div>
@@ -413,44 +409,44 @@
                     </div>
 
 
-                    <div id="yp-table" class="row no-gutters">
+                    <div id="yp-table" class="row g-0">
                         <div id="yp-weekdays" class="col-4 col-sm-3 col-md-2 col-lg-2 col-xl-1">
 
-                                <div class="row no-gutters yp-header-cell"          ><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell "          v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters          "          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
-                                <div class="row no-gutters yp-header-cell d-xl-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-xl-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-xl-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
-                                <div class="row no-gutters yp-header-cell d-xl-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-xl-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-xl-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
-                                <div class="row no-gutters yp-header-cell d-lg-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-lg-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-lg-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
-                                <div class="row no-gutters yp-header-cell d-md-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-md-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-md-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
-                                <div class="row no-gutters yp-header-cell d-md-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-md-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-md-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
-                                <div class="row no-gutters yp-header-cell d-sm-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
-                                <div class="row no-gutters yp-header-cell d-sm-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
-                                <div class="row no-gutters yp-header-cell d-sm-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
-                                <div class="row no-gutters yp-header-cell d-sm-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
-                                <div class="row no-gutters yp-header-cell d-sm-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
-                                <div class="row no-gutters yp-header-cell d-sm-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row no-gutters  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row no-gutters d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row g-0 yp-header-cell"          ><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row g-0  yp-cell "          v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row g-0          "          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row g-0 yp-header-cell d-xl-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row g-0  yp-cell d-xl-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row g-0 d-xl-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row g-0 yp-header-cell d-xl-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row g-0  yp-cell d-xl-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row g-0 d-xl-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row g-0 yp-header-cell d-lg-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row g-0  yp-cell d-lg-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row g-0 d-lg-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row g-0 yp-header-cell d-md-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row g-0  yp-cell d-md-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row g-0 d-md-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row g-0 yp-header-cell d-md-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row g-0  yp-cell d-md-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row g-0 d-md-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row g-0 yp-header-cell d-sm-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row g-0  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row g-0 d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row g-0 yp-header-cell d-sm-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row g-0  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row g-0 d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row g-0 yp-header-cell d-sm-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row g-0  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row g-0 d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row g-0 yp-header-cell d-sm-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row g-0  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row g-0 d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row g-0 yp-header-cell d-sm-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row g-0  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row g-0 d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
+                                <div class="row g-0 yp-header-cell d-sm-none"><h5>{{DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5></div><template v-for="w in 5" ><div class="row g-0  yp-cell d-sm-none" v-bind:class="{'yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in daysOfWeek">{{$t('day.'+d)}}</div></template><div class="row g-0 d-sm-none"          v-bind:class="{'yp-cell':  ( d != 'Sunday'), 'yp-cell-bottom':  d == 'Tuesday','yp-cell-weekend': d == 'Saturday' || d == 'Sunday'}"  v-for="d in ['Monday','Tuesday']">{{$t('day.'+d)}}</div>
 
                             </div>
                         <div id="yp-months" class="col-8 col-sm-9 col-md-10 col-lg-10 col-xl-11">
-                            <div class="row no-gutters">
+                            <div class="row g-0">
                                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-1" v-for="(m,mindex) in monthsOfYear">
-                                    <div class="row no-gutters" v-bind:class="{'yp-header-cell': m != 'December', 'yp-header-cell-right' : m == 'December'}" ><a class="yp-anchor" v-bind:name="m" ></a><h5>{{$t('month.'+m)}}</h5></div>
+                                    <div class="row g-0" v-bind:class="{'yp-header-cell': m != 'December', 'yp-header-cell-right' : m == 'December'}" ><a class="yp-anchor" v-bind:name="m" ></a><h5>{{$t('month.'+m)}}</h5></div>
                                         <template v-if="firstWeekdayOfMonth[mindex]>1">
-                                            <div class="row no-gutters yp-cell"
+                                            <div class="row g-0 yp-cell"
                                                  v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n-1) % 7 > 4 }"
                                                   v-for="n in firstWeekdayOfMonth[mindex]-1">&nbsp;
                                             </div>
                                         </template>
-                                        <div class="row no-gutters yp-cell"
+                                        <div class="row g-0 yp-cell"
                                              v-bind:class="{'yp-cell-bottom': n+firstWeekdayOfMonth[mindex]-1 == 37 && m != 'December','yp-cell-right': n+firstWeekdayOfMonth[mindex]-1 < 37 && m == 'December', 'yp-cell-bottom-right': n+firstWeekdayOfMonth[mindex]-1 == 37 && m == 'December', 'yp-cell-past': DateTime.local(year,mindex+1,n).ts < DateTime.local(cyear,cmonth,cday).ts,'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-1-1) % 7 > 4,'yp-cell-c1':getEntryColour(mindex,n)==1,'yp-cell-c2':getEntryColour(mindex,n)==2,'yp-cell-c3':getEntryColour(mindex,n)==3,'yp-cell-c4':getEntryColour(mindex,n)==4,'yp-cell-c5':getEntryColour(mindex,n)==5,'yp-cell-c6':getEntryColour(mindex,n)==6,'yp-cell-c7':getEntryColour(mindex,n)==7,'yp-cell-c8':getEntryColour(mindex,n)==8,'yp-cell-today': cyear == year && cmonth==mindex+1 && cday == n  }"
                                              v-for="n in daysInMonth[mindex]"
                                              v-on:click="updateEntryState(mindex,n)">
                                             <a v-if="cyear == year && cmonth==mindex+1 && cday == n" class="yp-anchor" id="today" ></a>
                                             <span class="yp-cell-text" >{{DateTime.local(year, mindex+1, n).setLocale(lang).toLocaleString({day:'numeric'})}}&nbsp;</span>
-                                            <span class="yp-cell-text" data-toggle="tooltip" data-placement="bottom" :title="(getEntryEmoji(mindex,n) ? getEntryEmoji(mindex,n)+' ' : '')+(getEntry(mindex,n).trimStart() || getEntryNotes(mindex,n).slice(0,32))">{{(getEntryEmoji(mindex,n) ? getEntryEmoji(mindex,n)+' ' : '')+(getEntry(mindex,n).trimStart() || getEntryNotes(mindex,n).slice(0,32))}}</span>
+                                            <span class="yp-cell-text" :title="(getEntryEmoji(mindex,n) ? getEntryEmoji(mindex,n)+' ' : '')+(getEntry(mindex,n).trimStart() || getEntryNotes(mindex,n).slice(0,32))">{{(getEntryEmoji(mindex,n) ? getEntryEmoji(mindex,n)+' ' : '')+(getEntry(mindex,n).trimStart() || getEntryNotes(mindex,n).slice(0,32))}}</span>
 
                                         </div>
                                         <template v-if="37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1 > 0">
-                                            <div class="row no-gutters yp-cell"
+                                            <div class="row g-0 yp-cell"
                                                  v-bind:class="{'yp-cell-right': m == 'December', 'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]+daysInMonth[mindex]-2) % 7 > 4, 'yp-cell-bottom': n==37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1 }"
                                                  v-for="n in 37-firstWeekdayOfMonth[mindex]-daysInMonth[mindex]+1">&nbsp;
                                             </div>
@@ -506,13 +502,11 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="shareModalLabel">{{$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5>
-                        <button type="button" class="close" v-on:click="closeShareModal()" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" v-on:click="closeShareModal()" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form>
-                            <div class="form-group">
+                            <div class="mb-3">
                                 <label for="copyUrl" class="col-form-label">{{$t('label.sharecopy')}}</label>
                                 <input  type="text" class="form-control" v-model="shareUrl" id="copyUrl">
                             </div>
@@ -533,9 +527,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="deleteModalLabel">{{getPlannerName() || $t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5>
-                        <button type="button" class="close" v-on:click="closeDeleteModal()" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" v-on:click="closeDeleteModal()" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <h5 class="modal-title" id="deleteModalConfirm">{{$t('label.deleteplanner')}}</h5>
@@ -555,25 +547,21 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="authModalLabel">{{$t('label.signin')}}</h5>
-                        <button type="button" class="close" v-on:click="closeAuthModal()" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" v-on:click="closeAuthModal()" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert">
                             <p class="mb-0">{{$t(modalError)}}</p>
-                            <button type="button" class="close" v-on:click="clearModalAlert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" v-on:click="clearModalAlert" aria-label="Close"></button>
                         </div>
                         <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('google')">
+                            <button type="button" class="btn btn-outline-dark mb-2" v-on:click="signInWith('google')">
                                 <i class="ph ph-google-logo me-2"></i> Sign in with Google
                             </button>
-                            <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('apple')">
+                            <button type="button" class="btn btn-outline-dark mb-2" v-on:click="signInWith('apple')">
                                 <i class="ph ph-apple-logo me-2"></i> Sign in with Apple
                             </button>
-                            <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('microsoft')">
+                            <button type="button" class="btn btn-outline-dark mb-2" v-on:click="signInWith('microsoft')">
                                 <i class="ph ph-microsoft-outlook-logo me-2"></i> Sign in with Microsoft
                             </button>
                         </div>
@@ -586,14 +574,13 @@
         </div>
         <div class="modal-backdrop fade show" v-if="showAuthModal" v-on:click="closeAuthModal()"></div>
 
-        <div class="modal fade" id="featureModal" tabindex="-1" role="dialog" aria-labelledby="featureModalLabel" aria-hidden="true">
+        <div class="modal fade" id="featureModal" tabindex="-1" role="dialog" aria-labelledby="featureModalLabel" aria-hidden="true"
+             v-bind:class="{ show: showFeatureModal, 'd-block': showFeatureModal }">
             <div id="feature-dialog"  class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="featureModalLabel">Feature Toggles</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" v-on:click="closeFeatureModal()" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form>
@@ -608,21 +595,22 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="reset()">{{$t('label.reset')}}</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
+                        <button type="button" class="btn btn-primary" v-on:click="reset(); closeFeatureModal()">{{$t('label.reset')}}</button>
+                        <button type="button" class="btn btn-secondary" v-on:click="closeFeatureModal()">{{$t('label.close')}}</button>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="modal-backdrop fade show" v-if="showFeatureModal" v-on:click="closeFeatureModal()"></div>
 
         <footer class="d-none footer fixed-bottom" v-bind:class="{'d-block':loaded}">
             <div id ="footer-container" class="container">
                 <div class="row">
                     <div class="col-2">
 
-                        <div id="footer-text-left" class="text-muted text-left">
+                        <div id="footer-text-left" class="text-body-secondary text-start">
                             <div class="dropup show">
-                                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     {{$t('lang.'+lang)}}
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -644,7 +632,7 @@
 
                     <div class="col-10">
 
-                        <div id="footer-text-right" class="text-muted text-right">© 2021-2026, C<span class="d-none d-sm-inline">raig</span><span class="d-sm-none">.</span><span data-toggle="modal" data-target="#featureModal">&nbsp;</span>Parravicini&nbsp;&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" style="display:inline-flex;align-items:center;gap:2px;">
+                        <div id="footer-text-right" class="text-body-secondary text-end">© 2021-2026, C<span class="d-none d-sm-inline">raig</span><span class="d-sm-none">.</span><span v-on:click="showFeatureModal = true">&nbsp;</span>Parravicini&nbsp;&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" style="display:inline-flex;align-items:center;gap:2px;">
                             <svg class="cc-icon" viewBox="0 0 24 24"><path d="M11.983 0c-3.292 0-6.19 1.217-8.428 3.485C1.25 5.819 0 8.844 0 12c0 3.189 1.217 6.148 3.522 8.45C5.827 22.75 8.822 24 11.983 24c3.16 0 6.222-1.25 8.593-3.583C22.815 18.214 24 15.287 24 12c0-3.255-1.186-6.214-3.458-8.483C18.238 1.217 15.275 0 11.983 0zm.033 2.17c2.7 0 5.103 1.02 6.98 2.893 1.843 1.841 2.83 4.274 2.83 6.937 0 2.696-.954 5.063-2.798 6.872-1.943 1.906-4.444 2.926-7.012 2.926-2.601 0-5.038-1.019-6.914-2.893-1.877-1.875-2.93-4.34-2.93-6.905 0-2.597 1.053-5.063 2.93-6.97 1.844-1.874 4.214-2.86 6.914-2.86zM8.68 8.278C6.723 8.278 5.165 9.66 5.165 12c0 2.38 1.465 3.722 3.581 3.722 1.358 0 2.516-.744 3.155-1.874l-1.491-.758c-.333.798-.839 1.037-1.478 1.037-1.105 0-1.61-.917-1.61-2.126 0-1.21.426-2.127 1.61-2.127.32 0 .96.173 1.332.97l1.597-.838c-.68-1.236-1.837-1.728-3.181-1.728zm6.932 0c-1.957 0-3.514 1.382-3.514 3.722 0 2.38 1.464 3.722 3.58 3.722 1.359 0 2.516-.744 3.155-1.874l-1.49-.758c-.333.798-.84 1.037-1.478 1.037-1.105 0-1.611-.917-1.611-2.126 0-1.21.426-2.127 1.61-2.127.32 0 .96.173 1.332.97l1.597-.838c-.68-1.236-1.837-1.728-3.181-1.728z"/></svg><svg class="cc-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 3a3 3 0 100 6 3 3 0 000-6zm-4.5 8.5c0-1.5 2-2.5 4.5-2.5s4.5 1 4.5 2.5V17h-9v-3.5z"/></svg><svg class="cc-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm-2.5 5.5L7 12l2.5 4.5h2L9 12l2.5-4.5h-2zm5 0L12 12l2.5 4.5h2L14 12l2.5-4.5h-2z"/></svg>
                         </a>&nbsp;&nbsp; <a href="https://github.com/alt-html/year-planner" target="_blank"><i class="ph ph-github-logo"></i><span class="d-none d-sm-inline">&nbsp;README.md</span></a>
                         </div>
