@@ -4,6 +4,7 @@ import { entryMethods } from './methods/entries.js';
 import { plannerMethods } from './methods/planner.js';
 import { authMethods } from './methods/auth.js';
 import { lifecycleMethods } from './methods/lifecycle.js';
+import { railMethods } from './methods/rail.js';
 
 // Component definition — passed to Vue.createApp() by createCdiApp in main.js.
 const app = {
@@ -16,16 +17,11 @@ const app = {
         ...plannerMethods,
         ...authMethods,
         ...lifecycleMethods,
+        ...railMethods,
     },
     mounted() {
         this.refresh();
-        // Bootstrap 4 fires modal events via jQuery's $.trigger(), not native DOM events.
-        // Must use jQuery .on() — addEventListener() will never catch them.
-        if (window.jQuery) {
-            window.jQuery('#authModal').on('shown.bs.modal', () => {
-                this.signInWith('google');
-            });
-        }
+        this.initRailInteractions();
         // E2E test hook: exposes signout() on window so Playwright can call it
         // without needing to navigate hidden UI elements.
         if (window.__e2eEnabled) {
