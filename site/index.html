@@ -1139,15 +1139,36 @@
             railMenuBtn.addEventListener('click', function() {
                 var container = document.querySelector('.nav-settings');
                 if (container) {
-                    var btn = container.closest('.btn-group').querySelector('button');
-                    if (btn) btn.click();
+                    $(container).closest('.btn-group').find('[data-toggle="dropdown"]').dropdown('toggle');
                 }
             });
         }
 
         var railSigninBtn = document.getElementById('railSigninBtn');
+        function updateRailSigninBtn() {
+            if (!railSigninBtn) return;
+            var signedIn = !!localStorage.getItem('auth_token');
+            var icon = railSigninBtn.querySelector('i');
+            if (signedIn) {
+                railSigninBtn.title = 'Sign out';
+                if (icon) { icon.className = 'ph ph-sign-out'; }
+            } else {
+                railSigninBtn.title = 'Sign in';
+                if (icon) { icon.className = 'ph ph-sign-in'; }
+            }
+        }
+        updateRailSigninBtn();
         if (railSigninBtn) {
             railSigninBtn.addEventListener('click', function() {
+                var appEl = document.getElementById('app');
+                if (appEl && appEl._vnode && appEl._vnode.component) {
+                    var vue = appEl._vnode.component.proxy;
+                    if (vue && vue.signedin) {
+                        vue.signout();
+                        updateRailSigninBtn();
+                        return;
+                    }
+                }
                 $('#authModal').modal('show');
             });
         }
