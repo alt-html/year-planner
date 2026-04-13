@@ -129,8 +129,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 12-01-PLAN.md — Vue rail migration, jQuery removal, modal Vue flags, MOD-09 audit
-- [ ] 12-02-PLAN.md — Contract tests against live jsmdma backend, SYNC-08 verification
+- [x] 12-01-PLAN.md — Vue rail migration, jQuery removal, modal Vue flags, MOD-09 audit
+- [x] 12-02-PLAN.md — Contract tests against live jsmdma backend, SYNC-08 verification
 
 ---
 
@@ -149,4 +149,4 @@ Plans:
 | 9. localStorage Schema | v1.2 | — | Complete | 2026-03 |
 | 10. Source Root Tidy | v1.2 | — | Complete | 2026-04 |
 | 11. jsmdma Sync & MOD | v1.3 | 3/3 | Complete | 2026-04-10 |
-| 12. Auth Config & Live Sync | v1.4 | 0/2 | Not started | - |
+| 12. Auth Config & Live Sync | v1.4 | 2/2 | Complete    | 2026-04-13 |
