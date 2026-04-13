@@ -20,7 +20,7 @@
         </div>
 
         <!-- Calendar flyout -->
-        <div class="rail-flyout" v-show="railFlyout === 'calendar'">
+        <div class="rail-flyout" v-bind:class="{open: railFlyout === 'calendar'}" v-show="railFlyout === 'calendar'">
             <div class="rail-flyout-section">
                 <a class="rail-flyout-item" href="#January" v-on:click="toggleFlyout(null)">January</a>
                 <a class="rail-flyout-item" href="#February" v-on:click="toggleFlyout(null)">February</a>
@@ -44,7 +44,7 @@
         </div>
 
         <!-- Marker/highlighter flyout -->
-        <div class="rail-flyout marker-flyout" v-show="railFlyout === 'marker'">
+        <div class="rail-flyout marker-flyout" v-bind:class="{open: railFlyout === 'marker'}" v-show="railFlyout === 'marker'">
             <div class="marker-flyout-dots">
                 <button class="marker-dot marker-dot-clear" v-on:click="selectMarkerColour(0)" v-bind:class="{selected: markerColour === 0}" title="Eraser"><i class="ph ph-eraser"></i></button>
                 <button class="marker-dot yp-dot-c1" v-on:click="selectMarkerColour(1)" v-bind:class="{selected: markerColour === 1}"></button>
@@ -59,7 +59,7 @@
         </div>
 
         <!-- Emoji stamp flyout -->
-        <div class="rail-flyout emoji-flyout" v-show="railFlyout === 'emoji'">
+        <div class="rail-flyout emoji-flyout" v-bind:class="{open: railFlyout === 'emoji'}" v-show="railFlyout === 'emoji'">
             <div class="emoji-eraser-row">
                 <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === ''}" v-on:click="selectEmoji('')" title="Eraser"><i class="ph ph-eraser"></i></button>
             </div>
