@@ -26,10 +26,10 @@
             <span class="nav-menu-hidden">
                 <form class="form-inline my-0 ">
                     <div  class="btn-group">
-                          <button type="button" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <button type="button" class="navbar-brand navbar-brand-support btn btn-secondary my-0 px-0" v-on:click.stop="toggleNavMenu()" aria-haspopup="true" v-bind:aria-expanded="navMenuOpen">
                             <i class="ph ph-list"></i>
                           </button>
-                          <div class="nav-settings dropdown-menu dropdown-menu-right">
+                          <div class="nav-settings dropdown-menu dropdown-menu-right" v-bind:class="{ show: navMenuOpen }" v-show="navMenuOpen">
                                 <h6 class="dropdown-header">{{$t('label.planners')}}</h6>
                                 <template v-for="planner in (plannerStore?.listPlanners() || []).sort((a,b) => (b.meta.year||0)-(a.meta.year||0) || (a.meta.name||'').localeCompare(b.meta.name||''))">
                                   <a class="dropdown-item d-flex align-items-center" href="#"

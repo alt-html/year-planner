@@ -51,7 +51,7 @@
                                         </template>
                                         <div class="row no-gutters yp-cell"
                                              v-bind:class="{'yp-cell-bottom': n+firstWeekdayOfMonth[mindex]-1 == 37 && m != 'December','yp-cell-right': n+firstWeekdayOfMonth[mindex]-1 < 37 && m == 'December', 'yp-cell-bottom-right': n+firstWeekdayOfMonth[mindex]-1 == 37 && m == 'December', 'yp-cell-past': DateTime.local(year,mindex+1,n).ts < DateTime.local(cyear,cmonth,cday).ts,'yp-cell-weekend': (n+firstWeekdayOfMonth[mindex]-1-1) % 7 > 4,'yp-cell-c1':getEntryColour(mindex,n)==1,'yp-cell-c2':getEntryColour(mindex,n)==2,'yp-cell-c3':getEntryColour(mindex,n)==3,'yp-cell-c4':getEntryColour(mindex,n)==4,'yp-cell-c5':getEntryColour(mindex,n)==5,'yp-cell-c6':getEntryColour(mindex,n)==6,'yp-cell-c7':getEntryColour(mindex,n)==7,'yp-cell-c8':getEntryColour(mindex,n)==8,'yp-cell-today': cyear == year && cmonth==mindex+1 && cday == n  }"
-                                             v-for="n in daysInMonth[mindex]" data-toggle="modal" data-target="#entryModal"
+                                             v-for="n in daysInMonth[mindex]"
                                              v-on:click="updateEntryState(mindex,n)">
                                             <a v-if="cyear == year && cmonth==mindex+1 && cday == n" class="yp-anchor" id="today" ></a>
                                             <span class="yp-cell-text" >{{DateTime.local(year, mindex+1, n).setLocale(lang).toLocaleString({day:'numeric'})}}&nbsp;</span>

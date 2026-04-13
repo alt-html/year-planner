@@ -1,9 +1,10 @@
-        <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true">
+        <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true"
+             v-bind:class="{ show: showShareModal, 'd-block': showShareModal }">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="shareModalLabel">{{$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" v-on:click="closeShareModal()" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -16,9 +17,10 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
+                        <button type="button" class="btn btn-secondary" v-on:click="closeShareModal()">{{$t('label.close')}}</button>
                         <button type="button" class="btn btn-primary"  v-on:click="copyUrl()">{{$t('label.copy')}}</button>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="modal-backdrop fade show" v-if="showShareModal" v-on:click="closeShareModal()"></div>

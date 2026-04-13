@@ -129,9 +129,8 @@ export default class Application {
             if (r) r.classList.toggle('yp-rail--collapsed', self.model.railCollapsed);
         });
 
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
+        // Bootstrap tooltips removed with jQuery — tooltips rely on title= attributes
+        // which browsers render natively. No replacement needed.
 
         // Start sync scheduler — fires on online / visibilitychange events
         this.model.syncScheduler?.start();

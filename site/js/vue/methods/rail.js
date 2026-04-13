@@ -94,6 +94,14 @@ export const railMethods = {
         this.showShareModal = false;
     },
 
+    closeEntryModal() {
+        this.showEntryModal = false;
+    },
+
+    closeDeleteModal() {
+        this.showDeleteModal = false;
+    },
+
     applyMarkerToCell(cellEl) {
         if (cellEl === this._markerLastCell) return;
         this._markerLastCell = cellEl;

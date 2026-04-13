@@ -5,19 +5,31 @@
 
 const { test, expect } = require('../fixtures/cdn');
 
+// Open the nav-settings dropdown via the Vue app instance (no jQuery/Bootstrap)
+async function openNavDropdown(page) {
+    await page.evaluate(() => {
+        const appEl = document.getElementById('app');
+        if (appEl && appEl._vnode && appEl._vnode.component) {
+            const vm = appEl._vnode.component.proxy;
+            if (!vm.navMenuOpen) vm.toggleNavMenu();
+        }
+    });
+    await page.waitForSelector('.nav-settings', { state: 'visible' });
+}
+
 test('planner management: create, select, delete via dropdown (E2E-03)', async ({ page }) => {
   // --- Initial load ---
   await page.goto('/');
   await page.waitForSelector('[data-app-ready]');
 
   // --- Create a new planner via dropdown ---
-  await page.evaluate(() => { $('.nav-settings').closest('.btn-group').find('[data-toggle="dropdown"]').dropdown('toggle'); });
+  await openNavDropdown(page);
   await page.click('.nav-settings .dropdown-item:has-text("New")');
   // No page navigation — selector creates and activates inline
   await page.waitForTimeout(500);
 
   // Open dropdown again and verify there are now at least 2 planners listed
-  await page.evaluate(() => { $('.nav-settings').closest('.btn-group').find('[data-toggle="dropdown"]').dropdown('toggle'); });
+  await openNavDropdown(page);
   const plannerItems = await page.locator('.nav-settings .dropdown-item-checked, .nav-settings .dropdown-item.d-flex').count();
   expect(plannerItems).toBeGreaterThanOrEqual(2);
 
@@ -27,7 +39,7 @@ test('planner management: create, select, delete via dropdown (E2E-03)', async (
   await page.waitForTimeout(300);
 
   // --- Delete the active planner ---
-  await page.evaluate(() => { $('.nav-settings').closest('.btn-group').find('[data-toggle="dropdown"]').dropdown('toggle'); });
+  await openNavDropdown(page);
   // The delete item only shows when activeDocUuid is set
   const deleteItem = page.locator('.nav-settings .dropdown-item:has-text("Delete")');
   if (await deleteItem.isVisible()) {
@@ -70,8 +82,8 @@ test('planner selector shows ownership indicators when signed in', async ({ page
   await page.goto('/?uid=12345&year=2026');
   await page.waitForSelector('[data-app-ready]');
 
-  // Open dropdown
-  await page.evaluate(() => { $('.nav-settings').closest('.btn-group').find('[data-toggle="dropdown"]').dropdown('toggle'); });
+  // Open dropdown via Vue
+  await openNavDropdown(page);
 
   // Both planners should be listed
   await expect(page.locator('.nav-settings:has-text("Cloud Planner")')).toBeVisible();

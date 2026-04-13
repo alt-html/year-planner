@@ -1,9 +1,10 @@
-        <div class="modal fade" id="entryModal" tabindex="-1" role="dialog" aria-labelledby="entryModalLabel" aria-hidden="true">
+        <div class="modal fade" id="entryModal" tabindex="-1" role="dialog" aria-labelledby="entryModalLabel" aria-hidden="true"
+             v-bind:class="{ show: showEntryModal, 'd-block': showEntryModal }">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content yp-entry-modal">
                     <div class="yp-entry-date">
                         <span id="entryModalLabel">{{$t('month.'+monthsOfYear[month])+' '+day}}</span>
-                        <button type="button" class="yp-entry-close" data-dismiss="modal" aria-label="Close"><i class="ph ph-x"></i></button>
+                        <button type="button" class="yp-entry-close" v-on:click="closeEntryModal()" aria-label="Close"><i class="ph ph-x"></i></button>
                     </div>
                     <input type="text" v-model="entry" id="yp-entry-textarea" maxlength="32" class="yp-entry-text" v-bind:class="'yp-cell-c'+getEntryColour(month,day)" v-bind:placeholder="$t('label.taglineplaceholder')">
                     <label class="yp-entry-field-label" for="yp-notes-textarea">{{$t('label.notesplaceholder')}}</label>
@@ -21,10 +22,11 @@
                             <button type="button" class="yp-dot yp-dot-c8" v-on:click="updateEntry(month,day,entry,entryType,8,entryNotes,entryEmoji,true)"></button>
                         </div>
                         <div class="yp-entry-actions">
-                            <button type="button" class="yp-action-dismiss" data-dismiss="modal">{{$t('label.close')}}</button>
-                            <button type="button" class="yp-action-save" data-dismiss="modal" v-on:click="updateEntry(month,day,entry,entryType,entryColour,entryNotes,entryEmoji,true)">{{$t('label.update')}}</button>
+                            <button type="button" class="yp-action-dismiss" v-on:click="closeEntryModal()">{{$t('label.close')}}</button>
+                            <button type="button" class="yp-action-save" v-on:click="updateEntry(month,day,entry,entryType,entryColour,entryNotes,entryEmoji,true); closeEntryModal()">{{$t('label.update')}}</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="modal-backdrop fade show" v-if="showEntryModal" v-on:click="closeEntryModal()"></div>

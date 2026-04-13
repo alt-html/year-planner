@@ -21,6 +21,7 @@ export const entryMethods = {
         this.entryColour = d.col   || 0;
         this.entryNotes  = d.notes || '';
         this.entryEmoji  = d.emoji || '';
+        this.showEntryModal = true;
     },
 
     getEntry(mindex, day) {

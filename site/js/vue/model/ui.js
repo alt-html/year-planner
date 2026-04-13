@@ -18,11 +18,15 @@ export const uiState = {
     // Emoji mode
     emojiActive : false,
     emojiSelected : '',
-    // Modal flags (replace jQuery .modal('show')/.modal('hide'))
+    // Modal flags (replace jQuery .modal('show')/.modal('hide') and Bootstrap data-toggle="modal")
     showAuthModal : false,
     showShareModal : false,
+    showEntryModal : false,
+    showDeleteModal : false,
     // Rename form visibility (replace jQuery $('#rename').show()/hide())
     renameVisible : false,
     // Nav menu dropdown
     navMenuOpen : false,
+    // Style theme crisp flag (for v-show on theme icons in rail)
+    styleCrisp : false,
 }
