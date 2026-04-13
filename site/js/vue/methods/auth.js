@@ -2,14 +2,14 @@ export const authMethods = {
 
     showSignin() {
         this.clearModalAlert();
-        $('#authModal').modal('show');
+        this.showAuthModal = true;
     },
 
     async signInWith(provider) {
+        this.showAuthModal = false;  // close immediately on click (replaces data-dismiss="modal")
         this.clearModalAlert();
         try {
             await this.authProvider.signIn(provider);
-            $('#authModal').modal('hide');
             this.signedin = true;
             this.userKey = this.plannerStore.getUserKey();
             this.syncScheduler.markDirty();

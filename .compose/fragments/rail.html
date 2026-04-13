@@ -1,271 +1,271 @@
-    <!-- HIDDEN LEFT ICON RAIL (outside #app — plain JS, no Vue) -->
+    <!-- HIDDEN LEFT ICON RAIL (inside #app — Vue-bound) -->
     <nav class="yp-rail" id="rail">
         <div class="yp-rail-logo">YP</div>
-        <button class="active" title="Calendar" id="railCalendarBtn"><i class="ph ph-calendar-dots"></i></button>
-        <button title="Share" id="railShareBtn"><i class="ph ph-share-network"></i></button>
-        <button title="Highlighter" id="railMarkerBtn"><i class="ph ph-highlighter-circle"></i></button>
-        <button title="Emoji stamp" id="railEmojiBtn"><i class="ph ph-smiley-sticker"></i></button>
+        <button class="active" title="Calendar" v-on:click="toggleFlyout('calendar')"><i class="ph ph-calendar-dots"></i></button>
+        <button title="Share" v-on:click="sharePlanner()"><i class="ph ph-share-network"></i></button>
+        <button title="Highlighter" v-on:click="toggleMarkerMode()" v-bind:class="{active: markerActive}"><i class="ph ph-highlighter-circle"></i></button>
+        <button title="Emoji stamp" v-on:click="toggleEmojiMode()" v-bind:class="{active: emojiActive}"><i class="ph ph-smiley-sticker"></i></button>
         <div class="yp-rail-spacer"></div>
         <div class="yp-rail-bottom">
             <button title="Language"><i class="ph ph-globe-simple"></i></button>
-            <button title="Menu" id="railMenuBtn"><i class="ph ph-gear-six"></i></button>
-            <button title="Sign in" id="railSigninBtn"><i class="ph ph-sign-in"></i></button>
+            <button title="Menu" v-on:click="toggleNavMenu()"><i class="ph ph-gear-six"></i></button>
+            <button v-if="!signedin" title="Sign in" v-on:click="showSignin()"><i class="ph ph-sign-in"></i></button>
+            <button v-if="signedin" title="Sign out" v-on:click="signout()"><i class="ph ph-sign-out"></i></button>
             <div class="yp-rail-divider"></div>
-            <button class="rail-theme-toggle" id="themeToggleBtn" title="Switch theme">
-                <i class="ph ph-ruler" id="themeSwitchIconRuler"></i>
-                <i class="ph ph-feather" id="themeSwitchIconFeather" style="display:none"></i>
+            <button class="rail-theme-toggle" v-on:click="toggleStyleTheme()" title="Switch theme">
+                <i class="ph ph-ruler" v-show="!styleCrisp"></i>
+                <i class="ph ph-feather" v-show="styleCrisp"></i>
             </button>
-            <button id="railDarkToggle" title="Toggle dark mode"><i class="ph ph-sun-dim"></i></button>
+            <button v-on:click="doDarkToggle()" title="Toggle dark mode"><i class="ph ph-sun-dim"></i></button>
         </div>
 
-        <!-- Calendar flyout (overlays to the right, rail stays same width) -->
-        <div class="rail-flyout" id="railCalendarFlyout">
+        <!-- Calendar flyout -->
+        <div class="rail-flyout" v-show="railFlyout === 'calendar'">
             <div class="rail-flyout-section">
-                <a class="rail-flyout-item" href="#January">January</a>
-                <a class="rail-flyout-item" href="#February">February</a>
-                <a class="rail-flyout-item" href="#March">March</a>
-                <a class="rail-flyout-item" href="#April">April</a>
-                <a class="rail-flyout-item" href="#May">May</a>
-                <a class="rail-flyout-item" href="#June">June</a>
-                <a class="rail-flyout-item" href="#July">July</a>
-                <a class="rail-flyout-item" href="#August">August</a>
-                <a class="rail-flyout-item" href="#September">September</a>
-                <a class="rail-flyout-item" href="#October">October</a>
-                <a class="rail-flyout-item" href="#November">November</a>
-                <a class="rail-flyout-item" href="#December">December</a>
+                <a class="rail-flyout-item" href="#January" v-on:click="toggleFlyout(null)">January</a>
+                <a class="rail-flyout-item" href="#February" v-on:click="toggleFlyout(null)">February</a>
+                <a class="rail-flyout-item" href="#March" v-on:click="toggleFlyout(null)">March</a>
+                <a class="rail-flyout-item" href="#April" v-on:click="toggleFlyout(null)">April</a>
+                <a class="rail-flyout-item" href="#May" v-on:click="toggleFlyout(null)">May</a>
+                <a class="rail-flyout-item" href="#June" v-on:click="toggleFlyout(null)">June</a>
+                <a class="rail-flyout-item" href="#July" v-on:click="toggleFlyout(null)">July</a>
+                <a class="rail-flyout-item" href="#August" v-on:click="toggleFlyout(null)">August</a>
+                <a class="rail-flyout-item" href="#September" v-on:click="toggleFlyout(null)">September</a>
+                <a class="rail-flyout-item" href="#October" v-on:click="toggleFlyout(null)">October</a>
+                <a class="rail-flyout-item" href="#November" v-on:click="toggleFlyout(null)">November</a>
+                <a class="rail-flyout-item" href="#December" v-on:click="toggleFlyout(null)">December</a>
             </div>
             <div class="rail-flyout-divider"></div>
-            <a class="rail-flyout-item" href="#today">Today</a>
+            <a class="rail-flyout-item" href="#today" v-on:click="toggleFlyout(null)">Today</a>
             <div class="rail-flyout-divider"></div>
             <div class="rail-flyout-section">
-                <input type="text" maxlength="4" class="rail-flyout-input" id="railYearInput" placeholder="Year…">
+                <input type="text" maxlength="4" class="rail-flyout-input" placeholder="Year…" v-on:keydown.enter.prevent="navigateToYear($event)">
             </div>
         </div>
+
         <!-- Marker/highlighter flyout -->
-        <div class="rail-flyout marker-flyout" id="railMarkerFlyout">
+        <div class="rail-flyout marker-flyout" v-show="railFlyout === 'marker'">
             <div class="marker-flyout-dots">
-                <button class="marker-dot marker-dot-clear" data-colour="0" title="Eraser"><i class="ph ph-eraser"></i></button>
-                <button class="marker-dot yp-dot-c1" data-colour="1"></button>
-                <button class="marker-dot yp-dot-c2" data-colour="2"></button>
-                <button class="marker-dot yp-dot-c3" data-colour="3"></button>
-                <button class="marker-dot yp-dot-c4" data-colour="4"></button>
-                <button class="marker-dot yp-dot-c5" data-colour="5"></button>
-                <button class="marker-dot yp-dot-c6" data-colour="6"></button>
-                <button class="marker-dot yp-dot-c7" data-colour="7"></button>
-                <button class="marker-dot yp-dot-c8" data-colour="8"></button>
+                <button class="marker-dot marker-dot-clear" v-on:click="selectMarkerColour(0)" v-bind:class="{selected: markerColour === 0}" title="Eraser"><i class="ph ph-eraser"></i></button>
+                <button class="marker-dot yp-dot-c1" v-on:click="selectMarkerColour(1)" v-bind:class="{selected: markerColour === 1}"></button>
+                <button class="marker-dot yp-dot-c2" v-on:click="selectMarkerColour(2)" v-bind:class="{selected: markerColour === 2}"></button>
+                <button class="marker-dot yp-dot-c3" v-on:click="selectMarkerColour(3)" v-bind:class="{selected: markerColour === 3}"></button>
+                <button class="marker-dot yp-dot-c4" v-on:click="selectMarkerColour(4)" v-bind:class="{selected: markerColour === 4}"></button>
+                <button class="marker-dot yp-dot-c5" v-on:click="selectMarkerColour(5)" v-bind:class="{selected: markerColour === 5}"></button>
+                <button class="marker-dot yp-dot-c6" v-on:click="selectMarkerColour(6)" v-bind:class="{selected: markerColour === 6}"></button>
+                <button class="marker-dot yp-dot-c7" v-on:click="selectMarkerColour(7)" v-bind:class="{selected: markerColour === 7}"></button>
+                <button class="marker-dot yp-dot-c8" v-on:click="selectMarkerColour(8)" v-bind:class="{selected: markerColour === 8}"></button>
             </div>
         </div>
+
         <!-- Emoji stamp flyout -->
-        <div class="rail-flyout emoji-flyout" id="railEmojiFlyout">
+        <div class="rail-flyout emoji-flyout" v-show="railFlyout === 'emoji'">
             <div class="emoji-eraser-row">
-                <button class="emoji-stamp-btn selected" data-emoji="" title="Eraser"><i class="ph ph-eraser"></i></button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === ''}" v-on:click="selectEmoji('')" title="Eraser"><i class="ph ph-eraser"></i></button>
             </div>
             <div class="emoji-tab-bar">
-                <button class="emoji-tab-btn active" data-tab="faces" title="Faces">😀</button>
-                <button class="emoji-tab-btn" data-tab="seasons" title="Seasons &amp; Weather">🌱</button>
-                <button class="emoji-tab-btn" data-tab="events" title="Events &amp; Anniversaries">🎁</button>
-                <button class="emoji-tab-btn" data-tab="celebrations" title="Celebrations">🎉</button>
-                <button class="emoji-tab-btn" data-tab="sports" title="Sports &amp; Outdoors">⚽</button>
-                <button class="emoji-tab-btn" data-tab="travel" title="Travel">✈️</button>
-                <button class="emoji-tab-btn" data-tab="flags" title="Flags">🎌</button>
+                <button class="emoji-tab-btn active" data-tab="faces" title="Faces" v-on:click="selectEmojiTab('faces')">😀</button>
+                <button class="emoji-tab-btn" data-tab="seasons" title="Seasons &amp; Weather" v-on:click="selectEmojiTab('seasons')">🌱</button>
+                <button class="emoji-tab-btn" data-tab="events" title="Events &amp; Anniversaries" v-on:click="selectEmojiTab('events')">🎁</button>
+                <button class="emoji-tab-btn" data-tab="celebrations" title="Celebrations" v-on:click="selectEmojiTab('celebrations')">🎉</button>
+                <button class="emoji-tab-btn" data-tab="sports" title="Sports &amp; Outdoors" v-on:click="selectEmojiTab('sports')">⚽</button>
+                <button class="emoji-tab-btn" data-tab="travel" title="Travel" v-on:click="selectEmojiTab('travel')">✈️</button>
+                <button class="emoji-tab-btn" data-tab="flags" title="Flags" v-on:click="selectEmojiTab('flags')">🎌</button>
             </div>
             <!-- Faces (24) -->
             <div class="emoji-tab-panel active" data-panel="faces">
-                <button class="emoji-stamp-btn" data-emoji="😀">😀</button>
-                <button class="emoji-stamp-btn" data-emoji="😂">😂</button>
-                <button class="emoji-stamp-btn" data-emoji="😍">😍</button>
-                <button class="emoji-stamp-btn" data-emoji="🥰">🥰</button>
-                <button class="emoji-stamp-btn" data-emoji="😎">😎</button>
-                <button class="emoji-stamp-btn" data-emoji="🤩">🤩</button>
-                <button class="emoji-stamp-btn" data-emoji="😢">😢</button>
-                <button class="emoji-stamp-btn" data-emoji="😡">😡</button>
-                <button class="emoji-stamp-btn" data-emoji="🤔">🤔</button>
-                <button class="emoji-stamp-btn" data-emoji="😴">😴</button>
-                <button class="emoji-stamp-btn" data-emoji="😅">😅</button>
-                <button class="emoji-stamp-btn" data-emoji="😇">😇</button>
-                <button class="emoji-stamp-btn" data-emoji="🤗">🤗</button>
-                <button class="emoji-stamp-btn" data-emoji="😬">😬</button>
-                <button class="emoji-stamp-btn" data-emoji="🥲">🥲</button>
-                <button class="emoji-stamp-btn" data-emoji="😤">😤</button>
-                <button class="emoji-stamp-btn" data-emoji="🤒">🤒</button>
-                <button class="emoji-stamp-btn" data-emoji="🥴">🥴</button>
-                <button class="emoji-stamp-btn" data-emoji="🤯">🤯</button>
-                <button class="emoji-stamp-btn" data-emoji="😱">😱</button>
-                <button class="emoji-stamp-btn" data-emoji="🤫">🤫</button>
-                <button class="emoji-stamp-btn" data-emoji="🙈">🙈</button>
-                <button class="emoji-stamp-btn" data-emoji="💀">💀</button>
-                <button class="emoji-stamp-btn" data-emoji="👻">👻</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😀'}" v-on:click="selectEmoji('😀')">😀</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😂'}" v-on:click="selectEmoji('😂')">😂</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😍'}" v-on:click="selectEmoji('😍')">😍</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥰'}" v-on:click="selectEmoji('🥰')">🥰</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😎'}" v-on:click="selectEmoji('😎')">😎</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤩'}" v-on:click="selectEmoji('🤩')">🤩</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😢'}" v-on:click="selectEmoji('😢')">😢</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😡'}" v-on:click="selectEmoji('😡')">😡</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤔'}" v-on:click="selectEmoji('🤔')">🤔</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😴'}" v-on:click="selectEmoji('😴')">😴</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😅'}" v-on:click="selectEmoji('😅')">😅</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😇'}" v-on:click="selectEmoji('😇')">😇</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤗'}" v-on:click="selectEmoji('🤗')">🤗</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😬'}" v-on:click="selectEmoji('😬')">😬</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥲'}" v-on:click="selectEmoji('🥲')">🥲</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😤'}" v-on:click="selectEmoji('😤')">😤</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤒'}" v-on:click="selectEmoji('🤒')">🤒</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥴'}" v-on:click="selectEmoji('🥴')">🥴</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤯'}" v-on:click="selectEmoji('🤯')">🤯</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😱'}" v-on:click="selectEmoji('😱')">😱</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤫'}" v-on:click="selectEmoji('🤫')">🤫</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🙈'}" v-on:click="selectEmoji('🙈')">🙈</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '💀'}" v-on:click="selectEmoji('💀')">💀</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '👻'}" v-on:click="selectEmoji('👻')">👻</button>
             </div>
-            <!-- Seasons & Weather (24): spring seedling, flowers, summer, autumn, winter, weather, moon phases -->
+            <!-- Seasons & Weather (24) -->
             <div class="emoji-tab-panel" data-panel="seasons">
-                <button class="emoji-stamp-btn" data-emoji="🌱">🌱</button>
-                <button class="emoji-stamp-btn" data-emoji="🌸">🌸</button>
-                <button class="emoji-stamp-btn" data-emoji="🥚">🥚</button>
-                <button class="emoji-stamp-btn" data-emoji="🌿">🌿</button>
-                <button class="emoji-stamp-btn" data-emoji="☀️">☀️</button>
-                <button class="emoji-stamp-btn" data-emoji="🌻">🌻</button>
-                <button class="emoji-stamp-btn" data-emoji="🌈">🌈</button>
-                <button class="emoji-stamp-btn" data-emoji="🍂">🍂</button>
-                <button class="emoji-stamp-btn" data-emoji="🍁">🍁</button>
-                <button class="emoji-stamp-btn" data-emoji="🌾">🌾</button>
-                <button class="emoji-stamp-btn" data-emoji="🦃">🦃</button>
-                <button class="emoji-stamp-btn" data-emoji="🎃">🎃</button>
-                <button class="emoji-stamp-btn" data-emoji="❄️">❄️</button>
-                <button class="emoji-stamp-btn" data-emoji="🎅">🎅</button>
-                <button class="emoji-stamp-btn" data-emoji="🕎">🕎</button>
-                <button class="emoji-stamp-btn" data-emoji="🌤️">🌤️</button>
-                <button class="emoji-stamp-btn" data-emoji="⛅">⛅</button>
-                <button class="emoji-stamp-btn" data-emoji="🌧️">🌧️</button>
-                <button class="emoji-stamp-btn" data-emoji="⛈️">⛈️</button>
-                <button class="emoji-stamp-btn" data-emoji="🌨️">🌨️</button>
-                <button class="emoji-stamp-btn" data-emoji="🌑">🌑</button>
-                <button class="emoji-stamp-btn" data-emoji="🌓">🌓</button>
-                <button class="emoji-stamp-btn" data-emoji="🌕">🌕</button>
-                <button class="emoji-stamp-btn" data-emoji="🌗">🌗</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌱'}" v-on:click="selectEmoji('🌱')">🌱</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌸'}" v-on:click="selectEmoji('🌸')">🌸</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥚'}" v-on:click="selectEmoji('🥚')">🥚</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌿'}" v-on:click="selectEmoji('🌿')">🌿</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '☀️'}" v-on:click="selectEmoji('☀️')">☀️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌻'}" v-on:click="selectEmoji('🌻')">🌻</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌈'}" v-on:click="selectEmoji('🌈')">🌈</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🍂'}" v-on:click="selectEmoji('🍂')">🍂</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🍁'}" v-on:click="selectEmoji('🍁')">🍁</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌾'}" v-on:click="selectEmoji('🌾')">🌾</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🦃'}" v-on:click="selectEmoji('🦃')">🦃</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎃'}" v-on:click="selectEmoji('🎃')">🎃</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '❄️'}" v-on:click="selectEmoji('❄️')">❄️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎅'}" v-on:click="selectEmoji('🎅')">🎅</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🕎'}" v-on:click="selectEmoji('🕎')">🕎</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌤️'}" v-on:click="selectEmoji('🌤️')">🌤️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⛅'}" v-on:click="selectEmoji('⛅')">⛅</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌧️'}" v-on:click="selectEmoji('🌧️')">🌧️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⛈️'}" v-on:click="selectEmoji('⛈️')">⛈️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌨️'}" v-on:click="selectEmoji('🌨️')">🌨️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌑'}" v-on:click="selectEmoji('🌑')">🌑</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌓'}" v-on:click="selectEmoji('🌓')">🌓</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌕'}" v-on:click="selectEmoji('🌕')">🌕</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌗'}" v-on:click="selectEmoji('🌗')">🌗</button>
             </div>
             <!-- Events & Anniversaries (24) -->
             <div class="emoji-tab-panel" data-panel="events">
-                <button class="emoji-stamp-btn" data-emoji="🎁">🎁</button>
-                <button class="emoji-stamp-btn" data-emoji="🎂">🎂</button>
-                <button class="emoji-stamp-btn" data-emoji="💍">💍</button>
-                <button class="emoji-stamp-btn" data-emoji="🌹">🌹</button>
-                <button class="emoji-stamp-btn" data-emoji="🥂">🥂</button>
-                <button class="emoji-stamp-btn" data-emoji="🎓">🎓</button>
-                <button class="emoji-stamp-btn" data-emoji="🏅">🏅</button>
-                <button class="emoji-stamp-btn" data-emoji="💐">💐</button>
-                <button class="emoji-stamp-btn" data-emoji="🕯️">🕯️</button>
-                <button class="emoji-stamp-btn" data-emoji="❤️">❤️</button>
-                <button class="emoji-stamp-btn" data-emoji="🎗️">🎗️</button>
-                <button class="emoji-stamp-btn" data-emoji="📅">📅</button>
-                <button class="emoji-stamp-btn" data-emoji="💒">💒</button>
-                <button class="emoji-stamp-btn" data-emoji="🤝">🤝</button>
-                <button class="emoji-stamp-btn" data-emoji="👶">👶</button>
-                <button class="emoji-stamp-btn" data-emoji="🏡">🏡</button>
-                <button class="emoji-stamp-btn" data-emoji="🎖️">🎖️</button>
-                <button class="emoji-stamp-btn" data-emoji="📜">📜</button>
-                <button class="emoji-stamp-btn" data-emoji="🔔">🔔</button>
-                <button class="emoji-stamp-btn" data-emoji="💌">💌</button>
-                <button class="emoji-stamp-btn" data-emoji="🫂">🫂</button>
-                <button class="emoji-stamp-btn" data-emoji="🙏">🙏</button>
-                <button class="emoji-stamp-btn" data-emoji="⭐">⭐</button>
-                <button class="emoji-stamp-btn" data-emoji="🌟">🌟</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎁'}" v-on:click="selectEmoji('🎁')">🎁</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎂'}" v-on:click="selectEmoji('🎂')">🎂</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '💍'}" v-on:click="selectEmoji('💍')">💍</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌹'}" v-on:click="selectEmoji('🌹')">🌹</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥂'}" v-on:click="selectEmoji('🥂')">🥂</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎓'}" v-on:click="selectEmoji('🎓')">🎓</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏅'}" v-on:click="selectEmoji('🏅')">🏅</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '💐'}" v-on:click="selectEmoji('💐')">💐</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🕯️'}" v-on:click="selectEmoji('🕯️')">🕯️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '❤️'}" v-on:click="selectEmoji('❤️')">❤️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎗️'}" v-on:click="selectEmoji('🎗️')">🎗️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '📅'}" v-on:click="selectEmoji('📅')">📅</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '💒'}" v-on:click="selectEmoji('💒')">💒</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤝'}" v-on:click="selectEmoji('🤝')">🤝</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '👶'}" v-on:click="selectEmoji('👶')">👶</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏡'}" v-on:click="selectEmoji('🏡')">🏡</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎖️'}" v-on:click="selectEmoji('🎖️')">🎖️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '📜'}" v-on:click="selectEmoji('📜')">📜</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🔔'}" v-on:click="selectEmoji('🔔')">🔔</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '💌'}" v-on:click="selectEmoji('💌')">💌</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🫂'}" v-on:click="selectEmoji('🫂')">🫂</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🙏'}" v-on:click="selectEmoji('🙏')">🙏</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⭐'}" v-on:click="selectEmoji('⭐')">⭐</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌟'}" v-on:click="selectEmoji('🌟')">🌟</button>
             </div>
             <!-- Celebrations (24) -->
             <div class="emoji-tab-panel" data-panel="celebrations">
-                <button class="emoji-stamp-btn" data-emoji="🎉">🎉</button>
-                <button class="emoji-stamp-btn" data-emoji="🎊">🎊</button>
-                <button class="emoji-stamp-btn" data-emoji="🥳">🥳</button>
-                <button class="emoji-stamp-btn" data-emoji="🎆">🎆</button>
-                <button class="emoji-stamp-btn" data-emoji="🎇">🎇</button>
-                <button class="emoji-stamp-btn" data-emoji="✨">✨</button>
-                <button class="emoji-stamp-btn" data-emoji="🎈">🎈</button>
-                <button class="emoji-stamp-btn" data-emoji="🍾">🍾</button>
-                <button class="emoji-stamp-btn" data-emoji="🎺">🎺</button>
-                <button class="emoji-stamp-btn" data-emoji="🪄">🪄</button>
-                <button class="emoji-stamp-btn" data-emoji="🎭">🎭</button>
-                <button class="emoji-stamp-btn" data-emoji="🎪">🎪</button>
-                <button class="emoji-stamp-btn" data-emoji="🎵">🎵</button>
-                <button class="emoji-stamp-btn" data-emoji="🎶">🎶</button>
-                <button class="emoji-stamp-btn" data-emoji="🎸">🎸</button>
-                <button class="emoji-stamp-btn" data-emoji="🥁">🥁</button>
-                <button class="emoji-stamp-btn" data-emoji="🎤">🎤</button>
-                <button class="emoji-stamp-btn" data-emoji="🎬">🎬</button>
-                <button class="emoji-stamp-btn" data-emoji="🎡">🎡</button>
-                <button class="emoji-stamp-btn" data-emoji="🎢">🎢</button>
-                <button class="emoji-stamp-btn" data-emoji="🎠">🎠</button>
-                <button class="emoji-stamp-btn" data-emoji="🍰">🍰</button>
-                <button class="emoji-stamp-btn" data-emoji="🫧">🫧</button>
-                <button class="emoji-stamp-btn" data-emoji="🎀">🎀</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎉'}" v-on:click="selectEmoji('🎉')">🎉</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎊'}" v-on:click="selectEmoji('🎊')">🎊</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥳'}" v-on:click="selectEmoji('🥳')">🥳</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎆'}" v-on:click="selectEmoji('🎆')">🎆</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎇'}" v-on:click="selectEmoji('🎇')">🎇</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '✨'}" v-on:click="selectEmoji('✨')">✨</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎈'}" v-on:click="selectEmoji('🎈')">🎈</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🍾'}" v-on:click="selectEmoji('🍾')">🍾</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎺'}" v-on:click="selectEmoji('🎺')">🎺</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🪄'}" v-on:click="selectEmoji('🪄')">🪄</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎭'}" v-on:click="selectEmoji('🎭')">🎭</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎪'}" v-on:click="selectEmoji('🎪')">🎪</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎵'}" v-on:click="selectEmoji('🎵')">🎵</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎶'}" v-on:click="selectEmoji('🎶')">🎶</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎸'}" v-on:click="selectEmoji('🎸')">🎸</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥁'}" v-on:click="selectEmoji('🥁')">🥁</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎤'}" v-on:click="selectEmoji('🎤')">🎤</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎬'}" v-on:click="selectEmoji('🎬')">🎬</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎡'}" v-on:click="selectEmoji('🎡')">🎡</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎢'}" v-on:click="selectEmoji('🎢')">🎢</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎠'}" v-on:click="selectEmoji('🎠')">🎠</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🍰'}" v-on:click="selectEmoji('🍰')">🍰</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🫧'}" v-on:click="selectEmoji('🫧')">🫧</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎀'}" v-on:click="selectEmoji('🎀')">🎀</button>
             </div>
             <!-- Sports & Outdoors (24) -->
             <div class="emoji-tab-panel" data-panel="sports">
-                <button class="emoji-stamp-btn" data-emoji="⚽">⚽</button>
-                <button class="emoji-stamp-btn" data-emoji="🏀">🏀</button>
-                <button class="emoji-stamp-btn" data-emoji="🏈">🏈</button>
-                <button class="emoji-stamp-btn" data-emoji="⚾">⚾</button>
-                <button class="emoji-stamp-btn" data-emoji="🎾">🎾</button>
-                <button class="emoji-stamp-btn" data-emoji="🏐">🏐</button>
-                <button class="emoji-stamp-btn" data-emoji="🏊">🏊</button>
-                <button class="emoji-stamp-btn" data-emoji="🚴">🚴</button>
-                <button class="emoji-stamp-btn" data-emoji="🏋️">🏋️</button>
-                <button class="emoji-stamp-btn" data-emoji="⛷️">⛷️</button>
-                <button class="emoji-stamp-btn" data-emoji="🏄">🏄</button>
-                <button class="emoji-stamp-btn" data-emoji="🧗">🧗</button>
-                <button class="emoji-stamp-btn" data-emoji="🏃">🏃</button>
-                <button class="emoji-stamp-btn" data-emoji="🚶">🚶</button>
-                <button class="emoji-stamp-btn" data-emoji="🧘">🧘</button>
-                <button class="emoji-stamp-btn" data-emoji="⛳">⛳</button>
-                <button class="emoji-stamp-btn" data-emoji="🏌️">🏌️</button>
-                <button class="emoji-stamp-btn" data-emoji="🥊">🥊</button>
-                <button class="emoji-stamp-btn" data-emoji="🎯">🎯</button>
-                <button class="emoji-stamp-btn" data-emoji="🏹">🏹</button>
-                <button class="emoji-stamp-btn" data-emoji="🎿">🎿</button>
-                <button class="emoji-stamp-btn" data-emoji="🏆">🏆</button>
-                <button class="emoji-stamp-btn" data-emoji="🥇">🥇</button>
-                <button class="emoji-stamp-btn" data-emoji="🎖️">🎖️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⚽'}" v-on:click="selectEmoji('⚽')">⚽</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏀'}" v-on:click="selectEmoji('🏀')">🏀</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏈'}" v-on:click="selectEmoji('🏈')">🏈</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⚾'}" v-on:click="selectEmoji('⚾')">⚾</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎾'}" v-on:click="selectEmoji('🎾')">🎾</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏐'}" v-on:click="selectEmoji('🏐')">🏐</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏊'}" v-on:click="selectEmoji('🏊')">🏊</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚴'}" v-on:click="selectEmoji('🚴')">🚴</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏋️'}" v-on:click="selectEmoji('🏋️')">🏋️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⛷️'}" v-on:click="selectEmoji('⛷️')">⛷️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏄'}" v-on:click="selectEmoji('🏄')">🏄</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🧗'}" v-on:click="selectEmoji('🧗')">🧗</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏃'}" v-on:click="selectEmoji('🏃')">🏃</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚶'}" v-on:click="selectEmoji('🚶')">🚶</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🧘'}" v-on:click="selectEmoji('🧘')">🧘</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⛳'}" v-on:click="selectEmoji('⛳')">⛳</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏌️'}" v-on:click="selectEmoji('🏌️')">🏌️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥊'}" v-on:click="selectEmoji('🥊')">🥊</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎯'}" v-on:click="selectEmoji('🎯')">🎯</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏹'}" v-on:click="selectEmoji('🏹')">🏹</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎿'}" v-on:click="selectEmoji('🎿')">🎿</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏆'}" v-on:click="selectEmoji('🏆')">🏆</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥇'}" v-on:click="selectEmoji('🥇')">🥇</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎖️'}" v-on:click="selectEmoji('🎖️')">🎖️</button>
             </div>
             <!-- Travel (24) -->
             <div class="emoji-tab-panel" data-panel="travel">
-                <button class="emoji-stamp-btn" data-emoji="✈️">✈️</button>
-                <button class="emoji-stamp-btn" data-emoji="🚗">🚗</button>
-                <button class="emoji-stamp-btn" data-emoji="🚢">🚢</button>
-                <button class="emoji-stamp-btn" data-emoji="🚂">🚂</button>
-                <button class="emoji-stamp-btn" data-emoji="🚁">🚁</button>
-                <button class="emoji-stamp-btn" data-emoji="🛳️">🛳️</button>
-                <button class="emoji-stamp-btn" data-emoji="🚐">🚐</button>
-                <button class="emoji-stamp-btn" data-emoji="🏍️">🏍️</button>
-                <button class="emoji-stamp-btn" data-emoji="🧳">🧳</button>
-                <button class="emoji-stamp-btn" data-emoji="🗺️">🗺️</button>
-                <button class="emoji-stamp-btn" data-emoji="🧭">🧭</button>
-                <button class="emoji-stamp-btn" data-emoji="🌍">🌍</button>
-                <button class="emoji-stamp-btn" data-emoji="🌴">🌴</button>
-                <button class="emoji-stamp-btn" data-emoji="⛱️">⛱️</button>
-                <button class="emoji-stamp-btn" data-emoji="🏖️">🏖️</button>
-                <button class="emoji-stamp-btn" data-emoji="🏔️">🏔️</button>
-                <button class="emoji-stamp-btn" data-emoji="🏕️">🏕️</button>
-                <button class="emoji-stamp-btn" data-emoji="🌋">🌋</button>
-                <button class="emoji-stamp-btn" data-emoji="🗼">🗼</button>
-                <button class="emoji-stamp-btn" data-emoji="🗽">🗽</button>
-                <button class="emoji-stamp-btn" data-emoji="🏯">🏯</button>
-                <button class="emoji-stamp-btn" data-emoji="🕌">🕌</button>
-                <button class="emoji-stamp-btn" data-emoji="⛩️">⛩️</button>
-                <button class="emoji-stamp-btn" data-emoji="🎡">🎡</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '✈️'}" v-on:click="selectEmoji('✈️')">✈️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚗'}" v-on:click="selectEmoji('🚗')">🚗</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚢'}" v-on:click="selectEmoji('🚢')">🚢</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚂'}" v-on:click="selectEmoji('🚂')">🚂</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚁'}" v-on:click="selectEmoji('🚁')">🚁</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🛳️'}" v-on:click="selectEmoji('🛳️')">🛳️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚐'}" v-on:click="selectEmoji('🚐')">🚐</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏍️'}" v-on:click="selectEmoji('🏍️')">🏍️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🧳'}" v-on:click="selectEmoji('🧳')">🧳</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🗺️'}" v-on:click="selectEmoji('🗺️')">🗺️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🧭'}" v-on:click="selectEmoji('🧭')">🧭</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌍'}" v-on:click="selectEmoji('🌍')">🌍</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌴'}" v-on:click="selectEmoji('🌴')">🌴</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⛱️'}" v-on:click="selectEmoji('⛱️')">⛱️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏖️'}" v-on:click="selectEmoji('🏖️')">🏖️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏔️'}" v-on:click="selectEmoji('🏔️')">🏔️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏕️'}" v-on:click="selectEmoji('🏕️')">🏕️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌋'}" v-on:click="selectEmoji('🌋')">🌋</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🗼'}" v-on:click="selectEmoji('🗼')">🗼</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🗽'}" v-on:click="selectEmoji('🗽')">🗽</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏯'}" v-on:click="selectEmoji('🏯')">🏯</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🕌'}" v-on:click="selectEmoji('🕌')">🕌</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⛩️'}" v-on:click="selectEmoji('⛩️')">⛩️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎡'}" v-on:click="selectEmoji('🎡')">🎡</button>
             </div>
-            <!-- Flags — all 11 app languages + major national days (24) -->
-            <!-- en: US GB AU CA  |  ar: SA AE EG  |  es: ES MX AR CO -->
-            <!-- fr: FR  |  hi: IN  |  id: ID  |  ja: JP  |  pt: BR PT -->
-            <!-- ru: RU  |  tp: PG  |  zh: CN TW  |  extras: DE IT ZA -->
+            <!-- Flags -->
             <div class="emoji-tab-panel" data-panel="flags">
-                <button class="emoji-stamp-btn" data-emoji="🇺🇸" title="United States">🇺🇸</button>
-                <button class="emoji-stamp-btn" data-emoji="🇬🇧" title="United Kingdom">🇬🇧</button>
-                <button class="emoji-stamp-btn" data-emoji="🇦🇺" title="Australia">🇦🇺</button>
-                <button class="emoji-stamp-btn" data-emoji="🇨🇦" title="Canada">🇨🇦</button>
-                <button class="emoji-stamp-btn" data-emoji="🇸🇦" title="Saudi Arabia">🇸🇦</button>
-                <button class="emoji-stamp-btn" data-emoji="🇦🇪" title="UAE">🇦🇪</button>
-                <button class="emoji-stamp-btn" data-emoji="🇪🇬" title="Egypt">🇪🇬</button>
-                <button class="emoji-stamp-btn" data-emoji="🇪🇸" title="Spain">🇪🇸</button>
-                <button class="emoji-stamp-btn" data-emoji="🇲🇽" title="Mexico">🇲🇽</button>
-                <button class="emoji-stamp-btn" data-emoji="🇦🇷" title="Argentina">🇦🇷</button>
-                <button class="emoji-stamp-btn" data-emoji="🇨🇴" title="Colombia">🇨🇴</button>
-                <button class="emoji-stamp-btn" data-emoji="🇫🇷" title="France">🇫🇷</button>
-                <button class="emoji-stamp-btn" data-emoji="🇮🇳" title="India">🇮🇳</button>
-                <button class="emoji-stamp-btn" data-emoji="🇮🇩" title="Indonesia">🇮🇩</button>
-                <button class="emoji-stamp-btn" data-emoji="🇯🇵" title="Japan">🇯🇵</button>
-                <button class="emoji-stamp-btn" data-emoji="🇧🇷" title="Brazil">🇧🇷</button>
-                <button class="emoji-stamp-btn" data-emoji="🇵🇹" title="Portugal">🇵🇹</button>
-                <button class="emoji-stamp-btn" data-emoji="🇷🇺" title="Russia">🇷🇺</button>
-                <button class="emoji-stamp-btn" data-emoji="🇵🇬" title="Papua New Guinea">🇵🇬</button>
-                <button class="emoji-stamp-btn" data-emoji="🇨🇳" title="China">🇨🇳</button>
-                <button class="emoji-stamp-btn" data-emoji="🇹🇼" title="Taiwan">🇹🇼</button>
-                <button class="emoji-stamp-btn" data-emoji="🇩🇪" title="Germany">🇩🇪</button>
-                <button class="emoji-stamp-btn" data-emoji="🇮🇹" title="Italy">🇮🇹</button>
-                <button class="emoji-stamp-btn" data-emoji="🇿🇦" title="South Africa">🇿🇦</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇺🇸'}" v-on:click="selectEmoji('🇺🇸')" title="United States">🇺🇸</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇬🇧'}" v-on:click="selectEmoji('🇬🇧')" title="United Kingdom">🇬🇧</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇦🇺'}" v-on:click="selectEmoji('🇦🇺')" title="Australia">🇦🇺</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇨🇦'}" v-on:click="selectEmoji('🇨🇦')" title="Canada">🇨🇦</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇸🇦'}" v-on:click="selectEmoji('🇸🇦')" title="Saudi Arabia">🇸🇦</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇦🇪'}" v-on:click="selectEmoji('🇦🇪')" title="UAE">🇦🇪</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇪🇬'}" v-on:click="selectEmoji('🇪🇬')" title="Egypt">🇪🇬</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇪🇸'}" v-on:click="selectEmoji('🇪🇸')" title="Spain">🇪🇸</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇲🇽'}" v-on:click="selectEmoji('🇲🇽')" title="Mexico">🇲🇽</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇦🇷'}" v-on:click="selectEmoji('🇦🇷')" title="Argentina">🇦🇷</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇨🇴'}" v-on:click="selectEmoji('🇨🇴')" title="Colombia">🇨🇴</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇫🇷'}" v-on:click="selectEmoji('🇫🇷')" title="France">🇫🇷</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇮🇳'}" v-on:click="selectEmoji('🇮🇳')" title="India">🇮🇳</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇮🇩'}" v-on:click="selectEmoji('🇮🇩')" title="Indonesia">🇮🇩</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇯🇵'}" v-on:click="selectEmoji('🇯🇵')" title="Japan">🇯🇵</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇧🇷'}" v-on:click="selectEmoji('🇧🇷')" title="Brazil">🇧🇷</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇵🇹'}" v-on:click="selectEmoji('🇵🇹')" title="Portugal">🇵🇹</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇷🇺'}" v-on:click="selectEmoji('🇷🇺')" title="Russia">🇷🇺</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇵🇬'}" v-on:click="selectEmoji('🇵🇬')" title="Papua New Guinea">🇵🇬</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇨🇳'}" v-on:click="selectEmoji('🇨🇳')" title="China">🇨🇳</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇹🇼'}" v-on:click="selectEmoji('🇹🇼')" title="Taiwan">🇹🇼</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇩🇪'}" v-on:click="selectEmoji('🇩🇪')" title="Germany">🇩🇪</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇮🇹'}" v-on:click="selectEmoji('🇮🇹')" title="Italy">🇮🇹</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇿🇦'}" v-on:click="selectEmoji('🇿🇦')" title="South Africa">🇿🇦</button>
             </div>
         </div>
     </nav>
 
     <!-- RAIL TOGGLE (left-side circle) -->
-    <button class="rail-toggle" id="railToggle" title="Menu">
+    <button class="rail-toggle" v-on:click="toggleRail()" title="Menu">
         <i class="ph ph-caret-right"></i>
         <i class="ph ph-caret-left"></i>
     </button>
@@ -275,7 +275,7 @@
 
     <!-- FLOATING DARK MODE TOGGLE -->
     <div class="floating-controls">
-        <button class="float-btn" id="darkToggle" title="Toggle dark mode">
+        <button class="float-btn" v-on:click="doDarkToggle()" title="Toggle dark mode">
             <i class="ph ph-sun-dim"></i>
         </button>
     </div>

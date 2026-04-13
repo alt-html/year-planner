@@ -34,7 +34,7 @@ export const lifecycleMethods = {
         this.syncScheduler.markDirty();
         if (this._showSigninPester) {
             this._showSigninPester = false;
-            this.$nextTick(() => { jQuery('#authModal').modal('show'); });
+            this.$nextTick(() => { this.showAuthModal = true; });
         }
     },
 

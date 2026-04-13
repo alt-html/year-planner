@@ -40,274 +40,275 @@
 
 </head>
 <body>
-    <!-- HIDDEN LEFT ICON RAIL (outside #app — plain JS, no Vue) -->
+    <div id="app" v-bind:class="{'yp-dark':theme=='dark'}">
+    <!-- HIDDEN LEFT ICON RAIL (inside #app — Vue-bound) -->
     <nav class="yp-rail" id="rail">
         <div class="yp-rail-logo">YP</div>
-        <button class="active" title="Calendar" id="railCalendarBtn"><i class="ph ph-calendar-dots"></i></button>
-        <button title="Share" id="railShareBtn"><i class="ph ph-share-network"></i></button>
-        <button title="Highlighter" id="railMarkerBtn"><i class="ph ph-highlighter-circle"></i></button>
-        <button title="Emoji stamp" id="railEmojiBtn"><i class="ph ph-smiley-sticker"></i></button>
+        <button class="active" title="Calendar" v-on:click="toggleFlyout('calendar')"><i class="ph ph-calendar-dots"></i></button>
+        <button title="Share" v-on:click="sharePlanner()"><i class="ph ph-share-network"></i></button>
+        <button title="Highlighter" v-on:click="toggleMarkerMode()" v-bind:class="{active: markerActive}"><i class="ph ph-highlighter-circle"></i></button>
+        <button title="Emoji stamp" v-on:click="toggleEmojiMode()" v-bind:class="{active: emojiActive}"><i class="ph ph-smiley-sticker"></i></button>
         <div class="yp-rail-spacer"></div>
         <div class="yp-rail-bottom">
             <button title="Language"><i class="ph ph-globe-simple"></i></button>
-            <button title="Menu" id="railMenuBtn"><i class="ph ph-gear-six"></i></button>
-            <button title="Sign in" id="railSigninBtn"><i class="ph ph-sign-in"></i></button>
+            <button title="Menu" v-on:click="toggleNavMenu()"><i class="ph ph-gear-six"></i></button>
+            <button v-if="!signedin" title="Sign in" v-on:click="showSignin()"><i class="ph ph-sign-in"></i></button>
+            <button v-if="signedin" title="Sign out" v-on:click="signout()"><i class="ph ph-sign-out"></i></button>
             <div class="yp-rail-divider"></div>
-            <button class="rail-theme-toggle" id="themeToggleBtn" title="Switch theme">
-                <i class="ph ph-ruler" id="themeSwitchIconRuler"></i>
-                <i class="ph ph-feather" id="themeSwitchIconFeather" style="display:none"></i>
+            <button class="rail-theme-toggle" v-on:click="toggleStyleTheme()" title="Switch theme">
+                <i class="ph ph-ruler" v-show="!styleCrisp"></i>
+                <i class="ph ph-feather" v-show="styleCrisp"></i>
             </button>
-            <button id="railDarkToggle" title="Toggle dark mode"><i class="ph ph-sun-dim"></i></button>
+            <button v-on:click="doDarkToggle()" title="Toggle dark mode"><i class="ph ph-sun-dim"></i></button>
         </div>
 
-        <!-- Calendar flyout (overlays to the right, rail stays same width) -->
-        <div class="rail-flyout" id="railCalendarFlyout">
+        <!-- Calendar flyout -->
+        <div class="rail-flyout" v-show="railFlyout === 'calendar'">
             <div class="rail-flyout-section">
-                <a class="rail-flyout-item" href="#January">January</a>
-                <a class="rail-flyout-item" href="#February">February</a>
-                <a class="rail-flyout-item" href="#March">March</a>
-                <a class="rail-flyout-item" href="#April">April</a>
-                <a class="rail-flyout-item" href="#May">May</a>
-                <a class="rail-flyout-item" href="#June">June</a>
-                <a class="rail-flyout-item" href="#July">July</a>
-                <a class="rail-flyout-item" href="#August">August</a>
-                <a class="rail-flyout-item" href="#September">September</a>
-                <a class="rail-flyout-item" href="#October">October</a>
-                <a class="rail-flyout-item" href="#November">November</a>
-                <a class="rail-flyout-item" href="#December">December</a>
+                <a class="rail-flyout-item" href="#January" v-on:click="toggleFlyout(null)">January</a>
+                <a class="rail-flyout-item" href="#February" v-on:click="toggleFlyout(null)">February</a>
+                <a class="rail-flyout-item" href="#March" v-on:click="toggleFlyout(null)">March</a>
+                <a class="rail-flyout-item" href="#April" v-on:click="toggleFlyout(null)">April</a>
+                <a class="rail-flyout-item" href="#May" v-on:click="toggleFlyout(null)">May</a>
+                <a class="rail-flyout-item" href="#June" v-on:click="toggleFlyout(null)">June</a>
+                <a class="rail-flyout-item" href="#July" v-on:click="toggleFlyout(null)">July</a>
+                <a class="rail-flyout-item" href="#August" v-on:click="toggleFlyout(null)">August</a>
+                <a class="rail-flyout-item" href="#September" v-on:click="toggleFlyout(null)">September</a>
+                <a class="rail-flyout-item" href="#October" v-on:click="toggleFlyout(null)">October</a>
+                <a class="rail-flyout-item" href="#November" v-on:click="toggleFlyout(null)">November</a>
+                <a class="rail-flyout-item" href="#December" v-on:click="toggleFlyout(null)">December</a>
             </div>
             <div class="rail-flyout-divider"></div>
-            <a class="rail-flyout-item" href="#today">Today</a>
+            <a class="rail-flyout-item" href="#today" v-on:click="toggleFlyout(null)">Today</a>
             <div class="rail-flyout-divider"></div>
             <div class="rail-flyout-section">
-                <input type="text" maxlength="4" class="rail-flyout-input" id="railYearInput" placeholder="Year…">
+                <input type="text" maxlength="4" class="rail-flyout-input" placeholder="Year…" v-on:keydown.enter.prevent="navigateToYear($event)">
             </div>
         </div>
+
         <!-- Marker/highlighter flyout -->
-        <div class="rail-flyout marker-flyout" id="railMarkerFlyout">
+        <div class="rail-flyout marker-flyout" v-show="railFlyout === 'marker'">
             <div class="marker-flyout-dots">
-                <button class="marker-dot marker-dot-clear" data-colour="0" title="Eraser"><i class="ph ph-eraser"></i></button>
-                <button class="marker-dot yp-dot-c1" data-colour="1"></button>
-                <button class="marker-dot yp-dot-c2" data-colour="2"></button>
-                <button class="marker-dot yp-dot-c3" data-colour="3"></button>
-                <button class="marker-dot yp-dot-c4" data-colour="4"></button>
-                <button class="marker-dot yp-dot-c5" data-colour="5"></button>
-                <button class="marker-dot yp-dot-c6" data-colour="6"></button>
-                <button class="marker-dot yp-dot-c7" data-colour="7"></button>
-                <button class="marker-dot yp-dot-c8" data-colour="8"></button>
+                <button class="marker-dot marker-dot-clear" v-on:click="selectMarkerColour(0)" v-bind:class="{selected: markerColour === 0}" title="Eraser"><i class="ph ph-eraser"></i></button>
+                <button class="marker-dot yp-dot-c1" v-on:click="selectMarkerColour(1)" v-bind:class="{selected: markerColour === 1}"></button>
+                <button class="marker-dot yp-dot-c2" v-on:click="selectMarkerColour(2)" v-bind:class="{selected: markerColour === 2}"></button>
+                <button class="marker-dot yp-dot-c3" v-on:click="selectMarkerColour(3)" v-bind:class="{selected: markerColour === 3}"></button>
+                <button class="marker-dot yp-dot-c4" v-on:click="selectMarkerColour(4)" v-bind:class="{selected: markerColour === 4}"></button>
+                <button class="marker-dot yp-dot-c5" v-on:click="selectMarkerColour(5)" v-bind:class="{selected: markerColour === 5}"></button>
+                <button class="marker-dot yp-dot-c6" v-on:click="selectMarkerColour(6)" v-bind:class="{selected: markerColour === 6}"></button>
+                <button class="marker-dot yp-dot-c7" v-on:click="selectMarkerColour(7)" v-bind:class="{selected: markerColour === 7}"></button>
+                <button class="marker-dot yp-dot-c8" v-on:click="selectMarkerColour(8)" v-bind:class="{selected: markerColour === 8}"></button>
             </div>
         </div>
+
         <!-- Emoji stamp flyout -->
-        <div class="rail-flyout emoji-flyout" id="railEmojiFlyout">
+        <div class="rail-flyout emoji-flyout" v-show="railFlyout === 'emoji'">
             <div class="emoji-eraser-row">
-                <button class="emoji-stamp-btn selected" data-emoji="" title="Eraser"><i class="ph ph-eraser"></i></button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === ''}" v-on:click="selectEmoji('')" title="Eraser"><i class="ph ph-eraser"></i></button>
             </div>
             <div class="emoji-tab-bar">
-                <button class="emoji-tab-btn active" data-tab="faces" title="Faces">😀</button>
-                <button class="emoji-tab-btn" data-tab="seasons" title="Seasons &amp; Weather">🌱</button>
-                <button class="emoji-tab-btn" data-tab="events" title="Events &amp; Anniversaries">🎁</button>
-                <button class="emoji-tab-btn" data-tab="celebrations" title="Celebrations">🎉</button>
-                <button class="emoji-tab-btn" data-tab="sports" title="Sports &amp; Outdoors">⚽</button>
-                <button class="emoji-tab-btn" data-tab="travel" title="Travel">✈️</button>
-                <button class="emoji-tab-btn" data-tab="flags" title="Flags">🎌</button>
+                <button class="emoji-tab-btn active" data-tab="faces" title="Faces" v-on:click="selectEmojiTab('faces')">😀</button>
+                <button class="emoji-tab-btn" data-tab="seasons" title="Seasons &amp; Weather" v-on:click="selectEmojiTab('seasons')">🌱</button>
+                <button class="emoji-tab-btn" data-tab="events" title="Events &amp; Anniversaries" v-on:click="selectEmojiTab('events')">🎁</button>
+                <button class="emoji-tab-btn" data-tab="celebrations" title="Celebrations" v-on:click="selectEmojiTab('celebrations')">🎉</button>
+                <button class="emoji-tab-btn" data-tab="sports" title="Sports &amp; Outdoors" v-on:click="selectEmojiTab('sports')">⚽</button>
+                <button class="emoji-tab-btn" data-tab="travel" title="Travel" v-on:click="selectEmojiTab('travel')">✈️</button>
+                <button class="emoji-tab-btn" data-tab="flags" title="Flags" v-on:click="selectEmojiTab('flags')">🎌</button>
             </div>
             <!-- Faces (24) -->
             <div class="emoji-tab-panel active" data-panel="faces">
-                <button class="emoji-stamp-btn" data-emoji="😀">😀</button>
-                <button class="emoji-stamp-btn" data-emoji="😂">😂</button>
-                <button class="emoji-stamp-btn" data-emoji="😍">😍</button>
-                <button class="emoji-stamp-btn" data-emoji="🥰">🥰</button>
-                <button class="emoji-stamp-btn" data-emoji="😎">😎</button>
-                <button class="emoji-stamp-btn" data-emoji="🤩">🤩</button>
-                <button class="emoji-stamp-btn" data-emoji="😢">😢</button>
-                <button class="emoji-stamp-btn" data-emoji="😡">😡</button>
-                <button class="emoji-stamp-btn" data-emoji="🤔">🤔</button>
-                <button class="emoji-stamp-btn" data-emoji="😴">😴</button>
-                <button class="emoji-stamp-btn" data-emoji="😅">😅</button>
-                <button class="emoji-stamp-btn" data-emoji="😇">😇</button>
-                <button class="emoji-stamp-btn" data-emoji="🤗">🤗</button>
-                <button class="emoji-stamp-btn" data-emoji="😬">😬</button>
-                <button class="emoji-stamp-btn" data-emoji="🥲">🥲</button>
-                <button class="emoji-stamp-btn" data-emoji="😤">😤</button>
-                <button class="emoji-stamp-btn" data-emoji="🤒">🤒</button>
-                <button class="emoji-stamp-btn" data-emoji="🥴">🥴</button>
-                <button class="emoji-stamp-btn" data-emoji="🤯">🤯</button>
-                <button class="emoji-stamp-btn" data-emoji="😱">😱</button>
-                <button class="emoji-stamp-btn" data-emoji="🤫">🤫</button>
-                <button class="emoji-stamp-btn" data-emoji="🙈">🙈</button>
-                <button class="emoji-stamp-btn" data-emoji="💀">💀</button>
-                <button class="emoji-stamp-btn" data-emoji="👻">👻</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😀'}" v-on:click="selectEmoji('😀')">😀</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😂'}" v-on:click="selectEmoji('😂')">😂</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😍'}" v-on:click="selectEmoji('😍')">😍</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥰'}" v-on:click="selectEmoji('🥰')">🥰</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😎'}" v-on:click="selectEmoji('😎')">😎</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤩'}" v-on:click="selectEmoji('🤩')">🤩</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😢'}" v-on:click="selectEmoji('😢')">😢</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😡'}" v-on:click="selectEmoji('😡')">😡</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤔'}" v-on:click="selectEmoji('🤔')">🤔</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😴'}" v-on:click="selectEmoji('😴')">😴</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😅'}" v-on:click="selectEmoji('😅')">😅</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😇'}" v-on:click="selectEmoji('😇')">😇</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤗'}" v-on:click="selectEmoji('🤗')">🤗</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😬'}" v-on:click="selectEmoji('😬')">😬</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥲'}" v-on:click="selectEmoji('🥲')">🥲</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😤'}" v-on:click="selectEmoji('😤')">😤</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤒'}" v-on:click="selectEmoji('🤒')">🤒</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥴'}" v-on:click="selectEmoji('🥴')">🥴</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤯'}" v-on:click="selectEmoji('🤯')">🤯</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '😱'}" v-on:click="selectEmoji('😱')">😱</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤫'}" v-on:click="selectEmoji('🤫')">🤫</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🙈'}" v-on:click="selectEmoji('🙈')">🙈</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '💀'}" v-on:click="selectEmoji('💀')">💀</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '👻'}" v-on:click="selectEmoji('👻')">👻</button>
             </div>
-            <!-- Seasons & Weather (24): spring seedling, flowers, summer, autumn, winter, weather, moon phases -->
+            <!-- Seasons & Weather (24) -->
             <div class="emoji-tab-panel" data-panel="seasons">
-                <button class="emoji-stamp-btn" data-emoji="🌱">🌱</button>
-                <button class="emoji-stamp-btn" data-emoji="🌸">🌸</button>
-                <button class="emoji-stamp-btn" data-emoji="🥚">🥚</button>
-                <button class="emoji-stamp-btn" data-emoji="🌿">🌿</button>
-                <button class="emoji-stamp-btn" data-emoji="☀️">☀️</button>
-                <button class="emoji-stamp-btn" data-emoji="🌻">🌻</button>
-                <button class="emoji-stamp-btn" data-emoji="🌈">🌈</button>
-                <button class="emoji-stamp-btn" data-emoji="🍂">🍂</button>
-                <button class="emoji-stamp-btn" data-emoji="🍁">🍁</button>
-                <button class="emoji-stamp-btn" data-emoji="🌾">🌾</button>
-                <button class="emoji-stamp-btn" data-emoji="🦃">🦃</button>
-                <button class="emoji-stamp-btn" data-emoji="🎃">🎃</button>
-                <button class="emoji-stamp-btn" data-emoji="❄️">❄️</button>
-                <button class="emoji-stamp-btn" data-emoji="🎅">🎅</button>
-                <button class="emoji-stamp-btn" data-emoji="🕎">🕎</button>
-                <button class="emoji-stamp-btn" data-emoji="🌤️">🌤️</button>
-                <button class="emoji-stamp-btn" data-emoji="⛅">⛅</button>
-                <button class="emoji-stamp-btn" data-emoji="🌧️">🌧️</button>
-                <button class="emoji-stamp-btn" data-emoji="⛈️">⛈️</button>
-                <button class="emoji-stamp-btn" data-emoji="🌨️">🌨️</button>
-                <button class="emoji-stamp-btn" data-emoji="🌑">🌑</button>
-                <button class="emoji-stamp-btn" data-emoji="🌓">🌓</button>
-                <button class="emoji-stamp-btn" data-emoji="🌕">🌕</button>
-                <button class="emoji-stamp-btn" data-emoji="🌗">🌗</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌱'}" v-on:click="selectEmoji('🌱')">🌱</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌸'}" v-on:click="selectEmoji('🌸')">🌸</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥚'}" v-on:click="selectEmoji('🥚')">🥚</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌿'}" v-on:click="selectEmoji('🌿')">🌿</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '☀️'}" v-on:click="selectEmoji('☀️')">☀️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌻'}" v-on:click="selectEmoji('🌻')">🌻</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌈'}" v-on:click="selectEmoji('🌈')">🌈</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🍂'}" v-on:click="selectEmoji('🍂')">🍂</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🍁'}" v-on:click="selectEmoji('🍁')">🍁</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌾'}" v-on:click="selectEmoji('🌾')">🌾</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🦃'}" v-on:click="selectEmoji('🦃')">🦃</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎃'}" v-on:click="selectEmoji('🎃')">🎃</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '❄️'}" v-on:click="selectEmoji('❄️')">❄️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎅'}" v-on:click="selectEmoji('🎅')">🎅</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🕎'}" v-on:click="selectEmoji('🕎')">🕎</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌤️'}" v-on:click="selectEmoji('🌤️')">🌤️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⛅'}" v-on:click="selectEmoji('⛅')">⛅</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌧️'}" v-on:click="selectEmoji('🌧️')">🌧️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⛈️'}" v-on:click="selectEmoji('⛈️')">⛈️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌨️'}" v-on:click="selectEmoji('🌨️')">🌨️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌑'}" v-on:click="selectEmoji('🌑')">🌑</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌓'}" v-on:click="selectEmoji('🌓')">🌓</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌕'}" v-on:click="selectEmoji('🌕')">🌕</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌗'}" v-on:click="selectEmoji('🌗')">🌗</button>
             </div>
             <!-- Events & Anniversaries (24) -->
             <div class="emoji-tab-panel" data-panel="events">
-                <button class="emoji-stamp-btn" data-emoji="🎁">🎁</button>
-                <button class="emoji-stamp-btn" data-emoji="🎂">🎂</button>
-                <button class="emoji-stamp-btn" data-emoji="💍">💍</button>
-                <button class="emoji-stamp-btn" data-emoji="🌹">🌹</button>
-                <button class="emoji-stamp-btn" data-emoji="🥂">🥂</button>
-                <button class="emoji-stamp-btn" data-emoji="🎓">🎓</button>
-                <button class="emoji-stamp-btn" data-emoji="🏅">🏅</button>
-                <button class="emoji-stamp-btn" data-emoji="💐">💐</button>
-                <button class="emoji-stamp-btn" data-emoji="🕯️">🕯️</button>
-                <button class="emoji-stamp-btn" data-emoji="❤️">❤️</button>
-                <button class="emoji-stamp-btn" data-emoji="🎗️">🎗️</button>
-                <button class="emoji-stamp-btn" data-emoji="📅">📅</button>
-                <button class="emoji-stamp-btn" data-emoji="💒">💒</button>
-                <button class="emoji-stamp-btn" data-emoji="🤝">🤝</button>
-                <button class="emoji-stamp-btn" data-emoji="👶">👶</button>
-                <button class="emoji-stamp-btn" data-emoji="🏡">🏡</button>
-                <button class="emoji-stamp-btn" data-emoji="🎖️">🎖️</button>
-                <button class="emoji-stamp-btn" data-emoji="📜">📜</button>
-                <button class="emoji-stamp-btn" data-emoji="🔔">🔔</button>
-                <button class="emoji-stamp-btn" data-emoji="💌">💌</button>
-                <button class="emoji-stamp-btn" data-emoji="🫂">🫂</button>
-                <button class="emoji-stamp-btn" data-emoji="🙏">🙏</button>
-                <button class="emoji-stamp-btn" data-emoji="⭐">⭐</button>
-                <button class="emoji-stamp-btn" data-emoji="🌟">🌟</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎁'}" v-on:click="selectEmoji('🎁')">🎁</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎂'}" v-on:click="selectEmoji('🎂')">🎂</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '💍'}" v-on:click="selectEmoji('💍')">💍</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌹'}" v-on:click="selectEmoji('🌹')">🌹</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥂'}" v-on:click="selectEmoji('🥂')">🥂</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎓'}" v-on:click="selectEmoji('🎓')">🎓</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏅'}" v-on:click="selectEmoji('🏅')">🏅</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '💐'}" v-on:click="selectEmoji('💐')">💐</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🕯️'}" v-on:click="selectEmoji('🕯️')">🕯️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '❤️'}" v-on:click="selectEmoji('❤️')">❤️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎗️'}" v-on:click="selectEmoji('🎗️')">🎗️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '📅'}" v-on:click="selectEmoji('📅')">📅</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '💒'}" v-on:click="selectEmoji('💒')">💒</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🤝'}" v-on:click="selectEmoji('🤝')">🤝</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '👶'}" v-on:click="selectEmoji('👶')">👶</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏡'}" v-on:click="selectEmoji('🏡')">🏡</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎖️'}" v-on:click="selectEmoji('🎖️')">🎖️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '📜'}" v-on:click="selectEmoji('📜')">📜</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🔔'}" v-on:click="selectEmoji('🔔')">🔔</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '💌'}" v-on:click="selectEmoji('💌')">💌</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🫂'}" v-on:click="selectEmoji('🫂')">🫂</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🙏'}" v-on:click="selectEmoji('🙏')">🙏</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⭐'}" v-on:click="selectEmoji('⭐')">⭐</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌟'}" v-on:click="selectEmoji('🌟')">🌟</button>
             </div>
             <!-- Celebrations (24) -->
             <div class="emoji-tab-panel" data-panel="celebrations">
-                <button class="emoji-stamp-btn" data-emoji="🎉">🎉</button>
-                <button class="emoji-stamp-btn" data-emoji="🎊">🎊</button>
-                <button class="emoji-stamp-btn" data-emoji="🥳">🥳</button>
-                <button class="emoji-stamp-btn" data-emoji="🎆">🎆</button>
-                <button class="emoji-stamp-btn" data-emoji="🎇">🎇</button>
-                <button class="emoji-stamp-btn" data-emoji="✨">✨</button>
-                <button class="emoji-stamp-btn" data-emoji="🎈">🎈</button>
-                <button class="emoji-stamp-btn" data-emoji="🍾">🍾</button>
-                <button class="emoji-stamp-btn" data-emoji="🎺">🎺</button>
-                <button class="emoji-stamp-btn" data-emoji="🪄">🪄</button>
-                <button class="emoji-stamp-btn" data-emoji="🎭">🎭</button>
-                <button class="emoji-stamp-btn" data-emoji="🎪">🎪</button>
-                <button class="emoji-stamp-btn" data-emoji="🎵">🎵</button>
-                <button class="emoji-stamp-btn" data-emoji="🎶">🎶</button>
-                <button class="emoji-stamp-btn" data-emoji="🎸">🎸</button>
-                <button class="emoji-stamp-btn" data-emoji="🥁">🥁</button>
-                <button class="emoji-stamp-btn" data-emoji="🎤">🎤</button>
-                <button class="emoji-stamp-btn" data-emoji="🎬">🎬</button>
-                <button class="emoji-stamp-btn" data-emoji="🎡">🎡</button>
-                <button class="emoji-stamp-btn" data-emoji="🎢">🎢</button>
-                <button class="emoji-stamp-btn" data-emoji="🎠">🎠</button>
-                <button class="emoji-stamp-btn" data-emoji="🍰">🍰</button>
-                <button class="emoji-stamp-btn" data-emoji="🫧">🫧</button>
-                <button class="emoji-stamp-btn" data-emoji="🎀">🎀</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎉'}" v-on:click="selectEmoji('🎉')">🎉</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎊'}" v-on:click="selectEmoji('🎊')">🎊</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥳'}" v-on:click="selectEmoji('🥳')">🥳</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎆'}" v-on:click="selectEmoji('🎆')">🎆</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎇'}" v-on:click="selectEmoji('🎇')">🎇</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '✨'}" v-on:click="selectEmoji('✨')">✨</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎈'}" v-on:click="selectEmoji('🎈')">🎈</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🍾'}" v-on:click="selectEmoji('🍾')">🍾</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎺'}" v-on:click="selectEmoji('🎺')">🎺</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🪄'}" v-on:click="selectEmoji('🪄')">🪄</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎭'}" v-on:click="selectEmoji('🎭')">🎭</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎪'}" v-on:click="selectEmoji('🎪')">🎪</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎵'}" v-on:click="selectEmoji('🎵')">🎵</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎶'}" v-on:click="selectEmoji('🎶')">🎶</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎸'}" v-on:click="selectEmoji('🎸')">🎸</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥁'}" v-on:click="selectEmoji('🥁')">🥁</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎤'}" v-on:click="selectEmoji('🎤')">🎤</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎬'}" v-on:click="selectEmoji('🎬')">🎬</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎡'}" v-on:click="selectEmoji('🎡')">🎡</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎢'}" v-on:click="selectEmoji('🎢')">🎢</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎠'}" v-on:click="selectEmoji('🎠')">🎠</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🍰'}" v-on:click="selectEmoji('🍰')">🍰</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🫧'}" v-on:click="selectEmoji('🫧')">🫧</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎀'}" v-on:click="selectEmoji('🎀')">🎀</button>
             </div>
             <!-- Sports & Outdoors (24) -->
             <div class="emoji-tab-panel" data-panel="sports">
-                <button class="emoji-stamp-btn" data-emoji="⚽">⚽</button>
-                <button class="emoji-stamp-btn" data-emoji="🏀">🏀</button>
-                <button class="emoji-stamp-btn" data-emoji="🏈">🏈</button>
-                <button class="emoji-stamp-btn" data-emoji="⚾">⚾</button>
-                <button class="emoji-stamp-btn" data-emoji="🎾">🎾</button>
-                <button class="emoji-stamp-btn" data-emoji="🏐">🏐</button>
-                <button class="emoji-stamp-btn" data-emoji="🏊">🏊</button>
-                <button class="emoji-stamp-btn" data-emoji="🚴">🚴</button>
-                <button class="emoji-stamp-btn" data-emoji="🏋️">🏋️</button>
-                <button class="emoji-stamp-btn" data-emoji="⛷️">⛷️</button>
-                <button class="emoji-stamp-btn" data-emoji="🏄">🏄</button>
-                <button class="emoji-stamp-btn" data-emoji="🧗">🧗</button>
-                <button class="emoji-stamp-btn" data-emoji="🏃">🏃</button>
-                <button class="emoji-stamp-btn" data-emoji="🚶">🚶</button>
-                <button class="emoji-stamp-btn" data-emoji="🧘">🧘</button>
-                <button class="emoji-stamp-btn" data-emoji="⛳">⛳</button>
-                <button class="emoji-stamp-btn" data-emoji="🏌️">🏌️</button>
-                <button class="emoji-stamp-btn" data-emoji="🥊">🥊</button>
-                <button class="emoji-stamp-btn" data-emoji="🎯">🎯</button>
-                <button class="emoji-stamp-btn" data-emoji="🏹">🏹</button>
-                <button class="emoji-stamp-btn" data-emoji="🎿">🎿</button>
-                <button class="emoji-stamp-btn" data-emoji="🏆">🏆</button>
-                <button class="emoji-stamp-btn" data-emoji="🥇">🥇</button>
-                <button class="emoji-stamp-btn" data-emoji="🎖️">🎖️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⚽'}" v-on:click="selectEmoji('⚽')">⚽</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏀'}" v-on:click="selectEmoji('🏀')">🏀</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏈'}" v-on:click="selectEmoji('🏈')">🏈</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⚾'}" v-on:click="selectEmoji('⚾')">⚾</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎾'}" v-on:click="selectEmoji('🎾')">🎾</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏐'}" v-on:click="selectEmoji('🏐')">🏐</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏊'}" v-on:click="selectEmoji('🏊')">🏊</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚴'}" v-on:click="selectEmoji('🚴')">🚴</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏋️'}" v-on:click="selectEmoji('🏋️')">🏋️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⛷️'}" v-on:click="selectEmoji('⛷️')">⛷️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏄'}" v-on:click="selectEmoji('🏄')">🏄</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🧗'}" v-on:click="selectEmoji('🧗')">🧗</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏃'}" v-on:click="selectEmoji('🏃')">🏃</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚶'}" v-on:click="selectEmoji('🚶')">🚶</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🧘'}" v-on:click="selectEmoji('🧘')">🧘</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⛳'}" v-on:click="selectEmoji('⛳')">⛳</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏌️'}" v-on:click="selectEmoji('🏌️')">🏌️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥊'}" v-on:click="selectEmoji('🥊')">🥊</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎯'}" v-on:click="selectEmoji('🎯')">🎯</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏹'}" v-on:click="selectEmoji('🏹')">🏹</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎿'}" v-on:click="selectEmoji('🎿')">🎿</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏆'}" v-on:click="selectEmoji('🏆')">🏆</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🥇'}" v-on:click="selectEmoji('🥇')">🥇</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎖️'}" v-on:click="selectEmoji('🎖️')">🎖️</button>
             </div>
             <!-- Travel (24) -->
             <div class="emoji-tab-panel" data-panel="travel">
-                <button class="emoji-stamp-btn" data-emoji="✈️">✈️</button>
-                <button class="emoji-stamp-btn" data-emoji="🚗">🚗</button>
-                <button class="emoji-stamp-btn" data-emoji="🚢">🚢</button>
-                <button class="emoji-stamp-btn" data-emoji="🚂">🚂</button>
-                <button class="emoji-stamp-btn" data-emoji="🚁">🚁</button>
-                <button class="emoji-stamp-btn" data-emoji="🛳️">🛳️</button>
-                <button class="emoji-stamp-btn" data-emoji="🚐">🚐</button>
-                <button class="emoji-stamp-btn" data-emoji="🏍️">🏍️</button>
-                <button class="emoji-stamp-btn" data-emoji="🧳">🧳</button>
-                <button class="emoji-stamp-btn" data-emoji="🗺️">🗺️</button>
-                <button class="emoji-stamp-btn" data-emoji="🧭">🧭</button>
-                <button class="emoji-stamp-btn" data-emoji="🌍">🌍</button>
-                <button class="emoji-stamp-btn" data-emoji="🌴">🌴</button>
-                <button class="emoji-stamp-btn" data-emoji="⛱️">⛱️</button>
-                <button class="emoji-stamp-btn" data-emoji="🏖️">🏖️</button>
-                <button class="emoji-stamp-btn" data-emoji="🏔️">🏔️</button>
-                <button class="emoji-stamp-btn" data-emoji="🏕️">🏕️</button>
-                <button class="emoji-stamp-btn" data-emoji="🌋">🌋</button>
-                <button class="emoji-stamp-btn" data-emoji="🗼">🗼</button>
-                <button class="emoji-stamp-btn" data-emoji="🗽">🗽</button>
-                <button class="emoji-stamp-btn" data-emoji="🏯">🏯</button>
-                <button class="emoji-stamp-btn" data-emoji="🕌">🕌</button>
-                <button class="emoji-stamp-btn" data-emoji="⛩️">⛩️</button>
-                <button class="emoji-stamp-btn" data-emoji="🎡">🎡</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '✈️'}" v-on:click="selectEmoji('✈️')">✈️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚗'}" v-on:click="selectEmoji('🚗')">🚗</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚢'}" v-on:click="selectEmoji('🚢')">🚢</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚂'}" v-on:click="selectEmoji('🚂')">🚂</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚁'}" v-on:click="selectEmoji('🚁')">🚁</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🛳️'}" v-on:click="selectEmoji('🛳️')">🛳️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🚐'}" v-on:click="selectEmoji('🚐')">🚐</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏍️'}" v-on:click="selectEmoji('🏍️')">🏍️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🧳'}" v-on:click="selectEmoji('🧳')">🧳</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🗺️'}" v-on:click="selectEmoji('🗺️')">🗺️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🧭'}" v-on:click="selectEmoji('🧭')">🧭</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌍'}" v-on:click="selectEmoji('🌍')">🌍</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌴'}" v-on:click="selectEmoji('🌴')">🌴</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⛱️'}" v-on:click="selectEmoji('⛱️')">⛱️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏖️'}" v-on:click="selectEmoji('🏖️')">🏖️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏔️'}" v-on:click="selectEmoji('🏔️')">🏔️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏕️'}" v-on:click="selectEmoji('🏕️')">🏕️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🌋'}" v-on:click="selectEmoji('🌋')">🌋</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🗼'}" v-on:click="selectEmoji('🗼')">🗼</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🗽'}" v-on:click="selectEmoji('🗽')">🗽</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🏯'}" v-on:click="selectEmoji('🏯')">🏯</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🕌'}" v-on:click="selectEmoji('🕌')">🕌</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '⛩️'}" v-on:click="selectEmoji('⛩️')">⛩️</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🎡'}" v-on:click="selectEmoji('🎡')">🎡</button>
             </div>
-            <!-- Flags — all 11 app languages + major national days (24) -->
-            <!-- en: US GB AU CA  |  ar: SA AE EG  |  es: ES MX AR CO -->
-            <!-- fr: FR  |  hi: IN  |  id: ID  |  ja: JP  |  pt: BR PT -->
-            <!-- ru: RU  |  tp: PG  |  zh: CN TW  |  extras: DE IT ZA -->
+            <!-- Flags -->
             <div class="emoji-tab-panel" data-panel="flags">
-                <button class="emoji-stamp-btn" data-emoji="🇺🇸" title="United States">🇺🇸</button>
-                <button class="emoji-stamp-btn" data-emoji="🇬🇧" title="United Kingdom">🇬🇧</button>
-                <button class="emoji-stamp-btn" data-emoji="🇦🇺" title="Australia">🇦🇺</button>
-                <button class="emoji-stamp-btn" data-emoji="🇨🇦" title="Canada">🇨🇦</button>
-                <button class="emoji-stamp-btn" data-emoji="🇸🇦" title="Saudi Arabia">🇸🇦</button>
-                <button class="emoji-stamp-btn" data-emoji="🇦🇪" title="UAE">🇦🇪</button>
-                <button class="emoji-stamp-btn" data-emoji="🇪🇬" title="Egypt">🇪🇬</button>
-                <button class="emoji-stamp-btn" data-emoji="🇪🇸" title="Spain">🇪🇸</button>
-                <button class="emoji-stamp-btn" data-emoji="🇲🇽" title="Mexico">🇲🇽</button>
-                <button class="emoji-stamp-btn" data-emoji="🇦🇷" title="Argentina">🇦🇷</button>
-                <button class="emoji-stamp-btn" data-emoji="🇨🇴" title="Colombia">🇨🇴</button>
-                <button class="emoji-stamp-btn" data-emoji="🇫🇷" title="France">🇫🇷</button>
-                <button class="emoji-stamp-btn" data-emoji="🇮🇳" title="India">🇮🇳</button>
-                <button class="emoji-stamp-btn" data-emoji="🇮🇩" title="Indonesia">🇮🇩</button>
-                <button class="emoji-stamp-btn" data-emoji="🇯🇵" title="Japan">🇯🇵</button>
-                <button class="emoji-stamp-btn" data-emoji="🇧🇷" title="Brazil">🇧🇷</button>
-                <button class="emoji-stamp-btn" data-emoji="🇵🇹" title="Portugal">🇵🇹</button>
-                <button class="emoji-stamp-btn" data-emoji="🇷🇺" title="Russia">🇷🇺</button>
-                <button class="emoji-stamp-btn" data-emoji="🇵🇬" title="Papua New Guinea">🇵🇬</button>
-                <button class="emoji-stamp-btn" data-emoji="🇨🇳" title="China">🇨🇳</button>
-                <button class="emoji-stamp-btn" data-emoji="🇹🇼" title="Taiwan">🇹🇼</button>
-                <button class="emoji-stamp-btn" data-emoji="🇩🇪" title="Germany">🇩🇪</button>
-                <button class="emoji-stamp-btn" data-emoji="🇮🇹" title="Italy">🇮🇹</button>
-                <button class="emoji-stamp-btn" data-emoji="🇿🇦" title="South Africa">🇿🇦</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇺🇸'}" v-on:click="selectEmoji('🇺🇸')" title="United States">🇺🇸</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇬🇧'}" v-on:click="selectEmoji('🇬🇧')" title="United Kingdom">🇬🇧</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇦🇺'}" v-on:click="selectEmoji('🇦🇺')" title="Australia">🇦🇺</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇨🇦'}" v-on:click="selectEmoji('🇨🇦')" title="Canada">🇨🇦</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇸🇦'}" v-on:click="selectEmoji('🇸🇦')" title="Saudi Arabia">🇸🇦</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇦🇪'}" v-on:click="selectEmoji('🇦🇪')" title="UAE">🇦🇪</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇪🇬'}" v-on:click="selectEmoji('🇪🇬')" title="Egypt">🇪🇬</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇪🇸'}" v-on:click="selectEmoji('🇪🇸')" title="Spain">🇪🇸</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇲🇽'}" v-on:click="selectEmoji('🇲🇽')" title="Mexico">🇲🇽</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇦🇷'}" v-on:click="selectEmoji('🇦🇷')" title="Argentina">🇦🇷</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇨🇴'}" v-on:click="selectEmoji('🇨🇴')" title="Colombia">🇨🇴</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇫🇷'}" v-on:click="selectEmoji('🇫🇷')" title="France">🇫🇷</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇮🇳'}" v-on:click="selectEmoji('🇮🇳')" title="India">🇮🇳</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇮🇩'}" v-on:click="selectEmoji('🇮🇩')" title="Indonesia">🇮🇩</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇯🇵'}" v-on:click="selectEmoji('🇯🇵')" title="Japan">🇯🇵</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇧🇷'}" v-on:click="selectEmoji('🇧🇷')" title="Brazil">🇧🇷</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇵🇹'}" v-on:click="selectEmoji('🇵🇹')" title="Portugal">🇵🇹</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇷🇺'}" v-on:click="selectEmoji('🇷🇺')" title="Russia">🇷🇺</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇵🇬'}" v-on:click="selectEmoji('🇵🇬')" title="Papua New Guinea">🇵🇬</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇨🇳'}" v-on:click="selectEmoji('🇨🇳')" title="China">🇨🇳</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇹🇼'}" v-on:click="selectEmoji('🇹🇼')" title="Taiwan">🇹🇼</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇩🇪'}" v-on:click="selectEmoji('🇩🇪')" title="Germany">🇩🇪</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇮🇹'}" v-on:click="selectEmoji('🇮🇹')" title="Italy">🇮🇹</button>
+                <button class="emoji-stamp-btn" v-bind:class="{selected: emojiSelected === '🇿🇦'}" v-on:click="selectEmoji('🇿🇦')" title="South Africa">🇿🇦</button>
             </div>
         </div>
     </nav>
 
     <!-- RAIL TOGGLE (left-side circle) -->
-    <button class="rail-toggle" id="railToggle" title="Menu">
+    <button class="rail-toggle" v-on:click="toggleRail()" title="Menu">
         <i class="ph ph-caret-right"></i>
         <i class="ph ph-caret-left"></i>
     </button>
@@ -317,11 +318,10 @@
 
     <!-- FLOATING DARK MODE TOGGLE -->
     <div class="floating-controls">
-        <button class="float-btn" id="darkToggle" title="Toggle dark mode">
+        <button class="float-btn" v-on:click="doDarkToggle()" title="Toggle dark mode">
             <i class="ph ph-sun-dim"></i>
         </button>
     </div>
-    <div id="app"  v-bind:class="{'yp-dark':theme=='dark'}">
 
         <div class="text-light text-center pt-5" v-bind:class="{'d-none':loaded}" >
             <div id="spinner" class="spinner-border m-5" style="width: 5rem; height: 5rem;" role="status">
@@ -333,7 +333,7 @@
 
             <a class="navbar-brand" data-toggle="tooltip" data-placement="bottom" :title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
 
-            <form id="rename" class="form-inline" >
+            <form id="rename" class="form-inline" v-show="renameVisible">
                 <div class="input-group"><input id="title" maxlength="64" class="form-control form-control-sm" type="text" v-bind:placeholder="$t('label.untitled')" aria-label="Name" v-model="name" v-on:keyup="" v-on:focusout="renamePlanner()">
                     <div class="input-group-append">
                         <button class="navbar-brand navbar-brand-support btn btn-outline-secondary py-0 my-0" type="button" v-on:click="renamePlanner()" ><i class="ph ph-floppy-disk" aria-hidden="true"></i></button>
@@ -362,7 +362,7 @@
                           </button>
                           <div class="nav-settings dropdown-menu dropdown-menu-right">
                                 <h6 class="dropdown-header">{{$t('label.planners')}}</h6>
-                                <template v-for="planner in plannerStore.listPlanners().sort((a,b) => (b.meta.year||0)-(a.meta.year||0) || (a.meta.name||'').localeCompare(b.meta.name||''))">
+                                <template v-for="planner in (plannerStore?.listPlanners() || []).sort((a,b) => (b.meta.year||0)-(a.meta.year||0) || (a.meta.name||'').localeCompare(b.meta.name||''))">
                                   <a class="dropdown-item d-flex align-items-center" href="#"
                                      v-bind:class="{'dropdown-item-checked': planner.uuid === activeDocUuid}"
                                      v-on:click.prevent="selectPlanner(planner.uuid)">
@@ -550,12 +550,13 @@
             </div>
         </div>
 
-        <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="authModalLabel" aria-hidden="true"
+             v-bind:class="{ show: showAuthModal, 'd-block': showAuthModal }">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="authModalLabel">{{$t('label.signin')}}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" v-on:click="closeAuthModal()" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -570,20 +571,21 @@
                             <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('google')">
                                 <i class="ph ph-google-logo me-2"></i> Sign in with Google
                             </button>
-                            <button type="button" class="btn btn-outline-dark btn-block mb-2" data-dismiss="modal" v-on:click="signInWith('apple')">
+                            <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('apple')">
                                 <i class="ph ph-apple-logo me-2"></i> Sign in with Apple
                             </button>
-                            <button type="button" class="btn btn-outline-dark btn-block mb-2" data-dismiss="modal" v-on:click="signInWith('microsoft')">
+                            <button type="button" class="btn btn-outline-dark btn-block mb-2" v-on:click="signInWith('microsoft')">
                                 <i class="ph ph-microsoft-outlook-logo me-2"></i> Sign in with Microsoft
                             </button>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{$t('label.close')}}</button>
+                        <button type="button" class="btn btn-secondary" v-on:click="closeAuthModal()">{{$t('label.close')}}</button>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="modal-backdrop fade show" v-if="showAuthModal" v-on:click="closeAuthModal()"></div>
 
         <div class="modal fade" id="featureModal" tabindex="-1" role="dialog" aria-labelledby="featureModalLabel" aria-hidden="true">
             <div id="feature-dialog"  class="modal-dialog" role="document">
@@ -655,526 +657,23 @@
 
 
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-    <script  type="module" src="./js/main.js"></script>
-
-    <!-- Rail toggle, style-theme switching, dark-mode early-apply, calendar flyout -->
+    <!-- Early theme apply (before Vue mounts) — prevents flash -->
     <script>
-    (function() {
-        var body = document.body;
-        var rail = document.getElementById('rail');
-        var railToggle = document.getElementById('railToggle');
-        var darkToggle = document.getElementById('darkToggle');
-        var railDarkToggle = document.getElementById('railDarkToggle');
-        var themeLabel = document.getElementById('themeLabel');
-        var iconRuler = document.getElementById('themeSwitchIconRuler');
-        var iconFeather = document.getElementById('themeSwitchIconFeather');
-        var calendarFlyout = document.getElementById('railCalendarFlyout');
-        var railCalendarBtn = document.getElementById('railCalendarBtn');
-        var railYearInput = document.getElementById('railYearInput');
-
-        // ---- Style theme (ink / crisp) on <body> ----
-        var savedStyleTheme = localStorage.getItem('style_theme') || 'ink';
-        body.setAttribute('data-theme', savedStyleTheme);
-        applyThemeLabel(savedStyleTheme);
-
-        function applyThemeLabel(theme) {
-            var isCrisp = theme === 'crisp';
-            var label = isCrisp ? 'Crisp &amp; Clear' : 'Ink &amp; Paper';
-            if (themeLabel) themeLabel.innerHTML = label;
-            var navLabel = document.getElementById('navThemeLabel');
-            if (navLabel) navLabel.innerHTML = label;
-            if (iconRuler)  iconRuler.style.display  = isCrisp ? 'none'   : 'inline';
-            if (iconFeather) iconFeather.style.display = isCrisp ? 'inline' : 'none';
+    (function(){
+        var saved = localStorage.getItem('style_theme') || 'ink';
+        document.body.setAttribute('data-theme', saved);
+        if (new URLSearchParams(window.location.search).get('theme') === 'dark') {
+            document.body.classList.add('yp-dark');
         }
-
-        // ---- Dark mode early-apply from URL ----
-        var params = new URLSearchParams(window.location.search);
-        if (params.get('theme') === 'dark') {
-            body.classList.add('yp-dark');
-        }
-
-        // ---- Restore rail state from sessionStorage ----
         if (sessionStorage.getItem('rail_open') === '1') {
-            rail.classList.add('open');
-            body.classList.add('rail-open');
+            var r = document.getElementById('rail');
+            if (r) r.classList.add('open');
+            document.body.classList.add('rail-open');
             sessionStorage.removeItem('rail_open');
         }
-
-        // ---- Rail toggle ----
-        if (railToggle) {
-            railToggle.addEventListener('click', function() {
-                closeFlyout();
-                rail.classList.toggle('open');
-                body.classList.toggle('rail-open');
-            });
-        }
-
-        // Close rail when clicking outside (but NOT for dark/theme toggles in the rail)
-        document.addEventListener('click', function(e) {
-            // Close flyout if clicking outside it and outside the calendar button
-            if (calendarFlyout && calendarFlyout.classList.contains('open') &&
-                !calendarFlyout.contains(e.target) &&
-                e.target !== railCalendarBtn &&
-                !railCalendarBtn.contains(e.target)) {
-                closeFlyout();
-            }
-
-            if (rail && rail.classList.contains('open') &&
-                !rail.contains(e.target) &&
-                e.target !== railToggle &&
-                !railToggle.contains(e.target) &&
-                !(calendarFlyout && calendarFlyout.contains(e.target)) &&
-                !(markerFlyout && markerFlyout.contains(e.target)) &&
-                !(emojiFlyout && emojiFlyout.contains(e.target)) &&
-                !markerActive && !emojiActive) {
-                rail.classList.remove('open');
-                body.classList.remove('rail-open');
-                closeFlyout();
-            }
-        });
-
-        // ---- Dark mode toggle ----
-        function doDarkToggle() {
-            // Persist rail state across reload
-            if (rail && rail.classList.contains('open')) {
-                sessionStorage.setItem('rail_open', '1');
-            }
-            var p = new URLSearchParams(window.location.search);
-            var current = p.get('theme') || 'light';
-            var next = current === 'dark' ? 'light' : 'dark';
-            p.set('theme', next);
-            window.location.search = p.toString();
-        }
-        if (darkToggle)     darkToggle.addEventListener('click', doDarkToggle);
-        if (railDarkToggle) railDarkToggle.addEventListener('click', doDarkToggle);
-
-        // ---- Style-theme toggle ----
-        var themeToggleBtn = document.getElementById('themeToggleBtn');
-        if (themeToggleBtn) {
-            themeToggleBtn.addEventListener('click', function() {
-                var current = body.getAttribute('data-theme');
-                var next = current === 'ink' ? 'crisp' : 'ink';
-                body.setAttribute('data-theme', next);
-                localStorage.setItem('style_theme', next);
-                applyThemeLabel(next);
-            });
-        }
-
-        // ---- Calendar flyout ----
-        function closeFlyout() {
-            if (calendarFlyout) calendarFlyout.classList.remove('open');
-            if (railCalendarBtn) railCalendarBtn.classList.remove('flyout-active');
-        }
-
-        if (railCalendarBtn) {
-            railCalendarBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                var isOpen = calendarFlyout.classList.contains('open');
-                if (isOpen) {
-                    closeFlyout();
-                } else {
-                    calendarFlyout.classList.add('open');
-                    railCalendarBtn.classList.add('flyout-active');
-                }
-            });
-        }
-
-        // Close flyout when a month/today link is clicked (it scrolls to that anchor)
-        if (calendarFlyout) {
-            calendarFlyout.querySelectorAll('a.rail-flyout-item').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    closeFlyout();
-                    rail.classList.remove('open');
-                    body.classList.remove('rail-open');
-                });
-            });
-        }
-
-        // Year input in flyout — navigate on Enter
-        if (railYearInput) {
-            railYearInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    var yr = parseInt(railYearInput.value);
-                    if (!isNaN(yr) && yr > 0 && yr < 10000) {
-                        var p = new URLSearchParams(window.location.search);
-                        p.set('year', yr);
-                        window.location.search = p.toString();
-                    }
-                }
-            });
-        }
-
-        // ---- Marker / highlighter mode ----
-        var railMarkerBtn = document.getElementById('railMarkerBtn');
-        var markerFlyout  = document.getElementById('railMarkerFlyout');
-        var markerActive  = false;
-        var markerColour  = 1;          // default colour index
-        var markerDragging = false;
-        var markerLastCell = null;       // prevent duplicate updates on same cell
-
-        function openMarkerFlyout() {
-            closeFlyout();  // close calendar flyout if open
-            markerFlyout.classList.add('open');
-            railMarkerBtn.classList.add('flyout-active');
-        }
-        function closeMarkerFlyout() {
-            if (markerFlyout) markerFlyout.classList.remove('open');
-            if (railMarkerBtn) railMarkerBtn.classList.remove('flyout-active');
-        }
-        function activateMarkerMode() {
-            if (typeof deactivateEmojiMode === 'function' && emojiActive) deactivateEmojiMode();
-            markerActive = true;
-            body.classList.add('marker-mode');
-            railMarkerBtn.classList.add('active');
-            openMarkerFlyout();
-        }
-        function deactivateMarkerMode() {
-            markerActive = false;
-            body.classList.remove('marker-mode');
-            body.classList.remove('marker-dragging');
-            railMarkerBtn.classList.remove('active');
-            closeMarkerFlyout();
-            markerDragging = false;
-            markerLastCell = null;
-        }
-
-        if (railMarkerBtn) {
-            railMarkerBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (markerActive) {
-                    deactivateMarkerMode();
-                } else {
-                    activateMarkerMode();
-                }
-            });
-        }
-
-        // Colour dot selection in marker flyout
-        if (markerFlyout) {
-            markerFlyout.querySelectorAll('.marker-dot').forEach(function(dot) {
-                dot.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    markerColour = parseInt(dot.getAttribute('data-colour'));
-                    // Update selected state
-                    markerFlyout.querySelectorAll('.marker-dot').forEach(function(d) {
-                        d.classList.remove('selected');
-                    });
-                    dot.classList.add('selected');
-                });
-            });
-            // Set default selection
-            var defaultDot = markerFlyout.querySelector('[data-colour="1"]');
-            if (defaultDot) defaultDot.classList.add('selected');
-        }
-
-        // Apply colour to a single grid cell via the Vue app
-        function applyMarkerToCell(cellEl) {
-            if (cellEl === markerLastCell) return; // already painted this cell
-            markerLastCell = cellEl;
-
-            // Find the Vue app instance (Vue 3: vnode on container element)
-            var appEl = document.getElementById('app');
-            if (!appEl || !appEl._vnode || !appEl._vnode.component) return;
-            var vueInstance = appEl._vnode.component.proxy;
-            if (!vueInstance) return;
-
-            // Parse the cell's month and day from its rendered content and position
-            // The cell is inside a month column — find which month
-            var monthCol = cellEl.closest('[class*="col"]');
-            if (!monthCol) return;
-            var monthsRow = monthCol.parentElement;
-            if (!monthsRow) return;
-            var cols = monthsRow.querySelectorAll(':scope > [class*="col"]');
-            var mindex = -1;
-            for (var ci = 0; ci < cols.length; ci++) {
-                if (cols[ci] === monthCol) { mindex = ci; break; }
-            }
-            if (mindex < 0) return;
-
-            // Find the day number from the cell text
-            var daySpan = cellEl.querySelector('.yp-cell-text');
-            if (!daySpan) return;
-            var dayText = daySpan.textContent.trim().replace(/\u00a0/g, '');
-            var day = parseInt(dayText);
-            if (isNaN(day) || day < 1) return;
-
-            // Use the same updateEntry path as the modal
-            var entry = vueInstance.getEntry(mindex, day);
-            var entryType = vueInstance.getEntryType(mindex, day);
-            var notes = vueInstance.getEntryNotes(mindex, day);
-            var emoji = vueInstance.getEntryEmoji(mindex, day);
-            vueInstance.updateEntry(mindex, day, entry, entryType, markerColour, notes, emoji, true);
-        }
-
-        // Intercept grid cell interactions in marker mode
-        document.addEventListener('mousedown', function(e) {
-            if (!markerActive) return;
-
-            // Find the nearest .yp-cell ancestor within #yp-months
-            var cell = e.target.closest('#yp-months .yp-cell');
-            if (!cell) return;
-
-            // Prevent modal from opening
-            e.preventDefault();
-            e.stopPropagation();
-
-            markerDragging = true;
-            markerLastCell = null;
-            body.classList.add('marker-dragging');
-            applyMarkerToCell(cell);
-        }, true);  // capture phase to intercept before Bootstrap modal
-
-        document.addEventListener('mousemove', function(e) {
-            if (!markerDragging) return;
-            var cell = document.elementFromPoint(e.clientX, e.clientY);
-            if (cell) cell = cell.closest('#yp-months .yp-cell');
-            if (cell) applyMarkerToCell(cell);
-        });
-
-        document.addEventListener('mouseup', function() {
-            if (markerDragging) {
-                markerDragging = false;
-                markerLastCell = null;
-                body.classList.remove('marker-dragging');
-            }
-        });
-
-        // Also handle single clicks in marker mode (capture phase)
-        document.addEventListener('click', function(e) {
-            if (!markerActive) return;
-            var cell = e.target.closest('#yp-months .yp-cell');
-            if (cell) {
-                e.preventDefault();
-                e.stopPropagation();
-                // Already applied on mousedown, but catch any edge cases
-            }
-        }, true);
-
-        // Close marker flyout when clicking outside (but not while actively marking)
-        document.addEventListener('click', function(e) {
-            if (markerActive) return;
-            if (markerFlyout && markerFlyout.classList.contains('open') &&
-                !markerFlyout.contains(e.target) &&
-                e.target !== railMarkerBtn &&
-                !railMarkerBtn.contains(e.target)) {
-                closeMarkerFlyout();
-            }
-        });
-
-        // Deactivate marker mode when rail closes
-        var origRailToggleHandler = railToggle ? railToggle.onclick : null;
-
-        // ---- Emoji stamp mode ----
-        var railEmojiBtn  = document.getElementById('railEmojiBtn');
-        var emojiFlyout   = document.getElementById('railEmojiFlyout');
-        var emojiActive   = false;
-        var emojiSelected = '';
-        var emojiDragging = false;
-        var emojiLastCell = null;
-
-        function openEmojiFlyout() {
-            closeFlyout();  // close calendar flyout if open
-            if (emojiFlyout) emojiFlyout.classList.add('open');
-            if (railEmojiBtn) railEmojiBtn.classList.add('flyout-active');
-        }
-        function closeEmojiFlyout() {
-            if (emojiFlyout) emojiFlyout.classList.remove('open');
-            if (railEmojiBtn) railEmojiBtn.classList.remove('flyout-active');
-        }
-        function activateEmojiMode() {
-            if (markerActive) deactivateMarkerMode();
-            emojiActive = true;
-            body.classList.add('emoji-mode');
-            if (railEmojiBtn) railEmojiBtn.classList.add('active');
-            openEmojiFlyout();
-        }
-        function deactivateEmojiMode() {
-            emojiActive = false;
-            body.classList.remove('emoji-mode');
-            body.classList.remove('emoji-dragging');
-            if (railEmojiBtn) railEmojiBtn.classList.remove('active');
-            closeEmojiFlyout();
-            emojiDragging = false;
-            emojiLastCell = null;
-        }
-
-        if (railEmojiBtn) {
-            railEmojiBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (emojiActive) {
-                    deactivateEmojiMode();
-                } else {
-                    activateEmojiMode();
-                }
-            });
-        }
-
-        // Tab switching
-        if (emojiFlyout) {
-            emojiFlyout.querySelectorAll('.emoji-tab-btn').forEach(function(tabBtn) {
-                tabBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    var tab = tabBtn.getAttribute('data-tab');
-                    emojiFlyout.querySelectorAll('.emoji-tab-btn').forEach(function(b) { b.classList.remove('active'); });
-                    emojiFlyout.querySelectorAll('.emoji-tab-panel').forEach(function(p) { p.classList.remove('active'); });
-                    tabBtn.classList.add('active');
-                    var panel = emojiFlyout.querySelector('[data-panel="' + tab + '"]');
-                    if (panel) panel.classList.add('active');
-                });
-            });
-
-            // Emoji selection
-            emojiFlyout.querySelectorAll('.emoji-stamp-btn').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    emojiSelected = btn.getAttribute('data-emoji');
-                    emojiFlyout.querySelectorAll('.emoji-stamp-btn').forEach(function(b) { b.classList.remove('selected'); });
-                    btn.classList.add('selected');
-                });
-            });
-        }
-
-        // Apply emoji to a single grid cell via the Vue app
-        function applyEmojiToCell(cellEl) {
-            if (cellEl === emojiLastCell) return;
-            emojiLastCell = cellEl;
-
-            var appEl = document.getElementById('app');
-            if (!appEl || !appEl._vnode || !appEl._vnode.component) return;
-            var vueInstance = appEl._vnode.component.proxy;
-            if (!vueInstance) return;
-
-            var monthCol = cellEl.closest('[class*="col"]');
-            if (!monthCol) return;
-            var monthsRow = monthCol.parentElement;
-            if (!monthsRow) return;
-            var cols = monthsRow.querySelectorAll(':scope > [class*="col"]');
-            var mindex = -1;
-            for (var ci = 0; ci < cols.length; ci++) {
-                if (cols[ci] === monthCol) { mindex = ci; break; }
-            }
-            if (mindex < 0) return;
-
-            var daySpan = cellEl.querySelector('.yp-cell-text');
-            if (!daySpan) return;
-            var dayText = daySpan.textContent.trim().replace(/\u00a0/g, '');
-            var day = parseInt(dayText);
-            if (isNaN(day) || day < 1) return;
-
-            var entry      = vueInstance.getEntry(mindex, day);
-            var entryType  = vueInstance.getEntryType(mindex, day);
-            var colour     = vueInstance.getEntryColour(mindex, day);
-            var notes      = vueInstance.getEntryNotes(mindex, day);
-            vueInstance.updateEntry(mindex, day, entry, entryType, colour, notes, emojiSelected, true);
-        }
-
-        // Intercept grid cell interactions in emoji mode
-        document.addEventListener('mousedown', function(e) {
-            if (!emojiActive) return;
-            var cell = e.target.closest('#yp-months .yp-cell');
-            if (!cell) return;
-            e.preventDefault();
-            e.stopPropagation();
-            emojiDragging = true;
-            emojiLastCell = null;
-            body.classList.add('emoji-dragging');
-            applyEmojiToCell(cell);
-        }, true);
-
-        document.addEventListener('mousemove', function(e) {
-            if (!emojiDragging) return;
-            var cell = document.elementFromPoint(e.clientX, e.clientY);
-            if (cell) cell = cell.closest('#yp-months .yp-cell');
-            if (cell) applyEmojiToCell(cell);
-        });
-
-        document.addEventListener('mouseup', function() {
-            if (emojiDragging) {
-                emojiDragging = false;
-                emojiLastCell = null;
-                body.classList.remove('emoji-dragging');
-            }
-        });
-
-        // Also handle single clicks in emoji mode (capture phase)
-        document.addEventListener('click', function(e) {
-            if (!emojiActive) return;
-            var cell = e.target.closest('#yp-months .yp-cell');
-            if (cell) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        }, true);
-
-        // Close emoji flyout when clicking outside (but not while actively stamping)
-        document.addEventListener('click', function(e) {
-            if (emojiActive) return;
-            if (emojiFlyout && emojiFlyout.classList.contains('open') &&
-                !emojiFlyout.contains(e.target) &&
-                e.target !== railEmojiBtn &&
-                !railEmojiBtn.contains(e.target)) {
-                closeEmojiFlyout();
-            }
-        });
-
-        // ---- Rail → app bridge buttons ----
-        var railShareBtn = document.getElementById('railShareBtn');
-        if (railShareBtn) {
-            railShareBtn.addEventListener('click', function() {
-                var brand = document.querySelector('.navbar-brand[data-toggle="tooltip"]');
-                if (brand) brand.click();
-            });
-        }
-
-        var railMenuBtn = document.getElementById('railMenuBtn');
-        if (railMenuBtn) {
-            railMenuBtn.addEventListener('click', function() {
-                var container = document.querySelector('.nav-settings');
-                if (container) {
-                    $(container).closest('.btn-group').find('[data-toggle="dropdown"]').dropdown('toggle');
-                }
-            });
-        }
-
-        var railSigninBtn = document.getElementById('railSigninBtn');
-        function updateRailSigninBtn() {
-            if (!railSigninBtn) return;
-            var signedIn = !!localStorage.getItem('auth_token');
-            var icon = railSigninBtn.querySelector('i');
-            if (signedIn) {
-                railSigninBtn.title = 'Sign out';
-                if (icon) { icon.className = 'ph ph-sign-out'; }
-            } else {
-                railSigninBtn.title = 'Sign in';
-                if (icon) { icon.className = 'ph ph-sign-in'; }
-            }
-        }
-        updateRailSigninBtn();
-        if (railSigninBtn) {
-            railSigninBtn.addEventListener('click', function() {
-                var appEl = document.getElementById('app');
-                if (appEl && appEl._vnode && appEl._vnode.component) {
-                    var vue = appEl._vnode.component.proxy;
-                    if (vue && vue.signedin) {
-                        vue.signout();
-                        updateRailSigninBtn();
-                        return;
-                    }
-                }
-                $('#authModal').modal('show');
-            });
-        }
-
     })();
     </script>
+    <script type="module" src="./js/main.js"></script>
 
 </body>
 </html>

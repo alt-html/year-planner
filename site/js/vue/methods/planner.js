@@ -43,12 +43,15 @@ export const plannerMethods = {
     showRenamePlanner() {
         this.syncScheduler.markDirty();
         this.rename = true;
-        $('#rename').show();
-        $('#title').focus();
+        this.renameVisible = true;
+        this.$nextTick(() => {
+            const titleInput = this.$el.querySelector('#title');
+            if (titleInput) titleInput.focus();
+        });
     },
 
     renamePlanner() {
-        $('#rename').hide();
+        this.renameVisible = false;
         this.preferences['3'][''+this.year][this.lang] = this.name;
         this.messages[this.lang]['label']['name_'+this.year] = this.name;
         this.rename = false;
@@ -72,11 +75,12 @@ export const plannerMethods = {
     },
 
     sharePlanner() {
-        $('#shareModal').modal('show');
+        this.showShareModal = true;
         this.shareUrl = window.location.origin + '?share=' + this.storage.getExportString();
-        const copyText = document.getElementById('copyUrl');
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
+        this.$nextTick(() => {
+            const copyText = document.getElementById('copyUrl');
+            if (copyText) { copyText.select(); copyText.setSelectionRange(0, 99999); }
+        });
     },
 
     copyUrl() {
