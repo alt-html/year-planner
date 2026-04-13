@@ -18,11 +18,22 @@ const JWT_SECRET = process.env.TEST_JWT_SECRET || 'test-jwt-secret-32-chars-mini
 const SERVER_URL = `http://localhost:${SERVER_PORT}`;
 const HLC_ZERO = '0000000000000-000000-00000000';
 
-// Live port check — resilient to stale .server-pid from crashed runs
+// Live port check — resilient to stale .server-pid from crashed runs.
+// Verifies the response is from the jsmdma server (body: {"status":"ok"})
+// to avoid false-positives from other services on port 8081 (e.g. Docker).
 function checkServerLive() {
     return new Promise((resolve) => {
         const req = http.get(`${SERVER_URL}/health`, { timeout: 2000 }, (res) => {
-            resolve(true);
+            let data = '';
+            res.on('data', (chunk) => data += chunk);
+            res.on('end', () => {
+                try {
+                    const body = JSON.parse(data);
+                    resolve(body && body.status === 'ok');
+                } catch {
+                    resolve(false);
+                }
+            });
         });
         req.on('error', () => resolve(false));
         req.on('timeout', () => { req.destroy(); resolve(false); });
