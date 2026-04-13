@@ -101,6 +101,10 @@ export const railMethods = {
         this.showDeleteModal = false;
     },
 
+    closeFeatureModal() {
+        this.showFeatureModal = false;
+    },
+
     applyMarkerToCell(cellEl) {
         if (cellEl === this._markerLastCell) return;
         this._markerLastCell = cellEl;
