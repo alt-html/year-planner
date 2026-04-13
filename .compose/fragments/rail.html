@@ -48,12 +48,12 @@
                   <a class="rail-flyout-item d-flex align-items-center" href="#"
                      v-bind:class="{'rail-flyout-item-active': planner.uuid === activeDocUuid}"
                      v-on:click.prevent="selectPlanner(planner.uuid); toggleFlyout(null)">
-                    <span class="mr-auto text-truncate">{{ planner.meta.name || ($t('label.untitled') + ' ' + (planner.meta.year || '')) }}</span>
-                    <small class="text-muted ml-2">{{ planner.meta.year }}</small>
-                    <i v-if="planner.meta.userKey === userKey && signedin" class="ph ph-cloud ml-1" title="Synced"></i>
-                    <i v-else class="ph ph-device-mobile ml-1" v-bind:title="$t('label.localonly')"></i>
+                    <span class="me-auto text-truncate">{{ planner.meta.name || ($t('label.untitled') + ' ' + (planner.meta.year || '')) }}</span>
+                    <small class="text-body-secondary ms-2">{{ planner.meta.year }}</small>
+                    <i v-if="planner.meta.userKey === userKey && signedin" class="ph ph-cloud ms-1" title="Synced"></i>
+                    <i v-else class="ph ph-device-mobile ms-1" v-bind:title="$t('label.localonly')"></i>
                   </a>
-                  <a v-if="signedin && planner.meta.userKey !== userKey" class="rail-flyout-item small pl-3" href="#"
+                  <a v-if="signedin && planner.meta.userKey !== userKey" class="rail-flyout-item small ps-3" href="#"
                      v-on:click.prevent="takeOwnership(planner.uuid)">
                     <i class="ph ph-cloud-arrow-up"></i> {{$t('label.synctocloud')}}
                   </a>

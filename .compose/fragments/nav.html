@@ -1,12 +1,10 @@
         <nav class="navbar navbar-expand sticky-top d-none" v-bind:class="{'d-flex':loaded}" >
 
-            <a class="navbar-brand" data-toggle="tooltip" data-placement="bottom" :title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
+            <a class="navbar-brand" :title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
 
-            <form id="rename" class="form-inline" v-show="renameVisible">
+            <form id="rename" class="d-flex align-items-center gap-2" v-show="renameVisible">
                 <div class="input-group"><input id="title" maxlength="64" class="form-control form-control-sm" type="text" v-bind:placeholder="$t('label.untitled')" aria-label="Name" v-model="name" v-on:keyup="" v-on:focusout="renamePlanner()">
-                    <div class="input-group-append">
                         <button class="navbar-brand navbar-brand-support btn btn-outline-secondary py-0 my-0" type="button" v-on:click="renamePlanner()" ><i class="ph ph-floppy-disk" aria-hidden="true"></i></button>
-                    </div>
                 </div>
             </form>
 

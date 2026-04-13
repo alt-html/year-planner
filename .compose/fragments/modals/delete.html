@@ -4,9 +4,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="deleteModalLabel">{{getPlannerName() || $t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5>
-                        <button type="button" class="close" v-on:click="closeDeleteModal()" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" v-on:click="closeDeleteModal()" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <h5 class="modal-title" id="deleteModalConfirm">{{$t('label.deleteplanner')}}</h5>
