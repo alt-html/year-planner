@@ -21,8 +21,7 @@ export default new ProfileAwareConfig({
             logging: {
                 format: 'text',
                 level: {
-                    '/': 'info',
-                    '@alt-javascript/cdi': 'verbose',
+                    '/': 'debug',
                 }
             }
         }

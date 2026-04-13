@@ -35,7 +35,7 @@
 }
 
 /* Crisp & Clear dark */
-.yp-dark[data-theme="nordic"] {
+.yp-dark[data-theme="crisp"] {
     --bg: #0D0F14;
     --surface: #0D0F14;
     --text: #E4E7ED;

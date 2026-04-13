@@ -5,8 +5,7 @@
 - ✅ **v1.0 Foundation** — Phases 1–4 (complete)
 - ✅ **v1.1 UX & Boot** — Phases 5–7 (complete)
 - ✅ **v1.2 Data Model** — Phases 8–10 (complete)
-- ✅ **v1.3 jsmdma Sync** — Phase 11 (complete 2026-04-10)
-- 📋 **v1.4 Live Sync** — Phase 12+ (planned — configure auth client IDs, point at live backend)
+- ✅ **v1.3 jsmdma Sync** — Phases 11–12 (complete 2026-04-13)
 
 ## Phases
 
@@ -15,13 +14,11 @@
 
 ### Phase 1: Migration
 **Goal**: Migrate codebase to maintainable baseline — decompose monolithic index.html with m4 composition, establish .compose build pipeline.
-**Plans**: TBD
 Plans:
 - [x] 01-01: Initial migration and m4 composition setup
 
 ### Phase 2: JS Modularisation
 **Goal**: Split monolithic JS into CDI-wired service modules; remove SquareUp, lodash, superagent; restructure Vue model into grouped sub-objects.
-**Plans**: TBD
 Plans:
 - [x] 02-01: Module split and CDI wiring
 - [x] 02-02: Dead code removal (SquareUp, lodash, superagent)
@@ -29,13 +26,11 @@ Plans:
 
 ### Phase 3: Storage Modernisation
 **Goal**: Modernise StorageLocal/StorageRemote; align storage layer with CDI patterns.
-**Plans**: TBD
 Plans:
 - [x] 03-01: Storage modernisation
 
 ### Phase 4: Auth & API Contract
 **Goal**: Define auth contract, API shape; establish AuthProvider skeleton; replace superagent with native fetch.
-**Plans**: TBD
 Plans:
 - [x] 04-01: Auth and API contract
 
@@ -46,19 +41,16 @@ Plans:
 
 ### Phase 5: UI/UX Design Research
 **Goal**: Research and document UI/UX improvements.
-**Plans**: TBD
 Plans:
 - [x] 05-01: UI/UX research
 
 ### Phase 6: UI/UX Polish & Finalisation
 **Goal**: Implement UI/UX improvements from research.
-**Plans**: TBD
 Plans:
 - [x] 06-01: UI/UX polish
 
 ### Phase 7: Boot v3 Uplift
 **Goal**: Upgrade to @alt-javascript/boot-vue@3; migrate CDI bootstrap to vueStarter; fix CDN route interception in Playwright; establish SRI stripping pattern in globalSetup.
-**Plans**: TBD
 Plans:
 - [x] 07-01: Boot v3 upgrade and test harness fixes
 
@@ -69,7 +61,6 @@ Plans:
 
 ### Phase 8: Day Data Model Extension
 **Goal**: Extend day object schema with keys '3' (notes) and '4' (emoji); add emoji rail mode with flyout; define merge semantics for import.
-**Plans**: TBD
 Plans:
 - [x] 08-01: Day model extension (notes, emoji)
 - [x] 08-02: Emoji rail mode UI
@@ -77,62 +68,38 @@ Plans:
 
 ### Phase 9: localStorage Schema Redesign & Migration
 **Goal**: Replace cookie-era opaque-key schema with HLC-ready readable schema (`dev`, `tok`, `plnr:{uuid}`, `rev:{uuid}`, `base:{uuid}`, `sync:{uuid}`). Write migration logic. Update all E2E tests.
-**Plans**: TBD
 Plans:
 - [x] 09-01: Schema redesign and migration
 - [x] 09-02: Test harness updates
 
 ### Phase 10: Source Root Tidy — Move Web Assets to site/
 **Goal**: Move all web assets into `site/` subdirectory; update build paths; keep Docker/Skaffold serving unchanged.
-**Plans**: TBD
 Plans:
 - [x] 10-01: Web assets migration to site/
 
 </details>
 
-### ✅ v1.3 jsmdma Sync (Phase 11) — COMPLETE 2026-04-10
+<details>
+<summary>✅ v1.3 jsmdma Sync (Phases 11–12) — COMPLETE 2026-04-13</summary>
 
-**Milestone Goal:** Replace obsolete push/pull sync with jsmdma HLC-based bidirectional sync. Field-level HLC clocks tracked on every edit. Sync payload shaped for jsmdma backend. 18/18 Playwright tests pass.
-
-#### Phase 11: jsmdma Sync Protocol & MOD Cleanup
+### Phase 11: jsmdma Sync Protocol & MOD Cleanup
 **Goal**: Create SyncClient.js, rewrite Api.js to POST /year-planner/sync, wire HLC field tracking into every StorageLocal write, delete StorageRemote.js, resolve MOD-05–09 cleanup items.
 **Depends on**: Phase 10
 **Requirements**: AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, SYNC-04, SYNC-05, SYNC-06
-**Success Criteria** (what must be TRUE):
-  1. SyncClient.js is CDI-registered; Api.js posts to /year-planner/sync with jsmdma payload
-  2. Editing any day entry writes dot-path HLC entries to rev:{uuid} in localStorage
-  3. StorageRemote.js is deleted; all 9 sync call sites updated to api.sync(plannerId)
-  4. MOD-05–09 items resolved or explicitly deferred with rationale
-  5. 18/18 Playwright E2E tests pass
-**Plans**: 3 plans
-
 Plans:
 - [x] 11-01: SyncClient.js + jsmdma sync API (S01)
 - [x] 11-02: HLC write-path wiring (S02)
 - [x] 11-03: MOD cleanup audit (S03)
 
----
-
-### 📋 v1.4 Live Sync (Phase 12+) — PLANNED
-
-**Milestone Goal:** Wire to a live jsmdma backend. Configure Google/Apple/Microsoft OAuth client IDs in AuthProvider.js. Point Api.js sync endpoint at a running server. End-to-end authenticated sync working.
-
-#### Phase 12: Auth Client Configuration & Live Sync
+### Phase 12: Auth Client Configuration & Live Sync
 **Goal**: Stabilise rail UI (move inside Vue #app, drop jQuery bridge), write contract tests against real jsmdma backend, verify sync protocol end-to-end.
 **Depends on**: Phase 11
 **Requirements**: MOD-09, SYNC-08
-**Success Criteria** (what must be TRUE):
-  1. Rail is inside #app with Vue bindings; jQuery/Bootstrap JS removed
-  2. Contract tests hit real run-local.js backend with signed JWTs
-  3. MOD-09 (orphan modal audit) verified
-  4. SYNC-08 (prune on delete) verified
-**Plans**: 2 plans
-
 Plans:
-- [x] 12-01-PLAN.md — Vue rail migration, jQuery removal, modal Vue flags, MOD-09 audit
-- [x] 12-02-PLAN.md — Contract tests against live jsmdma backend, SYNC-08 verification
+- [x] 12-01: Vue rail migration, jQuery removal, modal Vue flags, MOD-09 audit
+- [x] 12-02: Contract tests against live jsmdma backend, SYNC-08 verification
 
----
+</details>
 
 ## Progress
 
@@ -149,4 +116,4 @@ Plans:
 | 9. localStorage Schema | v1.2 | — | Complete | 2026-03 |
 | 10. Source Root Tidy | v1.2 | — | Complete | 2026-04 |
 | 11. jsmdma Sync & MOD | v1.3 | 3/3 | Complete | 2026-04-10 |
-| 12. Auth Config & Live Sync | v1.4 | 2/2 | Complete    | 2026-04-13 |
+| 12. Auth Config & Live Sync | v1.3 | 2/2 | Complete | 2026-04-13 |

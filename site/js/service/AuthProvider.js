@@ -77,14 +77,10 @@ export default class AuthProvider {
             throw new Error(`Google sign-in failed: could not reach auth server (${err.message})`);
         }
 
-        const { authorizationURL, state, codeVerifier } = beginResult;
+        const { authorizationURL } = beginResult;
         if (!authorizationURL) throw new Error('Google sign-in failed: no authorizationURL from server');
 
-        // Step 2: store PKCE params in sessionStorage for the callback handler
-        sessionStorage.setItem('oauth_state',         state);
-        sessionStorage.setItem('oauth_code_verifier', codeVerifier);
-
-        // Step 3: redirect browser to Google
+        // Step 2: redirect browser to Google
         window.location.href = authorizationURL;
 
         // This promise never resolves — the page navigates away.

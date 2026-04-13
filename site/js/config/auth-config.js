@@ -3,7 +3,7 @@
 // Leave empty to disable a provider.
 export const authConfig = {
     google: {
-        clientId: '',  // Google OAuth 2.0 client ID
+        clientId: '98746316056-d581h0p6u6ts0544fcu28gtu5brblal5.apps.googleusercontent.com',  // Google OAuth 2.0 client ID
     },
     apple: {
         clientId: '',  // Apple Services ID
