@@ -39,14 +39,8 @@ async function registerCdnRoutes(page) {
   await page.route('**/luxon@2/build/es6/luxon.min.js', localFile('luxon.min.js', 'application/javascript'));
   // LZ-String ESM build
   await page.route('**/lz-string/libs/lz-string.min.js/+esm', localFile('lz-string.esm.js', 'application/javascript'));
-  // Bootstrap JS
-  await page.route('**/bootstrap/4.3.1/js/bootstrap.min.js', localFile('bootstrap.min.js', 'application/javascript'));
-  // jQuery slim
-  await page.route('**/jquery-3.3.1.slim.min.js', localFile('jquery.slim.min.js', 'application/javascript'));
-  // Popper.js
-  await page.route('**/popper.js/1.14.7/**', localFile('popper.min.js', 'application/javascript'));
-  // Bootstrap CSS
-  await page.route('**/bootstrap/4.3.1/css/bootstrap.min.css', localFile('bootstrap.min.css', 'text/css'));
+  // Bootstrap CSS (BS5)
+  await page.route('**/bootstrap@5.3.8/dist/css/bootstrap.min.css', localFile('bootstrap.min.css', 'text/css'));
   // Google Fonts stub
   await page.route('**/fonts.googleapis.com/**', (route) => route.fulfill({ status: 200, body: '', contentType: 'text/css' }));
   // FontAwesome CSS
