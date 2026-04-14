@@ -28,6 +28,8 @@ export const uiState = {
     renameVisible : false,
     // Nav menu dropdown
     navMenuOpen : false,
+    // Footer language dropdown
+    showLangMenu : false,
     // Style theme crisp flag (for v-show on theme icons in rail)
     styleCrisp : false,
 }

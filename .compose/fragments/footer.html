@@ -4,8 +4,8 @@
                     <div class="col-2">
 
                         <div id="footer-text-left" class="text-body-secondary text-start">
-                            <div class="dropup show">
-                                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <div class="dropup" v-bind:class="{'show': showLangMenu}">
+                                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" v-on:click.stop="showLangMenu = !showLangMenu" aria-haspopup="true" v-bind:aria-expanded="showLangMenu">
                                     {{$t('lang.'+lang)}}
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
