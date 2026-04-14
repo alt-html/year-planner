@@ -137,12 +137,13 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. A developer running jsmdma locally can complete a GitHub OAuth callback without a 404 or missing-route error
   2. KNOWN_PROVIDERS in vendored jsmdma-auth-client.esm.js includes "github"
-  3. GitHub OAuth Apps exist for both localhost and CloudFront with correct callback URLs
+  3. GitHub OAuth App exists for localhost dev with correct callback URL (production CloudFront app deferred to deployment phase)
   4. All missing backend routes/middleware are patched and the run-server config reflects them
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 16-01: TBD
+- [x] 16-01: Backend route audit and KNOWN_PROVIDERS patch
+- [x] 16-02: GitHub OAuth App registration and client ID wiring
 
 ### Phase 17: GitHub OAuth Client Flow
 **Goal**: Users can sign in with GitHub via the real OAuth authorization code flow wired end-to-end against the local server, with correct provider identification and durable PKCE state
@@ -153,11 +154,12 @@ Plans:
   2. The provider returned from the OAuth callback is identified as "github" (not hardcoded "google")
   3. PKCE state survives a page reload mid-flow and is cleaned up from localStorage after exchange completes
   4. Apple and Microsoft sign-in buttons are hidden when their client IDs are absent from config
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
 
 Plans:
-- [ ] 17-01: TBD
+- [ ] 17-01-PLAN.md — GitHub sign-in method, PKCE storage fix, callback handler fix, auth modal template updates
+- [ ] 17-02-PLAN.md — E2E test coverage for all GHO requirements and human verification
 
 ### Phase 18: Auth Module Extraction
 **Goal**: Auth code lives in a standalone site/js/auth/ folder with an app-agnostic API; old AuthProvider.js is deleted; all consumers rewired through CDI; sign-out preserves unsynced planner data
@@ -207,7 +209,7 @@ Plans:
 | 13. BS5 Migration | v1.4 | 1/1 | Complete | 2026-04-14 |
 | 14. Dark Mode BS5 | v1.4 | 1/1 | Complete | 2026-04-14 |
 | 15. CSS Generalisation | v1.4 | 2/2 | Complete | 2026-04-14 |
-| 16. Backend Discovery & Wiring | v1.5 | 0/TBD | Not started | - |
-| 17. GitHub OAuth Client Flow | v1.5 | 0/TBD | Not started | - |
+| 16. Backend Discovery & Wiring | v1.5 | 2/2 | Complete    | 2026-04-14 |
+| 17. GitHub OAuth Client Flow | v1.5 | 0/2 | Not started | - |
 | 18. Auth Module Extraction | v1.5 | 0/TBD | Not started | - |
 | 19. Account Linking UI | v1.5 | 0/TBD | Not started | - |
