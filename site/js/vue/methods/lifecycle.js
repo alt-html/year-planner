@@ -27,8 +27,12 @@ export const lifecycleMethods = {
         this.storageLocal.setLocalFromModel();
         if (this.theme === 'dark') {
             document.body.classList.add('yp-dark');
+            var appEl = document.getElementById('app');
+            if (appEl) appEl.setAttribute('data-bs-theme', 'dark');
         } else {
             document.body.classList.remove('yp-dark');
+            var appEl = document.getElementById('app');
+            if (appEl) appEl.removeAttribute('data-bs-theme');
         }
         this.loaded = true;
         this.syncScheduler.markDirty();

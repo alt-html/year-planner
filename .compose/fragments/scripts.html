@@ -5,6 +5,8 @@
         document.body.setAttribute('data-theme', saved);
         if (new URLSearchParams(window.location.search).get('theme') === 'dark') {
             document.body.classList.add('yp-dark');
+            var app = document.getElementById('app');
+            if (app) app.setAttribute('data-bs-theme', 'dark');
         }
         if (sessionStorage.getItem('rail_open') === '1') {
             var r = document.getElementById('rail');

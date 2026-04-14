@@ -40,7 +40,7 @@
 
 </head>
 <body>
-    <div id="app" v-bind:class="{'yp-dark':theme=='dark'}" v-on:click="showLangMenu = false">
+    <div id="app" v-bind:class="{'yp-dark':theme=='dark'}" v-bind:data-bs-theme="theme=='dark' ? 'dark' : null" v-on:click="showLangMenu = false">
     <!-- HIDDEN LEFT ICON RAIL (inside #app — Vue-bound) -->
     <nav class="yp-rail" id="rail">
         <div class="yp-rail-logo">YP</div>
@@ -651,6 +651,8 @@
         document.body.setAttribute('data-theme', saved);
         if (new URLSearchParams(window.location.search).get('theme') === 'dark') {
             document.body.classList.add('yp-dark');
+            var app = document.getElementById('app');
+            if (app) app.setAttribute('data-bs-theme', 'dark');
         }
         if (sessionStorage.getItem('rail_open') === '1') {
             var r = document.getElementById('rail');
