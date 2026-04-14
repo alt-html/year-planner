@@ -8,9 +8,9 @@ Live at: https://d1uamxeylh4qir.cloudfront.net/
 
 ## Current State
 
-**Shipped:** v1.3 jsmdma Sync (2026-04-13)
+**Shipped:** v1.4 Bootstrap 5 & UI Generalisation (2026-04-14)
 
-The app now has a complete jsmdma HLC-based bidirectional sync layer. The vertical rail is fully inside Vue with flyout UI for planner management (create/switch/delete/share), theme selection, and sign-in/sign-out. jQuery and Bootstrap JS dependencies are removed. 32 Playwright E2E tests and 4 contract tests cover the sync protocol against a live backend.
+Migrated from Bootstrap 4.3.1 to 5.3.8 with full markup modernisation (data-bs-* attributes, updated utility classes). BS5 native dark mode (data-bs-theme="dark") wired alongside .yp-dark class. CSS generalised — design tokens, rail styles, and dot styles extracted into separate files; all bare custom properties namespaced to --yp-*. Feature modal converted to Vue-reactive state, eliminating the last Bootstrap JS dependency. SRI integrity hashes added for all CDN resources. 47 Playwright tests (32 E2E + 9 smoke + 4 contract + 2 dark mode).
 
 ## Core Value
 
@@ -31,19 +31,11 @@ Offline-first local planner that works without an account, and syncs bidirection
 - ✓ **SYNC-06**: SyncClient.js implemented with markEdited/sync/prune, CDI-registered — v1.3
 - ✓ **SYNC-08**: SyncClient.prune() wired to planner deletion lifecycle — v1.3
 
-## Current Milestone: v1.4 Bootstrap 5 & UI Generalisation
+### Validated (v1.4)
 
-**Goal:** Migrate from Bootstrap 4.x to 5, leverage BS5 features to improve the UI, and generalise app-specific (`yp-*`) CSS/HTML into reusable patterns for sibling apps.
-
-**Target features:**
-- Bootstrap 4 → 5 migration (CSS/markup — jQuery bridge already gone)
-- Audit and adopt BS5 improvements where they benefit the planner UI
-- Modernise markup to BS5 idioms (`data-bs-*`, updated utilities/components)
-- Generalise `yp-*` CSS classes and HTML structures into reusable, app-agnostic patterns
-
-### Active
-
-(Requirements to be defined below)
+- ✓ **MIG-01..12**: Full Bootstrap 5.3.8 migration — CDN swap, data-bs-* attributes, utility class renames, feature modal Vue conversion — v1.4
+- ✓ **DRK-01..04**: BS5 native dark mode wired, redundant overrides removed, visual audit passed — v1.4
+- ✓ **CSS-01..05**: CSS generalisation — design-tokens.css, rail.css, dots.css extracted; --yp-* namespace; head.html updated — v1.4
 
 ### Out of Scope
 
@@ -53,14 +45,15 @@ Offline-first local planner that works without an account, and syncs bidirection
 
 ## Context
 
-- **Tech stack**: Vanilla ES module browser app, no bundler, CDN dependencies (`jsdelivr.net`)
+- **Tech stack**: Vanilla ES module browser app, no bundler, CDN dependencies (`jsdelivr.net` for Bootstrap 5.3.8, `unpkg.com` for Phosphor Icons)
 - **Assets**: `site/` (index.html, css/, js/, manifest.json, icons)
 - **localStorage schema** (M009): `dev`, `tok`, `plnr:{uuid}`, `rev:{uuid}`, `base:{uuid}`, `sync:{uuid}` — HLC-ready
 - **Auth**: Federated auth (Google/Apple/Microsoft) in `AuthProvider.js` — Google client ID configured, Apple/Microsoft pending
 - **Sync**: PlannerStore + SyncClientAdapter (vendored jsmdma-client.esm.js) + SyncScheduler debounce layer
 - **Rail**: Vertical rail inside Vue `#app` with flyout submenus (calendar/planner selector, marker, emoji, settings)
 - **Build system**: `.compose/build.sh` assembles `site/index.html` from `.compose/fragments/` via m4 macros
-- **Tests**: 32 Playwright E2E tests + 4 contract tests in `.tests/`
+- **CSS architecture**: design-tokens.css (theme properties), rail.css (rail panel), dots.css (dot swatches), main.css (layout/components), yp-dark.css (dark overrides) — all custom properties use --yp-* namespace
+- **Tests**: 47 Playwright tests (32 E2E + 9 CSS smoke + 4 contract + 2 dark mode) in `.tests/`
 - **Entry**: `site/index.html` → `site/js/main.js` → `@alt-javascript/boot-vue` CDI bootstrap → Vue 3 Options API mount
 - **CDI wiring**: `site/js/config/contexts.js` registers all services as singletons; constructor parameter names must match registered names (camelCase class name)
 
@@ -106,5 +99,9 @@ This document evolves at phase transitions and milestone boundaries.
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
+| BS5 migration (no JS bundle) | All interactivity is Vue-reactive; BS5 CSS-only via CDN | ✓ Good |
+| CSS --yp-* namespace | Prevents collision with BS5 --bs-* properties; enables multi-app reuse | ✓ Good |
+| Separate CSS files (tokens/rail/dots) | Modular loading, clearer maintenance boundaries | ✓ Good |
+
 ---
-*Last updated: 2026-04-14 after v1.4 milestone start*
+*Last updated: 2026-04-14 after v1.4 milestone*
