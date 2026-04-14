@@ -7,98 +7,98 @@
 /* ---- THEME A: Ink & Paper (default) ---- */
 :root,
 [data-theme="ink"] {
-    --font-display: 'Playfair Display', Georgia, serif;
-    --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
-    --font-mono: var(--font-body);
+    --yp-font-display: 'Playfair Display', Georgia, serif;
+    --yp-font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+    --yp-font-mono: var(--yp-font-body);
 
-    --bg: #FAF7F2;
-    --surface: #FAF7F2;
-    --text: #2C2520;
-    --text-mid: #6B5F54;
-    --text-light: #A89B8C;
+    --yp-bg: #FAF7F2;
+    --yp-surface: #FAF7F2;
+    --yp-text: #2C2520;
+    --yp-text-mid: #6B5F54;
+    --yp-text-light: #A89B8C;
 
-    --accent: #D4663A;
-    --today: #E8A838;
-    --today-bg: #FFF5E0;
+    --yp-accent: #D4663A;
+    --yp-today: #E8A838;
+    --yp-today-bg: #FFF5E0;
 
-    --weekend: #F7F0E8;
-    --past: #F0EDE8;
-    --border: #E5DDD2;
-    --header-border: var(--text);
+    --yp-weekend: #F7F0E8;
+    --yp-past: #F0EDE8;
+    --yp-border: #E5DDD2;
+    --yp-header-border: var(--yp-text);
 
-    --rail-bg: #3A302A;
-    --rail-text: rgba(255,255,255,0.5);
-    --rail-text-hover: #FFFFFF;
-    --rail-active-bg: rgba(255,255,255,0.15);
+    --yp-rail-bg: #3A302A;
+    --yp-rail-text: rgba(255,255,255,0.5);
+    --yp-rail-text-hover: #FFFFFF;
+    --yp-rail-active-bg: rgba(255,255,255,0.15);
 
-    --c2: #F5D0C0;
-    --c3: #D4EDDA;
-    --c4: #D6E4F0;
-    --c5: #D0ECE8;
-    --c6: #F5EFCF;
-    --c7: #EDDCF0;
-    --c8: #F5DFC0;
+    --yp-c2: #F5D0C0;
+    --yp-c3: #D4EDDA;
+    --yp-c4: #D6E4F0;
+    --yp-c5: #D0ECE8;
+    --yp-c6: #F5EFCF;
+    --yp-c7: #EDDCF0;
+    --yp-c8: #F5DFC0;
 
-    --th-color: var(--text-mid);
-    --th-bg: var(--surface);
-    --th-weight: 600;
-    --th-size: 0.8rem;
-    --th-transform: uppercase;
-    --th-spacing: 0.08em;
-    --today-radius: 50%;
-    --grid-td-size: 0.8rem;
+    --yp-th-color: var(--yp-text-mid);
+    --yp-th-bg: var(--yp-surface);
+    --yp-th-weight: 600;
+    --yp-th-size: 0.8rem;
+    --yp-th-transform: uppercase;
+    --yp-th-spacing: 0.08em;
+    --yp-today-radius: 50%;
+    --yp-grid-td-size: 0.8rem;
 
     /* Modal action button — warm leather/saddle */
-    --btn-save-bg: #8B6914;
-    --btn-save-hover: #7A5B0E;
-    --btn-save-text: #FFFDF5;
+    --yp-btn-save-bg: #8B6914;
+    --yp-btn-save-hover: #7A5B0E;
+    --yp-btn-save-text: #FFFDF5;
 }
 
 /* ---- THEME B: Crisp & Clear ---- */
 [data-theme="crisp"] {
-    --font-display: 'DM Sans', -apple-system, sans-serif;
-    --font-body: 'DM Sans', -apple-system, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --yp-font-display: 'DM Sans', -apple-system, sans-serif;
+    --yp-font-body: 'DM Sans', -apple-system, sans-serif;
+    --yp-font-mono: 'JetBrains Mono', monospace;
 
-    --bg: #F8F9FB;
-    --surface: #F8F9FB;
-    --text: #1A1D23;
-    --text-mid: #5A6070;
-    --text-light: #9CA3B0;
+    --yp-bg: #F8F9FB;
+    --yp-surface: #F8F9FB;
+    --yp-text: #1A1D23;
+    --yp-text-mid: #5A6070;
+    --yp-text-light: #9CA3B0;
 
-    --accent: #2563EB;
-    --today: #2563EB;
-    --today-bg: #EFF4FF;
+    --yp-accent: #2563EB;
+    --yp-today: #2563EB;
+    --yp-today-bg: #EFF4FF;
 
-    --weekend: #F3F4F8;
-    --past: #FAFBFC;
-    --border: #E8EAF0;
-    --header-border: #1A1D23;
+    --yp-weekend: #F3F4F8;
+    --yp-past: #FAFBFC;
+    --yp-border: #E8EAF0;
+    --yp-header-border: #1A1D23;
 
-    --rail-bg: #1A1D23;
-    --rail-text: rgba(255,255,255,0.45);
-    --rail-text-hover: #FFFFFF;
-    --rail-active-bg: rgba(255,255,255,0.12);
+    --yp-rail-bg: #1A1D23;
+    --yp-rail-text: rgba(255,255,255,0.45);
+    --yp-rail-text-hover: #FFFFFF;
+    --yp-rail-active-bg: rgba(255,255,255,0.12);
 
-    --c2: #FFE0E0;
-    --c3: #D5F0D5;
-    --c4: #D5E5FF;
-    --c5: #D0F0F0;
-    --c6: #FFF5D5;
-    --c7: #EAD5FF;
-    --c8: #FFE5D0;
+    --yp-c2: #FFE0E0;
+    --yp-c3: #D5F0D5;
+    --yp-c4: #D5E5FF;
+    --yp-c5: #D0F0F0;
+    --yp-c6: #FFF5D5;
+    --yp-c7: #EAD5FF;
+    --yp-c8: #FFE5D0;
 
-    --th-color: #FFFFFF;
-    --th-bg: #1A1D23;
-    --th-weight: 700;
-    --th-size: 0.72rem;
-    --th-transform: uppercase;
-    --th-spacing: 0.1em;
-    --today-radius: 6px;
-    --grid-td-size: 0.78rem;
+    --yp-th-color: #FFFFFF;
+    --yp-th-bg: #1A1D23;
+    --yp-th-weight: 700;
+    --yp-th-size: 0.72rem;
+    --yp-th-transform: uppercase;
+    --yp-th-spacing: 0.1em;
+    --yp-today-radius: 6px;
+    --yp-grid-td-size: 0.78rem;
 
     /* Modal action button — Figma-inspired violet */
-    --btn-save-bg: #A259FF;
-    --btn-save-hover: #9141E8;
-    --btn-save-text: #FFFFFF;
+    --yp-btn-save-bg: #A259FF;
+    --yp-btn-save-hover: #9141E8;
+    --yp-btn-save-text: #FFFFFF;
 }

@@ -10,7 +10,7 @@
     top: 0;
     bottom: 0;
     width: 48px;
-    background: var(--rail-bg);
+    background: var(--yp-rail-bg);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -28,13 +28,13 @@
 .yp-rail-logo {
     width: 30px;
     height: 30px;
-    background: var(--rail-active-bg);
+    background: var(--yp-rail-active-bg);
     border-radius: 7px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--rail-text-hover);
-    font-family: var(--font-display);
+    color: var(--yp-rail-text-hover);
+    font-family: var(--yp-font-display);
     font-weight: 700;
     font-size: 0.8rem;
     margin-bottom: 12px;
@@ -43,7 +43,7 @@
 .yp-rail button {
     background: none;
     border: none;
-    color: var(--rail-text);
+    color: var(--yp-rail-text);
     padding: 9px;
     cursor: pointer;
     border-radius: 7px;
@@ -57,13 +57,13 @@
 }
 
 .yp-rail button:hover {
-    color: var(--rail-text-hover);
-    background: var(--rail-active-bg);
+    color: var(--yp-rail-text-hover);
+    background: var(--yp-rail-active-bg);
 }
 
 .yp-rail button.active {
-    color: var(--rail-text-hover);
-    background: var(--rail-active-bg);
+    color: var(--yp-rail-text-hover);
+    background: var(--yp-rail-active-bg);
 }
 
 .yp-rail-spacer { flex: 1; }
@@ -84,8 +84,8 @@
 
 .rail-theme-toggle {
     font-size: 0.95rem !important;
-    background: var(--rail-active-bg) !important;
-    color: var(--rail-text-hover) !important;
+    background: var(--yp-rail-active-bg) !important;
+    color: var(--yp-rail-text-hover) !important;
     border: 1px solid rgba(255,255,255,0.15) !important;
 }
 
@@ -95,7 +95,7 @@
     left: 48px;
     top: 40px;
     width: 140px;
-    background: var(--rail-bg);
+    background: var(--yp-rail-bg);
     border-radius: 0 8px 8px 0;
     padding: 8px 0;
     box-shadow: 4px 2px 12px rgba(0,0,0,0.25);
@@ -115,16 +115,16 @@
 .rail-flyout-item {
     display: block;
     padding: 5px 14px;
-    color: var(--rail-text);
+    color: var(--yp-rail-text);
     font-size: 0.78rem;
     text-decoration: none;
     transition: all 0.1s;
-    font-family: var(--font-body);
+    font-family: var(--yp-font-body);
 }
 
 .rail-flyout-item:hover {
-    color: var(--rail-text-hover);
-    background: var(--rail-active-bg);
+    color: var(--yp-rail-text-hover);
+    background: var(--yp-rail-active-bg);
     text-decoration: none;
 }
 
@@ -142,17 +142,17 @@
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 4px;
-    color: var(--rail-text-hover);
-    font-family: var(--font-body);
+    color: var(--yp-rail-text-hover);
+    font-family: var(--yp-font-body);
     outline: none;
 }
 
 .rail-flyout-input::placeholder {
-    color: var(--rail-text);
+    color: var(--yp-rail-text);
 }
 
 .rail-flyout-input:focus {
-    border-color: var(--accent);
+    border-color: var(--yp-accent);
 }
 
 .rail-flyout-header {
@@ -160,13 +160,13 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--rail-text);
+    color: var(--yp-rail-text);
     opacity: 0.6;
     padding: 4px 14px 2px;
 }
 
 .rail-flyout-item-active {
-    background: var(--rail-active-bg, rgba(255,255,255,0.1));
+    background: var(--yp-rail-active-bg, rgba(255,255,255,0.1));
     font-weight: 600;
 }
 
@@ -182,8 +182,8 @@
 }
 
 .yp-rail button.flyout-active {
-    color: var(--rail-text-hover);
-    background: var(--rail-active-bg);
+    color: var(--yp-rail-text-hover);
+    background: var(--yp-rail-active-bg);
 }
 
 /* ---- RAIL TOGGLE (left-side circle) ---- */
@@ -194,8 +194,8 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--rail-bg);
-    color: var(--rail-text-hover);
+    background: var(--yp-rail-bg);
+    color: var(--yp-rail-text-hover);
     border: none;
     cursor: pointer;
     font-size: 0.8rem;

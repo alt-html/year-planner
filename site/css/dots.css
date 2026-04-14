@@ -14,7 +14,7 @@
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    border: 1.5px solid var(--border);
+    border: 1.5px solid var(--yp-border);
     cursor: pointer;
     padding: 0;
     transition: transform 0.12s, box-shadow 0.12s;
@@ -26,22 +26,22 @@
     box-shadow: 0 1px 5px rgba(0,0,0,0.15);
 }
 
-.yp-dot-clear  { background-color: var(--surface); }
-.yp-dot-c1     { background-color: var(--weekend); border-color: transparent; }
-.yp-dot-c2     { background-color: var(--c2); border-color: transparent; }
-.yp-dot-c3     { background-color: var(--c3); border-color: transparent; }
-.yp-dot-c4     { background-color: var(--c4); border-color: transparent; }
-.yp-dot-c5     { background-color: var(--c5); border-color: transparent; }
-.yp-dot-c6     { background-color: var(--c6); border-color: transparent; }
-.yp-dot-c7     { background-color: var(--c7); border-color: transparent; }
-.yp-dot-c8     { background-color: var(--c8); border-color: transparent; }
+.yp-dot-clear  { background-color: var(--yp-surface); }
+.yp-dot-c1     { background-color: var(--yp-weekend); border-color: transparent; }
+.yp-dot-c2     { background-color: var(--yp-c2); border-color: transparent; }
+.yp-dot-c3     { background-color: var(--yp-c3); border-color: transparent; }
+.yp-dot-c4     { background-color: var(--yp-c4); border-color: transparent; }
+.yp-dot-c5     { background-color: var(--yp-c5); border-color: transparent; }
+.yp-dot-c6     { background-color: var(--yp-c6); border-color: transparent; }
+.yp-dot-c7     { background-color: var(--yp-c7); border-color: transparent; }
+.yp-dot-c8     { background-color: var(--yp-c8); border-color: transparent; }
 
 /* Colour swatches in marker flyout — must override rail button background:none */
-.marker-flyout button.yp-dot-c1 { background-color: var(--weekend) !important; }
-.marker-flyout button.yp-dot-c2 { background-color: var(--c2) !important; }
-.marker-flyout button.yp-dot-c3 { background-color: var(--c3) !important; }
-.marker-flyout button.yp-dot-c4 { background-color: var(--c4) !important; }
-.marker-flyout button.yp-dot-c5 { background-color: var(--c5) !important; }
-.marker-flyout button.yp-dot-c6 { background-color: var(--c6) !important; }
-.marker-flyout button.yp-dot-c7 { background-color: var(--c7) !important; }
-.marker-flyout button.yp-dot-c8 { background-color: var(--c8) !important; }
+.marker-flyout button.yp-dot-c1 { background-color: var(--yp-weekend) !important; }
+.marker-flyout button.yp-dot-c2 { background-color: var(--yp-c2) !important; }
+.marker-flyout button.yp-dot-c3 { background-color: var(--yp-c3) !important; }
+.marker-flyout button.yp-dot-c4 { background-color: var(--yp-c4) !important; }
+.marker-flyout button.yp-dot-c5 { background-color: var(--yp-c5) !important; }
+.marker-flyout button.yp-dot-c6 { background-color: var(--yp-c6) !important; }
+.marker-flyout button.yp-dot-c7 { background-color: var(--yp-c7) !important; }
+.marker-flyout button.yp-dot-c8 { background-color: var(--yp-c8) !important; }
