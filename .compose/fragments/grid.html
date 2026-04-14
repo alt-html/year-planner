@@ -1,4 +1,4 @@
-       <main class="d-none" v-bind:class="{'d-block':loaded}">
+       <main v-bind:class="{'d-none':!loaded}">
             <div class="yp-jumbotron">
                 <div class="container">
                     <div class="fade" v-if="error" v-bind:class="{'alert alert-danger alert-dismissible show': error != ''}" role="alert" >

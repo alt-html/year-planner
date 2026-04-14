@@ -362,7 +362,7 @@
             </div>
         </div>
 
-        <nav class="navbar navbar-expand sticky-top d-none" v-bind:class="{'d-flex':loaded}" >
+        <nav class="navbar navbar-expand sticky-top" v-bind:class="{'d-none':!loaded}" >
 
             <a class="navbar-brand" :title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
 
@@ -387,7 +387,7 @@
 
         </nav>
 
-       <main class="d-none" v-bind:class="{'d-block':loaded}">
+       <main v-bind:class="{'d-none':!loaded}">
             <div class="yp-jumbotron">
                 <div class="container">
                     <div class="fade" v-if="error" v-bind:class="{'alert alert-danger alert-dismissible show': error != ''}" role="alert" >
@@ -603,7 +603,7 @@
         </div>
         <div class="modal-backdrop fade show" v-if="showFeatureModal" v-on:click="closeFeatureModal()"></div>
 
-        <footer class="d-none footer fixed-bottom" v-bind:class="{'d-block':loaded}">
+        <footer class="footer fixed-bottom" v-bind:class="{'d-none':!loaded}">
             <div id ="footer-container" class="container">
                 <div class="row">
                     <div class="col-2">

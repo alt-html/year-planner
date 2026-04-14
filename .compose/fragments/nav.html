@@ -1,4 +1,4 @@
-        <nav class="navbar navbar-expand sticky-top d-none" v-bind:class="{'d-flex':loaded}" >
+        <nav class="navbar navbar-expand sticky-top" v-bind:class="{'d-none':!loaded}" >
 
             <a class="navbar-brand" :title="$t('label.rename')" v-bind:class="{'d-none':rename}"  v-on:click="showRenamePlanner()" href="#">{{getPlannerName()||$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</a>
 
