@@ -531,26 +531,27 @@ body.emoji-dragging {
 }
 
 .alert-primary {
-    background-color: #fbd4b9;
-    border-color: #ff9f00;
-    color: #b44010;
+    background-color: var(--yp-c2);
+    border-color: var(--yp-accent);
+    color: var(--yp-text);
 }
 
 .text-cancelled {
-    color: #ff9f00 !important;
+    color: var(--yp-accent) !important;
 }
 
 #toasts {
     z-index: 100;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-    color: #fff;
-    background-color: #212529;
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    color: var(--yp-bg);
+    background-color: var(--yp-text);
 }
 
 .nav-link {
-    color: #212529;
+    color: var(--yp-text);
 }
 
 #tabcontent {
