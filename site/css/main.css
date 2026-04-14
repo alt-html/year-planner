@@ -833,6 +833,14 @@ body.emoji-dragging {
     white-space: nowrap;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+    /* BS5 compat: override .row > * { width:100%; flex-shrink:0 } which
+       forces each span to full width and prevents shrinking. Cells use
+       class="row" for grid layout but their children are inline text. */
+    width: auto;
+    flex-shrink: 1;
+    min-width: 0;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .yp-cell-past {
@@ -959,8 +967,9 @@ body.emoji-dragging {
     font-size: .8rem;
 }
 
-/* BS5 compat: restore BS4 parent-show dropdown behaviour (no Bootstrap JS loaded) */
+/* BS5 compat: restore BS4 dropdown behaviour (no Bootstrap JS loaded) */
 .show > .dropdown-menu { display: block; }
+.dropup .dropdown-menu { top: auto; bottom: 100%; }
 
 .show>.btn-secondary.dropdown-toggle {
     color: var(--text-light) !important;
