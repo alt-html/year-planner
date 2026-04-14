@@ -310,7 +310,7 @@ var PreferencesStore = class {
 };
 
 // AuthProvider.js
-var KNOWN_PROVIDERS = /* @__PURE__ */ new Set(["google", "apple", "microsoft"]);
+var KNOWN_PROVIDERS = /* @__PURE__ */ new Set(["google", "apple", "microsoft", "github"]);
 var AuthProvider = class {
   constructor(config = {}) {
     this._config = config;
