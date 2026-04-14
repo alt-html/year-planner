@@ -12,13 +12,24 @@
                             <button type="button" class="btn-close" v-on:click="clearModalAlert" aria-label="Close"></button>
                         </div>
                         <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-outline-dark mb-2" v-on:click="signInWith('google')">
+                            <button type="button" class="btn btn-outline-dark mb-2"
+                                    v-if="availableProviders.includes('google')"
+                                    v-on:click="signInWith('google')">
                                 <i class="ph ph-google-logo me-2"></i> Sign in with Google
                             </button>
-                            <button type="button" class="btn btn-outline-dark mb-2" v-on:click="signInWith('apple')">
+                            <button type="button" class="btn btn-outline-dark mb-2"
+                                    v-if="availableProviders.includes('github')"
+                                    v-on:click="signInWith('github')">
+                                <i class="ph ph-github-logo me-2"></i> Sign in with GitHub
+                            </button>
+                            <button type="button" class="btn btn-outline-dark mb-2"
+                                    v-if="availableProviders.includes('apple')"
+                                    v-on:click="signInWith('apple')">
                                 <i class="ph ph-apple-logo me-2"></i> Sign in with Apple
                             </button>
-                            <button type="button" class="btn btn-outline-dark mb-2" v-on:click="signInWith('microsoft')">
+                            <button type="button" class="btn btn-outline-dark mb-2"
+                                    v-if="availableProviders.includes('microsoft')"
+                                    v-on:click="signInWith('microsoft')">
                                 <i class="ph ph-microsoft-outlook-logo me-2"></i> Sign in with Microsoft
                             </button>
                         </div>

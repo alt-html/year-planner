@@ -6,7 +6,7 @@ import { DateTime } from 'https://cdn.jsdelivr.net/npm/luxon@2/build/es6/luxon.m
 
 export default class Application {
 
-    constructor(i18n, api, model, storage, storageLocal, messages) {
+    constructor(i18n, api, model, storage, storageLocal, messages, authProvider) {
         this.qualifier = '@alt-html/year-planner/Application'
         this.logger = null;
 
@@ -27,6 +27,7 @@ export default class Application {
         this.storage = storage || null;
         this.storageLocal = storageLocal || null;
         this.messages = messages || null;
+        this.authProvider = authProvider || null;
     }
 
     init(){
@@ -35,8 +36,14 @@ export default class Application {
         const urlToken = urlParam('token');
         if (urlToken) {
             ClientAuthSession.store(urlToken);
-            localStorage.setItem('auth_provider', localStorage.getItem('auth_provider') || 'google');
-            this.logger?.debug?.('[Application.init] ?token= received — stored JWT, auth_provider set');
+            const VALID_PROVIDERS = ['google', 'github', 'apple', 'microsoft'];
+            const raw = localStorage.getItem('oauth_intended_provider');
+            const intendedProvider = VALID_PROVIDERS.includes(raw) ? raw : 'google';
+            localStorage.setItem('auth_provider', intendedProvider);
+            localStorage.removeItem('oauth_state');
+            localStorage.removeItem('oauth_code_verifier');
+            localStorage.removeItem('oauth_intended_provider');
+            this.logger?.debug?.('[Application.init] ?token= received — stored JWT, auth_provider=' + intendedProvider);
             const cleanUrl = new URL(window.location.href);
             cleanUrl.searchParams.delete('token');
             window.history.replaceState({}, '', cleanUrl.toString());
@@ -74,6 +81,7 @@ export default class Application {
 
         this.model.registered = this.storageLocal.registered(),
         this.model.signedin = this.storageLocal.signedin(),
+        this.model.availableProviders = this.authProvider?.getAvailableProviders() || [];
 
         this.logger?.debug?.(`[Application.init] uid=${this.model.uid} uuid=${this.model.uuid} year=${this.model.year} signedin=${this.model.signedin} registered=${this.model.registered} url=${window.location.href}`);
 
