@@ -1,150 +1,173 @@
 # Stack Research
 
-**Domain:** Bootstrap 4 → 5 migration, CSS generalisation (vanilla ES module PWA)
+**Domain:** GitHub OAuth sign-in, auth module extraction, account linking (vanilla ES module PWA)
 **Researched:** 2026-04-14
 **Confidence:** HIGH
 
-## Recommended Stack
+## Context
+
+This is a SUBSEQUENT MILESTONE research file. The existing stack (Vue 3 Options API, Bootstrap 5.3.8, CDI, m4 build, jsmdma vendor bundles) is validated and NOT re-researched here. This file covers only what is NEW or CHANGED for v1.5 GitHub OAuth & Account Linking.
+
+---
+
+## New Capabilities Required
+
+### 1. GitHub OAuth Web Application Flow (No Client-side SDK)
+
+**Verdict:** No CDN library needed. The flow is 3 server-assisted steps, all implemented with native browser fetch + sessionStorage + window.location redirect.
+
+GitHub's token exchange endpoint (`https://github.com/login/oauth/access_token`) does NOT support CORS. The code→token exchange must occur server-side. The existing pattern in `AuthProvider.js` (`_signInGoogle()`) already implements this correctly: client calls `GET /auth/google` → server returns `authorizationURL` → client redirects. GitHub follows the same pattern at `GET /auth/github`.
+
+The existing `jsmdma-auth-client.esm.js` vendor bundle already includes `ClientAuthSession` (JWT storage/retrieval), `DeviceSession`, `IdentityStore`, and `PreferencesStore`. The bundle handles token storage in `localStorage.auth_token`. No additional library is needed on the client side.
+
+**PKCE (optional enhancement):** GitHub announced PKCE support on 2025-07-14. The S256 method is the only accepted method. However, GitHub still requires `client_secret` on the token exchange even with PKCE (it does not yet distinguish public clients). PKCE is therefore an additive security layer, not a flow replacement, and the existing server-side flow remains required. PKCE can be added later without architectural change.
+
+If PKCE is added: `code_verifier` and `code_challenge` are generated client-side using `crypto.subtle.digest('SHA-256', ...)` (Web Crypto API, available on https and localhost). Store `code_verifier` in `sessionStorage` (not localStorage — lives only for the redirect round-trip). The existing `jsmdma-auth-client.esm.js` already stores `oauth_state` and `oauth_code_verifier` in `sessionStorage` (lines 338-339 of the vendor bundle) so the infrastructure is already there.
+
+**Scope:** Use `read:user` + `user:email` for minimum identity (user ID, login, name, email). This is narrower and safer than the broad `user` scope.
+
+### 2. Auth Module Extraction — `site/js/auth/`
+
+**What moves:** All auth logic currently in `site/js/service/AuthProvider.js` and auth-related Vue methods/model pieces. The goal is a generic, app-agnostic auth module usable by sibling apps.
+
+**Pattern:** Flat ES module folder `site/js/auth/` with explicit named exports. No new framework, no new CDN dependency. CDI registration in `contexts.js` remains the wiring point — the new module's class is registered as a `Singleton` with the same constructor injection pattern.
+
+**What does NOT move:** `jsmdma-auth-client.esm.js` stays in `site/js/vendor/` (it's a vendored upstream). The auth module imports from it.
+
+**auth-config.js:** Add `github: { clientId: '...' }` entry alongside existing `google`, `apple`, `microsoft`. The `authConfig` shape already supports this; no structural change required.
+
+### 3. Account Linking UI
+
+**What is needed:** New Vue reactive state flags (`showLinkModal`, `linkProvider`, etc.) and Vue methods (`linkWith`, `unlinkProvider`, `transferIdentity`) following the existing pattern in `site/js/vue/methods/auth.js` and `site/js/vue/model/auth.js`.
+
+**API shape:** Account linking calls POSTed to the jsmdma backend (`/auth/link`, `/auth/unlink`) with the current JWT in `Authorization: Bearer` header. The server associates providers; the client stores the returned updated JWT. This is server-authoritative — the client never directly merges identities.
+
+**No new CDN dependency.** The account linking UI is pure Vue reactivity + `fetch`. No third-party library needed.
+
+---
+
+## Recommended Stack (New Additions Only)
 
 ### Core Technologies
 
 | Technology | Version | Purpose | Why Recommended |
 |------------|---------|---------|-----------------|
-| Bootstrap CSS | 5.3.8 | Layout, modal structure, utility classes | Latest stable patch of 5.3.x; LTS-equivalent; jsDelivr CDN; official SRI hash available |
-| Bootstrap JS | NOT NEEDED | — | jQuery and Bootstrap JS already removed in v1.3; modals/tooltips are Vue-reactive; no JS bundle needed |
-| Popper.js | NOT NEEDED | — | Only needed for Bootstrap JS dropdowns/tooltips; not used here |
+| Web Crypto API (`crypto.subtle`) | Browser built-in | PKCE code_verifier / code_challenge generation | No library needed; available on https + localhost; already used in `jsmdma-auth-client.esm.js` for `crypto.randomUUID()` |
+| sessionStorage | Browser built-in | Temporary PKCE `code_verifier` + `oauth_state` across redirect round-trip | sessionStorage clears on tab close — correct lifetime for OAuth round-trip; localStorage would persist stale verifiers |
 
 ### Supporting Libraries
 
-All pre-existing — no new libraries required for the BS4→BS5 migration.
+No new CDN dependencies required.
 
 | Library | Version | Purpose | Status |
 |---------|---------|---------|--------|
-| Vue 3 | 3.5.30 (current) | Modal state, reactivity | Unchanged |
-| vue-i18n | 9.14.5 (current) | i18n | Unchanged |
-| Phosphor Icons | 2.1.2 (current) | Icon set | Unchanged |
+| `jsmdma-auth-client.esm.js` | vendored (current) | `ClientAuthSession`, `DeviceSession`, `IdentityStore`, `PreferencesStore` | Already in `site/js/vendor/` — covers all client-side auth storage needs |
+| `@alt-javascript/cdi` | 3.x (CDN) | CDI singleton registration for new auth module | Already in use — no change |
 
 ### Development Tools
 
 | Tool | Purpose | Notes |
 |------|---------|-------|
-| m4 build system | Assembles `site/index.html` from `.compose/fragments/` | CDN link change goes in `.compose/fragments/head.html` — index.html is the compiled output |
+| m4 build system | HTML fragment composition | `auth-config.js` changes go in `site/js/config/` — not in fragments; no m4 changes expected for auth |
+| Playwright | Auth flow integration tests | Existing test suite; add tests for sign-in redirect, callback token handling, link/unlink flows |
+
+---
 
 ## Installation
 
-No npm install. This is a CDN-only, no-bundler project.
+No npm install. No new CDN `<script>` or `<link>` tags required.
 
-The only change is swapping one `<link>` tag.
+GitHub OAuth flow is handled by:
+1. Browser's native `fetch()` calling the jsmdma backend
+2. `window.location.href` redirect to GitHub
+3. `sessionStorage` for PKCE state (if used)
+4. Existing `ClientAuthSession` in vendor bundle for JWT storage
 
-## CDN Tag Replacement
-
-**Remove (in `.compose/fragments/head.html`):**
-```html
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-```
-
-**Replace with:**
-```html
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-```
-
-Note: BS5 uses jsDelivr (`cdn.jsdelivr.net/npm/`) — consistent with Vue and vue-i18n CDN pattern already in the project. The old `stackpath.bootstrapcdn.com` domain is discontinued.
-
-## Viewport Meta Update
-
-**Remove `shrink-to-fit=no`** (BS4-ism, meaningless in BS5):
-
-```html
-<!-- v4 -->
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-<!-- v5 -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-```
-
-## Breaking Changes Inventory (this codebase)
-
-All items verified against `site/index.html` and `.compose/fragments/` grep audit.
-
-### Must Fix (markup will break or render incorrectly in BS5)
-
-| Location | BS4 Pattern | BS5 Replacement | Impact |
-|----------|-------------|-----------------|--------|
-| `nav.html` / `index.html:371` | `<div class="input-group-append">` | Remove wrapper div; put child directly inside `.input-group` | Rename input save button misaligned |
-| `nav.html` / `index.html:369` | `<form class="form-inline">` | `<form class="d-flex gap-2">` or `<form class="row g-2">` | Rename form layout broken |
-| `index.html:404,416,434,438,443,453` | `class="row no-gutters"` | `class="row g-0"` | Calendar grid gutter removal broken — CRITICAL, affects entire grid layout |
-| `index.html:570,573,576` | `class="btn btn-outline-dark btn-block"` | `class="btn btn-outline-dark w-100"` (or wrap in `<div class="d-grid">`) | Sign-in buttons not full-width |
-| Multiple modals (`modals/auth.html` etc.) | `<button class="close">` | `<button class="btn-close">` | Close button invisible (BS5 uses SVG background-image) |
-| `index.html:647` | `data-toggle="modal" data-target="#featureModal"` | `data-bs-toggle="modal" data-bs-target="#featureModal"` | Feature modal trigger broken (this is the only remaining `data-toggle` that actually needs BS JS — see note below) |
-| `index.html:611,612` | `data-dismiss="modal"` | `data-bs-dismiss="modal"` | Feature modal close buttons broken |
-| `css/main.css:701,712` | `#yp-months .row.no-gutters` selectors | Update to `row.g-0` | CSS selectors won't match after class rename |
-
-### Should Fix (deprecated, will produce lint warnings or subtle layout drift)
-
-| Location | BS4 Pattern | BS5 Replacement |
-|----------|-------------|-----------------|
-| `index.html:94` | `class="mr-auto"` | `class="me-auto"` |
-| `index.html:95` | `class="ml-2"` | `class="ms-2"` |
-| `index.html:96,97` | `class="ml-1"` | `class="ms-1"` |
-| `index.html:99` | `class="pl-3"` | `class="ps-3"` |
-| `index.html:623` | `class="text-left"` | `class="text-start"` |
-| `index.html:647` | `class="text-right"` | `class="text-end"` |
-| `head.html` | `shrink-to-fit=no` viewport | Remove the attribute |
-
-### Note on `data-toggle="modal"` in featureModal
-
-The featureModal (`index.html:647` footer trigger, `index.html:594,611,612`) still uses `data-toggle`/`data-dismiss` — this is the **only** modal not controlled by Vue state flags. Two options:
-1. Convert to `data-bs-toggle`/`data-bs-dismiss` and load the BS5 JS bundle (adds ~78KB gzipped)
-2. Convert featureModal to Vue-reactive state (consistent with all other modals, zero new deps)
-
-**Recommendation: Option 2.** Add `showFeatureModal` flag to Vue model, match the pattern of `showEntryModal` etc. Keeps zero Bootstrap JS dependency. The `data-bs-dismiss` approach would require loading bootstrap.bundle.min.js which the project explicitly removed.
+---
 
 ## Alternatives Considered
 
 | Recommended | Alternative | When to Use Alternative |
 |-------------|-------------|-------------------------|
-| CSS-only BS5 (no JS bundle) | bootstrap.bundle.min.js | Only if native BS JS tooltips/dropdowns/accordions are added in future phases |
-| `w-100` for block buttons | `d-grid` wrapper | `d-grid` is more semantically correct for stacked button groups; `w-100` is fine for single buttons |
-| Inline `g-0` class | Override in CSS | CSS override already exists in main.css; keep CSS selector fix alongside class rename for clarity |
+| Server-assisted flow (client calls `GET /auth/github`, backend returns `authorizationURL`) | Pure client-side implicit grant | Implicit grant is deprecated in OAuth 2.1; client_secret exposure is a security violation. Never use for a real app. |
+| `read:user` + `user:email` scopes | Broad `user` scope | Only request `user` if write access to profile is actually needed — it's not needed here |
+| sessionStorage for `code_verifier` | localStorage for `code_verifier` | localStorage persists stale verifiers across sessions, creating replay attack surface |
+| Extending `AuthProvider.js` into `site/js/auth/` module folder | Keeping auth logic in `site/js/service/` | Module extraction is the milestone goal; `service/` is for app-specific services, `auth/` enables cross-app reuse |
+| Vendored `jsmdma-auth-client.esm.js` for token management | Custom JWT handling code | Vendor bundle already implements `iat` / `iat_session` idle+hard TTL logic; reinventing it adds risk with no benefit |
+
+---
 
 ## What NOT to Add
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| `bootstrap.bundle.min.js` | jQuery and BS JS already removed in v1.3; adding JS bundle reintroduces 78KB and Popper.js for no benefit | Vue-reactive state for all interactive components |
-| `@popperjs/core` | Same reason — not needed without BS JS | — |
-| Bootstrap Icons | Phosphor Icons already covers the icon set; mixing icon sets is visual noise | Phosphor Icons (already in use) |
-| `bootstrap@5.0` or `5.1` | Only 5.3.x receives active bug/security fixes | `bootstrap@5.3.8` |
+| GitHub OAuth SDK (Octokit `auth-oauth-app.js` etc.) | Node.js focused; ESM bundle is oversized for a single redirect flow; all functionality needed is 3 `fetch()` calls | Native `fetch()` + `window.location.href` |
+| Passport.js | Node.js middleware — not relevant to client-side ES module app | Backend handles Passport if jsmdma uses it; client has no dependency |
+| Firebase Auth / Auth0 / Clerk | Full auth platform = unnecessary external dependency, cross-origin token issuance, and vendor lock-in for a self-hosted sync backend | Server-side GitHub OAuth callback returning jsmdma JWT |
+| Implicit grant flow | Deprecated in OAuth 2.1; access token exposed in URL fragment, leaks via Referer header, no refresh tokens | Authorization code flow via server-assisted redirect |
+| MSAL.js for GitHub | MSAL is Microsoft-specific (already used for Microsoft provider) | GitHub has its own OAuth endpoint; MSAL is irrelevant |
+| Any new `<script>` CDN tag for auth | Every new CDN tag is a supply-chain risk and SRI management burden | All needed auth behaviour is already in vendored bundle + native browser APIs |
+
+---
+
+## Integration Points
+
+### Existing Pattern Match (HIGH confidence)
+
+The Google flow in `AuthProvider.js` is the correct template for GitHub. Both use:
+
+```
+GET /auth/{provider}
+→ { authorizationURL, state, codeVerifier }
+→ sessionStorage.setItem('oauth_state', state)
+→ sessionStorage.setItem('oauth_code_verifier', codeVerifier)
+→ window.location.href = authorizationURL
+```
+
+On return, `Application.js` already handles the `?token=` URL parameter (line 35-43), stores the JWT via `ClientAuthSession.store(urlToken)`, and cleans the URL. This pattern is unchanged for GitHub.
+
+The only addition is setting `localStorage.setItem('auth_provider', 'github')` on callback.
+
+### CDI Wiring
+
+The new `site/js/auth/AuthModule.js` (or equivalent) follows the existing `Singleton` pattern in `contexts.js`. Constructor parameter names must match CDI-registered names (`model`, `storageLocal`, etc. — camelCase class name convention).
+
+### auth-config.js Addition
+
+```javascript
+export const authConfig = {
+    github: {
+        clientId: '',  // GitHub OAuth App client ID
+    },
+    google: { ... },
+    apple: { ... },
+    microsoft: { ... },
+};
+```
+
+The jsmdma backend `auth/github` route uses `clientId` from server-side environment config, not this client-side config. The client-side `clientId` here is only for `getAvailableProviders()` gating (show/hide the GitHub sign-in button).
+
+---
 
 ## Version Compatibility
 
 | Package | Compatible With | Notes |
 |---------|-----------------|-------|
-| Bootstrap CSS 5.3.8 | Vue 3.5.30 | No conflicts — BS CSS is styling only, no JS interop needed |
-| Bootstrap CSS 5.3.8 | Phosphor Icons 2.1.2 | No conflicts |
-| Bootstrap CSS 5.3.8 | main.css / yp-dark.css | `.row.no-gutters` CSS selectors in main.css must be updated to `.row.g-0` |
+| `jsmdma-auth-client.esm.js` (vendored) | GitHub OAuth callback | `ClientAuthSession.store(token)` accepts any JWT — provider-agnostic |
+| Web Crypto API | All modern browsers + localhost | `crypto.subtle` requires secure context (HTTPS or localhost); fine for both dev and production |
+| sessionStorage | All modern browsers | Same-origin, same-tab scope — correct for OAuth redirect round-trip |
 
-## m4 Build System Consideration
-
-The CDN link lives in `.compose/fragments/head.html`, NOT directly in `site/index.html`. Editing `index.html` directly will be overwritten on next `build.sh` run. All markup changes must go to the appropriate fragment file:
-
-| Fragment | Contains |
-|----------|----------|
-| `.compose/fragments/head.html` | Bootstrap CDN link, viewport meta |
-| `.compose/fragments/nav.html` | `form-inline`, `input-group-append` |
-| `.compose/fragments/modals/auth.html` | Auth modal `.close` button |
-| `.compose/fragments/modals/share.html` | Share modal `.close` button |
-| `.compose/fragments/modals/delete.html` | Delete modal `.close` button |
-| `.compose/fragments/modals/feature.html` | `data-toggle`/`data-dismiss` (convert to Vue state) |
-| `site/css/main.css` | `.row.no-gutters` CSS selectors |
+---
 
 ## Sources
 
-- https://getbootstrap.com/docs/5.3/getting-started/download/ — BS5.3.8 CDN links and SRI hashes (HIGH confidence, official docs)
-- https://getbootstrap.com/docs/5.3/migration/ — Breaking changes v4→v5 (HIGH confidence, official migration guide)
-- `site/index.html` grep audit — All affected class names and data attributes verified against actual codebase
-- `.compose/fragments/` file inventory — Source-of-truth for build system edit locations
+- https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps — Web application flow steps, PKCE parameters, client_secret requirement (HIGH confidence, official GitHub docs)
+- https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/scopes-for-oauth-apps — `read:user` + `user:email` scope definitions (HIGH confidence, official GitHub docs)
+- https://github.blog/changelog/2025-07-14-pkce-support-for-oauth-and-github-app-authentication/ — PKCE support announcement, S256 only, client_secret still required (HIGH confidence, official GitHub changelog)
+- https://github.com/isaacs/github/issues/330 — CORS not supported on GitHub's token exchange endpoint (MEDIUM confidence, widely corroborated community issue)
+- Community research on sessionStorage for PKCE code_verifier: sessionStorage preferred over localStorage for redirect-round-trip temporary data (MEDIUM confidence, multiple sources agree)
+- `site/js/service/AuthProvider.js` + `site/js/vendor/jsmdma-auth-client.esm.js` — Existing flow pattern verified against codebase (HIGH confidence, direct code inspection)
 
 ---
-*Stack research for: Bootstrap 4→5 migration, year-planner*
+*Stack research for: GitHub OAuth & Account Linking — year-planner v1.5*
 *Researched: 2026-04-14*

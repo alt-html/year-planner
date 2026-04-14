@@ -12,6 +12,18 @@ Live at: https://d1uamxeylh4qir.cloudfront.net/
 
 Migrated from Bootstrap 4.3.1 to 5.3.8 with full markup modernisation (data-bs-* attributes, updated utility classes). BS5 native dark mode (data-bs-theme="dark") wired alongside .yp-dark class. CSS generalised — design tokens, rail styles, and dot styles extracted into separate files; all bare custom properties namespaced to --yp-*. Feature modal converted to Vue-reactive state, eliminating the last Bootstrap JS dependency. SRI integrity hashes added for all CDN resources. 47 Playwright tests (32 E2E + 9 smoke + 4 contract + 2 dark mode).
 
+## Current Milestone: v1.5 GitHub OAuth & Account Linking
+
+**Goal:** End-to-end GitHub sign-in with real OAuth flow, account linking/unlinking UI, and a reusable auth module — including verifying and wiring the jsmdma backend to support GitHub auth locally.
+
+**Target features:**
+- Backend discovery & wiring: audit jsmdma for GitHub OAuth support, wire missing routes/middleware/run-server config
+- GitHub OAuth as primary provider: register app, wire client flow, test end-to-end with localhost redirect
+- Auth module extraction: migrate auth code to generic site/js/auth/ folder — app-agnostic API for sibling apps
+- Hide Apple/Microsoft sign-in options (defer until client IDs configured)
+- Account linking UI: link a second provider, transfer identity, unlink provider — preserving user data
+- Google OAuth migrated into new auth/ folder alongside GitHub
+
 ## Core Value
 
 Offline-first local planner that works without an account, and syncs bidirectionally when signed in — without data loss across devices.
@@ -104,4 +116,4 @@ This document evolves at phase transitions and milestone boundaries.
 | Separate CSS files (tokens/rail/dots) | Modular loading, clearer maintenance boundaries | ✓ Good |
 
 ---
-*Last updated: 2026-04-14 after v1.4 milestone*
+*Last updated: 2026-04-14 after v1.5 milestone started*

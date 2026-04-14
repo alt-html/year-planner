@@ -1,369 +1,193 @@
 # Pitfalls Research
 
-**Domain:** Bootstrap 4 → 5 migration, CSS generalisation for multi-app reuse
+**Domain:** GitHub OAuth & Multi-Provider Account Linking — adding to existing vanilla JS/Vue 3 app with jsmdma sync
 **Researched:** 2026-04-14
-**Confidence:** HIGH (verified against official Bootstrap 5.3 migration docs + live codebase audit)
+**Confidence:** HIGH (codebase directly inspected, research verified against official docs and community patterns)
 
 ---
 
 ## Critical Pitfalls
 
-### Pitfall 1: `no-gutters` Is Silently Ignored — Grid Layout Breaks
+### Pitfall 1: jsmdma-auth-client.esm.js does not include "github" in KNOWN_PROVIDERS
 
 **What goes wrong:**
-BS5 drops `.no-gutters`. Applying it after upgrading the CDN has zero effect — the class simply does not exist in BS5. Because BS5 adds default gutters to `.row`, every `.row.no-gutters` in the app renders with unwanted horizontal padding/spacing. The year grid (hundreds of `.row.no-gutters` cells in `grid.html`) will visually collapse or misalign.
+The vendored `jsmdma-auth-client.esm.js` has `KNOWN_PROVIDERS = new Set(["google", "apple", "microsoft"])`. The `AuthProvider.getAvailableProviders()` method filters against this set. If GitHub is added to `auth-config.js` without updating the vendor bundle, `getAvailableProviders()` silently drops it — GitHub never appears as a provider option, and `isConfigured()` returns false when only GitHub is configured.
 
 **Why it happens:**
-The class vanishes silently — no console error. Developers see the layout is wrong but may not immediately connect it to a renamed utility. The replacement is `.g-0` (removes both axes) or `.gx-0` (horizontal only).
+The vendor bundle is a compiled ESM snapshot of the jsmdma auth-client library. Developers add GitHub to the app-level `auth-config.js` without auditing whether the vendored library itself enumerates that provider. The runtime failure is silent (no error, just absent).
 
 **How to avoid:**
-Global search-replace in all m4 fragments and `site/index.html`:
-- `.row.no-gutters` → `.row.g-0`
-- Also update `main.css` selectors `#yp-months .row.no-gutters > [class*="col"]` and `#yp-months > .row.no-gutters` to use `.row.g-0`.
+Before any other GitHub wiring, inspect `jsmdma-auth-client.esm.js` for `KNOWN_PROVIDERS`. If it excludes `"github"`, either update the vendor bundle from upstream jsmdma or patch the constant in-place. This must be the first task in the backend discovery phase.
 
 **Warning signs:**
-Grid cells have visible gaps or the year planner columns misalign. Any flexbox layout that was previously gutter-free suddenly has padding between children.
+- `authProvider.getAvailableProviders()` returns `[]` despite `auth-config.js` having a github entry
+- GitHub sign-in button does not render
+- No error is thrown — fails silently
 
-**Phase to address:** Phase 1 (CDN swap + mechanical renames) — must be done before any visual testing.
+**Phase to address:** Backend Discovery and Wiring (Phase 1) — must be verified before any GitHub client flow is attempted.
 
 ---
 
-### Pitfall 2: `data-toggle` / `data-target` / `data-dismiss` Are Silently Ignored
+### Pitfall 2: Application.js OAuth callback hard-codes `auth_provider` as "google" on token receipt
 
 **What goes wrong:**
-BS5 namespaces all JavaScript data attributes with `bs-`. The old BS4 attributes (`data-toggle`, `data-target`, `data-dismiss`, `data-placement`, `data-parent`) are not recognised by BS5's JS. Any UI element that relied on them stops working without an error.
-
-**Specific instances in this app:**
-- `footer.html` line 8: `data-toggle="dropdown"` on the language picker button
-- `footer.html` line 30: `data-toggle="modal" data-target="#featureModal"` (the hidden copyright trigger)
-- `nav.html` line 3: `data-toggle="tooltip" data-placement="bottom"` on navbar-brand
-- `grid.html` line 58: `data-toggle="tooltip" data-placement="bottom"` on every `.yp-cell-text` span
-- `feature.html` lines 6, 23, 24: `data-dismiss="modal"` on close/reset/close buttons (the only modal that uses data-attribute dismiss rather than Vue `v-on:click`)
+In `Application.js` line 38, the OAuth callback handler does:
+```js
+localStorage.setItem('auth_provider', localStorage.getItem('auth_provider') || 'google');
+```
+When GitHub is the provider and no prior `auth_provider` is stored, this defaults to `'google'`. Every GitHub sign-in will be recorded as a Google session. `AuthProvider.getProvider()` returns `'google'` for a GitHub user, breaking any provider-conditional UI or account-linking logic.
 
 **Why it happens:**
-The HTML is valid and parses without error. The CDN swap from BS4 to BS5 is the only change needed to break these — no typos, no breakage visible in the source. The feature modal close buttons (`data-dismiss="modal"`) will stop working entirely, locking the user in the modal.
+The callback handler was written when Google was the only provider. The fallback string was never intended to remain, but it looks like a harmless default.
 
 **How to avoid:**
-Mechanical replacement across all fragments:
-- `data-toggle=` → `data-bs-toggle=`
-- `data-target=` → `data-bs-target=`
-- `data-dismiss=` → `data-bs-dismiss=`
-- `data-placement=` → `data-bs-placement=`
-- `data-parent=` → `data-bs-parent=`
+The server must include the provider name in the callback — either as a `?provider=github` URL param or as a `provider` claim in the JWT itself. The callback handler must read the provider from the server response, not default to a hardcoded string.
 
 **Warning signs:**
-- Language dropdown does not open
-- Feature modal cannot be closed (only escape key works if keyboard is enabled)
-- Tooltips never appear
+- After GitHub sign-in, `localStorage.getItem('auth_provider')` returns `'google'`
+- UI shows "signed in with Google" after GitHub flow
+- Account linking UI shows wrong linked provider
 
-**Phase to address:** Phase 1 (mechanical rename pass) — critical, blocks all BS5 JS functionality.
+**Phase to address:** GitHub OAuth Client Flow (Phase 2) — fix before any multi-provider UI is built.
 
 ---
 
-### Pitfall 3: Tooltips Require Manual Initialization in BS5
+### Pitfall 3: State and PKCE stored in sessionStorage breaks on mobile OAuth redirect
 
 **What goes wrong:**
-Even after fixing `data-toggle` → `data-bs-toggle`, tooltips still do not work. BS5 removed auto-initialization for tooltips (opt-in for performance). You must call `new bootstrap.Tooltip(el)` for every element. Currently the app has tooltip markup on `navbar-brand` and every `.yp-cell-text` span (potentially hundreds of elements in the grid).
+`jsmdma-auth-client.esm.js` stores `oauth_state` and `oauth_code_verifier` in `sessionStorage` before redirecting to GitHub. After GitHub redirects back, `sessionStorage` may be empty on mobile browsers or any browser that treats the OAuth redirect as a new tab context. The PKCE code verifier is missing, token exchange fails, and the user sees a generic error.
 
 **Why it happens:**
-BS4 auto-initialized all `[data-toggle="tooltip"]` elements on page load via jQuery. BS5 does not. No error is thrown — tooltips simply never appear.
+`sessionStorage` is tab-scoped. On mobile browsers (particularly Safari on iOS), OAuth redirects often load in a new tab or the original tab loses session state during full-page navigation. GitHub's redirect can also return to a slightly different context, creating a fresh `sessionStorage`.
 
 **How to avoid:**
-After the CDN swap, add initialization code. Because the grid cells are rendered by Vue reactively, initialize tooltips in Vue's `mounted()` / `updated()` lifecycle hooks, or use a Vue directive wrapper. Do not use a plain `document.querySelectorAll` at DOMContentLoaded — the grid cells may not exist yet.
-
-For the navbar-brand tooltip (static element): a one-time init in `mounted()` is sufficient.
-For the grid cell tooltips: consider whether tooltips on hundreds of grid cells are worth keeping; the app already shows the text inline in the cell. Removing them may be simpler than managing reactive re-init.
+Store `oauth_state` and `oauth_code_verifier` in `localStorage` (not `sessionStorage`) for the duration of the OAuth handshake only. Delete them immediately after successful token exchange. This is the pattern used in aaronpk's canonical PKCE vanilla JS reference implementation and recommended by Auth0.
 
 **Warning signs:**
-Hovering over cell text or navbar-brand shows nothing. No JS errors.
+- Token exchange fails intermittently, especially on mobile
+- `oauth_code_verifier` is `null` when callback fires
+- Works on desktop Chrome but fails on Safari/Firefox mobile
 
-**Phase to address:** Phase 2 (JS component migration) — after Phase 1 renames.
+**Phase to address:** GitHub OAuth Client Flow (Phase 2) — implement callback handling with localStorage for PKCE state.
 
 ---
 
-### Pitfall 4: `.close` Class Is Removed — Close Buttons Disappear or Misrender
+### Pitfall 4: GitHub OAuth App allows only ONE callback URL — dev and prod cannot share an app registration
 
 **What goes wrong:**
-BS4's `.close` utility class (which styled the `×` dismiss button) is removed in BS5. The replacement is `<button class="btn-close" ...>` with no child `<span>`. Using the old pattern produces an unstyled, oversized button with a visible `×` character.
-
-**Specific instances in this app:**
-- `modals/auth.html` lines 7, 14: two `.close` buttons inside auth modal
-- `modals/delete.html` line 7: `.close` in delete modal
-- `modals/feature.html` line 6: `.close` in feature modal
-- `modals/share.html` line 7: `.close` in share modal
-- `grid.html` line 6: `.close` button inside the jumbotron error alert
-- `yp-dark.css` line 91: `.yp-dark .close { color: ... }` — dead override after migration
-
-**How to avoid:**
-Replace `.close` buttons:
-
-Before (BS4):
-```html
-<button type="button" class="close" aria-label="Close">
-  <span aria-hidden="true">&times;</span>
-</button>
-```
-
-After (BS5):
-```html
-<button type="button" class="btn-close" aria-label="Close"></button>
-```
-
-Update `yp-dark.css` to target `.yp-dark .btn-close` instead of `.yp-dark .close`. Dark mode close button color in BS5 uses `.btn-close-white` class or CSS override of `filter` on the pseudo-element.
-
-**Warning signs:**
-Modal close buttons render as large, unstyled text buttons with the literal `×` character visible. Dark mode override in `yp-dark.css` has no effect.
-
-**Phase to address:** Phase 1 (mechanical renames) — straightforward substitution in each modal fragment.
-
----
-
-### Pitfall 5: `.jumbotron` Is Removed — Layout Breaks for the Entire Grid Wrapper
-
-**What goes wrong:**
-The year planner uses `.jumbotron` as the **primary layout wrapper** for the entire grid area (`grid.html` line 2). `main.css` has custom styles for `.jumbotron` (lines 649, 661, 676) including `flex: 1 1 auto`, `display: flex`, and `min-height: 0`. When BS5 is loaded, BS5 does not recognise `.jumbotron` at all — the browser falls back to defaults, which does not include the flex layout the custom CSS expects. The grid still renders because `main.css` applies `.jumbotron` styles, but the BS5 reboot changes box-model defaults enough that spacing and overflow behaviour may shift.
+Unlike Google OAuth which supports multiple authorized redirect URIs per client ID, GitHub OAuth Apps only accept a single callback URL in the app registration. Registering the production CloudFront URL blocks localhost development. Registering `http://127.0.0.1:8081/` blocks production. Teams either break prod while testing, or use prod credentials locally — which exposes prod secrets in dev environments.
 
 **Why it happens:**
-The `.jumbotron` class does nothing in BS5. The custom CSS in `main.css` still applies, so the layout mostly holds — but any interaction between BS5 reboot defaults and the jumbotron element (padding, margin, background) may differ unexpectedly.
+Developers coming from Google OAuth assume the same flexibility exists. GitHub's restriction is not obvious until you hit the `redirect_uri_mismatch` error.
 
 **How to avoid:**
-Replace the `.jumbotron` element with a plain `<div>` and a new app-specific class (e.g., `yp-grid-wrapper`). Update `main.css` selectors that target `.jumbotron` to target `yp-grid-wrapper`. Also update the `rail-open .jumbotron` margin-left rule.
+Register two separate GitHub OAuth App registrations: one for production (CloudFront callback), one for development (`http://127.0.0.1:8081/`). Store the client ID and secret in environment config, not source code. Never commit either secret. Use the same build-time substitution mechanism already in place for `${api.url}` to inject the client configuration.
 
 **Warning signs:**
-Grid area has unexpected top/bottom padding. The `rail-open` margin transition does not apply to the grid wrapper.
+- `redirect_uri_mismatch` error when testing locally with the prod OAuth app registered
+- Developer testing with prod credentials from localhost
 
-**Phase to address:** Phase 1 (mechanical renames) — the element rename is low-risk but must not be skipped.
+**Phase to address:** Backend Discovery and Wiring (Phase 1) — register both apps before writing any code.
 
 ---
 
-### Pitfall 6: Spacing Utilities (`ml-*`, `mr-*`, `pl-*`, `pr-*`) Are Renamed
+### Pitfall 5: JWT token delivered in `?token=` query param leaks into browser history and server logs
 
 **What goes wrong:**
-BS5 renames all directional spacing utilities to use logical properties (`start`/`end` instead of `left`/`right`) for RTL support. Old classes are silently ignored.
-
-**Specific instances in this app:**
-- `rail.html` line 51: `mr-auto` → `me-auto`
-- `rail.html` line 52: `ml-2` → `ms-2`
-- `rail.html` lines 53–54: `ml-1` → `ms-1` (×2)
-- `rail.html` line 56: `pl-3` → `ps-3`
-- `modals/auth.html`: `me-2` already used in the auth buttons (these are already BS5-ready from a previous edit — verify these are actually `me-2` not `mr-2`)
-
-**Also renamed (verify across codebase):**
-- `text-left` → `text-start` (footer `text-left` on line 6, `text-right` on line 30)
-- `float-left` / `float-right` → `float-start` / `float-end`
-
-**How to avoid:**
-Sed-replaceable in the fragments. Create a checklist:
-| BS4 | BS5 |
-|-----|-----|
-| `ml-{n}` | `ms-{n}` |
-| `mr-{n}` | `me-{n}` |
-| `pl-{n}` | `ps-{n}` |
-| `pr-{n}` | `pe-{n}` |
-| `mr-auto` | `me-auto` |
-| `ml-auto` | `ms-auto` |
-| `text-left` | `text-start` |
-| `text-right` | `text-end` |
-| `float-left` | `float-start` |
-| `float-right` | `float-end` |
-
-**Warning signs:**
-Elements intended to be right-aligned (e.g., year in planner item row) are left-aligned. The footer copyright text left-aligns incorrectly.
-
-**Phase to address:** Phase 1 (mechanical renames).
-
----
-
-### Pitfall 7: `btn-block` Is Removed — Auth Modal Buttons Lose Full-Width Layout
-
-**What goes wrong:**
-BS5 removes `.btn-block`. The auth modal (`modals/auth.html` lines 19, 22, 25) uses `btn btn-outline-dark btn-block` on all three sign-in buttons. Without `btn-block`, the buttons shrink to content width and stack awkwardly.
-
-**How to avoid:**
-Wrap buttons in `<div class="d-grid gap-2">` and remove `btn-block`:
-
-Before:
-```html
-<button class="btn btn-outline-dark btn-block mb-2" ...>Sign in with Google</button>
-```
-
-After:
-```html
-<div class="d-grid gap-2">
-  <button class="btn btn-outline-dark" ...>Sign in with Google</button>
-  <button class="btn btn-outline-dark" ...>Sign in with Apple</button>
-  <button class="btn btn-outline-dark" ...>Sign in with Microsoft</button>
-</div>
-```
-
-Note: `auth.html` already has `<div class="d-grid gap-2">` wrapping the buttons (line 16 in the modal body), so the `d-grid` wrapper may already be present from a partial migration. Verify and remove only `btn-block` and the now-redundant `mb-2` between buttons (gap-2 handles spacing).
-
-**Warning signs:**
-Auth sign-in buttons are narrow, left-aligned, and don't fill the modal width.
-
-**Phase to address:** Phase 1 (mechanical renames).
-
----
-
-### Pitfall 8: `.form-group` and `.form-inline` Are Removed
-
-**What goes wrong:**
-BS5 drops `.form-group` (use grid utilities or margins instead) and `.form-inline` (use flexbox utilities instead).
-
-**Specific instances in this app:**
-- `modals/share.html` line 13: `<div class="form-group">` wrapping the share URL input
-- `nav.html` line 5: `<form id="rename" class="form-inline">` wrapping the rename input
-
-**How to avoid:**
-- Replace `<div class="form-group">` with `<div class="mb-3">` or plain `<div>` with appropriate margin.
-- Replace `class="form-inline"` with `class="d-flex flex-row flex-wrap align-items-center gap-2"`.
-
-**Warning signs:**
-The rename form in the navbar loses its inline layout (inputs stack vertically). The share modal URL input group loses its bottom margin.
-
-**Phase to address:** Phase 1 (mechanical renames).
-
----
-
-### Pitfall 9: `sr-only` Renamed to `visually-hidden`
-
-**What goes wrong:**
-BS5 renames `.sr-only` to `.visually-hidden`. The old class has no effect in BS5 — the spinner loading text (`spinner.html` line 3) becomes visible to sighted users.
-
-**How to avoid:**
-- `spinner.html`: `class="sr-only"` → `class="visually-hidden"`
-
-**Warning signs:**
-The word "Loading" is visible next to the spinner indicator.
-
-**Phase to address:** Phase 1 (mechanical renames).
-
----
-
-### Pitfall 10: CDN URL and `shrink-to-fit` Viewport Meta Tag
-
-**What goes wrong:**
-Two issues in `head.html`:
-1. The CDN URL points to `stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css` — this must change to the BS5 CDN URL on jsdelivr (consistent with all other CDN dependencies in this app).
-2. `shrink-to-fit=no` in the viewport meta tag was a Safari-only workaround that is no longer needed and is not recommended in HTML5.
-
-**How to avoid:**
-Replace in `head.html`:
-```html
-<!-- Remove: -->
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-<!-- Add: -->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-[hash]" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-[hash]" crossorigin="anonymous"></script>
-```
-
-Note: `bootstrap.bundle.min.js` includes Popper — required for dropdowns and tooltips. Fetch the current SRI hash from the Bootstrap 5.3 docs at install time.
-
-**Warning signs:**
-App loads BS4 and BS5 simultaneously (if both link tags are present), causing class conflicts.
-
-**Phase to address:** Phase 1 — the very first change; all others depend on it being correct.
-
----
-
-### Pitfall 11: BS5 Reboot Makes All Links Underlined by Default
-
-**What goes wrong:**
-BS4 only underlines links on hover. BS5 underlines all `<a>` elements by default (text-decoration: underline in the reboot). The app has many links that must not be underlined: navbar-brand, dropdown items, rail flyout items, footer links, planner item links. These are currently styled without underlines but depend on BS4's reboot not setting underline.
+The current callback pattern passes the JWT as `?token=JWT_VALUE` in the query string. Although `Application.js` calls `window.history.replaceState` to strip the token, the JWT is already captured in: browser history (before replaceState), server access logs, CloudFront access logs, and Referrer headers if the page makes any outbound request before replaceState runs.
 
 **Why it happens:**
-BS5 follows WebAIM accessibility guidelines (underlined links are more accessible). Custom CSS does not account for this baseline change.
+Query params are the simplest server-side callback mechanism for a SPA. The replaceState cleanup is a partial mitigation that does not cover server-side logs or browser history entries already written.
 
 **How to avoid:**
-After the CDN swap, audit all `<a>` elements for unexpected underlines. Add `text-decoration: none` to any link component that should not be underlined. The existing custom CSS for `.rail-flyout-item`, `.navbar-brand`, `.dropdown a` etc. already sets `text-decoration: none` explicitly — verify these are still applied after the reboot changes. Check footer links and planner item links in particular.
+Keep query param delivery for this app's threat model (acceptable for non-financial data), but ensure: (1) `Referrer-Policy: no-referrer` is set as an HTTP header on the page, and (2) the `?token=` replaceState at Application.js line 41 runs BEFORE the canonical URL replaceState at line 83. The current order is correct — verify it is not changed during refactoring. Longer-term, prefer short-lived opaque codes that the SPA exchanges server-side.
 
 **Warning signs:**
-Links in the rail flyout, navbar, and footer appear with underlines they didn't have before the migration.
+- JWT visible in CloudFront access logs
+- JWT appears in third-party analytics request logs as a referrer
+- replaceState order changes during refactor, leaving token in URL longer
 
-**Phase to address:** Phase 2 (visual audit and CSS adjustments).
+**Phase to address:** GitHub OAuth Client Flow (Phase 2) — verify callback handler order during implementation.
 
 ---
 
-### Pitfall 12: Custom CSS Selectors Targeting BS Component Classes May Break or Conflict
+### Pitfall 6: Account linking transfers identity but not localStorage planner `meta.userKey` ownership
 
 **What goes wrong:**
-`main.css` and `yp-dark.css` contain selectors that target Bootstrap internal classes (`.dropdown-menu`, `.dropdown-item`, `.dropdown-divider`, `.modal-header`, `.modal-content`, `.form-control`, `.navbar`, `.btn-secondary`, `.nav-link`, etc.). BS5 changes the CSS custom property structure and some base styles for these components. The custom overrides may conflict, produce double-applied styles, or lose specificity.
+Planner documents in localStorage have a `meta.userKey` field set to either a device UUID or the JWT `sub` value. When a user links a GitHub account to an existing Google account, the server merges the two identities into one canonical `sub`. All new syncs use the new `sub`. But existing `plnr:*` entries in localStorage still have the old `meta.userKey`. The sync adapter uses `userKey` to match planners server-side — mismatched `userKey` causes planners to be treated as new/unsynced items, potentially creating duplicate planner entries on the server.
 
-**Specific risk areas:**
-- `yp-dark.css` extensively overrides `.dropdown-*`, `.modal-*`, `.btn`, `.close`, `.nav-link`
-- `main.css` overrides `.container` max-width at all breakpoints (sets 2600px), `.navbar`, `.dropdown-menu`, `.btn-secondary`
-- BS5 components increasingly use CSS custom properties (`--bs-*`). Some overrides may need to be updated to set `--bs-` variables rather than overriding compiled properties
+**Why it happens:**
+`StorageLocal._migrateUserKey()` only updates `meta.userKey` when `doc.meta.uid` is set and `doc.meta.userKey` is missing. It does not handle the case where `userKey` has changed (old Google sub to new merged sub). Identity linking changes the active `sub` but migration logic has no concept of a changed `sub`.
 
 **How to avoid:**
-- After CDN swap, visually test every component that has custom overrides (dropdown, modal, navbar, buttons)
-- Prefer setting `--bs-*` component variables where available rather than overriding compiled CSS
-- The `.container` max-width override is safe (utility breakpoint overrides still work the same way)
-- The `.yp-dark .close` rule in `yp-dark.css` must be updated to `.yp-dark .btn-close`; the close button now uses a CSS `filter: invert()` pattern rather than a color property — add `.yp-dark .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }` or use `.btn-close-white` class
+After successful account linking, run a `userKey` migration pass: read the old `sub` from the current JWT before linking, store it temporarily, then after the server confirms the merge, iterate all `plnr:*` entries in localStorage and update `meta.userKey` to the new `sub`. This must happen before the first sync attempt under the new identity.
 
 **Warning signs:**
-Dark mode close buttons appear as dark icons on dark backgrounds (invisible). Dropdown text colour reverts to default in dark mode.
+- After account linking, sync creates duplicate planners server-side
+- Planner list shows duplicate entries after linking
+- Server returns 409 conflict or unexpected 201 for planners that previously synced normally
 
-**Phase to address:** Phase 2 (visual audit + dark mode validation).
+**Phase to address:** Account Linking UI (Phase 4) — must be part of the linking completion handler.
 
 ---
 
-### Pitfall 13: The Feature Modal Still Uses Legacy BS4 JS (data-dismiss with no BS5 JS)
+### Pitfall 7: Unlinking the last provider silently signs out the user via the 401 sync path
 
 **What goes wrong:**
-The feature modal (`modals/feature.html`) is the **only** modal that uses `data-dismiss="modal"` for its close buttons — it does not use Vue `v-on:click` handlers. All other modals use Vue to control their `v-if`/`v-show` visibility and call close functions directly. The feature modal is shown via a hidden `data-toggle="modal" data-target="#featureModal"` span in the footer (copyright area).
+If the user unlinks their only remaining provider, the server may revoke the associated JWT. The client still has the old JWT in localStorage. The next sync returns 401. `Api.js` handles 401 by calling `authProvider.signOut()` and setting `model.signedin = false`. The user is silently signed out without understanding why.
 
-After the CDN swap to BS5, with the data attribute rename to `data-bs-dismiss`, the feature modal will still require BS5 JS to be loaded in order to function — which is now required anyway. This is the one modal whose lifecycle is not Vue-controlled. Decide in Phase 1 whether to:
-- Migrate it to Vue-controlled visibility (consistent with all other modals)
-- Or leave it as pure BS5 JS (accept the BS5 JS dependency)
+**Why it happens:**
+The 401 handler in Api.js is correct for expired tokens but creates jarring UX when triggered by an intentional provider unlink. There is no distinction between "token expired" and "deliberately unlinked."
 
 **How to avoid:**
-Recommended approach: convert the feature modal to Vue-controlled visibility, consistent with the other 5 modals. This removes the last dependency on BS JS for modal management. If kept as-is, ensure `data-bs-toggle`, `data-bs-target`, and `data-bs-dismiss` are updated.
+Before allowing unlink, verify on the server that the account has at least one remaining provider. Return an error if the user attempts to unlink their last provider. After a successful unlink, issue a new JWT bound to the remaining provider and refresh the client session. Do not rely on the 401 sync path to clean up after an intentional unlink.
 
 **Warning signs:**
-Feature modal opens (the copyright span trigger works) but the close/reset buttons do nothing.
+- Unlink succeeds but user is signed out within ~30 seconds (next sync scheduler cycle)
+- User reports "I unlinked Google and now I'm signed out"
+- 401 appears in network tab shortly after an unlink operation
 
-**Phase to address:** Phase 1 — must be decided before the data attribute rename pass.
+**Phase to address:** Account Linking UI (Phase 4) — enforce last-provider guard on both client and server.
 
 ---
 
-### Pitfall 14: CSS Variable Name Collision Between App and BS5 (`--bs-*` vs `--` app vars)
+### Pitfall 8: `signout()` calls `wipe()` which destroys unsynced local planner data permanently
 
 **What goes wrong:**
-The app's custom CSS uses unprefixed custom properties (`--bg`, `--surface`, `--text`, `--accent`, `--border`, `--rail-bg`, `--c2`–`--c8`, etc.). BS5 uses `--bs-*` prefixed properties. There is no name collision in this case — the namespacing is clean. However:
+`signout()` in `site/js/vue/methods/auth.js` calls `this.storageLocal.wipe()`, which deletes all `plnr:*`, `rev:*`, `base:*`, `sync:*`, and `prefs:*` keys from localStorage. If the user signs out before any planners have synced (e.g., offline-only usage, or sync has been failing silently), all local planner data is destroyed permanently. This directly violates the app's core value of "without data loss."
 
-1. If sibling apps introduce additional Bootstrap overrides by setting `--bs-body-color`, `--bs-body-bg`, etc., those will override BS5 defaults but may conflict with the app's own `var(--bg)` / `var(--text)` approach if the two systems are mixed.
-2. When generalising `yp-*` CSS for multi-app reuse, the app-level tokens (`--bg`, `--text`, etc.) are too generic — other apps may define the same names with different values.
+**Why it happens:**
+The wipe was designed for a "clean slate on sign-out" model. It assumes synced data is safe on the server.
 
 **How to avoid:**
-When generalising CSS for reuse, prefix all custom properties with the app or system namespace (e.g., `--yp-bg`, `--yp-text`, `--yp-accent`). Do not use bare semantic names like `--text` or `--bg` in shared CSS — they are effectively global and will collide in a multi-app context.
+Before wipe, check whether each planner has ever successfully synced (`sync:{uuid}` value differs from `HLC_ZERO`). If any planner has never synced, warn the user with a confirmation dialog. Strongly consider not wiping local data on sign-out at all — instead only clear auth credentials (`ClientAuthSession.clear()` plus `auth_provider`). Reserve wipe for an explicit "delete my account data" action.
 
 **Warning signs:**
-Sibling app's `--bg` or `--text` definition bleeds into the year planner when stylesheets are shared or co-loaded.
+- User signs out, signs back in, all planners are gone
+- SyncScheduler was not yet triggered before sign-out
+- User with offline-only data (never signed in before) triggers sign-out after receiving the pester modal
 
-**Phase to address:** Phase dedicated to CSS generalisation — do not mix with the BS4→5 rename pass.
+**Phase to address:** Auth Module Extraction (Phase 3) — revisit wipe semantics when extracting the auth module to ensure sign-out is non-destructive.
 
 ---
 
-### Pitfall 15: Generalising `yp-*` CSS — Coupling to BS4 Structural Classes
+### Pitfall 9: jsmdma backend GitHub OAuth route may not exist or may not be wired
 
 **What goes wrong:**
-Many `yp-*` CSS rules are scoped relative to Bootstrap structural classes: `.jumbotron`, `.row.no-gutters`, `.container`, `.col`, `.modal-*`, `.dropdown-*`. If those structural classes are renamed or replaced during the BS5 migration, the generalised CSS will also need updating. Doing generalisation and migration simultaneously compounds the risk.
+The frontend `AuthProvider` calls `fetch(\`${apiUrl}auth/${provider}\`)` which for GitHub becomes `GET /auth/github`. The jsmdma backend may not have this route implemented, or it may exist as code but not be registered in the Express router or run-server configuration. The frontend gets a 404 or 500 with no meaningful error to the user.
+
+**Why it happens:**
+jsmdma is an external dependency that "should have" GitHub support, but this has not been verified against the actual running server. Assumptions about what the backend supports are common when the backend is not owned by the same developer.
 
 **How to avoid:**
-Run the BS4→BS5 rename pass first and verify visually. Only then start the generalisation pass. This prevents double-debugging "is this a migration bug or a generalisation bug?"
-
-Specifically:
-- `main.css` selector `#yp-months .row.no-gutters > [class*="col"]` must be updated to `.row.g-0` before or during migration
-- `main.css` selector `.rail-open .jumbotron` depends on the jumbotron rename
-- Any generalised component that wraps `modal-*` classes inherits BS5 modal structure
+Phase 1 must include a dedicated jsmdma backend audit: (1) check whether `GET /auth/github` exists in the router, (2) check whether the GitHub OAuth middleware is registered, (3) check whether the run-server config has the GitHub client ID/secret environment variables, (4) test the route directly with curl before writing any frontend code. Document findings and wire any missing pieces before frontend work begins.
 
 **Warning signs:**
-Visual regression is present after the generalisation pass even when it was absent after the migration pass.
+- `GET /auth/github` returns 404 in network tab
+- Server logs show route not found
+- Only Google auth routes appear in jsmdma source
 
-**Phase to address:** Keep as a separate phase from the BS4→5 migration.
+**Phase to address:** Backend Discovery and Wiring (Phase 1) — this is the entire point of Phase 1.
 
 ---
 
@@ -371,11 +195,12 @@ Visual regression is present after the generalisation pass even when it was abse
 
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Keep `.jumbotron` class but add BS5 custom CSS to re-define it | Avoids renaming the element | `.jumbotron` has no semantic meaning in BS5, causes reader confusion in fragments, and requires adding CSS that mimics BS4 behaviour | Never — rename the element |
-| Keep `data-toggle` and add a JS polyfill shim | Avoids finding all instances | Shim must be maintained across BS5 updates; two attribute systems coexist | Never in a CDN-only app |
-| Use both BS4 and BS5 CDN simultaneously during transition | "Gradual migration" | Class conflicts, doubled CSS weight, unpredictable specificity battles | Never |
-| Leave tooltips broken during migration | Ship faster | Tooltips on cell text are the primary content-preview mechanism; broken tooltips degrade UX | Never for release; acceptable in migration branch testing |
-| Keep `yp-*` as-is during BS5 migration, generalise later | Reduces scope per phase | Correct approach — this is the recommended strategy | Always |
+| Hardcoded Google client ID in `auth-config.js` | Works immediately | Committed to source, rotation requires code commit, blocks multi-provider generalisation | Never for prod — move to build-time substitution consistent with `${api.url}` pattern |
+| `KNOWN_PROVIDERS` in vendor bundle without "github" | jsmdma ships as-is | Silent provider exclusion, must re-vendor on every new provider addition | Never — patch vendor or update from upstream jsmdma |
+| `?token=` query param JWT delivery | Simple server-side implementation | Token in server logs and browser history even with replaceState | Acceptable for non-financial, non-PII app if replaceState fires synchronously before any outbound requests and Referrer-Policy is set |
+| Single `auth_provider` string in localStorage | Simple read/write | Breaks when user has multiple providers linked simultaneously | Never once multi-provider is live — needs to become provider list |
+| `wipe()` on sign-out deletes all planner data | Clean slate behaviour | Destroys data if sync has never run — violates offline-first core value | Never — should only wipe on explicit account delete with confirmation |
+| `sessionStorage` for PKCE state/code_verifier | Tab-scoped isolation | Breaks on mobile OAuth redirect where tab context is lost | Never — use `localStorage` with cleanup on exchange |
 
 ---
 
@@ -383,20 +208,28 @@ Visual regression is present after the generalisation pass even when it was abse
 
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| BS5 JS + CDN (no bundler) | Loading BS CSS without BS JS bundle; dropdowns and modals silently fail | Load `bootstrap.bundle.min.js` (includes Popper) from jsdelivr; place before `main.js` module |
-| BS5 JS + Vue 3 | Initializing BS tooltip/modal instances at DOMContentLoaded before Vue has rendered the grid | Initialize in Vue `mounted()` / `updated()` hooks or use a Vue directive; never at raw `DOMContentLoaded` for dynamically rendered elements |
-| BS5 dropdowns + SRI hash | CDN URL copied without verifying the SRI hash for the chosen version | Always fetch the official hash from https://getbootstrap.com/docs/5.3/getting-started/download/ for the exact version being used |
-| m4 build + BS5 | Updating `site/index.html` directly without updating the corresponding fragment | All edits must be made in `.compose/fragments/` and rebuilt via `.compose/build.sh`; `site/index.html` is the assembled output |
-| Dark mode CSS + BS5 btn-close | `.yp-dark .close { color: ... }` has no effect on BS5 `btn-close` | BS5 close button uses an SVG background-image with CSS `filter`. Use `.btn-close-white` class or override `filter` property |
+| GitHub OAuth App registration | Register one app for both prod and dev | Register two separate apps; different callback URLs per environment |
+| GitHub OAuth App vs GitHub App | Assume GitHub App is required for OAuth sign-in | Use GitHub OAuth App for user-auth-only; GitHub Apps add unnecessary complexity (non-standard flow) |
+| jsmdma backend `/auth/github` route | Assume it exists because Google works | Audit jsmdma server source for `auth/github` route and middleware registration before writing frontend |
+| PKCE code_verifier storage | Store in `sessionStorage` | Store in `localStorage`, delete immediately after token exchange |
+| JWT `sub` claim across providers | Assume `sub` is stable across providers | GitHub `sub` is a numeric user ID, Google's is a different format; server must normalise to a single internal UUID |
+| `auth_provider` localStorage key | Store as single string | Will need to become a list/set when multi-provider linking is live |
+| CloudFront callback URL for local dev | Test GitHub OAuth with prod CloudFront callback | Test with separate dev OAuth App pointing to `http://127.0.0.1:8081/` |
+| GitHub user email scope | Assume `read:user` returns email | GitHub primary email is private by default; request `user:email` scope separately |
+| Account linking — email auto-match | Auto-link accounts with matching email across providers | Never auto-link on email match alone; require authentication of both accounts before linking (pre-account-takeover attack vector) |
 
 ---
 
-## Performance Traps
+## Security Mistakes
 
-| Trap | Symptoms | Prevention | When It Breaks |
-|------|----------|------------|----------------|
-| Tooltip init on all grid cells on every Vue update | Page freezes or lags during year render | Initialize tooltips once after mount; use `dispose()` + reinit on updates selectively, or abandon tooltips for an always-visible approach | Immediately on any year with full content |
-| Loading BS5 JS synchronously before Vue | Vue mount delayed; FOUC on grid | Load BS5 JS `defer` or after the `<script type="module">` for Vue | Pages with slow CDN response |
+| Mistake | Risk | Prevention |
+|---------|------|------------|
+| JWT in `?token=` query param without `Referrer-Policy` header | Token leaks to third-party analytics or CDN in Referer header | Add `Referrer-Policy: no-referrer` HTTP response header; ensure replaceState fires before any outbound requests in Application.init() |
+| Storing JWT in `localStorage` | XSS can exfiltrate token | Acceptable tradeoff for offline-first app; mitigate with short JWT TTL (current 7-day hard TTL is reasonable), Content Security Policy, no inline scripts |
+| `oauth_state` not validated on callback | CSRF attack: attacker forces arbitrary OAuth exchange | Server must validate `state` matches what it issued; client should also verify stored state matches URL param on return |
+| Auto-linking accounts by email match alone | Pre-account-takeover: attacker registers GitHub account with victim email, links to victim's account | Require active authentication of both accounts before linking; never link on unverified email match |
+| Google client ID committed to source | Client ID visible in repo; rotation requires code commit | Move to build-time env substitution using the existing `${api.url}` m4 pattern in `auth-config.js` |
+| Using implicit grant flow (currently not used, but temptation exists) | Token in URL fragment, accessible via `window.location.hash` to any JS on page | Always use authorization code flow with PKCE; never use implicit grant for new implementations |
 
 ---
 
@@ -404,24 +237,28 @@ Visual regression is present after the generalisation pass even when it was abse
 
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| BS5 link underlines on rail flyout items | Navigation links appear as underlined text links, degrading the visual design | Ensure `.rail-flyout-item { text-decoration: none }` survives the reboot; add to base reset if needed |
-| Feature modal stuck open (data-dismiss broken) | User cannot close the feature toggle modal without pressing Escape | Fix data attribute rename in Phase 1 — do not ship without this |
-| Tooltip reinit gap after Vue reactivity update | Tooltip shows stale title text after an entry is saved | Reinitialize or update tooltip instance after `nextTick()` in the save handler |
+| Sign-in modal closes immediately on provider click, then redirect navigates away with no loading indicator | User thinks sign-in failed; clicks again; double-redirect | Show "Redirecting to GitHub..." state; disable the button; keep modal open or replace with interstitial |
+| After OAuth redirect returns, page fully reloads — Vue state and any open modal context is lost | User's context before sign-in is wiped | Design return-from-OAuth as graceful Application.init() re-bootstrap; Application.js already handles this but no "you are now signed in" confirmation is shown |
+| "Link another account" requires redirect without warning | User is surprised by navigating away | Clearly inform: "You will be redirected to GitHub to confirm the link" before initiating the flow |
+| Unlink confirmation does not explain data consequences | User fears their planner data will be deleted when they unlink | Confirm: "Your planner data is safe. Only this sign-in method is removed." |
+| Sign-out with unsynced planners silently destroys data | Data loss with no warning | Pre-sign-out check: warn if any planner has `sync:{uuid} === HLC_ZERO` (never synced) |
+| GitHub user's email may be null/private | Downstream profile or account page shows blank email | Request `user:email` scope; handle null email gracefully in UI |
 
 ---
 
 ## "Looks Done But Isn't" Checklist
 
-- [ ] **CDN swap:** Both CSS and JS (bundle) links updated in `head.html` — not just CSS. Verify SRI hash.
-- [ ] **No-gutters rename:** Check `main.css` CSS selectors (lines 701, 712) updated to `.g-0` — not just HTML classes.
-- [ ] **Tooltip init:** Grid cell tooltips actually appear on hover after BS5 JS is loaded — not just that the attribute was renamed.
-- [ ] **Dark mode close buttons:** `.btn-close` is visible on dark backgrounds in dark mode — not just that the class was renamed.
-- [ ] **Feature modal:** All three buttons (×, Reset, Close) dismiss the modal — not just that `data-bs-dismiss` was added.
-- [ ] **Language dropdown:** Clicking the language button opens the dropdown — confirming `data-bs-toggle="dropdown"` is wired and JS is loaded.
-- [ ] **Form-inline rename:** The rename form in the navbar lays out horizontally — not just that `form-inline` was replaced with flexbox utilities.
-- [ ] **Rail flyout item underlines:** None of the flyout navigation links are underlined.
-- [ ] **m4 rebuild:** `site/index.html` was regenerated via `.compose/build.sh` after fragment edits — not just the fragments edited in isolation.
-- [ ] **`site/index.html` in sync with fragments:** The built output matches fragment content (especially for the Playwright E2E tests which run against `site/index.html`).
+- [ ] **KNOWN_PROVIDERS in vendor bundle:** Contains `"github"` — verify `authProvider.getAvailableProviders()` returns `['github']` in browser console before any UI is built
+- [ ] **GitHub OAuth App registered:** Two separate registrations exist (prod + dev) with correct callback URLs — verify both before writing frontend code
+- [ ] **Backend route exists:** `GET /auth/github` returns 200 and `{ authorizationURL, state, codeVerifier }` — verify with curl before frontend integration
+- [ ] **Provider detection on callback:** `localStorage.auth_provider` is `'github'` after GitHub sign-in — verify it does not fall back to the hardcoded `'google'` value
+- [ ] **PKCE on mobile:** OAuth flow completes on Safari iOS — verify sessionStorage is not the cause of intermittent callback failures
+- [ ] **State validation:** `oauth_state` from URL is validated against stored value — verify 400/error response if state is tampered
+- [ ] **Account linking userKey migration:** All `plnr:*` entries have updated `meta.userKey` after linking — verify sync does not create duplicates post-link
+- [ ] **Last-provider unlink blocked:** Attempting to unlink the only provider returns an error and does not sign the user out silently
+- [ ] **Sign-out data safety:** Signing out with unsynced planners shows a confirmation — verify `wipe()` is not called without user acknowledgment when `sync:{uuid} === HLC_ZERO`
+- [ ] **Auth module extraction:** Extracted `site/js/auth/` module has no year-planner-specific references — verify it could be dropped into a sibling app as-is
+- [ ] **Token URL cleanup order:** `?token=` replaceState (Application.js line 41) fires before canonical URL replaceState (line 83) — verify order is preserved after any refactor
 
 ---
 
@@ -429,11 +266,14 @@ Visual regression is present after the generalisation pass even when it was abse
 
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Both BS4 + BS5 loaded simultaneously | HIGH | Remove one CDN link; verify no double class definitions; re-run E2E tests |
-| data-dismiss not updated, feature modal stuck | LOW | Update `feature.html`, rebuild, deploy |
-| Tooltip init missing, no tooltips | LOW | Add init in Vue `mounted()`, rebuild |
-| Grid layout broken (no-gutters) | MEDIUM | Update all `.row.no-gutters` in `grid.html` (many occurrences), update `main.css` selectors, rebuild |
-| CSS variable collision in multi-app reuse | HIGH | Rename all bare `--text`, `--bg` etc. to `--yp-*` in all three CSS files and all Vue bindings that reference them |
+| KNOWN_PROVIDERS missing "github" in vendor bundle | LOW | One-line patch to vendor bundle constant; or update from upstream jsmdma and re-vendor |
+| Wrong `auth_provider` stored as "google" for GitHub users | LOW | Clear `auth_provider` from localStorage; re-sign-in; fix callback handler to read provider from server |
+| PKCE state lost due to sessionStorage | LOW | Switch state/verifier storage to localStorage; add cleanup after token exchange |
+| Duplicate planners from userKey mismatch after linking | HIGH | Write a migration that deduplicates server-side planner records; requires backend coordination to identify and merge |
+| User data lost from premature wipe on sign-out | HIGH | Data unrecoverable client-side if not synced; server may have a copy if any sync occurred; prevent with confirmation gate |
+| GitHub OAuth App callback URL mismatch | LOW | Update GitHub App settings in GitHub Developer Settings UI (immediate, no deploy required) |
+| Last-provider unlink causes silent sign-out via 401 | MEDIUM | Reissue JWT on server after unlink; update 401 handler to prompt re-auth rather than silent sign-out |
+| jsmdma backend missing GitHub route | MEDIUM | Wire the route in jsmdma server; update run-server config with GitHub credentials; re-test end-to-end |
 
 ---
 
@@ -441,33 +281,37 @@ Visual regression is present after the generalisation pass even when it was abse
 
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| CDN URL + BS5 JS bundle (P10) | Phase 1: CDN Swap | Page loads, no 404 in network tab, `bootstrap` global exists in console |
-| `no-gutters` → `g-0` (P1) | Phase 1: Mechanical Renames | Year grid renders without gaps between columns |
-| `data-toggle/target/dismiss` → `data-bs-*` (P2) | Phase 1: Mechanical Renames | Language dropdown opens; feature modal closes |
-| `.close` → `.btn-close` (P4) | Phase 1: Mechanical Renames | Modal close buttons render correctly in light and dark mode |
-| `.jumbotron` rename (P5) | Phase 1: Mechanical Renames | Grid wrapper fills viewport; rail-open margin transition works |
-| Spacing utilities `ml/mr/pl/pr` (P6) | Phase 1: Mechanical Renames | Planner items in flyout have correct spacing layout |
-| `btn-block` removal (P7) | Phase 1: Mechanical Renames | Auth modal sign-in buttons are full-width |
-| `form-group` / `form-inline` (P8) | Phase 1: Mechanical Renames | Rename form is inline; share URL input has bottom spacing |
-| `sr-only` → `visually-hidden` (P9) | Phase 1: Mechanical Renames | "Loading" text invisible to sighted users in spinner |
-| Tooltip manual init (P3) | Phase 2: JS Components | Hovering `.yp-cell-text` shows tooltip with entry preview |
-| Link underlines from BS5 reboot (P11) | Phase 2: Visual Audit | No unexpected underlines on rail, navbar, or footer links |
-| Dark mode CSS conflicts (P12) | Phase 2: Visual Audit | Dropdown, modal, buttons correct in dark mode (both themes) |
-| Feature modal Vue migration (P13) | Phase 1 or 2 | Feature modal open/close works correctly |
-| CSS variable naming for reuse (P14) | CSS Generalisation phase | Sibling app test: co-loading CSS does not bleed `--bg`/`--text` |
-| CSS generalisation sequencing (P15) | Roadmap structure | Migration E2E tests pass before generalisation begins |
+| KNOWN_PROVIDERS missing "github" in vendor | Phase 1: Backend Discovery | `authProvider.getAvailableProviders()` returns `['github']` |
+| jsmdma backend GitHub route missing or unwired | Phase 1: Backend Discovery | `curl http://127.0.0.1:8081/auth/github` returns 200 with authorizationURL |
+| Single GitHub OAuth App (no dev/prod split) | Phase 1: Backend Discovery | Two separate GitHub App registrations confirmed in GitHub Developer Settings |
+| `auth_provider` defaults to "google" on callback | Phase 2: GitHub OAuth Client Flow | After GitHub sign-in, `localStorage.auth_provider === 'github'` |
+| sessionStorage PKCE state lost on redirect | Phase 2: GitHub OAuth Client Flow | E2E OAuth flow passes on Safari mobile or simulated mobile context |
+| JWT in query param / referrer leakage | Phase 2: GitHub OAuth Client Flow | No token visible in server logs; Referrer-Policy header present; replaceState order correct |
+| wipe() destroys unsynced data on sign-out | Phase 3: Auth Module Extraction | Sign-out with unsynced planner shows confirmation dialog; planner data preserved after cancel |
+| Google client ID hardcoded in source | Phase 3: Auth Module Extraction | `auth-config.js` uses build-time substitution; no client IDs in committed source |
+| userKey mismatch after account linking | Phase 4: Account Linking UI | Post-link sync does not create duplicate planners; `meta.userKey` matches new sub in all `plnr:*` |
+| Last-provider unlink causes silent sign-out | Phase 4: Account Linking UI | Unlink of last provider returns error; 401 handler shows re-auth prompt, not silent sign-out |
+| GitHub user email may be null/private | Phase 2: GitHub OAuth Client Flow | Profile and account UI handles null email gracefully |
 
 ---
 
 ## Sources
 
-- [Migrating to v5 — Bootstrap v5.3 official docs](https://getbootstrap.com/docs/5.3/migration/) — HIGH confidence
-- [Tooltips — Bootstrap v5.3](https://getbootstrap.com/docs/5.3/components/tooltips/) — HIGH confidence
-- [JavaScript — Bootstrap v5.3](https://getbootstrap.com/docs/5.3/getting-started/javascript/) — HIGH confidence
-- [CSS Variables — Bootstrap v5.3](https://getbootstrap.com/docs/5.3/customize/css-variables/) — HIGH confidence
-- [Bootstrap 5 migrate tool (coliff)](https://github.com/coliff/bootstrap-5-migrate-tool) — MEDIUM confidence (community tool, useful for mechanical rename validation)
-- Live codebase audit of `site/index.html`, `.compose/fragments/`, `site/css/main.css`, `site/css/yp-dark.css` — HIGH confidence
+- GitHub Docs: [Authorizing OAuth apps](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps) — HIGH confidence
+- GitHub Docs: [Differences between GitHub Apps and OAuth apps](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/differences-between-github-apps-and-oauth-apps) — HIGH confidence
+- Auth0 Docs: [Token Storage](https://auth0.com/docs/secure/security-guidance/data-security/token-storage) — HIGH confidence
+- Auth0 Docs: [User Account Linking](https://auth0.com/docs/manage-users/user-accounts/user-account-linking) — HIGH confidence
+- WorkOS Blog: [Lessons in safe identity linking](https://workos.com/blog/lessons-in-safe-identity-linking) — MEDIUM confidence
+- Auth0 Blog: [Demystifying OAuth Security: State vs. Nonce vs. PKCE](https://auth0.com/blog/demystifying-oauth-security-state-vs-nonce-vs-pkce/) — HIGH confidence
+- Pragmatic Web Security: [Why avoiding LocalStorage for tokens is the wrong solution](https://pragmaticwebsecurity.com/articles/oauthoidc/localstorage-xss.html) — MEDIUM confidence
+- IETF RFC 9700: OAuth 2.0 Security Best Current Practice (January 2025) — HIGH confidence
+- PortSwigger Web Security Academy: [OAuth 2.0 authentication vulnerabilities](https://portswigger.net/web-security/oauth) — HIGH confidence
+- aaronpk/pkce-vanilla-js: [PKCE flow in plain JavaScript](https://github.com/aaronpk/pkce-vanilla-js) — HIGH confidence
+- Firebase Docs: [Link Multiple Auth Providers](https://firebase.google.com/docs/auth/web/account-linking) — HIGH confidence
+- Curity: [SPA Best Practices](https://curity.io/resources/learn/spa-best-practices/) — HIGH confidence
+- OAuth Redirect URI Setup: [Avoiding redirect_uri_mismatch errors in 2025](https://www.automaticbacklinks.com/blog/oauth-redirect-uri-setup-avoiding-redirect_uri_mismatch-errors-in-2025-4320/) — MEDIUM confidence
+- Codebase inspection: `site/js/vendor/jsmdma-auth-client.esm.js`, `site/js/Application.js`, `site/js/service/AuthProvider.js`, `site/js/service/StorageLocal.js`, `site/js/vue/methods/auth.js` (2026-04-14) — HIGH confidence
 
 ---
-*Pitfalls research for: Bootstrap 4 → 5 migration + CSS generalisation, Year Planner v1.4*
+*Pitfalls research for: GitHub OAuth & Multi-Provider Account Linking in Year Planner (v1.5)*
 *Researched: 2026-04-14*

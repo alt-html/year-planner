@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.4
-milestone_name: Bootstrap 5 & UI Generalisation
-status: Archived
-stopped_at: Milestone v1.3 complete
-last_updated: "2026-04-14T04:50:54.245Z"
+milestone: v1.5
+milestone_name: GitHub OAuth & Account Linking
+status: Ready to plan
+last_updated: "2026-04-14"
 last_activity: 2026-04-14
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
-  percent: 100
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,50 +20,50 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-14)
 
 **Core value:** Offline-first local planner that works without an account, and syncs bidirectionally when signed in — without data loss across devices.
-**Current focus:** Milestone v1.3 complete — planning next milestone
+**Current focus:** Phase 16 — Backend Discovery & Wiring
 
 ## Current Position
 
-Milestone: v1.3 jsmdma Sync — COMPLETE
-Status: Archived
-Last activity: 2026-04-14
+Phase: 16 of 19 (Backend Discovery & Wiring)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-04-14 — Roadmap created for v1.5
 
-Progress: [████████████] 100% (12/12 phases complete)
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
-**Phase 11 (jsmdma sync protocol):**
+**Velocity:**
+- Total plans completed: 0
+- Average duration: —
+- Total execution time: —
 
-- 3 plans completed
-- S01: SyncClient.js + jsmdma API — 2026-04-09
-- S02: HLC write-path wiring — 2026-04-10
-- S03: MOD cleanup audit — 2026-04-10
+**By Phase:**
 
-**Phase 12 (auth config & live sync):**
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| - | - | - | - |
 
-- 2 plans completed
-- 12-01: Vue rail migration, jQuery removal — 2026-04-13
-- 12-02: Contract tests, SYNC-08 verification — 2026-04-13
-
-**Total milestones complete:** 12 (M001–M012)
+*Updated after each plan completion*
 
 ## Accumulated Context
 
-### Key Decisions
+### Decisions
 
 Archived to PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-None — milestone complete.
+None.
 
 ### Blockers/Concerns
 
-- AuthProvider.js: Apple/Microsoft client IDs not yet configured
-- Google OAuth client ID hardcoded in source (CR-01 tech debt)
+- jsmdma backend GitHub OAuth route coverage unknown — BKD-01 audit is the first deliverable
+- Apple/Microsoft client IDs not configured (deferred; buttons hidden in GHO-04)
+- Google OAuth client ID hardcoded in source (addressed in AUT-01..04)
 
 ## Session Continuity
 
 Last session: 2026-04-14
-Stopped at: Milestone v1.3 complete
-Next step: `/gsd-new-milestone`
+Stopped at: Roadmap created — ready to plan Phase 16
+Resume file: None

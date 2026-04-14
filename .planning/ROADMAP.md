@@ -7,6 +7,7 @@
 - ✅ **v1.2 Data Model** — Phases 8–10 (complete)
 - ✅ **v1.3 jsmdma Sync** — Phases 11–12 (complete 2026-04-13)
 - ✅ **v1.4 Bootstrap 5 & UI Generalisation** — Phases 13–15 (complete 2026-04-14)
+- 🚧 **v1.5 GitHub OAuth & Account Linking** — Phases 16–19 (in progress)
 
 ## Phases
 
@@ -123,6 +124,70 @@ Plans:
 
 </details>
 
+### 🚧 v1.5 GitHub OAuth & Account Linking (In Progress)
+
+**Milestone Goal:** End-to-end GitHub sign-in with real OAuth flow, account linking/unlinking UI, and a reusable auth module — including verifying and wiring the jsmdma backend to support GitHub auth locally.
+
+## Phase Details
+
+### Phase 16: Backend Discovery & Wiring
+**Goal**: The jsmdma backend supports GitHub OAuth end-to-end — routes documented, middleware wired, GitHub OAuth Apps registered, local dev server can complete an authorization code exchange
+**Depends on**: Phase 15
+**Requirements**: BKD-01, BKD-02, BKD-03, BKD-04
+**Success Criteria** (what must be TRUE):
+  1. A developer running jsmdma locally can complete a GitHub OAuth callback without a 404 or missing-route error
+  2. KNOWN_PROVIDERS in vendored jsmdma-auth-client.esm.js includes "github"
+  3. GitHub OAuth Apps exist for both localhost and CloudFront with correct callback URLs
+  4. All missing backend routes/middleware are patched and the run-server config reflects them
+**Plans**: TBD
+
+Plans:
+- [ ] 16-01: TBD
+
+### Phase 17: GitHub OAuth Client Flow
+**Goal**: Users can sign in with GitHub via the real OAuth authorization code flow wired end-to-end against the local server, with correct provider identification and durable PKCE state
+**Depends on**: Phase 16
+**Requirements**: GHO-01, GHO-02, GHO-03, GHO-04
+**Success Criteria** (what must be TRUE):
+  1. User can click "Sign in with GitHub", complete the GitHub consent screen, and land back in the app as an authenticated user
+  2. The provider returned from the OAuth callback is identified as "github" (not hardcoded "google")
+  3. PKCE state survives a page reload mid-flow and is cleaned up from localStorage after exchange completes
+  4. Apple and Microsoft sign-in buttons are hidden when their client IDs are absent from config
+**Plans**: TBD
+**UI hint**: yes
+
+Plans:
+- [ ] 17-01: TBD
+
+### Phase 18: Auth Module Extraction
+**Goal**: Auth code lives in a standalone site/js/auth/ folder with an app-agnostic API; old AuthProvider.js is deleted; all consumers rewired through CDI; sign-out preserves unsynced planner data
+**Depends on**: Phase 17
+**Requirements**: AUT-01, AUT-02, AUT-03, AUT-04
+**Success Criteria** (what must be TRUE):
+  1. site/js/auth/ contains AuthService.js, OAuthClient.js, and auth-config.js — no year-planner-specific code
+  2. Google OAuth provider is wired through site/js/auth/ alongside GitHub using the same abstraction
+  3. Signing out clears credentials (tok key) but leaves planner data (plnr:* keys) intact in localStorage
+  4. Old AuthProvider.js does not exist; contexts.js, Api.js, and Application.js reference the new auth module only
+**Plans**: TBD
+
+Plans:
+- [ ] 18-01: TBD
+
+### Phase 19: Account Linking UI
+**Goal**: Users can manage connected OAuth providers from a settings view — linking a second provider, unlinking with a safety guard, and merging planner data across identities without sync duplicates
+**Depends on**: Phase 18
+**Requirements**: LNK-01, LNK-02, LNK-03, LNK-04
+**Success Criteria** (what must be TRUE):
+  1. A signed-in user can link a second OAuth provider from the settings view and see it appear in the connected accounts list
+  2. A user can unlink a provider and is blocked from unlinking their last remaining provider
+  3. The connected accounts settings view lists all linked providers with link and unlink actions visible
+  4. After identity merge, planner entries carry the merged userKey and do not create duplicate sync records
+**Plans**: TBD
+**UI hint**: yes
+
+Plans:
+- [ ] 19-01: TBD
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -141,4 +206,8 @@ Plans:
 | 12. Auth Config & Live Sync | v1.3 | 2/2 | Complete | 2026-04-13 |
 | 13. BS5 Migration | v1.4 | 1/1 | Complete | 2026-04-14 |
 | 14. Dark Mode BS5 | v1.4 | 1/1 | Complete | 2026-04-14 |
-| 15. CSS Generalisation | v1.4 | 2/2 | Complete    | 2026-04-14 |
+| 15. CSS Generalisation | v1.4 | 2/2 | Complete | 2026-04-14 |
+| 16. Backend Discovery & Wiring | v1.5 | 0/TBD | Not started | - |
+| 17. GitHub OAuth Client Flow | v1.5 | 0/TBD | Not started | - |
+| 18. Auth Module Extraction | v1.5 | 0/TBD | Not started | - |
+| 19. Account Linking UI | v1.5 | 0/TBD | Not started | - |
