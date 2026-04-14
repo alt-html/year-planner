@@ -9,7 +9,7 @@
                     <div v-if="feature.debug">
                             <div>&nbsp</div>
                             <div class="row g-0">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <div class="row tst-cell d-sm-none">Extra Small (xs) < 576px</div>
                                     <div class="row tst-cell d-none d-sm-inline d-md-none">Small (sm) >= 576</div>
                                     <div class="row tst-cell d-none d-md-inline d-lg-none">Medium (md) >= 768px</div>
@@ -39,7 +39,7 @@
                             </div>
                         <div id="yp-months" class="col-8 col-sm-9 col-md-10 col-lg-10 col-xl-11">
                             <div class="row g-0">
-                                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-1" v-for="(m,mindex) in monthsOfYear">
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-1" v-for="(m,mindex) in monthsOfYear">
                                     <div class="row g-0" v-bind:class="{'yp-header-cell': m != 'December', 'yp-header-cell-right' : m == 'December'}" ><a class="yp-anchor" v-bind:name="m" ></a><h5>{{$t('month.'+m)}}</h5></div>
                                         <template v-if="firstWeekdayOfMonth[mindex]>1">
                                             <div class="row g-0 yp-cell"

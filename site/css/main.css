@@ -698,6 +698,8 @@ body.emoji-dragging {
 #yp-months .row.g-0 > [class*="col"] {
     display: flex;
     flex-direction: column;
+    min-width: 0;        /* BS5: prevent flex content from expanding beyond column width */
+    max-width: 100%;     /* BS5: restore BS4 column constraint (BS5 dropped max-width) */
 }
 
 /* The inner row inside #yp-months must also flex to fill */
@@ -769,6 +771,7 @@ body.emoji-dragging {
     border-style: solid;
     border-color: var(--border);
     white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis !important;
     flex: 1 0 auto;
     display: flex;
@@ -955,6 +958,9 @@ body.emoji-dragging {
 .footer .btn-sm {
     font-size: .8rem;
 }
+
+/* BS5 compat: restore BS4 parent-show dropdown behaviour (no Bootstrap JS loaded) */
+.show > .dropdown-menu { display: block; }
 
 .show>.btn-secondary.dropdown-toggle {
     color: var(--text-light) !important;
