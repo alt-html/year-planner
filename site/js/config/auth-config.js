@@ -6,7 +6,7 @@ export const authConfig = {
         clientId: '98746316056-d581h0p6u6ts0544fcu28gtu5brblal5.apps.googleusercontent.com',  // Google OAuth 2.0 client ID
     },
     github: {
-        clientId: '',  // GitHub OAuth App client ID — set after BKD-03 registration
+        clientId: 'Ov23liYtyMmZlVM26OIv',  // GitHub OAuth App client ID (year-planner-dev)
     },
     apple: {
         clientId: '',  // Apple Services ID
