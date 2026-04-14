@@ -19,6 +19,7 @@ export default class AuthProvider {
     getAvailableProviders() {
         let providers = [];
         if (authConfig.google.clientId) providers.push('google');
+        if (authConfig.github.clientId) providers.push('github');
         if (authConfig.apple.clientId) providers.push('apple');
         if (authConfig.microsoft.clientId) providers.push('microsoft');
         return providers;
@@ -33,6 +34,7 @@ export default class AuthProvider {
     async signIn(provider) {
         switch (provider) {
             case 'google': return this._signInGoogle();
+            case 'github': return this._signInGitHub();
             case 'apple': return this._signInApple();
             case 'microsoft': return this._signInMicrosoft();
             default: throw new Error(`Unknown auth provider: ${provider}`);
@@ -43,6 +45,9 @@ export default class AuthProvider {
     signOut() {
         ClientAuthSession.clear();
         localStorage.removeItem('auth_provider');
+        localStorage.removeItem('oauth_intended_provider');
+        localStorage.removeItem('oauth_state');
+        localStorage.removeItem('oauth_code_verifier');
         this.model.signedin = false;
     }
 
@@ -81,10 +86,28 @@ export default class AuthProvider {
         if (!authorizationURL) throw new Error('Google sign-in failed: no authorizationURL from server');
 
         // Step 2: redirect browser to Google
+        localStorage.setItem('oauth_intended_provider', 'google');
         window.location.href = authorizationURL;
 
         // This promise never resolves — the page navigates away.
         // The ?token= URL handler in Application.js completes the flow on return.
+        return new Promise(() => {});
+    }
+
+    async _signInGitHub() {
+        const apiUrl = this._getApiUrl();
+        let beginResult;
+        try {
+            const res = await fetch(`${apiUrl}auth/github`);
+            if (!res.ok) throw new Error(`Server returned ${res.status}`);
+            beginResult = await res.json();
+        } catch (err) {
+            throw new Error(`GitHub sign-in failed: could not reach auth server (${err.message})`);
+        }
+        const { authorizationURL } = beginResult;
+        if (!authorizationURL) throw new Error('GitHub sign-in failed: no authorizationURL from server');
+        localStorage.setItem('oauth_intended_provider', 'github');
+        window.location.href = authorizationURL;
         return new Promise(() => {});
     }
 

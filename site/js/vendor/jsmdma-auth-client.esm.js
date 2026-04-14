@@ -335,8 +335,8 @@ var AuthProvider = class {
     if (!authorizationURL) {
       throw new Error(`AuthProvider: no authorizationURL from server for provider '${provider}'`);
     }
-    sessionStorage.setItem("oauth_state", state);
-    sessionStorage.setItem("oauth_code_verifier", codeVerifier);
+    localStorage.setItem("oauth_state", state);
+    localStorage.setItem("oauth_code_verifier", codeVerifier);
     (globalThis.window ?? global).location.href = authorizationURL;
     return new Promise(() => {
     });
