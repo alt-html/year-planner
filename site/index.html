@@ -463,7 +463,7 @@
 
         </main>
 
-        <div class="modal fade" id="entryModal" tabindex="-1" role="dialog" aria-labelledby="entryModalLabel" aria-hidden="true"
+        <div class="modal fade" id="entryModal" tabindex="-1" role="dialog" aria-labelledby="entryModalLabel" v-bind:aria-hidden="!showEntryModal"
              v-bind:class="{ show: showEntryModal, 'd-block': showEntryModal }">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content yp-entry-modal">
@@ -496,7 +496,7 @@
         </div>
         <div class="modal-backdrop fade show" v-if="showEntryModal" v-on:click="closeEntryModal()"></div>
 
-        <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" aria-hidden="true"
+        <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" v-bind:aria-hidden="!showShareModal"
              v-bind:class="{ show: showShareModal, 'd-block': showShareModal }">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -521,7 +521,7 @@
         </div>
         <div class="modal-backdrop fade show" v-if="showShareModal" v-on:click="closeShareModal()"></div>
 
-        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true"
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" v-bind:aria-hidden="!showDeleteModal"
              v-bind:class="{ show: showDeleteModal, 'd-block': showDeleteModal }">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -541,7 +541,7 @@
         </div>
         <div class="modal-backdrop fade show" v-if="showDeleteModal" v-on:click="closeDeleteModal()"></div>
 
-        <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="authModalLabel" aria-hidden="true"
+        <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="authModalLabel" v-bind:aria-hidden="!showAuthModal"
              v-bind:class="{ show: showAuthModal, 'd-block': showAuthModal }">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -574,7 +574,7 @@
         </div>
         <div class="modal-backdrop fade show" v-if="showAuthModal" v-on:click="closeAuthModal()"></div>
 
-        <div class="modal fade" id="featureModal" tabindex="-1" role="dialog" aria-labelledby="featureModalLabel" aria-hidden="true"
+        <div class="modal fade" id="featureModal" tabindex="-1" role="dialog" aria-labelledby="featureModalLabel" v-bind:aria-hidden="!showFeatureModal"
              v-bind:class="{ show: showFeatureModal, 'd-block': showFeatureModal }">
             <div id="feature-dialog"  class="modal-dialog" role="document">
                 <div class="modal-content">
