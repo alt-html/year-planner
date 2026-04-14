@@ -20,7 +20,7 @@ test('editing a day entry writes HLC dot-path to rev:{uuid} (SYNC-04)', async ({
     await page.waitForSelector('[data-app-ready]');
 
     // Edit Jan day 1 (same selector pattern as entry-crud.spec.js)
-    const janColumn = page.locator('#yp-months .col-xs-12.col-sm-6.col-md-4.col-lg-3.col-xl-1').first();
+    const janColumn = page.locator('#yp-months .col-12.col-sm-6.col-md-4.col-lg-3.col-xl-1').first();
     const day1Cell = janColumn.locator('.yp-cell').filter({ hasText: /^1\s/ }).first();
     await day1Cell.click();
     await page.waitForSelector('#entryModal.show');

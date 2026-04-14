@@ -8,7 +8,7 @@ test('entry CRUD: create, see, edit, delete (E2E-02)', async ({ page }) => {
   await page.waitForSelector('[data-app-ready]');
 
   // Target January day 1 — use text filter for year-independence (avoids blank offset cells)
-  const janColumn = page.locator('#yp-months .col-xs-12.col-sm-6.col-md-4.col-lg-3.col-xl-1').first();
+  const janColumn = page.locator('#yp-months .col-12.col-sm-6.col-md-4.col-lg-3.col-xl-1').first();
   const day1Cell = janColumn.locator('.yp-cell').filter({ hasText: /^1\s/ }).first();
 
   // --- Create ---
