@@ -922,6 +922,7 @@ body.emoji-dragging {
 
 #footer-text-left a {
     color: var(--text-light) !important;
+    text-decoration: none;
 }
 
 #footer-text-center {
@@ -932,6 +933,7 @@ body.emoji-dragging {
 
 #footer-text-center a {
     color: var(--text-light) !important;
+    text-decoration: none;
 }
 
 #footer-text-right {
@@ -942,6 +944,7 @@ body.emoji-dragging {
 
 #footer-text-right a {
     color: var(--text-light) !important;
+    text-decoration: none;
 }
 
 #footer-text-right a:hover {
