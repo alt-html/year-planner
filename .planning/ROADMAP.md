@@ -6,6 +6,7 @@
 - ✅ **v1.1 UX & Boot** — Phases 5–7 (complete)
 - ✅ **v1.2 Data Model** — Phases 8–10 (complete)
 - ✅ **v1.3 jsmdma Sync** — Phases 11–12 (complete 2026-04-13)
+- **v1.4 Bootstrap 5 & UI Generalisation** — Phases 13–15
 
 ## Phases
 
@@ -101,6 +102,31 @@ Plans:
 
 </details>
 
+### v1.4 Bootstrap 5 & UI Generalisation
+
+### Phase 13: Bootstrap 5 Migration
+**Goal**: Swap Bootstrap 4.3.1 CDN for Bootstrap 5.3.8, rename all data-toggle/data-dismiss/data-target to data-bs-* equivalents, replace deprecated utility classes (.no-gutters→.g-0, .close→.btn-close, .sr-only→.visually-hidden, .btn-block→.d-grid, directional .ml-*→.ms-*, .form-inline→flex, .jumbotron→custom, .text-muted→.text-body-secondary), remove shrink-to-fit, convert feature modal to Vue-reactive state.
+**Depends on**: Phase 12
+**Requirements**: MIG-01, MIG-02, MIG-03, MIG-04, MIG-05, MIG-06, MIG-07, MIG-08, MIG-09, MIG-10, MIG-11, MIG-12
+Plans:
+- [x] 13-01: Bootstrap 5 CDN swap and markup migration
+
+### Phase 14: Dark Mode BS5
+**Goal**: Wire BS5 native data-bs-theme="dark" attribute alongside .yp-dark class, remove redundant dark CSS overrides from yp-dark.css, visual audit for BS5 reboot regressions.
+**Depends on**: Phase 13
+**Requirements**: DRK-01, DRK-02, DRK-03, DRK-04
+Plans:
+- [x] 14-01: Wire data-bs-theme attribute and clean dark CSS overrides (2026-04-14)
+
+### Phase 15: CSS Generalisation
+**Goal**: Extract design tokens, rail styles, and dot styles from main.css into separate CSS files; namespace bare custom properties to --yp-*; update head.html to load extracted files.
+**Depends on**: Phase 14
+**Requirements**: CSS-01, CSS-02, CSS-03, CSS-04, CSS-05
+**Plans:** 2 plans
+Plans:
+- [ ] 15-01-PLAN.md — Extract design-tokens.css, rail.css, dots.css from main.css
+- [ ] 15-02-PLAN.md — Rename bare custom properties to --yp-* and update head.html
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -117,3 +143,6 @@ Plans:
 | 10. Source Root Tidy | v1.2 | — | Complete | 2026-04 |
 | 11. jsmdma Sync & MOD | v1.3 | 3/3 | Complete | 2026-04-10 |
 | 12. Auth Config & Live Sync | v1.3 | 2/2 | Complete | 2026-04-13 |
+| 13. BS5 Migration | v1.4 | 1/1 | Complete | 2026-04-14 |
+| 14. Dark Mode BS5 | v1.4 | 1/1 | Complete | 2026-04-14 |
+| 15. CSS Generalisation | v1.4 | 0/2 | Planned | — |
