@@ -52,8 +52,7 @@ test('main.css no longer contains extracted blocks (CSS-01/02/03)', () => {
   expect(content).toContain('.yp-jumbotron');
 });
 
-// Enable after CSS-04 rename in Plan 02
-test.skip('no bare custom property references remain in CSS files (CSS-04)', () => {
+test('no bare custom property references remain in CSS files (CSS-04)', () => {
   const files = ['design-tokens.css', 'rail.css', 'dots.css', 'main.css'];
   const barePropertyRegex = /var\(--(?!yp-|bs-)[a-z]/;
   for (const file of files) {
@@ -62,8 +61,7 @@ test.skip('no bare custom property references remain in CSS files (CSS-04)', () 
   }
 });
 
-// Enable after CSS-05 in Plan 02
-test.skip('site/index.html contains link tags for extracted CSS files (CSS-05)', () => {
+test('site/index.html contains link tags for extracted CSS files (CSS-05)', () => {
   const indexPath = path.resolve(__dirname, '..', '..', 'site', 'index.html');
   const content = fs.readFileSync(indexPath, 'utf8');
   expect(content).toContain('design-tokens.css');
