@@ -1,0 +1,230 @@
+/* ============================================================
+   YEAR PLANNER — RAIL STYLES
+   Left-side icon rail, flyout panels, and rail toggle button.
+   ============================================================ */
+
+/* ---- HIDDEN ICON RAIL ---- */
+.yp-rail {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 48px;
+    background: var(--rail-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+    z-index: 300;
+    gap: 2px;
+    transform: translateX(-48px);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.yp-rail.open {
+    transform: translateX(0);
+}
+
+.yp-rail-logo {
+    width: 30px;
+    height: 30px;
+    background: var(--rail-active-bg);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--rail-text-hover);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+}
+
+.yp-rail button {
+    background: none;
+    border: none;
+    color: var(--rail-text);
+    padding: 9px;
+    cursor: pointer;
+    border-radius: 7px;
+    transition: all 0.12s;
+    font-size: 0.9rem;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.yp-rail button:hover {
+    color: var(--rail-text-hover);
+    background: var(--rail-active-bg);
+}
+
+.yp-rail button.active {
+    color: var(--rail-text-hover);
+    background: var(--rail-active-bg);
+}
+
+.yp-rail-spacer { flex: 1; }
+
+.yp-rail-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.yp-rail-divider {
+    width: 24px;
+    height: 1px;
+    background: rgba(255,255,255,0.12);
+    margin: 6px 0;
+}
+
+.rail-theme-toggle {
+    font-size: 0.95rem !important;
+    background: var(--rail-active-bg) !important;
+    color: var(--rail-text-hover) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+}
+
+/* ---- RAIL FLYOUT (calendar/month panel) ---- */
+.rail-flyout {
+    position: absolute;
+    left: 48px;
+    top: 40px;
+    width: 140px;
+    background: var(--rail-bg);
+    border-radius: 0 8px 8px 0;
+    padding: 8px 0;
+    box-shadow: 4px 2px 12px rgba(0,0,0,0.25);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-8px);
+    transition: opacity 0.15s, transform 0.15s;
+    z-index: 310;
+}
+
+.rail-flyout.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+.rail-flyout-item {
+    display: block;
+    padding: 5px 14px;
+    color: var(--rail-text);
+    font-size: 0.78rem;
+    text-decoration: none;
+    transition: all 0.1s;
+    font-family: var(--font-body);
+}
+
+.rail-flyout-item:hover {
+    color: var(--rail-text-hover);
+    background: var(--rail-active-bg);
+    text-decoration: none;
+}
+
+.rail-flyout-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.1);
+    margin: 6px 12px;
+}
+
+.rail-flyout-input {
+    width: calc(100% - 24px);
+    margin: 2px 12px;
+    padding: 4px 8px;
+    font-size: 0.78rem;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    color: var(--rail-text-hover);
+    font-family: var(--font-body);
+    outline: none;
+}
+
+.rail-flyout-input::placeholder {
+    color: var(--rail-text);
+}
+
+.rail-flyout-input:focus {
+    border-color: var(--accent);
+}
+
+.rail-flyout-header {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--rail-text);
+    opacity: 0.6;
+    padding: 4px 14px 2px;
+}
+
+.rail-flyout-item-active {
+    background: var(--rail-active-bg, rgba(255,255,255,0.1));
+    font-weight: 600;
+}
+
+.rail-planner-section {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.settings-flyout {
+    bottom: 40px;
+    top: auto;
+    width: 140px;
+}
+
+.yp-rail button.flyout-active {
+    color: var(--rail-text-hover);
+    background: var(--rail-active-bg);
+}
+
+/* ---- RAIL TOGGLE (left-side circle) ---- */
+.rail-toggle {
+    position: fixed;
+    left: 10px;
+    bottom: 56px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--rail-bg);
+    color: var(--rail-text-hover);
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.35;
+    transition: opacity 0.2s, left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.rail-toggle:hover {
+    opacity: 1;
+}
+
+.rail-toggle .ph-caret-right { display: inline; }
+.rail-toggle .ph-caret-left { display: none; }
+
+.rail-open .rail-toggle {
+    left: 58px;
+    opacity: 0.7;
+}
+.rail-open .rail-toggle .ph-caret-right { display: none; }
+.rail-open .rail-toggle .ph-caret-left { display: inline; }
+
+/* Shift content when rail is open */
+.rail-open .navbar,
+.rail-open .yp-jumbotron,
+.rail-open .footer {
+    margin-left: 48px;
+}
