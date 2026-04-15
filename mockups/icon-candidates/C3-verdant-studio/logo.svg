@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 120" role="img" aria-label="Year Planner — Verdant Studio logo">
+  <title>Year Planner — Verdant Studio</title>
+
+  <!--
+    C3 · VERDANT STUDIO · Horizontal lockup
+    Warm stone background · green organic icon · serif+sans wordmark
+  -->
+
+  <!-- Warm stone background -->
+  <rect width="480" height="120" rx="16" fill="#F5F2ED"/>
+
+  <!-- ── Mini icon (left, 96×96 at x=12, y=12) ── -->
+  <!-- Forest green rounded square -->
+  <rect x="12" y="12" width="96" height="96" rx="22" fill="#2D5A3D"/>
+  <!-- Mini arc (scaled from icon: centre=60,60, r=34, same 270° sweep) -->
+  <!--
+    Scale: icon is 512×512 with arc at centre (256,256) r=168.
+    Mini version: 96×96, centre at (60,60), scale=96/512=0.1875
+    r_mini = 168×0.1875 ≈ 31.5 → use 32
+    Start (bottom): (60, 60+32) = (60, 92)
+    End (right):    (60+32, 60) = (92, 60)
+  -->
+  <path
+    d="M 60 92 A 32 32 0 1 0 92 60"
+    fill="none"
+    stroke="#EDE8DF"
+    stroke-width="9"
+    stroke-linecap="round"
+  />
+  <!-- Rust end dot -->
+  <circle cx="92" cy="60" r="7" fill="#C85A28"/>
+  <!-- Centre dot -->
+  <circle cx="60" cy="60" r="4" fill="#EDE8DF" opacity="0.5"/>
+
+  <!-- ── Divider: forest green thin line ── -->
+  <rect x="118" y="18" width="2" height="84" rx="1" fill="#2D5A3D" opacity="0.4"/>
+
+  <!-- ── Wordmark ── -->
+  <!-- "Year" — large, warm serif, deep green -->
+  <text
+    x="132" y="60"
+    font-family="Fraunces, 'Palatino Linotype', Georgia, serif"
+    font-size="42"
+    font-weight="600"
+    fill="#2D5A3D"
+    dominant-baseline="auto"
+  >Year</text>
+
+  <!-- "Planner" — light weight sans, mid-green -->
+  <text
+    x="134" y="92"
+    font-family="'Outfit', 'Segoe UI', Arial, sans-serif"
+    font-size="20"
+    font-weight="300"
+    fill="#4A8C5E"
+    letter-spacing="4"
+    dominant-baseline="auto"
+  >PLANNER</text>
+
+  <!-- Rust accent dot (year-leading-edge motif, echoes the icon) -->
+  <circle cx="458" cy="28" r="9" fill="#C85A28"/>
+  <circle cx="458" cy="28" r="5" fill="#E8754A" opacity="0.6"/>
+</svg>

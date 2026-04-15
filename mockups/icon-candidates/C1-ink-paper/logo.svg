@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 120" role="img" aria-label="Year Planner — Ink &amp; Paper logo">
+  <title>Year Planner — Ink &amp; Paper</title>
+
+  <!--
+    C1 · INK & PAPER · Horizontal lockup
+    Warm parchment ground · terracotta/amber icon · serif wordmark
+    Layout: icon area (0–96) | divider | wordmark (112–480)
+  -->
+
+  <!-- Warm parchment background -->
+  <rect width="480" height="120" rx="16" fill="#FAF7F2"/>
+
+  <!-- ── Mini icon (left, 96×96 centred vertically at x=12, y=12) ── -->
+  <!-- Outer icon frame -->
+  <rect x="12" y="12" width="96" height="96" rx="16" fill="#FAF7F2"/>
+  <!-- Terracotta header -->
+  <rect x="12" y="12" width="96" height="28" rx="16" fill="#D4663A"/>
+  <rect x="12" y="28" width="96" height="12" fill="#D4663A"/>
+  <!-- Amber accent stripe -->
+  <rect x="12" y="36" width="96" height="4" fill="#E8A838" opacity="0.85"/>
+  <!-- Ring pins -->
+  <ellipse cx="38" cy="15" rx="5" ry="4" fill="#2C2520"/>
+  <ellipse cx="38" cy="15" rx="3" ry="2" fill="#FAF7F2"/>
+  <ellipse cx="80" cy="15" rx="5" ry="4" fill="#2C2520"/>
+  <ellipse cx="80" cy="15" rx="3" ry="2" fill="#FAF7F2"/>
+  <!-- Mini grid (4 cols × 3 rows, simplified) -->
+  <rect x="15" y="44" width="20" height="17" rx="2" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="1"/>
+  <rect x="38" y="44" width="20" height="17" rx="2" fill="#FFF5E0" stroke="#E8A838" stroke-width="1.5"/>
+  <rect x="61" y="44" width="20" height="17" rx="2" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="1"/>
+  <rect x="84" y="44" width="20" height="17" rx="2" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="1"/>
+  <!-- Today circle in second cell -->
+  <circle cx="48" cy="52" r="6" fill="#E8A838"/>
+  <rect x="15" y="64" width="20" height="17" rx="2" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="1"/>
+  <rect x="38" y="64" width="20" height="17" rx="2" fill="#F5D0C0" stroke="#E5DDD2" stroke-width="1"/>
+  <rect x="61" y="64" width="20" height="17" rx="2" fill="#F5D0C0" stroke="#E5DDD2" stroke-width="1"/>
+  <rect x="84" y="64" width="20" height="17" rx="2" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="1"/>
+  <rect x="15" y="84" width="20" height="17" rx="2" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="1"/>
+  <rect x="38" y="84" width="20" height="17" rx="2" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="1"/>
+  <rect x="61" y="84" width="20" height="17" rx="2" fill="#D4EDDA" stroke="#E5DDD2" stroke-width="1"/>
+  <rect x="84" y="84" width="20" height="17" rx="2" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="1"/>
+
+  <!-- ── Divider ── -->
+  <rect x="118" y="20" width="2" height="80" rx="1" fill="#D4663A" opacity="0.5"/>
+
+  <!-- ── Wordmark ── -->
+  <!-- "Year" — large, serif, terracotta -->
+  <text
+    x="132" y="58"
+    font-family="'Playfair Display', Georgia, 'Times New Roman', serif"
+    font-size="38"
+    font-weight="600"
+    fill="#D4663A"
+    dominant-baseline="auto"
+  >Year</text>
+
+  <!-- "Planner" — smaller, sans-serif, ink dark -->
+  <text
+    x="134" y="90"
+    font-family="'Source Sans 3', 'Segoe UI', Arial, sans-serif"
+    font-size="22"
+    font-weight="300"
+    fill="#6B5F54"
+    letter-spacing="3"
+    dominant-baseline="auto"
+  >PLANNER</text>
+
+  <!-- Amber underline accent beneath "Year" -->
+  <rect x="132" y="65" width="112" height="3" rx="1.5" fill="#E8A838" opacity="0.7"/>
+</svg>

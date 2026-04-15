@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Year Planner — Verdant Studio icon">
+  <title>Year Planner — Verdant Studio</title>
+
+  <!--
+    C3 · VERDANT STUDIO
+    Design language: organic craft, botanical year-cycle, forest warmth.
+    Key colours: forest green #2D5A3D · cream #EDE8DF · rust #C85A28 · stone #F5F2ED
+    Structure: full green background · thick cream arc (270°, annual cycle motif) · rust accent
+    At 16×16 this reads as: green circle with a light arc curve — entirely distinct from C1/C2
+  -->
+
+  <!-- Deep forest green ground (very rounded = almost organic/circular) -->
+  <rect width="512" height="512" rx="128" fill="#2D5A3D"/>
+
+  <!--
+    Annual cycle arc: 270° sweep on a circle of radius 168, centred at (256,256).
+    Arc traces from the BOTTOM of the circle (90°) counterclockwise through
+    left (180°), top (270°), right (0°) — leaving the gap in the lower-right quadrant.
+
+    SVG coords (y-down):
+      At 90°:  (256 + 168·cos(90°),  256 + 168·sin(90°))  = (256, 424)   — start
+      At 0°:   (256 + 168·cos(0°),   256 + 168·sin(0°))   = (424, 256)   — end
+    d = "M 256 424 A 168 168 0 1 0 424 256"
+      flags: large-arc=1 (270° > 180°), sweep=0 (counterclockwise in SVG = clockwise visually)
+  -->
+  <path
+    d="M 256 424 A 168 168 0 1 0 424 256"
+    fill="none"
+    stroke="#EDE8DF"
+    stroke-width="44"
+    stroke-linecap="round"
+  />
+
+  <!-- Rust accent dot at arc end (right side = 0°, x=424, y=256) — year's leading edge -->
+  <circle cx="424" cy="256" r="30" fill="#C85A28"/>
+  <!-- Small inner ring on rust dot for detail at large size -->
+  <circle cx="424" cy="256" r="16" fill="#E8754A" opacity="0.6"/>
+
+  <!-- Secondary inner arc: thinner, mid-green, slightly smaller radius -->
+  <!-- Traces a smaller 180° arc to suggest the year's midpoint -->
+  <path
+    d="M 156 256 A 100 100 0 0 1 356 256"
+    fill="none"
+    stroke="#4A8C5E"
+    stroke-width="12"
+    stroke-linecap="round"
+    opacity="0.7"
+  />
+
+  <!-- Small cream centre dot (origin/anchor) -->
+  <circle cx="256" cy="256" r="14" fill="#EDE8DF" opacity="0.6"/>
+</svg>

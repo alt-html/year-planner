@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Year Planner — Ink &amp; Paper icon">
+  <title>Year Planner — Ink &amp; Paper</title>
+
+  <!--
+    C1 · INK & PAPER
+    Design language: editorial warmth, analog calendar, warm cream paper.
+    Key colours: paper #FAF7F2 · terracotta #D4663A · amber #E8A838 · ink #2C2520
+    Grid: 7 cols × 5 rows, cell 60×58, gap 8, left/right margin 22
+  -->
+
+  <!-- Warm parchment ground -->
+  <rect width="512" height="512" rx="96" fill="#FAF7F2"/>
+
+  <!-- Terracotta calendar-header band (top 28 %) -->
+  <rect x="0" y="0" width="512" height="96" rx="96" fill="#D4663A"/>
+  <rect x="0" y="48" width="512" height="96" fill="#D4663A"/>
+
+  <!-- Amber accent stripe at base of header -->
+  <rect x="0" y="122" width="512" height="22" fill="#E8A838" opacity="0.85"/>
+
+  <!-- Ring binding pins: two oval cutouts at top -->
+  <ellipse cx="152" cy="12" rx="24" ry="18" fill="#2C2520"/>
+  <ellipse cx="152" cy="12" rx="14" ry="10" fill="#FAF7F2"/>
+  <ellipse cx="360" cy="12" rx="24" ry="18" fill="#2C2520"/>
+  <ellipse cx="360" cy="12" rx="14" ry="10" fill="#FAF7F2"/>
+
+  <!--
+    Calendar grid
+    Columns x: 22, 90, 158, 226, 294, 362, 430   (width 60, gap 8)
+    Rows    y: 156, 222, 288, 354, 420             (height 58, gap 8)
+    Weekend columns: index 5 (Sat) and 6 (Sun) — slightly warmer fill
+    Today cell: col 3, row 1 — amber highlight
+  -->
+
+  <!-- Row 1 -->
+  <rect x="22"  y="156" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="90"  y="156" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="158" y="156" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="226" y="156" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="294" y="156" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="362" y="156" width="60" height="58" rx="7" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="430" y="156" width="60" height="58" rx="7" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="2"/>
+
+  <!-- Row 2 — today at col 3 (Wednesday) -->
+  <rect x="22"  y="222" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="90"  y="222" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="158" y="222" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <!-- TODAY cell: amber background + bold amber border -->
+  <rect x="226" y="222" width="60" height="58" rx="7" fill="#FFF5E0" stroke="#E8A838" stroke-width="3.5"/>
+  <!-- Today circle indicator -->
+  <circle cx="256" cy="251" r="19" fill="#E8A838"/>
+  <rect x="294" y="222" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="362" y="222" width="60" height="58" rx="7" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="430" y="222" width="60" height="58" rx="7" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="2"/>
+
+  <!-- Row 3 -->
+  <rect x="22"  y="288" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="90"  y="288" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="158" y="288" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="226" y="288" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="294" y="288" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="362" y="288" width="60" height="58" rx="7" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="430" y="288" width="60" height="58" rx="7" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="2"/>
+
+  <!-- Row 4 — warm rose entry highlight on col 1 (an example diary entry) -->
+  <rect x="22"  y="354" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="90"  y="354" width="60" height="58" rx="7" fill="#F5D0C0" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="158" y="354" width="60" height="58" rx="7" fill="#F5D0C0" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="226" y="354" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="294" y="354" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="362" y="354" width="60" height="58" rx="7" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="430" y="354" width="60" height="58" rx="7" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="2"/>
+
+  <!-- Row 5 (partial — clipped by bottom corners of background rounded rect) -->
+  <rect x="22"  y="420" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="90"  y="420" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="158" y="420" width="60" height="58" rx="7" fill="#F3EDE4" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="226" y="420" width="60" height="58" rx="7" fill="#D4EDDA" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="294" y="420" width="60" height="58" rx="7" fill="#D4EDDA" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="362" y="420" width="60" height="58" rx="7" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="2"/>
+  <rect x="430" y="420" width="60" height="58" rx="7" fill="#F7F0E8" stroke="#E5DDD2" stroke-width="2"/>
+</svg>
