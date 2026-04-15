@@ -3,7 +3,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="authModalLabel">{{$t('label.signin')}}</h5>
+                        <h5 class="modal-title" id="authModalLabel">{{authLinkMode ? $t('label.addAccount') : $t('label.signin')}}</h5>
                         <button type="button" class="btn-close" v-on:click="closeAuthModal()" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -13,24 +13,24 @@
                         </div>
                         <div class="d-grid gap-2">
                             <button type="button" class="btn btn-outline-dark mb-2"
-                                    v-if="availableProviders.includes('google')"
+                                    v-if="availableProviders.includes('google') && !(authLinkMode && linkedProviders.includes('google'))"
                                     v-on:click="signInWith('google')">
-                                <i class="ph ph-google-logo me-2"></i> Sign in with Google
+                                <i class="ph ph-google-logo me-2"></i> {{authLinkMode ? $t('label.link') : 'Sign in'}} with Google
                             </button>
                             <button type="button" class="btn btn-outline-dark mb-2"
-                                    v-if="availableProviders.includes('github')"
+                                    v-if="availableProviders.includes('github') && !(authLinkMode && linkedProviders.includes('github'))"
                                     v-on:click="signInWith('github')">
-                                <i class="ph ph-github-logo me-2"></i> Sign in with GitHub
+                                <i class="ph ph-github-logo me-2"></i> {{authLinkMode ? $t('label.link') : 'Sign in'}} with GitHub
                             </button>
                             <button type="button" class="btn btn-outline-dark mb-2"
-                                    v-if="availableProviders.includes('apple')"
+                                    v-if="availableProviders.includes('apple') && !(authLinkMode && linkedProviders.includes('apple'))"
                                     v-on:click="signInWith('apple')">
-                                <i class="ph ph-apple-logo me-2"></i> Sign in with Apple
+                                <i class="ph ph-apple-logo me-2"></i> {{authLinkMode ? $t('label.link') : 'Sign in'}} with Apple
                             </button>
                             <button type="button" class="btn btn-outline-dark mb-2"
-                                    v-if="availableProviders.includes('microsoft')"
+                                    v-if="availableProviders.includes('microsoft') && !(authLinkMode && linkedProviders.includes('microsoft'))"
                                     v-on:click="signInWith('microsoft')">
-                                <i class="ph ph-microsoft-outlook-logo me-2"></i> Sign in with Microsoft
+                                <i class="ph ph-microsoft-outlook-logo me-2"></i> {{authLinkMode ? $t('label.link') : 'Sign in'}} with Microsoft
                             </button>
                         </div>
                     </div>

@@ -20,6 +20,7 @@ export const uiState = {
     emojiSelected : '',
     // Modal flags (replace jQuery .modal('show')/.modal('hide') and Bootstrap data-toggle="modal")
     showAuthModal : false,
+    authLinkMode : false,
     showShareModal : false,
     showEntryModal : false,
     showDeleteModal : false,

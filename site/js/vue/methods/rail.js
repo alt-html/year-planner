@@ -87,6 +87,7 @@ export const railMethods = {
 
     closeAuthModal() {
         this.showAuthModal = false;
+        this.authLinkMode = false;
     },
 
     closeShareModal() {
