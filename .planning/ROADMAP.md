@@ -173,8 +173,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 18-01-PLAN.md — Fix sign-out data preservation, create site/js/auth/ module (AUT-01, AUT-02, AUT-03)
-- [ ] 18-02-PLAN.md — CDI swap, delete old AuthProvider.js, human verification (AUT-04)
+- [x] 18-01-PLAN.md — Fix sign-out data preservation, create site/js/auth/ module (AUT-01, AUT-02, AUT-03)
+- [x] 18-02-PLAN.md — CDI swap, delete old AuthProvider.js, human verification (AUT-04)
 
 ### Phase 19: Account Linking UI
 **Goal**: Users can manage connected OAuth providers from a settings view — linking a second provider, unlinking with a safety guard, and merging planner data across identities without sync duplicates
@@ -185,11 +185,12 @@ Plans:
   2. A user can unlink a provider and is blocked from unlinking their last remaining provider
   3. The connected accounts settings view lists all linked providers with link and unlink actions visible
   4. After identity merge, planner entries carry the merged userKey and do not create duplicate sync records
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
 
 Plans:
-- [ ] 19-01: TBD
+- [ ] 19-01-PLAN.md — Connected accounts UI in settings flyout, unlink flow with last-provider guard (LNK-03, LNK-02)
+- [ ] 19-02-PLAN.md — OAuth link flow, userKey migration after identity merge, human verification (LNK-01, LNK-04)
 
 ## Progress
 
@@ -212,5 +213,5 @@ Plans:
 | 15. CSS Generalisation | v1.4 | 2/2 | Complete | 2026-04-14 |
 | 16. Backend Discovery & Wiring | v1.5 | 2/2 | Complete    | 2026-04-14 |
 | 17. GitHub OAuth Client Flow | v1.5 | 2/2 | Complete    | 2026-04-14 |
-| 18. Auth Module Extraction | v1.5 | 0/2 | Not started | - |
-| 19. Account Linking UI | v1.5 | 0/TBD | Not started | - |
+| 18. Auth Module Extraction | v1.5 | 2/2 | Complete    | 2026-04-15 |
+| 19. Account Linking UI | v1.5 | 0/2 | Not started | - |
