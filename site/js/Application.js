@@ -34,10 +34,14 @@ export default class Application {
 
         // Handle OAuth link callback: detect oauth_link_intent + ?code= + ?state= (LNK-01)
         const linkIntent = localStorage.getItem('oauth_link_intent');
-        const urlCode = urlParam('code');
-        const urlState = urlParam('state');
-        const urlCodeVerifier = urlParam('code_verifier');
-        if (linkIntent && urlCode && urlState) {
+        const urlCodeRaw = urlParam('code');
+        const urlStateRaw = urlParam('state');
+        const urlCodeVerifierRaw = urlParam('code_verifier');
+        if (linkIntent && urlCodeRaw && urlStateRaw) {
+            // Decode URL params — urlParam() returns percent-encoded values
+            const urlCode = decodeURIComponent(urlCodeRaw);
+            const urlState = decodeURIComponent(urlStateRaw);
+            const urlCodeVerifier = urlCodeVerifierRaw ? decodeURIComponent(urlCodeVerifierRaw) : '';
             // Async link completion — sets model.linkedProviders after POST succeeds
             this._pendingLink = this.authProvider.completeLinkCallback(linkIntent, urlCode, urlState, urlCodeVerifier)
                 .then(providers => {
