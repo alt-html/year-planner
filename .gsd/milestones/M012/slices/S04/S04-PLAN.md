@@ -59,7 +59,7 @@
   - Files: `.compose/fragments/head.html`, `site/manifest.json`, `.compose/build.sh`, `site/index.html`, `site/icons/matrix.json`
   - Verify: bash .compose/build.sh && node -e "const fs=require('fs');const index=fs.readFileSync('site/index.html','utf8');['./icons/apple-touch-icon-180x180.png','./icons/favicon-32x32.png','./icons/favicon-16x16.png'].forEach(p=>{if(!index.includes(p))throw new Error('missing index ref '+p)});const m=JSON.parse(fs.readFileSync('site/manifest.json','utf8'));const expected=['./icons/pwa-any-192x192.png','./icons/pwa-any-512x512.png','./icons/pwa-maskable-192x192.png','./icons/pwa-maskable-512x512.png','./icons/pwa-monochrome-192x192.png','./icons/pwa-monochrome-512x512.png'];expected.forEach(src=>{if(!m.icons.some(i=>i.src===src))throw new Error('missing manifest ref '+src)});"
 
-- [ ] **T02: Add live wiring smoke contract and run targeted regression checks** `est:55m`
+- [x] **T02: Add live wiring smoke contract and run targeted regression checks** `est:55m`
   Why: Wiring is only complete when tests prove production references are correct and every referenced icon is reachable. Do: add a dedicated smoke contract for canonical-path assertions, file reachability, purpose coverage, and legacy-path regression guards, then run targeted regressions. Done when: the new smoke spec and compose/export regressions pass together and failures pinpoint exact missing/stale paths.
 
 ## Steps

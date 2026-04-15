@@ -8,8 +8,9 @@ const ROOT = path.resolve(__dirname, '..', '..');
 
 test('compose build produces identical index.html (COMP-02)', () => {
   const before = fs.readFileSync(path.join(ROOT, 'site', 'index.html'), 'utf8');
-  execSync('bash .compose/build.sh', { cwd: ROOT });
-  const after = fs.readFileSync(path.join(ROOT, 'site', 'index.html'), 'utf8');
+  // Run m4 to stdout to avoid writing to site/index.html during parallel test execution
+  // (concurrent writes race with other workers reading the file, causing flaky failures)
+  const after = execSync('m4 -P .compose/index.html.m4', { cwd: ROOT, encoding: 'utf8' });
   expect(after).toBe(before);
 });
 
