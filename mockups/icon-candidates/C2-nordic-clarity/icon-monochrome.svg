@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Year Planner — Nordic Clarity monochrome icon">
+  <title>Year Planner — Nordic Clarity</title>
+
+  <!--
+    C2 · NORDIC CLARITY — MONOCHROME VARIANT
+    Two-tone (dark #1A1D23 on white/light-grey) for clear tinting by the host OS.
+    Colour differentiation (blue today-cell, coral entries) is replaced with
+    structural contrast only so the silhouette survives any single-hue tint.
+    The today cell is the same dark as the header; weekend columns remain a
+    slightly darker grey to preserve the 7-column rhythm as a readable hint.
+  -->
+
+  <!-- White background with rounded corners — matches the any-purpose shape -->
+  <rect width="512" height="512" rx="80" fill="#FFFFFF"/>
+
+  <!-- Bold dark header band -->
+  <rect x="0" y="0" width="512" height="176" rx="80" fill="#1A1D23"/>
+  <rect x="0" y="96" width="512" height="80" fill="#1A1D23"/>
+
+  <!-- Header: white weekday dots — uniform opacity so tinting is consistent -->
+  <circle cx="52"  cy="148" r="6" fill="#FFFFFF"/>
+  <circle cx="120" cy="148" r="6" fill="#FFFFFF"/>
+  <circle cx="188" cy="148" r="6" fill="#FFFFFF"/>
+  <circle cx="256" cy="148" r="6" fill="#FFFFFF"/>
+  <circle cx="324" cy="148" r="6" fill="#FFFFFF"/>
+  <circle cx="392" cy="148" r="6" fill="#FFFFFF"/>
+  <circle cx="460" cy="148" r="6" fill="#FFFFFF"/>
+
+  <!-- Accent line beneath header — same dark as header -->
+  <rect x="0" y="173" width="512" height="3" fill="#1A1D23"/>
+
+  <!-- Row 1 — today cell uses header dark (replaces blue) -->
+  <rect x="22"  y="184" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="90"  y="184" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="158" y="184" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="226" y="184" width="60" height="56" rx="6" fill="#1A1D23"/>
+  <rect x="294" y="184" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="362" y="184" width="60" height="56" rx="6" fill="#D0D3DC"/>
+  <rect x="430" y="184" width="60" height="56" rx="6" fill="#D0D3DC"/>
+
+  <!-- Row 2 -->
+  <rect x="22"  y="248" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="90"  y="248" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="158" y="248" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="226" y="248" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="294" y="248" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="362" y="248" width="60" height="56" rx="6" fill="#D0D3DC"/>
+  <rect x="430" y="248" width="60" height="56" rx="6" fill="#D0D3DC"/>
+
+  <!-- Row 3 -->
+  <rect x="22"  y="312" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="90"  y="312" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="158" y="312" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="226" y="312" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="294" y="312" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="362" y="312" width="60" height="56" rx="6" fill="#D0D3DC"/>
+  <rect x="430" y="312" width="60" height="56" rx="6" fill="#D0D3DC"/>
+
+  <!-- Row 4 -->
+  <rect x="22"  y="376" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="90"  y="376" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="158" y="376" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="226" y="376" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="294" y="376" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="362" y="376" width="60" height="56" rx="6" fill="#D0D3DC"/>
+  <rect x="430" y="376" width="60" height="56" rx="6" fill="#D0D3DC"/>
+
+  <!-- Row 5 (partial) -->
+  <rect x="22"  y="440" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="90"  y="440" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="158" y="440" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="226" y="440" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="294" y="440" width="60" height="56" rx="6" fill="#E8EAF0"/>
+  <rect x="362" y="440" width="60" height="56" rx="6" fill="#D0D3DC"/>
+  <rect x="430" y="440" width="60" height="56" rx="6" fill="#D0D3DC"/>
+</svg>

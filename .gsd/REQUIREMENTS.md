@@ -4,17 +4,6 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Active
 
-### R002 — Choose one of the candidate sets through an explicit visual decision and lock it as the canonical direction.
-- Class: primary-user-loop
-- Status: active
-- Description: Choose one of the candidate sets through an explicit visual decision and lock it as the canonical direction.
-- Why it matters: Implementation and export work must converge on one source-of-truth style.
-- Source: user
-- Primary owning slice: M012/S02
-- Supporting slices: none
-- Validation: mapped
-- Notes: Selection method is pure visual call (no weighted rubric).
-
 ### R003 — Produce platform-ready outputs from canonical sources for web/PWA, iOS, Android, and desktop launch contexts.
 - Class: integration
 - Status: active
@@ -119,6 +108,17 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: none
 - Validation: Three structurally distinct icon/logo candidate systems delivered as canonical SVG masters with complete preview PNG matrix (16/32/180/192/512) and side-by-side gallery ready for S02 winner selection. All 52 smoke tests pass. Manual legibility review confirms all candidates are visually distinguishable at 16×16 and 32×32. Contract enforced via README and automated assertions.
 - Notes: Candidate sets must be coherent systems, not one-off icon sketches.
+
+### R002 — Choose one of the candidate sets through an explicit visual decision and lock it as the canonical direction.
+- Class: primary-user-loop
+- Status: validated
+- Description: Choose one of the candidate sets through an explicit visual decision and lock it as the canonical direction.
+- Why it matters: Implementation and export work must converge on one source-of-truth style.
+- Source: user
+- Primary owning slice: M012/S02
+- Supporting slices: none
+- Validation: C2 Nordic Clarity explicitly selected as canonical winner based on visual review applying tie-breaker criteria (small-size legibility at 16×16, cross-size coherence). Selection locked in canonical.json with full metadata and alternatives.json documenting archived alternatives (C1, C3). Gallery (icon-comparison.html) updated with data-selection-state attributes. Decision D016 recorded. All selection smoke tests pass enforcing winner uniqueness, alternative completeness, and metadata/gallery agreement."
+- Notes: Selection method is pure visual call (no weighted rubric).
 
 ### R100 — Client sync stack was rewritten to jsmdma protocol (`POST /year-planner/sync`) with HLC field revisions.
 - Class: integration
@@ -243,7 +243,7 @@ This file is the explicit capability and coverage contract for the project.
 | MOD-08 |  | deferred | M011/S03 | none | Deferred — no validation required. Vue 3 supports both forms identically; this is a style preference only. |
 | MOD-09 |  | validated | M011/S03 | none | contexts.js registers Api, Application, AuthProvider, Storage, StorageLocal, SyncClient as singletons; StorageRemote removed in M011/S01; all modules correctly wired through CDI. |
 | R001 | core-capability | validated | M012/S01 | none | Three structurally distinct icon/logo candidate systems delivered as canonical SVG masters with complete preview PNG matrix (16/32/180/192/512) and side-by-side gallery ready for S02 winner selection. All 52 smoke tests pass. Manual legibility review confirms all candidates are visually distinguishable at 16×16 and 32×32. Contract enforced via README and automated assertions. |
-| R002 | primary-user-loop | active | M012/S02 | none | mapped |
+| R002 | primary-user-loop | validated | M012/S02 | none | C2 Nordic Clarity explicitly selected as canonical winner based on visual review applying tie-breaker criteria (small-size legibility at 16×16, cross-size coherence). Selection locked in canonical.json with full metadata and alternatives.json documenting archived alternatives (C1, C3). Gallery (icon-comparison.html) updated with data-selection-state attributes. Decision D016 recorded. All selection smoke tests pass enforcing winner uniqueness, alternative completeness, and metadata/gallery agreement." |
 | R003 | integration | active | M012/S03 | M012/S05 | mapped |
 | R004 | launchability | active | M012/S04 | M012/S03 | mapped |
 | R005 | integration | active | M012/S05 | M012/S03 | mapped |
@@ -263,7 +263,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 6
-- Mapped to slices: 6
-- Validated: 13 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R100, R101, R102, SYNC-04, SYNC-05, SYNC-06)
+- Active requirements: 5
+- Mapped to slices: 5
+- Validated: 14 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R100, R101, R102, SYNC-04, SYNC-05, SYNC-06)
 - Unmapped active requirements: 0

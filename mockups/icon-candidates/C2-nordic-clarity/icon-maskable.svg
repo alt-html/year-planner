@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Year Planner — Nordic Clarity maskable icon">
+  <title>Year Planner — Nordic Clarity</title>
+
+  <!--
+    C2 · NORDIC CLARITY — MASKABLE VARIANT
+    Full-bleed background; all visible content is inside the inner-80% safe zone.
+    Safe zone: centre square 409.6×409.6 (translate 51.2, scale 0.8).
+    The OS clips to its own mask shape; the safe zone guarantees the core
+    calendar silhouette survives any circle, rounded-square, or squircle mask.
+  -->
+
+  <!-- Full-bleed background — no rounded corners (OS applies the mask) -->
+  <rect width="512" height="512" fill="#F8F9FB"/>
+
+  <!-- All visible content scaled to 80% and centred within the safe zone -->
+  <g transform="translate(51.2,51.2) scale(0.8)">
+
+    <!-- Bold dark header band — the defining Nordic feature -->
+    <rect x="0" y="0" width="512" height="176" rx="80" fill="#1A1D23"/>
+    <rect x="0" y="96" width="512" height="80" fill="#1A1D23"/>
+
+    <!-- Header: white weekday label dots (7 evenly spaced) -->
+    <circle cx="52"  cy="148" r="6" fill="#FFFFFF" opacity="0.55"/>
+    <circle cx="120" cy="148" r="6" fill="#FFFFFF" opacity="0.55"/>
+    <circle cx="188" cy="148" r="6" fill="#FFFFFF" opacity="0.55"/>
+    <circle cx="256" cy="148" r="6" fill="#FFFFFF" opacity="0.9"/>
+    <circle cx="324" cy="148" r="6" fill="#FFFFFF" opacity="0.55"/>
+    <circle cx="392" cy="148" r="6" fill="#FFFFFF" opacity="0.35"/>
+    <circle cx="460" cy="148" r="6" fill="#FFFFFF" opacity="0.35"/>
+
+    <!-- Thin blue accent line beneath header -->
+    <rect x="0" y="173" width="512" height="3" fill="#2563EB"/>
+
+    <!-- Row 1 — today at col 3 (electric blue) -->
+    <rect x="22"  y="184" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="90"  y="184" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="158" y="184" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="226" y="184" width="60" height="56" rx="6" fill="#2563EB"/>
+    <circle cx="256" cy="212" r="18" fill="#FFFFFF" opacity="0.2"/>
+    <rect x="294" y="184" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="362" y="184" width="60" height="56" rx="6" fill="#F3F4F8" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="430" y="184" width="60" height="56" rx="6" fill="#F3F4F8" stroke="#E8EAF0" stroke-width="1.5"/>
+
+    <!-- Row 2 -->
+    <rect x="22"  y="248" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="90"  y="248" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="158" y="248" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="226" y="248" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="294" y="248" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="362" y="248" width="60" height="56" rx="6" fill="#F3F4F8" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="430" y="248" width="60" height="56" rx="6" fill="#F3F4F8" stroke="#E8EAF0" stroke-width="1.5"/>
+
+    <!-- Row 3 — coral entry on col 1–2 -->
+    <rect x="22"  y="312" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="90"  y="312" width="60" height="56" rx="6" fill="#FFE0E0" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="158" y="312" width="60" height="56" rx="6" fill="#FFE0E0" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="226" y="312" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="294" y="312" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="362" y="312" width="60" height="56" rx="6" fill="#F3F4F8" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="430" y="312" width="60" height="56" rx="6" fill="#F3F4F8" stroke="#E8EAF0" stroke-width="1.5"/>
+
+    <!-- Row 4 -->
+    <rect x="22"  y="376" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="90"  y="376" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="158" y="376" width="60" height="56" rx="6" fill="#D5E5FF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="226" y="376" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="294" y="376" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="362" y="376" width="60" height="56" rx="6" fill="#F3F4F8" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="430" y="376" width="60" height="56" rx="6" fill="#F3F4F8" stroke="#E8EAF0" stroke-width="1.5"/>
+
+    <!-- Row 5 (partial) -->
+    <rect x="22"  y="440" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="90"  y="440" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="158" y="440" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="226" y="440" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="294" y="440" width="60" height="56" rx="6" fill="#FFFFFF" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="362" y="440" width="60" height="56" rx="6" fill="#F3F4F8" stroke="#E8EAF0" stroke-width="1.5"/>
+    <rect x="430" y="440" width="60" height="56" rx="6" fill="#F3F4F8" stroke="#E8EAF0" stroke-width="1.5"/>
+
+  </g>
+</svg>

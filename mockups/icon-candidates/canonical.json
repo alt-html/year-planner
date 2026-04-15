@@ -15,6 +15,8 @@
   },
   "svgSources": {
     "icon": "C2-nordic-clarity/icon.svg",
-    "logo": "C2-nordic-clarity/logo.svg"
+    "logo": "C2-nordic-clarity/logo.svg",
+    "maskable": "C2-nordic-clarity/icon-maskable.svg",
+    "monochrome": "C2-nordic-clarity/icon-monochrome.svg"
   }
 }

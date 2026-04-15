@@ -102,3 +102,16 @@ Before deleting any file from `.compose/fragments/`, confirm it is not reference
 
 ### api.sync(plannerId) fire-and-forget is a deliberate UX contract
 All 9 Vue call sites that replaced synchroniseToLocal/synchroniseToRemote use `this.api.sync(plannerId)` without await. This is intentional — UI must not block on sync. When adding new call sites in future, preserve the fire-and-forget pattern. Adding await anywhere changes the UX contract and could cause visible loading delays on every user interaction.
+
+---
+
+## M012 — Brand/Icon System Overhaul (2026-04-16)
+
+### stripStyleBlocks() helper prevents false-positive attribute selectors in HTML validation
+When validating HTML that contains embedded `<style>` blocks with CSS attribute selectors (e.g. `[data-candidate="C1"]::before`), text-based grep patterns searching for HTML attributes can produce false positives if the CSS content contains identical tokens. The solution: strip all `<style>...</style>` blocks before attribute inspection using `html.replace(/<style[\s\S]*?<\/style>/gi, '')`. This eliminates CSS noise and ensures grep patterns match only actual HTML attributes. Applied in `.tests/smoke/icon-candidates-selection.spec.js` to reliably validate `data-selection-state` attributes across the gallery.
+
+### Metadata-based selection separate from asset folders preserves downstream contracts
+When implementing winner selection in S02, the decision was to represent it as separate metadata files (canonical.json, alternatives.json) rather than moving/renaming the candidate folders themselves. This approach preserves the asset folder contract (C1-ink-paper/, C2-nordic-clarity/, C3-verdant-studio/) that S03 export work depends on. Folders stay in place; metadata points to the winner. This avoids re-normalization or path-translation work in downstream slices and keeps asset references stable.
+
+### Gallery marker consistency across multiple attributes requires test coverage across both metadata and HTML
+The icon-comparison.html gallery uses `data-selection-state` attributes on rationale cards, column headers, and preview cells for styling and semantic consistency. It's easy for gallery markers to drift from the canonical.json/alternatives.json metadata if they're updated separately. Smoke tests must enforce agreement across both surfaces — test that canonical.json candidateId matches the gallery `data-selection-state="winner"` attribute, and that alternatives.json archived candidates match `data-selection-state="archived-alternative"` attributes. Divergence between metadata and gallery would silently break S03 export asset resolution.

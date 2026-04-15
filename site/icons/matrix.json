@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "1.0",
+  "candidateId": "C2",
+  "candidateName": "C2-nordic-clarity",
+  "generatedAt": "2026-04-15T23:19:41Z",
+  "entries": [
+    {
+      "candidateId": "C2",
+      "platform": "web",
+      "purpose": "any",
+      "size": 16,
+      "src": "mockups/icon-candidates/C2-nordic-clarity/icon.svg",
+      "output": "site/icons/favicon-16x16.png"
+    },
+    {
+      "candidateId": "C2",
+      "platform": "web",
+      "purpose": "any",
+      "size": 32,
+      "src": "mockups/icon-candidates/C2-nordic-clarity/icon.svg",
+      "output": "site/icons/favicon-32x32.png"
+    },
+    {
+      "candidateId": "C2",
+      "platform": "ios",
+      "purpose": "any",
+      "size": 180,
+      "src": "mockups/icon-candidates/C2-nordic-clarity/icon.svg",
+      "output": "site/icons/apple-touch-icon-180x180.png"
+    },
+    {
+      "candidateId": "C2",
+      "platform": "pwa",
+      "purpose": "any",
+      "size": 192,
+      "src": "mockups/icon-candidates/C2-nordic-clarity/icon.svg",
+      "output": "site/icons/pwa-any-192x192.png"
+    },
+    {
+      "candidateId": "C2",
+      "platform": "pwa",
+      "purpose": "any",
+      "size": 512,
+      "src": "mockups/icon-candidates/C2-nordic-clarity/icon.svg",
+      "output": "site/icons/pwa-any-512x512.png"
+    },
+    {
+      "candidateId": "C2",
+      "platform": "pwa",
+      "purpose": "maskable",
+      "size": 192,
+      "src": "mockups/icon-candidates/C2-nordic-clarity/icon-maskable.svg",
+      "output": "site/icons/pwa-maskable-192x192.png"
+    },
+    {
+      "candidateId": "C2",
+      "platform": "pwa",
+      "purpose": "maskable",
+      "size": 512,
+      "src": "mockups/icon-candidates/C2-nordic-clarity/icon-maskable.svg",
+      "output": "site/icons/pwa-maskable-512x512.png"
+    },
+    {
+      "candidateId": "C2",
+      "platform": "pwa",
+      "purpose": "monochrome",
+      "size": 192,
+      "src": "mockups/icon-candidates/C2-nordic-clarity/icon-monochrome.svg",
+      "output": "site/icons/pwa-monochrome-192x192.png"
+    },
+    {
+      "candidateId": "C2",
+      "platform": "pwa",
+      "purpose": "monochrome",
+      "size": 512,
+      "src": "mockups/icon-candidates/C2-nordic-clarity/icon-monochrome.svg",
+      "output": "site/icons/pwa-monochrome-512x512.png"
+    }
+  ]
+}
