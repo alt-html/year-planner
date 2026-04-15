@@ -124,7 +124,7 @@ Plans:
 
 </details>
 
-### 🚧 v1.5 GitHub OAuth & Account Linking (In Progress)
+### v1.5 GitHub OAuth & Account Linking (In Progress)
 
 **Milestone Goal:** End-to-end GitHub sign-in with real OAuth flow, account linking/unlinking UI, and a reusable auth module — including verifying and wiring the jsmdma backend to support GitHub auth locally.
 
@@ -158,8 +158,8 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 17-01-PLAN.md — GitHub sign-in method, PKCE storage fix, callback handler fix, auth modal template updates
-- [ ] 17-02-PLAN.md — E2E test coverage for all GHO requirements and human verification
+- [x] 17-01-PLAN.md — GitHub sign-in method, PKCE storage fix, callback handler fix, auth modal template updates
+- [x] 17-02-PLAN.md — E2E test coverage for all GHO requirements and human verification
 
 ### Phase 18: Auth Module Extraction
 **Goal**: Auth code lives in a standalone site/js/auth/ folder with an app-agnostic API; old AuthProvider.js is deleted; all consumers rewired through CDI; sign-out preserves unsynced planner data
@@ -170,10 +170,11 @@ Plans:
   2. Google OAuth provider is wired through site/js/auth/ alongside GitHub using the same abstraction
   3. Signing out clears credentials (tok key) but leaves planner data (plnr:* keys) intact in localStorage
   4. Old AuthProvider.js does not exist; contexts.js, Api.js, and Application.js reference the new auth module only
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 18-01: TBD
+- [ ] 18-01-PLAN.md — Fix sign-out data preservation, create site/js/auth/ module (AUT-01, AUT-02, AUT-03)
+- [ ] 18-02-PLAN.md — CDI swap, delete old AuthProvider.js, human verification (AUT-04)
 
 ### Phase 19: Account Linking UI
 **Goal**: Users can manage connected OAuth providers from a settings view — linking a second provider, unlinking with a safety guard, and merging planner data across identities without sync duplicates
@@ -210,6 +211,6 @@ Plans:
 | 14. Dark Mode BS5 | v1.4 | 1/1 | Complete | 2026-04-14 |
 | 15. CSS Generalisation | v1.4 | 2/2 | Complete | 2026-04-14 |
 | 16. Backend Discovery & Wiring | v1.5 | 2/2 | Complete    | 2026-04-14 |
-| 17. GitHub OAuth Client Flow | v1.5 | 0/2 | Not started | - |
-| 18. Auth Module Extraction | v1.5 | 0/TBD | Not started | - |
+| 17. GitHub OAuth Client Flow | v1.5 | 2/2 | Complete    | 2026-04-14 |
+| 18. Auth Module Extraction | v1.5 | 0/2 | Not started | - |
 | 19. Account Linking UI | v1.5 | 0/TBD | Not started | - |
