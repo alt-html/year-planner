@@ -16,7 +16,7 @@ export default new Context([
     new Singleton(PlannerStore),
     new Singleton(Api),
     new Singleton(Application),
-    new Singleton(AuthService),
+    new Singleton({ Reference: AuthService, name: 'authProvider' }),
     new Singleton(Storage),
     new Singleton(StorageLocal),
     new Singleton(SyncScheduler),
