@@ -66,7 +66,7 @@ Must-haves
   - Files: `mockups/icon-candidates/canonical.json`, `mockups/icon-candidates/alternatives.json`, `mockups/icon-comparison.html`, `.gsd/DECISIONS.md`
   - Verify: test -f mockups/icon-candidates/canonical.json && test -f mockups/icon-candidates/alternatives.json && rg -n '"candidateId"|"archived-alternative"|data-selection-state|winner' mockups/icon-candidates/canonical.json mockups/icon-candidates/alternatives.json mockups/icon-comparison.html
 
-- [ ] **T02: Reconcile contract docs and enforce winner-lock invariants with smoke tests** `est:40m`
+- [x] **T02: Reconcile contract docs and enforce winner-lock invariants with smoke tests** `est:40m`
   Why this task exists
 - Contract drift in `mockups/icon-candidates/README.md` and missing winner-lock assertions would let S03 consume ambiguous inputs.
 
