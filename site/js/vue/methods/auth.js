@@ -22,7 +22,7 @@ export const authMethods = {
         this.authProvider.signOut();
         this.uuid     = '';
         this.signedin = false;
-        this.storageLocal.wipe();
+        // wipe() removed — planner data must survive sign-out (AUT-03)
     },
 
     clearModalAlert() {

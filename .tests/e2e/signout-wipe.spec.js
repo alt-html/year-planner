@@ -1,10 +1,10 @@
 // .tests/e2e/signout-wipe.spec.js
-// Verifies sign-out clears all auth, planner, sync, prefs, and identity keys,
-// while preserving the `dev` (device UUID) key.
+// Verifies sign-out clears all auth credentials but preserves planner data
+// in localStorage — asserting the offline-first contract (AUT-03).
 //
 // Approach: seed localStorage with all key types, load the app (auth_token makes
-// it look signed-in), open the settings dropdown, click "Sign Out…", then assert
-// the storage state after the page redirects to origin.
+// it look signed-in), call window.__testSignout(), wait for auth_token to be
+// removed, then assert storage state without any page navigation.
 
 const { test, expect } = require('../fixtures/cdn');
 
@@ -17,9 +17,7 @@ function makeFakeJwt(sub = 'test-uuid') {
          b64u({ sub, iat: now, iat_session: now }) + '.fakesig';
 }
 
-test('sign-out clears all localStorage except dev key', async ({ page }) => {
-  // addInitScript runs on every navigation (including the post-signout redirect).
-  // Guard with a sentinel so we only seed on the first load.
+test('sign-out clears auth credentials but preserves planner data', async ({ page }) => {
   await page.addInitScript((token) => {
     window.__e2eEnabled = true;
     if (localStorage.getItem('__test_seeded')) return;
@@ -35,6 +33,9 @@ test('sign-out clears all localStorage except dev key', async ({ page }) => {
     localStorage.setItem('base:abc-123', '{}');
     localStorage.setItem('sync:abc-123', '0000000000000-000000-00000000');
     localStorage.setItem('anon_uid', 'anon-device-uuid');
+    localStorage.setItem('oauth_intended_provider', 'google');
+    localStorage.setItem('oauth_state', 'some-state-value');
+    localStorage.setItem('oauth_code_verifier', 'some-verifier-value');
   }, makeFakeJwt());
 
   // Stub sync so it doesn't fail
@@ -47,18 +48,17 @@ test('sign-out clears all localStorage except dev key', async ({ page }) => {
   await page.waitForSelector('[data-app-ready]');
 
   // Call signout() via the window.__testSignout hook exposed by main.js.
-  // signout() → authProvider.signOut() (clears auth_token/auth_provider/auth_time)
-  //           → storageLocal.wipe()   (clears plnr:*, rev:*, base:*, sync:*, prefs:*, ids, anon_uid)
-  //           → window.location.href = window.location.origin (triggers navigation)
-  await Promise.all([
-    page.waitForURL('http://localhost:8080/', { timeout: 5000 }),
-    page.evaluate(() => {
-      if (typeof window.__testSignout !== 'function') {
-        throw new Error('window.__testSignout not available — check main.js test hook');
-      }
-      window.__testSignout();
-    }),
-  ]);
+  // signout() → authProvider.signOut() (clears auth_token/auth_provider/auth_time + oauth keys)
+  //           → wipe() is NOT called — planner data survives (AUT-03)
+  await page.evaluate(() => {
+    if (typeof window.__testSignout !== 'function') {
+      throw new Error('window.__testSignout not available — check main.js test hook');
+    }
+    window.__testSignout();
+  });
+
+  // Wait for sign-out to complete by watching for auth_token removal
+  await page.waitForFunction(() => localStorage.getItem('auth_token') === null, { timeout: 5000 });
 
   const storage = await page.evaluate(() => {
     const result = {};
@@ -73,20 +73,25 @@ test('sign-out clears all localStorage except dev key', async ({ page }) => {
   expect(storage['auth_token']).toBeUndefined();
   expect(storage['auth_provider']).toBeUndefined();
   expect(storage['auth_time']).toBeUndefined();
-  // planner/sync keys must be gone
-  expect(storage['plnr:abc-123']).toBeUndefined();
-  expect(storage['rev:abc-123']).toBeUndefined();
-  expect(storage['base:abc-123']).toBeUndefined();
-  expect(storage['sync:abc-123']).toBeUndefined();
-  // prefs must be gone
-  expect(storage['prefs:12345']).toBeUndefined();
-  // ids: wipe() removes it. The app may recreate it on boot as a fresh anonymous
-  // identity (object map, no provider field). Assert the seeded google provider
-  // identity is no longer present — the raw string must not contain "google".
-  const idsRaw = storage['ids'] || '';
-  expect(idsRaw).not.toContain('google');
-  // anon_uid: wipe() removes the seeded value. App may recreate via DeviceSession.
-  expect(storage['anon_uid']).not.toBe('anon-device-uuid');
-  // dev key MUST survive
+
+  // OAuth transient keys must be gone
+  expect(storage['oauth_intended_provider']).toBeUndefined();
+  expect(storage['oauth_state']).toBeUndefined();
+  expect(storage['oauth_code_verifier']).toBeUndefined();
+
+  // planner keys MUST survive (AUT-03: offline-first contract)
+  expect(storage['plnr:abc-123']).toBeDefined();
+  expect(storage['rev:abc-123']).toBeDefined();
+  expect(storage['base:abc-123']).toBeDefined();
+  expect(storage['sync:abc-123']).toBeDefined();
+
+  // prefs MUST survive
+  expect(storage['prefs:12345']).toBeDefined();
+
+  // identity data MUST survive
+  expect(storage['ids']).toBeDefined();
+  expect(storage['anon_uid']).toBe('anon-device-uuid');
+
+  // device UUID MUST survive
   expect(storage['dev']).toBe('stable-device-uuid');
 });
