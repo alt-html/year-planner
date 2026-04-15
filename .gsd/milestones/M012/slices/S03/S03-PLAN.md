@@ -70,7 +70,7 @@
   - Files: `scripts/export-canonical-icon-matrix.sh`, `mockups/icon-candidates/canonical.json`, `mockups/icon-candidates/C2-nordic-clarity/icon-maskable.svg`, `mockups/icon-candidates/C2-nordic-clarity/icon-monochrome.svg`, `site/icons/matrix.json`, `site/icons/pwa-any-192x192.png`
   - Verify: bash scripts/export-canonical-icon-matrix.sh && test -f site/icons/matrix.json && rg -n '"purpose"|"output"|"candidateId"' site/icons/matrix.json
 
-- [ ] **T02: Add matrix smoke contract and run regression verification** `est:45m`
+- [x] **T02: Add matrix smoke contract and run regression verification** `est:45m`
   - Why: This slice is only done when the matrix is mechanically provable and upstream candidate contracts remain intact.
 
 ## Steps

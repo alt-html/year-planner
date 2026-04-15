@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-15T23:11:18Z | Files: 164 | Described: 0/164
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T23:11:18Z","fingerprint":"c5606feb7da0feff620d7fc375266bfac3986022","fileCount":164,"truncated":false} -->
+Generated: 2026-04-15T23:20:19Z | Files: 166 | Described: 0/166
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T23:20:19Z","fingerprint":"d8d94067ed9ba1e243cf2f57856c7b427800bce9","fileCount":166,"truncated":false} -->
 
 ### (root)/
 - `.gitignore`
@@ -156,6 +156,7 @@ Generated: 2026-04-15T23:11:18Z | Files: 164 | Described: 0/164
 - `mockups/icon-candidates/README.md`
 
 ### scripts/
+- `scripts/export-canonical-icon-matrix.sh`
 - `scripts/export-icon-candidates.sh`
 
 ### site/
@@ -170,6 +171,9 @@ Generated: 2026-04-15T23:11:18Z | Files: 164 | Described: 0/164
 - `site/css/sqpaymentform.css`
 - `site/css/typeaheadjs.css`
 - `site/css/yp-dark.css`
+
+### site/icons/
+- `site/icons/matrix.json`
 
 ### site/js/
 - `site/js/Application.js`
