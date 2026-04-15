@@ -3,4 +3,5 @@ export const authState = {
     registered : false,
     signedin : false,
     availableProviders : [],
+    linkedProviders : [],
 }

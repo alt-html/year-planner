@@ -83,6 +83,10 @@ export default class Application {
         this.model.signedin = this.storageLocal.signedin(),
         this.model.availableProviders = this.authProvider?.getAvailableProviders() || [];
 
+        // Populate linked providers from JWT payload (LNK-03)
+        const payload = ClientAuthSession.getPayload();
+        this.model.linkedProviders = payload?.providers ?? [];
+
         this.logger?.debug?.(`[Application.init] uid=${this.model.uid} uuid=${this.model.uuid} year=${this.model.year} signedin=${this.model.signedin} registered=${this.model.registered} url=${window.location.href}`);
 
         // Pre-set canonical URL (?uid=&year=) via replaceState so refresh() doesn't do a
