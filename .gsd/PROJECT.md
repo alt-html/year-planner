@@ -16,7 +16,10 @@ A planner that works immediately offline with no account friction, while still s
 - Vue 3 app mounted through CDI boot wiring (`@alt-javascript/boot-vue`)
 - localStorage M009 schema and jsmdma/HLC sync contract implemented
 - M011 completed: sync rewrite + MOD cleanup completed and verified in Playwright
-- Current branding/icon assets are functional but minimal and visually weak for platform install surfaces (browser/mobile/desktop)
+- M012 in progress: Branding/icon system overhaul
+  - S01, S02 completed: Three candidate icon systems designed and evaluated; C2 (Nordic Clarity) selected as canonical winner
+  - S03 completed: Cross-platform export matrix generated (9 PNG variants for web/PWA/iOS/Android with any/maskable/monochrome purposes); matrix.json export contract ready for S04 wiring
+  - S04–S06 pending: Production wiring, desktop packaging, and verification
 
 ## Architecture / Key Patterns
 

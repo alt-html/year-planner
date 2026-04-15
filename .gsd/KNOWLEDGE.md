@@ -115,3 +115,16 @@ When implementing winner selection in S02, the decision was to represent it as s
 
 ### Gallery marker consistency across multiple attributes requires test coverage across both metadata and HTML
 The icon-comparison.html gallery uses `data-selection-state` attributes on rationale cards, column headers, and preview cells for styling and semantic consistency. It's easy for gallery markers to drift from the canonical.json/alternatives.json metadata if they're updated separately. Smoke tests must enforce agreement across both surfaces — test that canonical.json candidateId matches the gallery `data-selection-state="winner"` attribute, and that alternatives.json archived candidates match `data-selection-state="archived-alternative"` attributes. Divergence between metadata and gallery would silently break S03 export asset resolution.
+
+---
+
+## M012 — Brand/Icon System Overhaul, S03 Export (2026-04-16)
+
+### Purpose-specific SVG sources with svgSources metadata preserves export flexibility
+S03 introduced purpose-specific SVG variants (icon.svg, icon-maskable.svg, icon-monochrome.svg) alongside the main source. These are explicitly listed in canonical.json as `svgSources: { "any": "icon.svg", "maskable": "icon-maskable.svg", "monochrome": "icon-monochrome.svg" }`. This metadata-driven approach lets the exporter render different purpose variants from different source files without hardcoding filename assumptions. If future revisions need different SVG content for maskable (e.g., redesigned safe-zone layout) or monochrome (e.g., new silhouette), only the SVG files and svgSources metadata need updating — the exporter script remains unchanged. Do NOT collapse purpose variants into a single source SVG with CSS display:none rules, as that makes per-purpose customization invisible and breaks the export contract.
+
+### Export contract matrix.json enables deterministic asset reference in downstream slices
+S03 emits site/icons/matrix.json as the canonical source of truth for all exported asset locations, purposes, platforms, and source SVG paths. S04 production wiring and S05 desktop packaging both read from this matrix rather than recomputing export logic. The matrix is immutable once generated (it's derived from canonical.json only) and provides a single inspection surface for understanding which assets exist, their purpose/platform/size metadata, and where to find them in the codebase. When future slices need icon assets, they should query matrix.json first rather than hardcoding paths. This centralizes the export contract and prevents path divergence.
+
+### Relative path safety validation in exporter prevents traversal attacks
+The exporter validates that svgSources paths in canonical.json are relative (no `../`, no absolute paths starting with `/`) before joining them with the CANDIDATES_DIR base path. This prevents path-traversal attacks where a malicious canonical.json could force reads from outside the candidate folder hierarchy. Always validate untrusted path inputs before filesystem operations, even when they come from repo-local JSON files that are mutable by developers.
