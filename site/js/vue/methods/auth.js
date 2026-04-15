@@ -25,6 +25,19 @@ export const authMethods = {
         // wipe() removed — planner data must survive sign-out (AUT-03)
     },
 
+    async doUnlinkProvider(provider) {
+        try {
+            const remaining = await this.authProvider.unlinkProvider(provider);
+            this.linkedProviders = remaining;
+        } catch (err) {
+            if (err.message === 'error.lastProvider') {
+                this.modalError = this.$t('label.lastProvider');
+            } else {
+                this.modalError = err.message || 'error.general';
+            }
+        }
+    },
+
     clearModalAlert() {
         this.modalError       = '';
         this.modalErrorTarget = null;

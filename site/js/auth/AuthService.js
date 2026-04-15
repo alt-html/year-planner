@@ -32,6 +32,22 @@ export default class AuthService {
         return this._oauthClient().signIn(provider);
     }
 
+    // Unlink an OAuth provider from the current account (LNK-02)
+    // Returns remaining provider names array, e.g. ['google']
+    // Throws on 409 (last provider) or other HTTP errors
+    async unlinkProvider(provider) {
+        const token = this.getToken();
+        if (!token) throw new Error('Not signed in');
+        const res = await fetch(`${this._getApiUrl()}auth/providers/${provider}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (res.status === 409) throw new Error('error.lastProvider');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const { providers } = await res.json();
+        return providers.map(p => p.provider);
+    }
+
     // Sign out — clear auth credentials; planner data is preserved (AUT-03)
     signOut() {
         ClientAuthSession.clear();
