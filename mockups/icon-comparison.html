@@ -293,6 +293,47 @@ body {
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.10);
 }
+
+/* ── Selection state badges ─────────────────────────────────────────────────── */
+.selection-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-top: 6px;
+}
+[data-selection-state="winner"] .selection-badge {
+  background: #2563EB;
+  color: #FFF;
+}
+[data-selection-state="archived-alternative"] .selection-badge {
+  background: #E5E2DC;
+  color: #6B7280;
+}
+/* Highlight the winning card with a stronger border */
+.rationale-card[data-selection-state="winner"] {
+  border-color: #2563EB;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.18);
+}
+/* Dim archived cards slightly */
+.rationale-card[data-selection-state="archived-alternative"] {
+  opacity: 0.72;
+}
+/* Highlight winning column header */
+.gh-cand[data-selection-state="winner"] {
+  background: #1A3A6B;
+}
+/* Dim archived column headers */
+.gh-cand[data-selection-state="archived-alternative"] {
+  opacity: 0.72;
+}
+/* Dim archived preview cells */
+.preview-cell[data-selection-state="archived-alternative"] {
+  opacity: 0.65;
+}
 </style>
 </head>
 <body>
@@ -300,21 +341,21 @@ body {
 <!-- ── Page header ─────────────────────────────────────────────────────────── -->
 <header class="page-header">
   <h1>Icon Candidate Gallery</h1>
-  <p class="subtitle">Year Planner · S01 deliverable — three candidate systems across five surfaces for visual winner selection in S02</p>
+  <p class="subtitle">Year Planner · S02 winner selection complete — <strong>C2 Nordic Clarity</strong> is the canonical winner</p>
   <div class="instructions">
-    <strong>Review instructions:</strong> Evaluate each candidate column across all rows.
-    Tiny sizes (16px, 32px) test silhouette readability in browser tabs and taskbars.
-    Large sizes (180px, 192px, 512px) test aesthetic quality on home screens and splash screens.
-    Record your preferred candidate and rationale in S02.
+    <strong>Selection complete (S02):</strong> C2 Nordic Clarity selected as canonical winner based on small-size legibility (16px dark/white/blue silhouette) and cross-size coherence.
+    C1 and C3 are archived alternatives. Selection is locked in
+    <code>mockups/icon-candidates/canonical.json</code> and <code>alternatives.json</code>.
   </div>
 </header>
 
 <!-- ── Rationale cards ─────────────────────────────────────────────────────── -->
 <section class="rationale" aria-label="Candidate design directions">
 
-  <article class="rationale-card" data-candidate="C1">
+  <article class="rationale-card" data-candidate="C1" data-selection-state="archived-alternative">
     <div class="card-id">C1 · Candidate 1</div>
     <div class="card-name">Ink &amp; Paper</div>
+    <span class="selection-badge">Archived alternative</span>
     <p class="card-direction">Warm editorial — analog calendar feel, approachable and familiar</p>
     <ul class="card-traits">
       <li>Terracotta header band (#D4663A) with parchment ground (#FAF7F2)</li>
@@ -327,9 +368,10 @@ body {
     </div>
   </article>
 
-  <article class="rationale-card" data-candidate="C2">
+  <article class="rationale-card" data-candidate="C2" data-selection-state="winner">
     <div class="card-id">C2 · Candidate 2</div>
     <div class="card-name">Nordic Clarity</div>
+    <span class="selection-badge">Winner ✓</span>
     <p class="card-direction">Crisp monochrome — bold dark header, white grid, single electric-blue signal</p>
     <ul class="card-traits">
       <li>Dark-slate header (#1A1D23) occupies top 35% — bold contrast at tiny sizes</li>
@@ -342,9 +384,10 @@ body {
     </div>
   </article>
 
-  <article class="rationale-card" data-candidate="C3">
+  <article class="rationale-card" data-candidate="C3" data-selection-state="archived-alternative">
     <div class="card-id">C3 · Candidate 3</div>
     <div class="card-name">Verdant Studio</div>
+    <span class="selection-badge">Archived alternative</span>
     <p class="card-direction">Organic arc — deep green ground, year-cycle motif, nature-forward</p>
     <ul class="card-traits">
       <li>Deep forest green (#2D5A3D) rounded square — warm and distinctive ground</li>
@@ -366,13 +409,14 @@ body {
     <!-- Column headers -->
     <div class="grid-header">
       <div class="gh-size">Size · Surface</div>
-      <div class="gh-cand" data-candidate="C1">
+      <div class="gh-cand" data-candidate="C1" data-selection-state="archived-alternative">
         <span class="cand-label-id">C1</span>Ink &amp; Paper
       </div>
-      <div class="gh-cand" data-candidate="C2">
+      <div class="gh-cand" data-candidate="C2" data-selection-state="winner">
         <span class="cand-label-id">C2</span>Nordic Clarity
+        <span class="selection-badge" style="display:block;margin-top:4px;font-size:0.55rem;">Winner ✓</span>
       </div>
-      <div class="gh-cand" data-candidate="C3">
+      <div class="gh-cand" data-candidate="C3" data-selection-state="archived-alternative">
         <span class="cand-label-id">C3</span>Verdant Studio
       </div>
     </div>
@@ -399,7 +443,7 @@ body {
         <span class="row-label-px">16×16</span>
         <span class="row-label-ctx">Favicon · browser tab</span>
       </div>
-      <div class="preview-cell" data-candidate="C1" data-size="16x16">
+      <div class="preview-cell" data-candidate="C1" data-selection-state="archived-alternative" data-size="16x16">
         <div class="tiny-row">
           <div class="checker-bg">
             <img src="icon-candidates/C1-ink-paper/preview-16.png"
@@ -415,7 +459,7 @@ body {
         </div>
         <div class="zoom-label">1× · 3× zoom</div>
       </div>
-      <div class="preview-cell" data-candidate="C2" data-size="16x16">
+      <div class="preview-cell" data-candidate="C2" data-selection-state="winner" data-size="16x16">
         <div class="tiny-row">
           <div class="checker-bg">
             <img src="icon-candidates/C2-nordic-clarity/preview-16.png"
@@ -431,7 +475,7 @@ body {
         </div>
         <div class="zoom-label">1× · 3× zoom</div>
       </div>
-      <div class="preview-cell" data-candidate="C3" data-size="16x16">
+      <div class="preview-cell" data-candidate="C3" data-selection-state="archived-alternative" data-size="16x16">
         <div class="tiny-row">
           <div class="checker-bg">
             <img src="icon-candidates/C3-verdant-studio/preview-16.png"
@@ -455,7 +499,7 @@ body {
         <span class="row-label-px">32×32</span>
         <span class="row-label-ctx">Favicon HiDPI · taskbar</span>
       </div>
-      <div class="preview-cell" data-candidate="C1" data-size="32x32">
+      <div class="preview-cell" data-candidate="C1" data-selection-state="archived-alternative" data-size="32x32">
         <div class="tiny-row">
           <div class="checker-bg">
             <img src="icon-candidates/C1-ink-paper/preview-32.png"
@@ -471,7 +515,7 @@ body {
         </div>
         <div class="zoom-label">1× · 2× zoom</div>
       </div>
-      <div class="preview-cell" data-candidate="C2" data-size="32x32">
+      <div class="preview-cell" data-candidate="C2" data-selection-state="winner" data-size="32x32">
         <div class="tiny-row">
           <div class="checker-bg">
             <img src="icon-candidates/C2-nordic-clarity/preview-32.png"
@@ -487,7 +531,7 @@ body {
         </div>
         <div class="zoom-label">1× · 2× zoom</div>
       </div>
-      <div class="preview-cell" data-candidate="C3" data-size="32x32">
+      <div class="preview-cell" data-candidate="C3" data-selection-state="archived-alternative" data-size="32x32">
         <div class="tiny-row">
           <div class="checker-bg">
             <img src="icon-candidates/C3-verdant-studio/preview-32.png"
@@ -511,21 +555,21 @@ body {
         <span class="row-label-px">180×180</span>
         <span class="row-label-ctx">Apple Touch Icon · iOS</span>
       </div>
-      <div class="preview-cell" data-candidate="C1" data-size="180x180">
+      <div class="preview-cell" data-candidate="C1" data-selection-state="archived-alternative" data-size="180x180">
         <div class="large-preview">
           <img src="icon-candidates/C1-ink-paper/preview-180.png"
                style="width:120px;height:120px" alt="C1 at 180×180"
                onerror="this.closest('.preview-cell').classList.add('img-broken')">
         </div>
       </div>
-      <div class="preview-cell" data-candidate="C2" data-size="180x180">
+      <div class="preview-cell" data-candidate="C2" data-selection-state="winner" data-size="180x180">
         <div class="large-preview">
           <img src="icon-candidates/C2-nordic-clarity/preview-180.png"
                style="width:120px;height:120px" alt="C2 at 180×180"
                onerror="this.closest('.preview-cell').classList.add('img-broken')">
         </div>
       </div>
-      <div class="preview-cell" data-candidate="C3" data-size="180x180">
+      <div class="preview-cell" data-candidate="C3" data-selection-state="archived-alternative" data-size="180x180">
         <div class="large-preview">
           <img src="icon-candidates/C3-verdant-studio/preview-180.png"
                style="width:120px;height:120px" alt="C3 at 180×180"
@@ -540,21 +584,21 @@ body {
         <span class="row-label-px">192×192</span>
         <span class="row-label-ctx">PWA manifest · Android</span>
       </div>
-      <div class="preview-cell" data-candidate="C1" data-size="192x192">
+      <div class="preview-cell" data-candidate="C1" data-selection-state="archived-alternative" data-size="192x192">
         <div class="large-preview">
           <img src="icon-candidates/C1-ink-paper/preview-192.png"
                style="width:128px;height:128px" alt="C1 at 192×192"
                onerror="this.closest('.preview-cell').classList.add('img-broken')">
         </div>
       </div>
-      <div class="preview-cell" data-candidate="C2" data-size="192x192">
+      <div class="preview-cell" data-candidate="C2" data-selection-state="winner" data-size="192x192">
         <div class="large-preview">
           <img src="icon-candidates/C2-nordic-clarity/preview-192.png"
                style="width:128px;height:128px" alt="C2 at 192×192"
                onerror="this.closest('.preview-cell').classList.add('img-broken')">
         </div>
       </div>
-      <div class="preview-cell" data-candidate="C3" data-size="192x192">
+      <div class="preview-cell" data-candidate="C3" data-selection-state="archived-alternative" data-size="192x192">
         <div class="large-preview">
           <img src="icon-candidates/C3-verdant-studio/preview-192.png"
                style="width:128px;height:128px" alt="C3 at 192×192"
@@ -569,21 +613,21 @@ body {
         <span class="row-label-px">512×512</span>
         <span class="row-label-ctx">PWA splash · high-res</span>
       </div>
-      <div class="preview-cell" data-candidate="C1" data-size="512x512">
+      <div class="preview-cell" data-candidate="C1" data-selection-state="archived-alternative" data-size="512x512">
         <div class="large-preview">
           <img src="icon-candidates/C1-ink-paper/preview-512.png"
                style="width:192px;height:192px" alt="C1 at 512×512"
                onerror="this.closest('.preview-cell').classList.add('img-broken')">
         </div>
       </div>
-      <div class="preview-cell" data-candidate="C2" data-size="512x512">
+      <div class="preview-cell" data-candidate="C2" data-selection-state="winner" data-size="512x512">
         <div class="large-preview">
           <img src="icon-candidates/C2-nordic-clarity/preview-512.png"
                style="width:192px;height:192px" alt="C2 at 512×512"
                onerror="this.closest('.preview-cell').classList.add('img-broken')">
         </div>
       </div>
-      <div class="preview-cell" data-candidate="C3" data-size="512x512">
+      <div class="preview-cell" data-candidate="C3" data-selection-state="archived-alternative" data-size="512x512">
         <div class="large-preview">
           <img src="icon-candidates/C3-verdant-studio/preview-512.png"
                style="width:192px;height:192px" alt="C3 at 512×512"

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0",
+  "alternatives": [
+    {
+      "selectionStatus": "archived-alternative",
+      "candidateId": "C1",
+      "candidateName": "Ink & Paper",
+      "folder": "C1-ink-paper",
+      "archiveRationale": "Strong editorial warmth and distinctive warm palette, but the 7×5 grid with ring-binding pins loses fidelity at 16×16 — too many competing elements at favicon size.",
+      "previews": {
+        "16":  "C1-ink-paper/preview-16.png",
+        "32":  "C1-ink-paper/preview-32.png",
+        "180": "C1-ink-paper/preview-180.png",
+        "192": "C1-ink-paper/preview-192.png",
+        "512": "C1-ink-paper/preview-512.png"
+      },
+      "svgSources": {
+        "icon": "C1-ink-paper/icon.svg",
+        "logo": "C1-ink-paper/logo.svg"
+      }
+    },
+    {
+      "selectionStatus": "archived-alternative",
+      "candidateId": "C3",
+      "candidateName": "Verdant Studio",
+      "folder": "C3-verdant-studio",
+      "archiveRationale": "Compelling organic arc motif at 180px and above, but at 16×16 the arc collapses to a near-invisible mark on a green background — the calendar metaphor is lost at favicon size.",
+      "previews": {
+        "16":  "C3-verdant-studio/preview-16.png",
+        "32":  "C3-verdant-studio/preview-32.png",
+        "180": "C3-verdant-studio/preview-180.png",
+        "192": "C3-verdant-studio/preview-192.png",
+        "512": "C3-verdant-studio/preview-512.png"
+      },
+      "svgSources": {
+        "icon": "C3-verdant-studio/icon.svg",
+        "logo": "C3-verdant-studio/logo.svg"
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "selectionStatus": "winner",
+  "candidateId": "C2",
+  "candidateName": "Nordic Clarity",
+  "selectionDate": "2026-04-16",
+  "selectionRationale": "Best small-size legibility: dark header / white grid / single blue today-cell creates an instantly distinct 3-zone silhouette at 16×16 that survives every target surface. Cross-size coherence is highest — the same bold contrast pattern reads identically from browser favicon through PWA splash. C1 loses detail at tiny sizes; C3's arc motif loses the calendar metaphor below 32px.",
+  "folder": "C2-nordic-clarity",
+  "previews": {
+    "16":  "C2-nordic-clarity/preview-16.png",
+    "32":  "C2-nordic-clarity/preview-32.png",
+    "180": "C2-nordic-clarity/preview-180.png",
+    "192": "C2-nordic-clarity/preview-192.png",
+    "512": "C2-nordic-clarity/preview-512.png"
+  },
+  "svgSources": {
+    "icon": "C2-nordic-clarity/icon.svg",
+    "logo": "C2-nordic-clarity/logo.svg"
+  }
+}

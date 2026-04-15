@@ -6,8 +6,8 @@ Prepare 2–3 UI icon/logo mock sets, choose a stronger set, then ship live wiri
 ## Slice Overview
 | ID | Slice | Risk | Depends | Done | After this |
 |----|-------|------|---------|------|------------|
-| S01 | S01 | high | — | ⬜ | A side-by-side candidate gallery shows 2–3 complete icon/logo systems usable across small and large surfaces. |
-| S02 | Winner Selection and Canonical Source Lock | medium | S01 | ⬜ | One winning set is explicitly selected and marked canonical; non-selected sets are archived as alternatives. |
+| S01 | S01 | high | — | ✅ | A side-by-side candidate gallery shows 2–3 complete icon/logo systems usable across small and large surfaces. |
+| S02 | S02 | medium | — | ⬜ | One winning set is explicitly selected and marked canonical; non-selected sets are archived as alternatives. |
 | S03 | Cross-Platform Export Matrix | high | S02 | ⬜ | Exported asset matrix exists for web/PWA, iOS, Android any/maskable/monochrome requirements. |
 | S04 | Live Web/PWA Wiring | medium | S03 | ⬜ | Year Planner serves and references the new selected assets in index.html and manifest.json. |
 | S05 | Native Desktop Packaging Asset Pack | medium | S03 | ⬜ | `.ico` and `.icns` files are produced and validated for future Windows/macOS Electron bundling. |
