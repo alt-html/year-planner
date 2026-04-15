@@ -1,6 +1,7 @@
 // .tests/smoke/icon-candidates-assets.spec.js
 // Filesystem assertions for the icon-candidate asset contract.
-// Enforces: 3 candidate folders present, each with icon.svg + logo.svg, correct viewBox values.
+// Enforces: 3 candidate folders present, each with icon.svg + logo.svg, correct viewBox values,
+// and a full preview-{16,32,180,192,512}.png matrix per candidate.
 // No browser required — all assertions are pure Node.js fs checks.
 
 const { test, expect } = require('@playwright/test');
@@ -122,5 +123,70 @@ test.describe('candidate SVG masters', () => {
     ).toBe(true);
     const content = fs.readFileSync(readmePath, 'utf8');
     expect(content.length, 'README.md is empty').toBeGreaterThan(100);
+  });
+});
+
+// ── Suite: preview matrix ────────────────────────────────────────────────────
+
+const PREVIEW_SIZES = [16, 32, 180, 192, 512];
+
+test.describe('preview matrix', () => {
+
+  test('all 15 preview PNGs exist (3 candidates × 5 sizes)', () => {
+    const missing = [];
+    for (const { id, folder } of CANDIDATES) {
+      for (const size of PREVIEW_SIZES) {
+        const filePath = path.join(MOCKUPS_ROOT, folder, `preview-${size}.png`);
+        if (!fs.existsSync(filePath)) {
+          missing.push(`${id}/${folder}/preview-${size}.png`);
+        }
+      }
+    }
+    expect(
+      missing,
+      `Missing preview PNGs:\n  ${missing.join('\n  ')}`
+    ).toHaveLength(0);
+  });
+
+  for (const { id, folder } of CANDIDATES) {
+    for (const size of PREVIEW_SIZES) {
+      test(`${id} preview-${size}.png is non-empty`, () => {
+        const filePath = path.join(MOCKUPS_ROOT, folder, `preview-${size}.png`);
+        expect(
+          fs.existsSync(filePath),
+          `Missing: mockups/icon-candidates/${folder}/preview-${size}.png — run bash scripts/export-icon-candidates.sh`
+        ).toBe(true);
+        const stats = fs.statSync(filePath);
+        expect(
+          stats.size,
+          `preview-${size}.png for ${id} is zero bytes — re-export with bash scripts/export-icon-candidates.sh`
+        ).toBeGreaterThan(0);
+      });
+    }
+  }
+
+  test('preview PNGs start with PNG magic bytes', () => {
+    const PNG_MAGIC = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
+    const bad = [];
+    for (const { id, folder } of CANDIDATES) {
+      for (const size of PREVIEW_SIZES) {
+        const filePath = path.join(MOCKUPS_ROOT, folder, `preview-${size}.png`);
+        if (!fs.existsSync(filePath)) {
+          bad.push(`${id}/preview-${size}.png (missing)`);
+          continue;
+        }
+        const header = Buffer.alloc(4);
+        const fd = fs.openSync(filePath, 'r');
+        fs.readSync(fd, header, 0, 4, 0);
+        fs.closeSync(fd);
+        if (!header.equals(PNG_MAGIC)) {
+          bad.push(`${id}/preview-${size}.png (bad magic bytes: ${header.toString('hex')})`);
+        }
+      }
+    }
+    expect(
+      bad,
+      `Files with invalid PNG headers:\n  ${bad.join('\n  ')}`
+    ).toHaveLength(0);
   });
 });

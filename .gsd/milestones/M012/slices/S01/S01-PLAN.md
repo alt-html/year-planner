@@ -58,7 +58,7 @@
   - Verify: `npm --prefix .tests run test -- --reporter=line smoke/icon-candidates-assets.spec.js --grep "candidate SVG masters"`
   - Done when: All three candidate folders contain `icon.svg` and `logo.svg`, the contract README exists, and the master-asset smoke assertion passes.
 
-- [ ] **T02: Automate preview PNG exports and harden asset-matrix checks** `est:50m`
+- [x] **T02: Automate preview PNG exports and harden asset-matrix checks** `est:50m`
   - Why: R001 requires candidates to be evaluable at tiny and large surfaces; deterministic export + assertions prevent manual drift.
   - Files: `scripts/export-icon-candidates.sh`, `mockups/icon-candidates/C1-ink-paper/preview-16.png`, `mockups/icon-candidates/C1-ink-paper/preview-512.png`, `mockups/icon-candidates/C2-nordic-clarity/preview-16.png`, `mockups/icon-candidates/C2-nordic-clarity/preview-512.png`, `mockups/icon-candidates/C3-verdant-studio/preview-16.png`, `mockups/icon-candidates/C3-verdant-studio/preview-512.png`, `.tests/smoke/icon-candidates-assets.spec.js`
   - Do: Implement export script using local tooling (`rsvg-convert`/`sips`) to generate 5 required preview sizes per candidate; extend asset smoke spec with full preview-matrix assertions and explicit failure messages for missing candidate/size outputs.

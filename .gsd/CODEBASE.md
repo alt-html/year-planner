@@ -1,10 +1,11 @@
 # Codebase Map
 
-Generated: 2026-04-15T20:56:27Z | Files: 155 | Described: 0/155
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T20:56:27Z","fingerprint":"ced20932d3c9d55e20d2828cfcfb0b34fee5a214","fileCount":155,"truncated":false} -->
+Generated: 2026-04-15T21:16:25Z | Files: 159 | Described: 0/159
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T21:16:25Z","fingerprint":"664ecdd26031c8ff6db2ada9b9eb6dc048b446ec","fileCount":159,"truncated":false} -->
 
 ### (root)/
 - `.gitignore`
+- `.mcp.json`
 - `AGENTS.md`
 - `CLAUDE.md`
 - `LICENCE.txt`
@@ -122,6 +123,7 @@ Generated: 2026-04-15T20:56:27Z | Files: 155 | Described: 0/155
 - `.tests/smoke/css-generalisation.spec.js`
 - `.tests/smoke/dark-mode.spec.js`
 - `.tests/smoke/harness.spec.js`
+- `.tests/smoke/icon-candidates-assets.spec.js`
 
 ### api/
 - `api/openapi.yaml`
@@ -145,6 +147,9 @@ Generated: 2026-04-15T20:56:27Z | Files: 155 | Described: 0/155
 - `mockups/C-verdant-studio.html`
 - `mockups/combined-themes.html`
 - `mockups/icon-comparison.html`
+
+### mockups/icon-candidates/
+- `mockups/icon-candidates/README.md`
 
 ### site/
 - `site/index.html`
@@ -221,3 +226,6 @@ Generated: 2026-04-15T20:56:27Z | Files: 155 | Described: 0/155
 - `site/js/vue/model/calendar.js`
 - `site/js/vue/model/planner.js`
 - `site/js/vue/model/ui.js`
+
+### test-results/
+- `test-results/.last-run.json`
