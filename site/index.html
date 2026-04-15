@@ -346,9 +346,9 @@
             <div class="rail-flyout-header" v-if="feature.signin && signedin">{{$t('label.connectedAccounts')}}</div>
             <div v-if="feature.signin && signedin" v-for="provider in linkedProviders" :key="provider" class="rail-flyout-item d-flex justify-content-between align-items-center small">
                 <span><i :class="'ph ph-' + provider + '-logo me-1'"></i>{{ provider }}</span>
-                <button class="btn btn-link btn-sm p-0 text-danger"
+                <a href="#" class="text-muted small text-decoration-none"
                         v-if="linkedProviders.length > 1"
-                        v-on:click.prevent="doUnlinkProvider(provider)">{{$t('label.unlink')}}</button>
+                        v-on:click.prevent="doUnlinkProvider(provider)">{{$t('label.unlink')}}</a>
             </div>
             <a v-if="feature.signin && signedin && availableProviders.length > linkedProviders.length"
                class="rail-flyout-item small" href="#"
