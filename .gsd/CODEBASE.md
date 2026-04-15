@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-15T21:16:25Z | Files: 159 | Described: 0/159
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T21:16:25Z","fingerprint":"664ecdd26031c8ff6db2ada9b9eb6dc048b446ec","fileCount":159,"truncated":false} -->
+Generated: 2026-04-15T21:18:43Z | Files: 160 | Described: 0/160
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T21:18:43Z","fingerprint":"57a454911cd7d30d709ee6baddc10564f1cc0ad4","fileCount":160,"truncated":false} -->
 
 ### (root)/
 - `.gitignore`
@@ -150,6 +150,9 @@ Generated: 2026-04-15T21:16:25Z | Files: 159 | Described: 0/159
 
 ### mockups/icon-candidates/
 - `mockups/icon-candidates/README.md`
+
+### scripts/
+- `scripts/export-icon-candidates.sh`
 
 ### site/
 - `site/index.html`

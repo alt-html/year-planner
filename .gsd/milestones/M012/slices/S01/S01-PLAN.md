@@ -65,7 +65,7 @@
   - Verify: `bash scripts/export-icon-candidates.sh && npm --prefix .tests run test -- --reporter=line smoke/icon-candidates-assets.spec.js --grep "preview matrix"`
   - Done when: Script regenerates previews idempotently, all required size outputs exist for each candidate, and preview-matrix assertions pass.
 
-- [ ] **T03: Rebuild icon-comparison into a candidate gallery and add gallery integrity tests** `est:45m`
+- [x] **T03: Rebuild icon-comparison into a candidate gallery and add gallery integrity tests** `est:45m`
   - Why: The slice demo is the review gallery itself; without a complete side-by-side view, S02 cannot make the required visual winner decision.
   - Files: `mockups/icon-comparison.html`, `.tests/smoke/icon-candidates-gallery.spec.js`, `.tests/smoke/icon-candidates-assets.spec.js`, `mockups/icon-candidates/C1-ink-paper/preview-32.png`, `mockups/icon-candidates/C2-nordic-clarity/preview-32.png`, `mockups/icon-candidates/C3-verdant-studio/preview-32.png`, `site/favicon-16x16.png`, `site/favicon-32x32.png`
   - Do: Replace icon-library comparison content with a C1/C2/C3 gallery matrix at `16/32/180/192/512`, include legacy favicon baseline row and rationale cards, add machine-readable `data-candidate` and `data-size` hooks, and add gallery smoke assertions for candidate count, size coverage, and referenced file existence.
