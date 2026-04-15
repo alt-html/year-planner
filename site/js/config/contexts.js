@@ -2,7 +2,7 @@ import { Context, Singleton } from 'https://cdn.jsdelivr.net/npm/@alt-javascript
 
 import Api from '../service/Api.js';
 import Application from '../Application.js';
-import AuthProvider from '../service/AuthProvider.js';
+import AuthService from '../auth/AuthService.js';
 import PlannerStore from '../service/PlannerStore.js';
 import Storage from '../service/Storage.js';
 import StorageLocal from '../service/StorageLocal.js';
@@ -16,7 +16,7 @@ export default new Context([
     new Singleton(PlannerStore),
     new Singleton(Api),
     new Singleton(Application),
-    new Singleton(AuthProvider),
+    new Singleton(AuthService),
     new Singleton(Storage),
     new Singleton(StorageLocal),
     new Singleton(SyncScheduler),
