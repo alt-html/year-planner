@@ -48,6 +48,41 @@ export default class AuthService {
         return providers.map(p => p.provider);
     }
 
+    // Initiate OAuth link flow — redirects browser to provider (LNK-01)
+    // Mirrors OAuthClient.signIn() but stores link intent flag
+    async linkProvider(provider) {
+        const res = await fetch(`${this._getApiUrl()}auth/${provider}`);
+        if (!res.ok) throw new Error(`Server returned ${res.status}`);
+        const { authorizationURL, state } = await res.json();
+        localStorage.setItem('oauth_link_intent', provider);
+        localStorage.setItem('oauth_link_state', state);
+        window.location.href = authorizationURL;
+        return new Promise(() => {});
+    }
+
+    // Complete link callback — calls POST /auth/link/:provider with OAuth code (LNK-01)
+    // Returns updated provider names array, e.g. ['github', 'google']
+    async completeLinkCallback(provider, code, state) {
+        const token = this.getToken();
+        if (!token) throw new Error('Not signed in');
+        const storedState = localStorage.getItem('oauth_link_state') || '';
+        const url = `${this._getApiUrl()}auth/link/${provider}?` +
+            `code=${encodeURIComponent(code)}&` +
+            `state=${encodeURIComponent(state)}&` +
+            `stored_state=${encodeURIComponent(storedState)}`;
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+        });
+        // Clean up link intent flags regardless of outcome
+        localStorage.removeItem('oauth_link_intent');
+        localStorage.removeItem('oauth_link_state');
+        if (res.status === 409) throw new Error('error.providerConflict');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const { user } = await res.json();
+        return user.providers.map(p => p.provider);
+    }
+
     // Sign out — clear auth credentials; planner data is preserved (AUT-03)
     signOut() {
         ClientAuthSession.clear();

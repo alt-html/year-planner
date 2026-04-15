@@ -38,6 +38,22 @@ export const authMethods = {
         }
     },
 
+    async doLinkProvider() {
+        const linked = this.linkedProviders || [];
+        const available = this.availableProviders || [];
+        const unlinked = available.filter(p => !linked.includes(p));
+        if (unlinked.length === 0) return;
+        // If only one unlinked provider, link it directly; otherwise link the first available
+        // (future: show a picker if multiple unlinked providers exist)
+        const provider = unlinked[0];
+        try {
+            await this.authProvider.linkProvider(provider);
+            // linkProvider redirects — execution does not continue past this point
+        } catch (err) {
+            this.modalError = err.message || 'error.general';
+        }
+    },
+
     clearModalAlert() {
         this.modalError       = '';
         this.modalErrorTarget = null;

@@ -62,6 +62,7 @@ export default {
         passwordincorrect: 'Password is not correct',
         paymentfailed: 'Payment failed',
         syncfailed: 'Sync failed. Please check your connection.',
+        providerConflict: 'This provider is already linked to another account',
     },
     month : month,
     day : day,

@@ -32,6 +32,39 @@ export default class Application {
 
     init(){
 
+        // Handle OAuth link callback: detect oauth_link_intent + ?code= + ?state= (LNK-01)
+        const linkIntent = localStorage.getItem('oauth_link_intent');
+        const urlCode = urlParam('code');
+        const urlState = urlParam('state');
+        if (linkIntent && urlCode && urlState) {
+            // Async link completion — sets model.linkedProviders after POST succeeds
+            this._pendingLink = this.authProvider.completeLinkCallback(linkIntent, urlCode, urlState)
+                .then(providers => {
+                    this.model.linkedProviders = providers;
+                    // LNK-04: migrate userKey on all local planners to primary UUID.
+                    // plannerStore is accessed via this.model.plannerStore — CDI property-injects
+                    // the PlannerStore singleton onto the model plain object (see model.js line 15).
+                    // Application does NOT have plannerStore as a constructor param.
+                    const plannerStore = this.model.plannerStore;
+                    if (plannerStore) {
+                        const planners = plannerStore.listPlanners();
+                        for (const { uuid } of planners) {
+                            plannerStore.takeOwnership(uuid);
+                        }
+                    }
+                    this.logger?.debug?.(`[Application.init] link complete — providers=${providers.join(',')}`);
+                })
+                .catch(err => {
+                    this.logger?.debug?.(`[Application.init] link failed: ${err.message}`);
+                    this.model.modalError = err.message || 'error.general';
+                });
+            // Clean up URL query params
+            const cleanUrl = new URL(window.location.href);
+            cleanUrl.searchParams.delete('code');
+            cleanUrl.searchParams.delete('state');
+            window.history.replaceState({}, '', cleanUrl.toString());
+        }
+
         // Handle OAuth callback: server sends JWT as ?token= after /auth/:provider/callback
         const urlToken = urlParam('token');
         if (urlToken) {
