@@ -51,7 +51,7 @@ export default class AuthService {
     // Initiate OAuth link flow — redirects browser to provider (LNK-01)
     // Mirrors OAuthClient.signIn() but stores link intent flag
     async linkProvider(provider) {
-        const res = await fetch(`${this._getApiUrl()}auth/${provider}`);
+        const res = await fetch(`${this._getApiUrl()}auth/${provider}?link=true`);
         if (!res.ok) throw new Error(`Server returned ${res.status}`);
         const { authorizationURL, state } = await res.json();
         localStorage.setItem('oauth_link_intent', provider);
@@ -62,14 +62,15 @@ export default class AuthService {
 
     // Complete link callback — calls POST /auth/link/:provider with OAuth code (LNK-01)
     // Returns updated provider names array, e.g. ['github', 'google']
-    async completeLinkCallback(provider, code, state) {
+    async completeLinkCallback(provider, code, state, codeVerifier) {
         const token = this.getToken();
         if (!token) throw new Error('Not signed in');
         const storedState = localStorage.getItem('oauth_link_state') || '';
         const url = `${this._getApiUrl()}auth/link/${provider}?` +
             `code=${encodeURIComponent(code)}&` +
             `state=${encodeURIComponent(state)}&` +
-            `stored_state=${encodeURIComponent(storedState)}`;
+            `stored_state=${encodeURIComponent(storedState)}&` +
+            `code_verifier=${encodeURIComponent(codeVerifier || '')}`;
         const res = await fetch(url, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` },

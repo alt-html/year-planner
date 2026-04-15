@@ -36,9 +36,10 @@ export default class Application {
         const linkIntent = localStorage.getItem('oauth_link_intent');
         const urlCode = urlParam('code');
         const urlState = urlParam('state');
+        const urlCodeVerifier = urlParam('code_verifier');
         if (linkIntent && urlCode && urlState) {
             // Async link completion — sets model.linkedProviders after POST succeeds
-            this._pendingLink = this.authProvider.completeLinkCallback(linkIntent, urlCode, urlState)
+            this._pendingLink = this.authProvider.completeLinkCallback(linkIntent, urlCode, urlState, urlCodeVerifier)
                 .then(providers => {
                     this.model.linkedProviders = providers;
                     // LNK-04: migrate userKey on all local planners to primary UUID.
@@ -62,6 +63,7 @@ export default class Application {
             const cleanUrl = new URL(window.location.href);
             cleanUrl.searchParams.delete('code');
             cleanUrl.searchParams.delete('state');
+            cleanUrl.searchParams.delete('code_verifier');
             window.history.replaceState({}, '', cleanUrl.toString());
         }
 
