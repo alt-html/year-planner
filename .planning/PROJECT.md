@@ -12,6 +12,8 @@ Live at: https://d1uamxeylh4qir.cloudfront.net/
 
 Migrated from Bootstrap 4.3.1 to 5.3.8 with full markup modernisation (data-bs-* attributes, updated utility classes). BS5 native dark mode (data-bs-theme="dark") wired alongside .yp-dark class. CSS generalised — design tokens, rail styles, and dot styles extracted into separate files; all bare custom properties namespaced to --yp-*. Feature modal converted to Vue-reactive state, eliminating the last Bootstrap JS dependency. SRI integrity hashes added for all CDN resources. 47 Playwright tests (32 E2E + 9 smoke + 4 contract + 2 dark mode).
 
+**Phase 16 complete:** Backend Discovery & Wiring (2026-04-15) — jsmdma auth routes audited (all parameterised on :provider), KNOWN_PROVIDERS patched with "github", GitHubProvider wired in run-local.js, GitHub OAuth App registered for localhost dev.
+
 ## Current Milestone: v1.5 GitHub OAuth & Account Linking
 
 **Goal:** End-to-end GitHub sign-in with real OAuth flow, account linking/unlinking UI, and a reusable auth module — including verifying and wiring the jsmdma backend to support GitHub auth locally.
@@ -60,7 +62,7 @@ Offline-first local planner that works without an account, and syncs bidirection
 - **Tech stack**: Vanilla ES module browser app, no bundler, CDN dependencies (`jsdelivr.net` for Bootstrap 5.3.8, `unpkg.com` for Phosphor Icons)
 - **Assets**: `site/` (index.html, css/, js/, manifest.json, icons)
 - **localStorage schema** (M009): `dev`, `tok`, `plnr:{uuid}`, `rev:{uuid}`, `base:{uuid}`, `sync:{uuid}` — HLC-ready
-- **Auth**: Federated auth (Google/Apple/Microsoft) in `AuthProvider.js` — Google client ID configured, Apple/Microsoft pending
+- **Auth**: Federated auth (Google/Apple/Microsoft/GitHub) in `AuthProvider.js` — Google and GitHub client IDs configured, Apple/Microsoft pending
 - **Sync**: PlannerStore + SyncClientAdapter (vendored jsmdma-client.esm.js) + SyncScheduler debounce layer
 - **Rail**: Vertical rail inside Vue `#app` with flyout submenus (calendar/planner selector, marker, emoji, settings)
 - **Build system**: `.compose/build.sh` assembles `site/index.html` from `.compose/fragments/` via m4 macros

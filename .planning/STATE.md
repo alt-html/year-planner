@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: GitHub OAuth & Account Linking
-status: planning
-stopped_at: Roadmap created — ready to plan Phase 16
-last_updated: "2026-04-15T00:59:48.370Z"
-last_activity: 2026-04-15
+status: complete
+stopped_at: Milestone v1.5 complete — all 4 phases delivered
+last_updated: "2026-04-15"
+last_activity: 2026-04-15 -- Phase 19 verified and complete
 progress:
   total_phases: 4
-  completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  completed_phases: 4
+  total_plans: 9
+  completed_plans: 9
   percent: 100
 ---
 
@@ -18,25 +18,25 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-04-14)
+See: .planning/PROJECT.md (updated 2026-04-15)
 
 **Core value:** Offline-first local planner that works without an account, and syncs bidirectionally when signed in — without data loss across devices.
-**Current focus:** Phase 16 — Backend Discovery & Wiring
+**Current focus:** Milestone v1.5 complete
 
 ## Current Position
 
-Phase: 19 of 19 (account linking ui)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-04-15
+Phase: 19 (account-linking-ui) — COMPLETE
+Plan: 3 of 3
+Status: Milestone v1.5 complete — all phases delivered
+Last activity: 2026-04-15 -- Phase 19 verified and complete
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 2
+- Total plans completed: 9
 - Average duration: —
 - Total execution time: —
 
@@ -44,7 +44,10 @@ Progress: [░░░░░░░░░░] 0%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
+| 16 | 2 | - | - |
+| 17 | 2 | - | - |
 | 18 | 2 | - | - |
+| 19 | 3 | - | - |
 
 *Updated after each plan completion*
 
@@ -60,12 +63,10 @@ None.
 
 ### Blockers/Concerns
 
-- jsmdma backend GitHub OAuth route coverage unknown — BKD-01 audit is the first deliverable
-- Apple/Microsoft client IDs not configured (deferred; buttons hidden in GHO-04)
-- Google OAuth client ID hardcoded in source (addressed in AUT-01..04)
+- Apple/Microsoft client IDs not configured (deferred; buttons hidden when absent)
 
 ## Session Continuity
 
-Last session: 2026-04-14
-Stopped at: Roadmap created — ready to plan Phase 16
+Last session: 2026-04-15
+Stopped at: Milestone v1.5 complete — all 4 phases delivered
 Resume file: None

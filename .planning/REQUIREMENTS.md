@@ -11,7 +11,7 @@ Requirements for GitHub OAuth & Account Linking milestone. Each maps to roadmap 
 
 - [ ] **BKD-01**: Audit jsmdma server for GitHub OAuth route support — document existing routes, missing middleware, required config
 - [ ] **BKD-02**: Patch KNOWN_PROVIDERS in vendored jsmdma-auth-client.esm.js to include "github"
-- [ ] **BKD-03**: Register GitHub OAuth Apps (dev localhost + prod CloudFront) with correct callback URLs
+- [ ] **BKD-03**: Register GitHub OAuth App for dev localhost with correct callback URL (production CloudFront app deferred to deployment phase)
 - [ ] **BKD-04**: Wire missing backend routes/middleware for GitHub OAuth token exchange in jsmdma run-server
 
 ### GitHub OAuth Client

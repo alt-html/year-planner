@@ -7,7 +7,7 @@
 - ✅ **v1.2 Data Model** — Phases 8–10 (complete)
 - ✅ **v1.3 jsmdma Sync** — Phases 11–12 (complete 2026-04-13)
 - ✅ **v1.4 Bootstrap 5 & UI Generalisation** — Phases 13–15 (complete 2026-04-14)
-- 🚧 **v1.5 GitHub OAuth & Account Linking** — Phases 16–19 (in progress)
+- ✅ **v1.5 GitHub OAuth & Account Linking** — Phases 16–19 (complete 2026-04-15)
 
 ## Phases
 
@@ -124,7 +124,7 @@ Plans:
 
 </details>
 
-### v1.5 GitHub OAuth & Account Linking (In Progress)
+### v1.5 GitHub OAuth & Account Linking (Complete 2026-04-15)
 
 **Milestone Goal:** End-to-end GitHub sign-in with real OAuth flow, account linking/unlinking UI, and a reusable auth module — including verifying and wiring the jsmdma backend to support GitHub auth locally.
 
@@ -139,7 +139,7 @@ Plans:
   2. KNOWN_PROVIDERS in vendored jsmdma-auth-client.esm.js includes "github"
   3. GitHub OAuth App exists for localhost dev with correct callback URL (production CloudFront app deferred to deployment phase)
   4. All missing backend routes/middleware are patched and the run-server config reflects them
-**Plans**: 2 plans
+**Plans**: 3 plans
 
 Plans:
 - [x] 16-01: Backend route audit and KNOWN_PROVIDERS patch
@@ -154,7 +154,7 @@ Plans:
   2. The provider returned from the OAuth callback is identified as "github" (not hardcoded "google")
   3. PKCE state survives a page reload mid-flow and is cleaned up from localStorage after exchange completes
   4. Apple and Microsoft sign-in buttons are hidden when their client IDs are absent from config
-**Plans**: 2 plans
+**Plans**: 3 plans
 **UI hint**: yes
 
 Plans:
@@ -170,7 +170,7 @@ Plans:
   2. Google OAuth provider is wired through site/js/auth/ alongside GitHub using the same abstraction
   3. Signing out clears credentials (tok key) but leaves planner data (plnr:* keys) intact in localStorage
   4. Old AuthProvider.js does not exist; contexts.js, Api.js, and Application.js reference the new auth module only
-**Plans**: 2 plans
+**Plans**: 3 plans
 
 Plans:
 - [x] 18-01-PLAN.md — Fix sign-out data preservation, create site/js/auth/ module (AUT-01, AUT-02, AUT-03)
@@ -185,12 +185,13 @@ Plans:
   2. A user can unlink a provider and is blocked from unlinking their last remaining provider
   3. The connected accounts settings view lists all linked providers with link and unlink actions visible
   4. After identity merge, planner entries carry the merged userKey and do not create duplicate sync records
-**Plans**: 2 plans
+**Plans**: 3 plans
 **UI hint**: yes
 
 Plans:
-- [ ] 19-01-PLAN.md — Connected accounts UI in settings flyout, unlink flow with last-provider guard (LNK-03, LNK-02)
-- [ ] 19-02-PLAN.md — OAuth link flow, userKey migration after identity merge, human verification (LNK-01, LNK-04)
+- [x] 19-00-PLAN.md — Wave 0 test scaffold for account-linking E2E stubs (LNK-01, LNK-02, LNK-03, LNK-04)
+- [x] 19-01-PLAN.md — Connected accounts UI in settings flyout, unlink flow with last-provider guard (LNK-03, LNK-02)
+- [x] 19-02-PLAN.md — OAuth link flow, userKey migration after identity merge, human verification (LNK-01, LNK-04)
 
 ## Progress
 
@@ -214,4 +215,4 @@ Plans:
 | 16. Backend Discovery & Wiring | v1.5 | 2/2 | Complete    | 2026-04-14 |
 | 17. GitHub OAuth Client Flow | v1.5 | 2/2 | Complete    | 2026-04-14 |
 | 18. Auth Module Extraction | v1.5 | 2/2 | Complete    | 2026-04-15 |
-| 19. Account Linking UI | v1.5 | 0/2 | Not started | - |
+| 19. Account Linking UI | v1.5 | 3/3 | Complete   | 2026-04-15 |
