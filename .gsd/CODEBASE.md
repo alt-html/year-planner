@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-16T06:00:49Z | Files: 181 | Described: 0/181
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T06:00:49Z","fingerprint":"63d6be5e7dde6b672a71891f2482744b60067b6f","fileCount":181,"truncated":false} -->
+Generated: 2026-04-16T06:11:55Z | Files: 180 | Described: 0/180
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T06:11:55Z","fingerprint":"9eda14289d7ced53cb43d11e42a5302000d5cb1e","fileCount":180,"truncated":false} -->
 
 ### (root)/
 - `.gitignore`
@@ -30,8 +30,6 @@ Generated: 2026-04-16T06:00:49Z | Files: 181 | Described: 0/181
 - `.compose/fragments/modals/auth.html`
 - `.compose/fragments/modals/delete.html`
 - `.compose/fragments/modals/entry.html`
-- `.compose/fragments/modals/feature.html`
-- `.compose/fragments/modals/share.html`
 
 ### .docker/
 - `.docker/.dockerignore`
@@ -78,26 +76,7 @@ Generated: 2026-04-16T06:00:49Z | Files: 181 | Described: 0/181
 - `.tests/playwright.config.js`
 
 ### .tests/e2e/
-- `.tests/e2e/account-linking.spec.js`
-- `.tests/e2e/auth-modal.spec.js`
-- `.tests/e2e/boot.spec.js`
-- `.tests/e2e/bs5-migration.spec.js`
-- `.tests/e2e/clean-url-navigation.spec.js`
-- `.tests/e2e/contract-sync.spec.js`
-- `.tests/e2e/cross-profile-sync.spec.js`
-- `.tests/e2e/entry-crud.spec.js`
-- `.tests/e2e/hlc-write.spec.js`
-- `.tests/e2e/identity-storage-contract.spec.js`
-- `.tests/e2e/migration.spec.js`
-- `.tests/e2e/planner-management.spec.js`
-- `.tests/e2e/rail-toggle.spec.js`
-- `.tests/e2e/signin-pester.spec.js`
-- `.tests/e2e/signout-wipe.spec.js`
-- `.tests/e2e/sync-error.spec.js`
-- `.tests/e2e/sync-payload.spec.js`
-- `.tests/e2e/system-follow-preferences.spec.js`
-- `.tests/e2e/tooltip-xss.spec.js`
-- `.tests/e2e/tp-col-coercion.spec.js`
+- *(21 files: 21 .js)*
 
 ### .tests/fixtures/
 - `.tests/fixtures/alt-javascript-boot-esm.js`
@@ -170,6 +149,7 @@ Generated: 2026-04-16T06:00:49Z | Files: 181 | Described: 0/181
 - `scripts/export-desktop-packaging-assets.sh`
 - `scripts/export-icon-candidates.sh`
 - `scripts/verify-icon-integration-signoff.sh`
+- `scripts/verify-no-legacy-share-features.sh`
 - `scripts/verify-no-legacy-uid.sh`
 - `scripts/verify-no-url-state-params.sh`
 
@@ -223,7 +203,6 @@ Generated: 2026-04-16T06:00:49Z | Files: 181 | Described: 0/181
 ### site/js/vue/
 - `site/js/vue/app.js`
 - `site/js/vue/i18n.js`
-- `site/js/vue/model-features.js`
 - `site/js/vue/model.js`
 
 ### site/js/vue/i18n/

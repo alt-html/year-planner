@@ -121,7 +121,7 @@ This slice removes legacy surfaces across Application bootstrap, Vue state/metho
   - Files: `.compose/fragments/modals.html`, `.compose/fragments/modals/share.html`, `.compose/fragments/modals/feature.html`, `.compose/fragments/rail.html`, `.compose/fragments/footer.html`, `.compose/fragments/grid.html`, `site/js/vue/model-features.js`, `site/js/vue/model.js`, `site/js/config/contexts.js`, `site/js/vue/model/ui.js`, `site/js/vue/methods/rail.js`, `site/js/vue/methods/planner.js`
   - Verify: bash -lc '! rg -n "feature\\.|showFeatureModal|featureModal|showShareModal|shareModal|sharePlanner\\(" .compose/fragments site/js/vue site/js/config/contexts.js'
 
-- [ ] **T03: Re-compose HTML and add regression + grep gates proving legacy surface removal** `est:1h10m`
+- [x] **T03: Re-compose HTML and add regression + grep gates proving legacy surface removal** `est:1h10m`
   Why: R109-supporting proof for S03 requires objective evidence that removed share/feature surfaces do not regress back into runtime or UI.
 
 ## Skills Used
