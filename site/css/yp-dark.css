@@ -33,6 +33,15 @@
     --yp-btn-save-hover: #D4A840;
     --yp-btn-save-text: #1C1917;
 
+    --yp-error-bg: #2B1D19;
+    --yp-error-border: #5D3B33;
+    --yp-error-text: #F2D7CC;
+    --yp-error-accent: #F3A17F;
+    --yp-error-icon-bg: #3A261F;
+    --yp-error-glow: rgba(243, 161, 127, 0.22);
+    --yp-error-shadow: rgba(0, 0, 0, 0.55);
+    --yp-error-close-filter: invert(1) grayscale(1) brightness(1.8);
+
     --yp-th-bg: #2A2520;
 }
 
@@ -64,4 +73,13 @@
     --yp-btn-save-bg: #9B6DFF;
     --yp-btn-save-hover: #A87DFF;
     --yp-btn-save-text: #FFFFFF;
+
+    --yp-error-bg: #2A1B23;
+    --yp-error-border: #5E3A4C;
+    --yp-error-text: #F2D9E4;
+    --yp-error-accent: #FF8DB5;
+    --yp-error-icon-bg: #392531;
+    --yp-error-glow: rgba(255, 141, 181, 0.23);
+    --yp-error-shadow: rgba(0, 0, 0, 0.60);
+    --yp-error-close-filter: invert(1) grayscale(1) brightness(1.8);
 }

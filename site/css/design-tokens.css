@@ -52,6 +52,15 @@
     --yp-btn-save-bg: #8B6914;
     --yp-btn-save-hover: #7A5B0E;
     --yp-btn-save-text: #FFFDF5;
+
+    --yp-error-bg: #FCEEE8;
+    --yp-error-border: #E8C9BC;
+    --yp-error-text: #5C352A;
+    --yp-error-accent: #B35A3D;
+    --yp-error-icon-bg: #F7DED2;
+    --yp-error-glow: rgba(179, 90, 61, 0.18);
+    --yp-error-shadow: rgba(123, 65, 47, 0.30);
+    --yp-error-close-filter: none;
 }
 
 /* ---- THEME B: Crisp & Clear ---- */
@@ -101,4 +110,13 @@
     --yp-btn-save-bg: #A259FF;
     --yp-btn-save-hover: #9141E8;
     --yp-btn-save-text: #FFFFFF;
+
+    --yp-error-bg: #FDF0F3;
+    --yp-error-border: #ECC8D3;
+    --yp-error-text: #5A2A3C;
+    --yp-error-accent: #C1496B;
+    --yp-error-icon-bg: #F9DEE6;
+    --yp-error-glow: rgba(193, 73, 107, 0.20);
+    --yp-error-shadow: rgba(122, 57, 78, 0.28);
+    --yp-error-close-filter: none;
 }

@@ -530,19 +530,24 @@ body.emoji-dragging {
     max-width: 3em;
 }
 
-/* Error alerts (global + auth modal): Bootstrap 5 subtle palette + custom structure */
+/* Error alerts (global + auth modal): theme-native status card */
 .yp-error-alert {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.65rem;
-    border: 1px solid var(--bs-danger-border-subtle);
-    border-left: 4px solid var(--bs-danger);
-    background: var(--bs-danger-bg-subtle);
-    color: var(--bs-danger-text-emphasis);
-    border-radius: 0.75rem;
-    padding: 0.75rem 0.85rem;
-    margin-bottom: 0.75rem;
-    box-shadow: 0 0.35rem 0.9rem rgba(0,0,0,0.08);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: start;
+    gap: 0.75rem;
+    border: 1px solid var(--yp-error-border);
+    border-radius: 0.85rem;
+    padding: 0.8rem 0.85rem;
+    margin-bottom: 0.8rem;
+    background:
+        radial-gradient(140% 120% at -15% -45%, var(--yp-error-glow), transparent 60%),
+        var(--yp-error-bg);
+    color: var(--yp-error-text);
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.14) inset,
+        0 12px 24px -20px var(--yp-error-shadow);
+    animation: yp-error-in 180ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 .yp-error-alert.alert-dismissible {
@@ -550,27 +555,74 @@ body.emoji-dragging {
 }
 
 .yp-error-icon {
-    color: var(--bs-danger);
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--yp-error-icon-bg);
+    color: var(--yp-error-accent);
     font-size: 1.1rem;
     line-height: 1;
-    margin-top: 0.12rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
 
 .yp-error-copy {
     flex: 1;
     min-width: 0;
+    padding-top: 0.08rem;
+}
+
+.yp-error-copy p {
+    line-height: 1.4;
+    text-wrap: pretty;
 }
 
 .yp-error-alert.alert-dismissible .btn-close {
     position: static;
-    padding: 0.2rem;
+    width: 2rem;
+    height: 2rem;
+    min-width: 2rem;
+    min-height: 2rem;
+    padding: 0;
     margin: 0;
+    border-radius: 999px;
     opacity: 0.75;
-    background-size: 0.75rem;
+    filter: var(--yp-error-close-filter);
+    transition-property: opacity, background-color, transform;
+    transition-duration: 140ms;
+    transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
 
 .yp-error-alert.alert-dismissible .btn-close:hover {
     opacity: 1;
+    background: var(--yp-error-icon-bg);
+}
+
+.yp-error-alert.alert-dismissible .btn-close:active {
+    transform: scale(0.96);
+}
+
+.yp-error-alert.alert-dismissible .btn-close:focus-visible {
+    box-shadow: 0 0 0 0.2rem var(--yp-error-icon-bg);
+}
+
+@keyframes yp-error-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .yp-error-alert {
+        animation: none;
+    }
 }
 
 .alert-primary {

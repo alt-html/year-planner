@@ -404,7 +404,7 @@
        <main v-bind:class="{'d-none':!loaded}">
             <div class="yp-jumbotron">
                 <div class="container">
-                    <div v-if="error" class="alert alert-danger alert-dismissible yp-error-alert" role="alert" aria-live="polite">
+                    <div v-if="error" class="alert alert-danger alert-dismissible yp-error-alert" role="alert" aria-live="polite" aria-atomic="true">
                         <div class="yp-error-icon" aria-hidden="true"><i class="ph ph-warning-circle"></i></div>
                         <div class="yp-error-copy">
                             <p class="mb-0">{{$t(error)}}</p>
@@ -528,7 +528,7 @@
                         <button type="button" class="btn-close" v-on:click="closeAuthModal()" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div v-if="modalError" class="alert alert-danger alert-dismissible yp-error-alert" role="alert" aria-live="polite">
+                        <div v-if="modalError" class="alert alert-danger alert-dismissible yp-error-alert" role="alert" aria-live="polite" aria-atomic="true">
                             <div class="yp-error-icon" aria-hidden="true"><i class="ph ph-warning-circle"></i></div>
                             <div class="yp-error-copy">
                                 <p class="mb-0">{{$t(modalError)}}</p>
