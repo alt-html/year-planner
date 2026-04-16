@@ -188,16 +188,15 @@ export default class PlannerStore {
                 if (!monthsArrayOrDaysMap[m]) continue;
                 for (const [day, dayObj] of Object.entries(monthsArrayOrDaysMap[m])) {
                     if (!dayObj) continue;
-                    const isOld = dayObj['1'] !== undefined || dayObj['0'] !== undefined;
                     const month = String(m + 1).padStart(2, '0');
                     const d     = String(day).padStart(2, '0');
                     const isoDate = `${year}-${month}-${d}`;
                     this.setDay(isoDate, {
-                        tp:    isOld ? (dayObj['0'] || 0)  : (dayObj.tp    || 0),
-                        tl:    isOld ? (dayObj['1'] || '') : (dayObj.tl    || ''),
-                        col:   isOld ? (dayObj['2'] || 0)  : (dayObj.col   || 0),
-                        notes: isOld ? (dayObj['3'] || '') : (dayObj.notes || ''),
-                        emoji: isOld ? (dayObj['4'] || '') : (dayObj.emoji || ''),
+                        tp:    dayObj.tp ?? 0,
+                        tl:    dayObj.tl ?? '',
+                        col:   dayObj.col ?? 0,
+                        notes: dayObj.notes ?? '',
+                        emoji: dayObj.emoji ?? '',
                     });
                 }
             }
