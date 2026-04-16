@@ -179,8 +179,8 @@ export default class StorageLocal {
         const devExists = !!localStorage.getItem(KEY_DEV);
         const legacyRaw = localStorage.getItem('0');
 
-        if (devExists) {
-            if (legacyRaw) localStorage.removeItem('0');
+        if (devExists && !legacyRaw) {
+            // Already on M009 schema — lightweight cleanup only.
             this._migrateUserKey();
             this._migratePrefsKey();
             return;

@@ -13,7 +13,6 @@ export default class Application {
         this.pageLoadTime = DateTime.now();
         this.url = {
             parameters : {
-                uid : urlParam('uid'),
                 year : urlParam('year'),
                 lang : urlParam('lang'),
                 theme : urlParam('theme'),
@@ -88,13 +87,13 @@ export default class Application {
             window.history.replaceState({}, '', cleanUrl.toString());
         }
 
-        this.model.uid = parseInt( urlParam('uid') ) || this.storageLocal.getLocalUid() || Math.floor(this.pageLoadTime.ts/1000);
-        this.model.uuid = ClientAuthSession.getUserUuid() || '',
         this.model.userKey = ClientAuthSession.getUserUuid() || DeviceSession.getDeviceId();
+        this.model.uuid = ClientAuthSession.getUserUuid() || '',
+        this.model.uid = 0; // deprecated — no longer read from URL or storage
         this.model.pageLoadTime = this.pageLoadTime;
         this.model.identities = this.storageLocal.getLocalIdentities() || [{0:this.model.uid,1:window.navigator.userAgent,2:0,3:0}],
 
-        this.model.preferences = (this.storageLocal.getLocalPreferences(this.model.uid) || {});
+        this.model.preferences = (this.storageLocal.getLocalPreferences(this.model.userKey) || {});
 
         this.model.year = parseInt( this.url.parameters.year ) || this.model.preferences['0'] || this.pageLoadTime.year;
         this.model.lang = (this.url.parameters.lang || this.model.preferences['1'] || getNavigatorLanguage() ).substring(0,2);
@@ -126,19 +125,7 @@ export default class Application {
         const payload = ClientAuthSession.getPayload();
         this.model.linkedProviders = payload?.providers ?? [];
 
-        this.logger?.debug?.(`[Application.init] uid=${this.model.uid} uuid=${this.model.uuid} year=${this.model.year} signedin=${this.model.signedin} registered=${this.model.registered} url=${window.location.href}`);
-
-        // Pre-set canonical URL (?uid=&year=) via replaceState so refresh() doesn't do a
-        // hard navigation that would abort any in-flight sync fetch.
-        if (!window.location.href.includes('?uid=')) {
-            const canonical = new URL(window.location.origin + '/');
-            canonical.searchParams.set('uid',   String(this.model.uid));
-            canonical.searchParams.set('year',  String(this.model.year));
-            canonical.searchParams.set('lang',  this.model.lang);
-            canonical.searchParams.set('theme', this.model.theme);
-            this.logger?.debug?.(`[Application.init] replaceState → canonical URL ${canonical.toString()}`);
-            window.history.replaceState({}, '', canonical.toString());
-        }
+        this.logger?.debug?.(`[Application.init] userKey=${this.model.userKey} uuid=${this.model.uuid} year=${this.model.year} signedin=${this.model.signedin} registered=${this.model.registered} url=${window.location.href}`);
 
         this.storage.setModelFromImportString(this.model.share);
 
@@ -155,7 +142,7 @@ export default class Application {
         }
 
         // Restore rail collapsed state from saved preferences
-        const savedPrefs = PreferencesStore.get(String(this.model.uid));
+        const savedPrefs = PreferencesStore.get(String(this.model.userKey));
         this.model.railCollapsed = (savedPrefs?.railOpen === false);
         this.logger?.debug?.(`[Application.init] complete — railCollapsed=${this.model.railCollapsed}`);
     }
@@ -189,7 +176,7 @@ export default class Application {
 
     static handleRailToggle(model, storageLocal) {
         model.railCollapsed = !model.railCollapsed;
-        const existing = PreferencesStore.get(String(model.uid)) || {};
-        PreferencesStore.set(String(model.uid), { ...existing, railOpen: !model.railCollapsed });
+        const existing = PreferencesStore.get(String(model.userKey)) || {};
+        PreferencesStore.set(String(model.userKey), { ...existing, railOpen: !model.railCollapsed });
     }
 }

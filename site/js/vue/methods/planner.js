@@ -55,7 +55,7 @@ export const plannerMethods = {
         this.preferences['3'][''+this.year][this.lang] = this.name;
         this.messages[this.lang]['label']['name_'+this.year] = this.name;
         this.rename = false;
-        this.storageLocal.setLocalPreferences(this.uid, this.preferences);
+        this.storageLocal.setLocalPreferences(this.userKey, this.preferences);
         this.updated = DateTime.now().ts;
         this.syncScheduler.markDirty();
     },

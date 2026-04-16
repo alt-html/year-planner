@@ -262,15 +262,7 @@ export const railMethods = {
     },
 
     doDarkToggle() {
-        const rail = document.getElementById('rail');
-        if (rail && rail.classList.contains('open')) {
-            sessionStorage.setItem('rail_open', '1');
-        }
-        const p = new URLSearchParams(window.location.search);
-        const current = p.get('theme') || 'light';
-        const next = current === 'dark' ? 'light' : 'dark';
-        p.set('theme', next);
-        window.location.search = p.toString();
+        this.setTheme(this.theme === 'dark' ? 'light' : 'dark');
     },
 
     toggleStyleTheme() {
@@ -293,9 +285,9 @@ export const railMethods = {
         if (!input) return;
         const yr = parseInt(input.value);
         if (!isNaN(yr) && yr > 0 && yr < 10000) {
-            const p = new URLSearchParams(window.location.search);
-            p.set('year', yr);
-            window.location.search = p.toString();
+            input.value = '';
+            this.jumpToYear(yr);
+            this.syncScheduler.markDirty();
         }
     },
 }

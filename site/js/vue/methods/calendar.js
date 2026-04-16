@@ -12,11 +12,4 @@ export const calendarMethods = {
         }
     },
 
-     navigateToYear(){
-        if (!isNaN(parseInt(this.nyear))){
-            this.year = parseInt(this.nyear.substr(0,4));
-            this.nyear = '';
-            window.location.href = window.location.origin +'?uid='+this.uid+'&year='+this.year;
-        }
-    },
 }

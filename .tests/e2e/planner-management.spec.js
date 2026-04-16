@@ -83,7 +83,7 @@ test('planner selector shows ownership indicators when signed in', async ({ page
     });
   });
 
-  await page.goto('/?uid=12345&year=2026');
+  await page.goto('/?year=2026');
   await page.waitForSelector('[data-app-ready]');
 
   // Open rail calendar flyout

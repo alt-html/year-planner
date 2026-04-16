@@ -96,7 +96,7 @@ Why this task exists
   - Files: `site/js/service/StorageLocal.js`, `site/js/service/storage-schema.js`, `site/js/service/Storage.js`, `site/js/vue/model/planner.js`, `.tests/e2e/identity-storage-contract.spec.js`, `.tests/e2e/migration.spec.js`, `site/js/Application.js`
   - Verify: npm --prefix .tests run test -- --reporter=line e2e/identity-storage-contract.spec.js e2e/migration.spec.js
 
-- [ ] **T02: Rewire application/bootstrap and UI navigation away from uid query state** `est:1h20m`
+- [x] **T02: Rewire application/bootstrap and UI navigation away from uid query state** `est:1h20m`
   ## Skills Used
 
 - `best-practices`

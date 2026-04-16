@@ -337,8 +337,8 @@
         <!-- Settings flyout -->
         <div class="rail-flyout settings-flyout" v-bind:class="{open: railFlyout === 'settings'}" v-show="railFlyout === 'settings'">
             <div class="rail-flyout-header">{{$t('label.theme')}}</div>
-            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='light'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=light'" v-on:click="toggleFlyout(null)">{{$t('label.light')}}</a>
-            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='dark'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=dark'" v-on:click="toggleFlyout(null)">{{$t('label.dark')}}</a>
+            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='light'}" href="#" v-on:click.prevent="setTheme('light'); toggleFlyout(null)">{{$t('label.light')}}</a>
+            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='dark'}" href="#" v-on:click.prevent="setTheme('dark'); toggleFlyout(null)">{{$t('label.dark')}}</a>
             <div class="rail-flyout-divider"></div>
             <a v-if="feature.signin && !signedin" class="rail-flyout-item" href="#" v-on:click.prevent="showSignin(); toggleFlyout(null)">{{$t('label.signin')}}…</a>
             <a v-if="feature.signin && signedin" class="rail-flyout-item" href="#" v-on:click.prevent="signout(); toggleFlyout(null)">{{$t('label.signout')}}…</a>
@@ -392,9 +392,9 @@
 
             <!-- Year chevron navigation (mockup style) -->
             <div class="yp-nav-year">
-                <a class="yp-nav-year-btn" v-bind:href="'/?uid='+uid+'&year='+(year-1)+'&lang='+lang+'&theme='+theme" title="Previous year"><i class="ph ph-caret-left"></i></a>
+                <a class="yp-nav-year-btn" href="#" v-on:click.prevent="jumpToYear(year-1)" title="Previous year"><i class="ph ph-caret-left"></i></a>
                 <span class="yp-nav-year-btn current">{{year}}</span>
-                <a class="yp-nav-year-btn" v-bind:href="'/?uid='+uid+'&year='+(year+1)+'&lang='+lang+'&theme='+theme" title="Next year"><i class="ph ph-caret-right"></i></a>
+                <a class="yp-nav-year-btn" href="#" v-on:click.prevent="jumpToYear(year+1)" title="Next year"><i class="ph ph-caret-right"></i></a>
             </div>
 
             <!-- Theme label in nav (right-aligned) -->
@@ -550,7 +550,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" v-on:click="closeDeleteModal()">{{$t('label.close')}}</button>
-                        <button type="button" class="btn btn-primary" v-on:click="deletePlannerByYear(uid,year); closeDeleteModal()">{{$t('label.delete')}}</button>
+                        <button type="button" class="btn btn-primary" v-on:click="deletePlannerByUuid(activeDocUuid); closeDeleteModal()">{{$t('label.delete')}}</button>
                     </div>
                 </div>
             </div>
@@ -641,16 +641,16 @@
                                     {{$t('lang.'+lang)}}
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='en'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=en'+'&theme='+theme">English</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='zh'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=zh'+'&theme='+theme">中國人</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='hi'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=hi'+'&theme='+theme">हिन्दी</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='es'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=es'+'&theme='+theme">español</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='fr'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=fr'+'&theme='+theme">français</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ar'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=ar'+'&theme='+theme">عربى</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ru'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=ru'+'&theme='+theme">русский</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='pt'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=pt'+'&theme='+theme">português</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ja'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=ja'+'&theme='+theme">日本語</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='id'}" v-bind:href="'/?id='+uid+'&year='+year+'&lang=id'+'&theme='+theme">Bahasa Indonesia</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='en'}" href="#" v-on:click.prevent="setLang('en')">English</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='zh'}" href="#" v-on:click.prevent="setLang('zh')">中國人</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='hi'}" href="#" v-on:click.prevent="setLang('hi')">हिन्दी</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='es'}" href="#" v-on:click.prevent="setLang('es')">español</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='fr'}" href="#" v-on:click.prevent="setLang('fr')">français</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ar'}" href="#" v-on:click.prevent="setLang('ar')">عربى</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ru'}" href="#" v-on:click.prevent="setLang('ru')">русский</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='pt'}" href="#" v-on:click.prevent="setLang('pt')">português</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ja'}" href="#" v-on:click.prevent="setLang('ja')">日本語</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='id'}" href="#" v-on:click.prevent="setLang('id')">Bahasa Indonesia</a>
                                 </div>
                             </div>
                         </div>

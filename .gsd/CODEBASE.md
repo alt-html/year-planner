@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-16T04:23:40Z | Files: 176 | Described: 0/176
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T04:23:40Z","fingerprint":"b61804f29dcfcaa6af9c9c29e23bd1ee9d6e13be","fileCount":176,"truncated":false} -->
+Generated: 2026-04-16T04:31:53Z | Files: 177 | Described: 0/177
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T04:31:53Z","fingerprint":"4305fb6f24ee8fbc98bb89dcff6433da6ff14b14","fileCount":177,"truncated":false} -->
 
 ### (root)/
 - `.gitignore`
@@ -86,6 +86,7 @@ Generated: 2026-04-16T04:23:40Z | Files: 176 | Described: 0/176
 - `.tests/e2e/cross-profile-sync.spec.js`
 - `.tests/e2e/entry-crud.spec.js`
 - `.tests/e2e/hlc-write.spec.js`
+- `.tests/e2e/identity-storage-contract.spec.js`
 - `.tests/e2e/migration.spec.js`
 - `.tests/e2e/planner-management.spec.js`
 - `.tests/e2e/rail-toggle.spec.js`
