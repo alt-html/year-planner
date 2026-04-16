@@ -25,23 +25,22 @@ export default class StorageLocal {
     // ── Preferences ──────────────────────────────────────────────────────────
 
     setLocalPreferences(userKey, preferences) {
-        const prefs = preferences['0'] !== undefined ? {
-            year:      preferences['0'],
-            lang:      preferences['1'],
-            theme:     (preferences['2'] == 1 ? 'dark' : 'light'),
-            dark:      (preferences['2'] == 1),
-            names:     preferences['3'] || null,
-            langMode:  preferences.langMode  || null,
-            themeMode: preferences.themeMode || null,
-        } : preferences;
+        let existing = {};
+        try {
+            existing = PreferencesStore.get(String(userKey)) || {};
+        } catch (e) {
+            existing = {};
+        }
 
-        this.model.preferences = preferences;
-        this.model.lang      = prefs.lang  || preferences['1'] || 'en';
-        this.model.theme     = prefs.theme || (preferences['2'] == 1 ? 'dark' : 'light');
-        if (prefs.langMode)  this.model.langMode  = prefs.langMode;
-        if (prefs.themeMode) this.model.themeMode = prefs.themeMode;
+        const normalized = this._normalizePreferences(preferences || {}, existing);
+        this.model.preferences = { ...normalized };
+        this.model.lang = normalized.lang || 'en';
+        this.model.theme = normalized.theme || 'light';
+        if (normalized.langMode)  this.model.langMode  = normalized.langMode;
+        if (normalized.themeMode) this.model.themeMode = normalized.themeMode;
 
-        PreferencesStore.set(String(userKey), prefs);
+        const persisted = { ...this._withoutLegacyPreferenceAliases(existing), ...normalized };
+        PreferencesStore.set(String(userKey), persisted);
     }
 
     getLocalPreferences(userKey) {
@@ -54,22 +53,66 @@ export default class StorageLocal {
             return null;
         }
         if (!prefs || Object.keys(prefs).length === 0) return null;
-        if (prefs.year !== undefined && prefs['0'] === undefined) {
-            return {
-                0:         prefs.year,
-                1:         prefs.lang || 'en',
-                2:         prefs.dark ? 1 : 0,
-                3:         prefs.names || null,
-                langMode:  prefs.langMode  || null,
-                themeMode: prefs.themeMode || null,
-            };
+
+        const normalized = this._normalizePreferences(prefs, prefs);
+        const canonical = { ...this._withoutLegacyPreferenceAliases(prefs), ...normalized };
+        const hasLegacyAliases = ['0', '1', '2', '3', 'dark'].some((k) =>
+            Object.prototype.hasOwnProperty.call(prefs, k)
+        );
+        const missingNamedShape =
+            prefs.year === undefined ||
+            prefs.lang === undefined ||
+            prefs.theme === undefined ||
+            prefs.names === undefined;
+
+        if (hasLegacyAliases || missingNamedShape) {
+            PreferencesStore.set(String(userKey), canonical);
         }
-        return prefs;
+        return normalized;
     }
 
     getDefaultLocalPreferences() {
         const userKey = this.model.userKey || ClientAuthSession.getUserUuid() || DeviceSession.getDeviceId();
         return this.getLocalPreferences(userKey);
+    }
+
+    _normalizePreferences(preferences = {}, fallback = {}) {
+        const year = preferences.year ?? preferences['0'] ?? fallback.year ?? fallback['0'] ?? new Date().getFullYear();
+        const langRaw = preferences.lang ?? preferences['1'] ?? fallback.lang ?? fallback['1'] ?? 'en';
+        const supportedLangs = ['en','zh','hi','ar','es','pt','fr','ru','id','ja'];
+        const lang2 = String(langRaw || '').substring(0, 2).toLowerCase();
+        const lang = supportedLangs.includes(lang2) ? lang2 : 'en';
+
+        const rawTheme = preferences.theme
+            ?? (preferences['2'] !== undefined ? (preferences['2'] == 1 ? 'dark' : 'light') : undefined)
+            ?? fallback.theme
+            ?? (fallback['2'] !== undefined ? (fallback['2'] == 1 ? 'dark' : 'light') : undefined)
+            ?? (preferences.dark !== undefined ? (preferences.dark ? 'dark' : 'light') : undefined)
+            ?? (fallback.dark !== undefined ? (fallback.dark ? 'dark' : 'light') : undefined)
+            ?? 'light';
+
+        const theme = (rawTheme === 'dark' ? 'dark' : 'light');
+        const names = preferences.names ?? preferences['3'] ?? fallback.names ?? fallback['3'] ?? null;
+        const langMode = preferences.langMode ?? fallback.langMode ?? null;
+        const themeMode = preferences.themeMode ?? fallback.themeMode ?? null;
+
+        return {
+            year,
+            lang,
+            theme,
+            names,
+            langMode,
+            themeMode,
+        };
+    }
+
+    _withoutLegacyPreferenceAliases(prefs = {}) {
+        const cleaned = {};
+        for (const [k, v] of Object.entries(prefs)) {
+            if (k === '0' || k === '1' || k === '2' || k === '3' || k === 'dark') continue;
+            cleaned[k] = v;
+        }
+        return cleaned;
     }
 
     // ── Identities ───────────────────────────────────────────────────────────
@@ -224,7 +267,12 @@ export default class StorageLocal {
 
             // Write prefs under userKey (UUID), not the legacy numeric uid.
             localStorage.setItem(keyPrefs(userKey), JSON.stringify({
-                year, lang, theme: dark ? 'dark' : 'light', dark, names,
+                year,
+                lang,
+                theme: dark ? 'dark' : 'light',
+                names,
+                langMode: null,
+                themeMode: null,
             }));
 
             const yearSet = new Set();
@@ -307,7 +355,14 @@ export default class StorageLocal {
             if (/^\d+$/.test(keyPart)) {
                 const val = localStorage.getItem(k);
                 if (val) {
-                    localStorage.setItem(newKey, val);
+                    let parsed = null;
+                    try {
+                        parsed = JSON.parse(val);
+                    } catch (e) {
+                        parsed = null;
+                    }
+                    const normalized = this._normalizePreferences(parsed || {}, {});
+                    localStorage.setItem(newKey, JSON.stringify(normalized));
                     localStorage.removeItem(k);
                 }
                 return; // migrate first numeric prefs key found

@@ -52,7 +52,9 @@ export const plannerMethods = {
 
     renamePlanner() {
         this.renameVisible = false;
-        this.preferences['3'][''+this.year][this.lang] = this.name;
+        if (!this.preferences.names) this.preferences.names = {};
+        if (!this.preferences.names[''+this.year]) this.preferences.names[''+this.year] = {};
+        this.preferences.names[''+this.year][this.lang] = this.name;
         this.messages[this.lang]['label']['name_'+this.year] = this.name;
         this.rename = false;
         this.storageLocal.setLocalPreferences(this.userKey, this.preferences);
@@ -67,7 +69,7 @@ export const plannerMethods = {
 
     getPlannerNameByUidYear(uid, year) {
         const prefs = this.storageLocal.getLocalPreferences(uid) || {};
-        return prefs['3']?.[''+year]?.[this.lang] || null;
+        return prefs.names?.[''+year]?.[this.lang] || null;
     },
 
     getPlannerYears() {

@@ -100,33 +100,31 @@ export default class Application {
         const navLang = SUPPORTED_LANGS.includes(navLangRaw) ? navLangRaw : 'en';
         const systemTheme = window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
-        this.model.year = this.model.preferences['0'] || this.pageLoadTime.year;
-        this.model.lang = this.model.preferences['1'] || navLang;
-        this.model.theme = this.model.preferences['2'] !== undefined
-            ? (this.model.preferences['2'] == 1 ? 'dark' : 'light')
-            : systemTheme;
+        this.model.year = this.model.preferences.year || this.pageLoadTime.year;
+        this.model.lang = this.model.preferences.lang || navLang;
+        this.model.theme = this.model.preferences.theme || systemTheme;
         // Mode contract: 'system' follows OS/navigator live; 'explicit' is a user override.
         // Default: 'system' for fresh installs, 'explicit' for existing prefs that had a stored value.
         this.model.langMode = this.model.preferences.langMode
-            || (this.model.preferences['1'] ? 'explicit' : 'system');
+            || (this.model.preferences.lang ? 'explicit' : 'system');
         this.model.themeMode = this.model.preferences.themeMode
-            || (this.model.preferences['2'] !== undefined ? 'explicit' : 'system');
+            || (this.model.preferences.theme ? 'explicit' : 'system');
 
-        this.model.name = this.url.parameters.name || (this.model.preferences['3']?.[''+this.model.year]?.[this.model.lang]) || '';
+        this.model.name = this.url.parameters.name || (this.model.preferences.names?.[''+this.model.year]?.[this.model.lang]) || '';
 
-        this.model.preferences['0'] = this.model.year;
-        this.model.preferences['1'] = this.model.lang;
-        this.model.preferences['2'] = (this.model.theme == 'light' ? 0:1);
+        this.model.preferences.year = this.model.year;
+        this.model.preferences.lang = this.model.lang;
+        this.model.preferences.theme = this.model.theme;
         this.model.preferences.langMode  = this.model.langMode;
         this.model.preferences.themeMode = this.model.themeMode;
-        if (!this.model.preferences['3']){
-            this.model.preferences['3'] = {};
+        if (!this.model.preferences.names){
+            this.model.preferences.names = {};
         }
-        if (!this.model.preferences['3'][''+this.model.year]){
-            this.model.preferences['3'][''+this.model.year] = {}
+        if (!this.model.preferences.names[''+this.model.year]){
+            this.model.preferences.names[''+this.model.year] = {}
         }
 
-        this.model.preferences['3'][''+this.model.year][this.model.lang]=this.model.name;
+        this.model.preferences.names[''+this.model.year][this.model.lang]=this.model.name;
         this.model.updated = this.pageLoadTime.ts,
         this.model.cyear  = this.pageLoadTime.year,
         this.model.cmonth  = this.pageLoadTime.month,

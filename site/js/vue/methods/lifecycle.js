@@ -37,9 +37,10 @@ export const lifecycleMethods = {
     initialise() {
         this.storageLocal.setLocalIdentities(this.identities);
         this.storageLocal.setLocalPreferences(this.userKey, {
-            0: this.year, 1: this.lang,
-            2: (this.theme === 'dark' ? 1 : 0),
-            3: this.preferences['3'] || null,
+            year: this.year,
+            lang: this.lang,
+            theme: this.theme,
+            names: this.preferences.names || null,
             langMode:  this.langMode  || 'system',
             themeMode: this.themeMode || 'system',
         });
@@ -66,7 +67,7 @@ export const lifecycleMethods = {
         const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
         const resolved = systemDark ? 'dark' : 'light';
         this.theme = resolved;
-        this.preferences['2'] = (resolved === 'dark' ? 1 : 0);
+        this.preferences.theme = resolved;
         this.storageLocal.setLocalPreferences(this.userKey, this.preferences);
         this._applyThemeDom(resolved);
         this.logger?.debug?.(`[lifecycle._applySystemTheme] resolved=${resolved}`);
@@ -83,7 +84,7 @@ export const lifecycleMethods = {
             return;
         }
         this.lang = resolved;
-        this.preferences['1'] = resolved;
+        this.preferences.lang = resolved;
         this.storageLocal.setLocalPreferences(this.userKey, this.preferences);
         this.$i18n.locale = resolved;
         document.documentElement.lang = resolved;
@@ -135,7 +136,7 @@ export const lifecycleMethods = {
         this.themeMode = 'explicit';
         this.preferences.themeMode = 'explicit';
         this.theme = theme;
-        this.preferences['2'] = (theme === 'dark' ? 1 : 0);
+        this.preferences.theme = theme;
         this.storageLocal.setLocalPreferences(this.userKey, this.preferences);
         this._applyThemeDom(theme);
         this.logger?.debug?.(`[lifecycle.setTheme] mode=explicit theme=${theme}`);
@@ -157,7 +158,7 @@ export const lifecycleMethods = {
         this.langMode = 'explicit';
         this.preferences.langMode = 'explicit';
         this.lang = normalized;
-        this.preferences['1'] = this.lang;
+        this.preferences.lang = this.lang;
         this.storageLocal.setLocalPreferences(this.userKey, this.preferences);
         this.$i18n.locale = this.lang;
         document.documentElement.lang = this.lang;
@@ -169,7 +170,7 @@ export const lifecycleMethods = {
         const parsed = parseInt(yr);
         if (isNaN(parsed) || parsed < 1 || parsed > 9999) return;
         this.setYear(parsed);
-        this.preferences['0'] = parsed;
+        this.preferences.year = parsed;
         this.storageLocal.setLocalPreferences(this.userKey, this.preferences);
     },
 

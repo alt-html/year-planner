@@ -48,6 +48,20 @@ test('fresh boot: prefs stored under prefs:${deviceUUID}', async ({ page, contex
 
   // prefs key must match the device UUID
   expect(prefKeys).toContain(`prefs:${devKey}`);
+
+  // prefs payload should use named fields (no numeric aliases)
+  const prefPayload = await page.evaluate((key) => {
+    try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
+  }, `prefs:${devKey}`);
+  expect(prefPayload).not.toBeNull();
+  expect(prefPayload.year).toBeDefined();
+  expect(prefPayload.lang).toBeDefined();
+  expect(prefPayload.theme).toMatch(/^(light|dark)$/);
+  expect(prefPayload.names).toBeDefined();
+  expect(prefPayload['0']).toBeUndefined();
+  expect(prefPayload['1']).toBeUndefined();
+  expect(prefPayload['2']).toBeUndefined();
+  expect(prefPayload['3']).toBeUndefined();
 });
 
 test('fresh boot: planner document metadata contains userKey', async ({ page, context }) => {
@@ -113,11 +127,23 @@ test('_migratePrefsKey: prefs:${numericUid} is migrated to prefs:${deviceUUID}',
   const oldKey = await page.evaluate(() => localStorage.getItem('prefs:9876543210'));
   expect(oldKey).toBeNull();
 
-  // New UUID key must exist
-  const newKey = await page.evaluate(() =>
-    localStorage.getItem('prefs:12345678-abcd-4000-8000-000000000001')
-  );
-  expect(newKey).toBeTruthy();
+  // New UUID key must exist and be normalized to named fields
+  const newPrefs = await page.evaluate(() => {
+    try {
+      return JSON.parse(localStorage.getItem('prefs:12345678-abcd-4000-8000-000000000001'));
+    } catch (e) {
+      return null;
+    }
+  });
+  expect(newPrefs).toBeTruthy();
+  expect(newPrefs.year).toBe(2025);
+  expect(newPrefs.lang).toBe('fr');
+  expect(newPrefs.theme).toBe('dark');
+  expect(newPrefs['0']).toBeUndefined();
+  expect(newPrefs['1']).toBeUndefined();
+  expect(newPrefs['2']).toBeUndefined();
+  expect(newPrefs['3']).toBeUndefined();
+  expect(newPrefs.dark).toBeUndefined();
 });
 
 // ── Negative tests ───────────────────────────────────────────────────────────

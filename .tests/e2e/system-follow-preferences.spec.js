@@ -517,7 +517,7 @@ test.describe('system-follow preferences — resilience', () => {
                 if (k && k.startsWith('prefs:')) {
                     try {
                         const prefs = JSON.parse(localStorage.getItem(k));
-                        if (prefs) { prefs['1'] = 'xx'; localStorage.setItem(k, JSON.stringify(prefs)); }
+                        if (prefs) { prefs.lang = 'xx'; localStorage.setItem(k, JSON.stringify(prefs)); }
                     } catch (e) { /* skip */ }
                     break;
                 }
