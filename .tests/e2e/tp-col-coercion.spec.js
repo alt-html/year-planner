@@ -42,7 +42,7 @@ test('sync payload sends tp/col as integers not empty strings', async ({ page })
     });
   });
 
-  await page.goto('/?uid=12345&year=2026');
+  await page.goto('/?year=2026');
   await page.waitForSelector('[data-app-ready]');
   const deadline = Date.now() + 5000;
   while (capturedBody === null && Date.now() < deadline) {

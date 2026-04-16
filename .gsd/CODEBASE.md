@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-16T04:31:53Z | Files: 177 | Described: 0/177
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T04:31:53Z","fingerprint":"4305fb6f24ee8fbc98bb89dcff6433da6ff14b14","fileCount":177,"truncated":false} -->
+Generated: 2026-04-16T04:47:48Z | Files: 178 | Described: 0/178
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T04:47:48Z","fingerprint":"1dd4e384f5d2c7dbc87e4735554b7b2b5f959549","fileCount":178,"truncated":false} -->
 
 ### (root)/
 - `.gitignore`
@@ -82,6 +82,7 @@ Generated: 2026-04-16T04:31:53Z | Files: 177 | Described: 0/177
 - `.tests/e2e/auth-modal.spec.js`
 - `.tests/e2e/boot.spec.js`
 - `.tests/e2e/bs5-migration.spec.js`
+- `.tests/e2e/clean-url-navigation.spec.js`
 - `.tests/e2e/contract-sync.spec.js`
 - `.tests/e2e/cross-profile-sync.spec.js`
 - `.tests/e2e/entry-crud.spec.js`

@@ -16,7 +16,7 @@ test('editing a day entry writes HLC dot-path to rev:{uuid} (SYNC-04)', async ({
         localStorage.setItem('pester_signin', String(Date.now()));
     });
 
-    await page.goto('/?uid=12345&year=2026');
+    await page.goto('/?year=2026');
     await page.waitForSelector('[data-app-ready]');
 
     // Edit Jan day 1 (same selector pattern as entry-crud.spec.js)

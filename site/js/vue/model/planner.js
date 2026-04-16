@@ -1,5 +1,5 @@
 export const plannerState = {
-    uid : null,           // legacy numeric id — set by Application.init() from ?uid= param; deprecated, will be removed in T02
+    uid : null,           // deprecated — set to constant 0 by Application.init(); no longer read from URL or storage
     userKey : null,       // JWT uuid (signed-in) or device UUID (anonymous) — planner ownership key
     activeDocUuid : null, // UUID of the active planner document
     month : 0,

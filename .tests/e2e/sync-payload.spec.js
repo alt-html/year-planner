@@ -19,14 +19,15 @@ test('sync POST carries jsmdma payload shape (D007)', async ({ page }) => {
 
   await page.addInitScript(({ token, uuid }) => {
     localStorage.setItem('auth_token', token);
-    // Seed a planner for uid=12345, year=2026 so getActivePlnrUuid returns it
+    // Seed a planner keyed by userKey (UUID contract) so SyncClientAdapter includes it in sync
     localStorage.setItem('plnr:' + uuid, JSON.stringify({
-      meta: { name: '2026', year: 2026, lang: 'en', theme: 'light', dark: false, uid: 12345 },
+      meta: { name: '2026', year: 2026, lang: 'en', theme: 'light', dark: false, userKey: 'test-uuid' },
       days: { '2026-04-01': { tp: 1, tl: 'Test', col: 0, notes: '', emoji: '' } },
     }));
     localStorage.setItem('rev:' + uuid, JSON.stringify({}));
     localStorage.setItem('base:' + uuid, JSON.stringify({}));
     localStorage.setItem('sync:' + uuid, '0000000000000-000000-00000000');
+    localStorage.setItem('active-planner', uuid);
   }, { token: makeFakeJwt(), uuid: PLANNER_UUID });
 
   await page.route('**/year-planner/sync', async (route) => {
@@ -39,7 +40,7 @@ test('sync POST carries jsmdma payload shape (D007)', async ({ page }) => {
     });
   });
 
-  await page.goto('/?uid=12345&year=2026');
+  await page.goto('/?year=2026');
   await page.waitForSelector('[data-app-ready]');
   const deadline = Date.now() + 5000;
   while (capturedBody === null && Date.now() < deadline) {

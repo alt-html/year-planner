@@ -27,8 +27,8 @@ test('sign-out clears auth credentials but preserves planner data', async ({ pag
     localStorage.setItem('auth_provider', 'google');
     localStorage.setItem('auth_time', String(Date.now()));
     localStorage.setItem('ids', JSON.stringify([{ uuid: 'user-1', name: '', provider: 'google', email: '' }]));
-    localStorage.setItem('prefs:12345', JSON.stringify({ year: 2026, lang: 'en' }));
-    localStorage.setItem('plnr:abc-123', JSON.stringify({ meta: { uid: 12345 }, days: {} }));
+    localStorage.setItem('prefs:test-uuid', JSON.stringify({ year: 2026, lang: 'en' }));
+    localStorage.setItem('plnr:abc-123', JSON.stringify({ meta: { userKey: 'test-uuid' }, days: {} }));
     localStorage.setItem('rev:abc-123',  '{}');
     localStorage.setItem('base:abc-123', '{}');
     localStorage.setItem('sync:abc-123', '0000000000000-000000-00000000');
@@ -85,8 +85,8 @@ test('sign-out clears auth credentials but preserves planner data', async ({ pag
   expect(storage['base:abc-123']).toBeDefined();
   expect(storage['sync:abc-123']).toBeDefined();
 
-  // prefs MUST survive
-  expect(storage['prefs:12345']).toBeDefined();
+  // prefs MUST survive (keyed by JWT sub UUID — AUT-03 offline-first contract)
+  expect(storage['prefs:test-uuid']).toBeDefined();
 
   // identity data MUST survive
   expect(storage['ids']).toBeDefined();

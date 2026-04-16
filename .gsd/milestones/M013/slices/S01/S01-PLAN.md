@@ -142,7 +142,7 @@ Why this task exists
   - Files: `site/js/Application.js`, `site/js/vue/methods/lifecycle.js`, `site/js/vue/methods/planner.js`, `site/js/vue/methods/rail.js`, `site/js/vue/methods/calendar.js`, `site/index.html`, `.tests/e2e/clean-url-navigation.spec.js`, `.tests/smoke/dark-mode.spec.js`
   - Verify: npm --prefix .tests run test -- --reporter=line e2e/clean-url-navigation.spec.js e2e/planner-management.spec.js smoke/dark-mode.spec.js
 
-- [ ] **T03: Align remaining regression suite and add uid-removal grep gate** `est:1h`
+- [x] **T03: Align remaining regression suite and add uid-removal grep gate** `est:1h`
   ## Skills Used
 
 - `test`
