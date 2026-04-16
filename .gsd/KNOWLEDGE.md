@@ -138,3 +138,25 @@ The `scripts/verify-icon-integration-signoff.sh` runner uses `|| { write_report;
 
 ### Negative-boundary test coverage for icon matrix contracts prevents silent export failures downstream
 S06's Playwright spec validates that all required surfaces exist in the matrix contracts (site/icons/matrix.json and site/icons/desktop-matrix.json) and that all referenced files exist on disk with non-zero size before generating visual artifacts. Negative-boundary tests explicitly verify rejection of: missing required purpose-size entries, missing desktop format fields, absolute/traversal paths, and zero-byte files. Without this validation, S03 export logic or S04 wiring could silently fail on missing inputs, producing incomplete icon deliverables. Always validate metadata structure and referenced paths at contract boundaries (sign-off points where downstream slices consume the output).
+
+---
+
+## M013 — Legacy Alignment Cleanup, S01 (2026-04-16)
+
+### Preference persistence always keys by userKey; never numeric uid
+From S01: all preference reads/writes must resolve `model.userKey` (from `ClientAuthSession.getUserUuid() || DeviceSession.getDeviceId()` in priority order) and use `keyPrefs(userKey)` where uid was previously used. Once set, userKey is stable across reloads (stored in `dev` key). This applies to all future preference mutations — any code that reads/writes prefs must use the userKey path, not numeric uid. No numeric uid keys should ever be created at runtime.
+
+### StorageLocal.migrate() guard must check both devExists AND !legacyRaw to preserve migration coverage
+The migrate() function has an early-return pattern: `if (devExists && !legacyRaw) return`. This guard prevents re-migration when `dev` key is present, but only if legacy data (`'0'` key) is NOT present. Application.js calls `DeviceSession.getDeviceId()` early (before reading prefs), which writes the `dev` key before migrate() runs. Without the `!legacyRaw` check, users with legacy data would skip migration entirely and never move their `prefs:${numericUid}` keys to the new UUID-keyed format. Always preserve the full migration path for users in the legacy-to-M009 transition state.
+
+### Grep gates for legacy surface removal: use targeted URL-param patterns to avoid false positives
+S01's grep gate uses `\?uid=` and `[?&]id=` patterns (exact URL-param syntax) rather than broader `\buid\b` (which matches any uid variable name). Migration code legitimately references `uid` as a variable when processing legacy data; a broader pattern would generate unavoidable false positives. Targeted URL-param patterns are sufficient to catch reintroduced navigation-based uid usage (the actual regression risk) and keep the gate focused. When building grep gates for cleanup milestones, match the specific surface you're verifying (URL params, query strings, function calls) rather than all string occurrences of the symbol.
+
+### UI state mutations in lifecycle.js belong alongside initialise/refresh, not in a separate methods file
+S01 added `setTheme()`, `setLang()`, `jumpToYear()` to lifecycle.js because they are preference-persistence helpers that mirror the pattern of `initialise()` and `refresh()`. They validate inputs, mutate Vue reactive state, persist via `setLocalPreferences()`, and apply DOM changes. This belongs in the lifecycle methods file (not in entries/calendar/rail methods) because preference mutation is a fundamental runtime lifecycle operation. When adding new preference-mutating methods in future, follow the same pattern and place them alongside initialise/refresh.
+
+### Language switch in Vue I18n v9: use reactive locale assignment without reload
+S01's `setLang(lang)` method uses `this.$i18n.locale = normalized` to update the active locale in-app without a page reload. This works reliably in Vue I18n v9 legacy mode (as configured in i18n.js). The locale assignment is reactive — all i18n.t() calls immediately use the new locale, and `document.documentElement.lang` can be updated in the same method. No need for `$i18n.global.locale.value` or other workarounds; the simpler assignment works and is the expected pattern for this project's i18n setup.
+
+### E2E test seeds: active-planner key in localStorage controls which planner loads at startup
+S01 discovered that E2E specs testing sync or write-path side effects (rev:, base:, sync: keys) must seed both a planner document AND the `active-planner` key pointing to its UUID. Without the active-planner seed, `PlannerStore.restoreActive()` returns null, the app creates an empty default planner, and any write-path assertions fail (e.g., no rev: writes because getActivePlnrUuid returns null). When writing E2E specs that verify storage mutations, always include: `localStorage.setItem('active-planner', plannerUuid)` alongside the planner document seed. This ensures the app loads your seeded planner rather than creating a new empty one.

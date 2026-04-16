@@ -13,9 +13,8 @@ export default class Application {
         this.pageLoadTime = DateTime.now();
         this.url = {
             parameters : {
-                year : urlParam('year'),
-                lang : urlParam('lang'),
-                theme : urlParam('theme'),
+                // Only OAuth callback params and share/name are read from URL.
+                // year / lang / theme are no longer bootstrap inputs (R103).
                 name : urlParam('name'),
                 share : urlParam('share')
             }
@@ -95,15 +94,33 @@ export default class Application {
 
         this.model.preferences = (this.storageLocal.getLocalPreferences(this.model.userKey) || {});
 
-        this.model.year = parseInt( this.url.parameters.year ) || this.model.preferences['0'] || this.pageLoadTime.year;
-        this.model.lang = (this.url.parameters.lang || this.model.preferences['1'] || getNavigatorLanguage() ).substring(0,2);
-        this.model.theme = this.url.parameters.theme || (this.model.preferences['2'] == 1 ? 'dark' : 'light');
+        // Resolve startup year/lang/theme from preferences + system defaults only.
+        // URL params year/lang/theme are intentionally ignored here (R103).
+        const SUPPORTED_LANGS = ['en','zh','hi','ar','es','pt','fr','ru','id','ja'];
+        const navLangRaw = getNavigatorLanguage().substring(0, 2).toLowerCase();
+        const navLang = SUPPORTED_LANGS.includes(navLangRaw) ? navLangRaw : 'en';
+        const systemTheme = window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+        this.model.year = this.model.preferences['0'] || this.pageLoadTime.year;
+        this.model.lang = this.model.preferences['1'] || navLang;
+        this.model.theme = this.model.preferences['2'] !== undefined
+            ? (this.model.preferences['2'] == 1 ? 'dark' : 'light')
+            : systemTheme;
+        // Mode contract: 'system' follows OS/navigator live; 'explicit' is a user override.
+        // Default: 'system' for fresh installs, 'explicit' for existing prefs that had a stored value.
+        this.model.langMode = this.model.preferences.langMode
+            || (this.model.preferences['1'] ? 'explicit' : 'system');
+        this.model.themeMode = this.model.preferences.themeMode
+            || (this.model.preferences['2'] !== undefined ? 'explicit' : 'system');
+
         this.model.name = this.url.parameters.name || (this.model.preferences['3']?.[''+this.model.year]?.[this.model.lang]) || '';
         this.model.share = this.url.parameters.share || '';
 
         this.model.preferences['0'] = this.model.year;
         this.model.preferences['1'] = this.model.lang;
         this.model.preferences['2'] = (this.model.theme == 'light' ? 0:1);
+        this.model.preferences.langMode  = this.model.langMode;
+        this.model.preferences.themeMode = this.model.themeMode;
         if (!this.model.preferences['3']){
             this.model.preferences['3'] = {};
         }
@@ -125,7 +142,7 @@ export default class Application {
         const payload = ClientAuthSession.getPayload();
         this.model.linkedProviders = payload?.providers ?? [];
 
-        this.logger?.debug?.(`[Application.init] userKey=${this.model.userKey} uuid=${this.model.uuid} year=${this.model.year} signedin=${this.model.signedin} registered=${this.model.registered} url=${window.location.href}`);
+        this.logger?.debug?.(`[Application.init] userKey=${this.model.userKey} uuid=${this.model.uuid} year=${this.model.year} lang=${this.model.lang} langMode=${this.model.langMode} theme=${this.model.theme} themeMode=${this.model.themeMode} signedin=${this.model.signedin} registered=${this.model.registered} url=${window.location.href}`);
 
         this.storage.setModelFromImportString(this.model.share);
 
@@ -152,6 +169,8 @@ export default class Application {
         vueApp.use(this.i18n);
         // Mount and data-app-ready are handled by vueStarter / main.js after onReady returns.
 
+        // Sync i18n locale to resolved startup language (not from URL — R103).
+        this.i18n.global.locale = this.model.lang;
         document.title = this.i18n.global.t('label.yearplanner');
         document.documentElement.lang = this.model.lang;
 

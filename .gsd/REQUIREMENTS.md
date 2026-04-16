@@ -26,17 +26,6 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: unmapped
 - Notes: Applies to nav/year/language/theme interactions; callback params remain allowed for auth flows only.
 
-### R104 — Remove legacy `uid` runtime/storage/schema usage and align identity mechanics to `userKey` plus jsmdma document UUID semantics while preserving multi-planner support.
-- Class: data-model
-- Status: active
-- Description: Remove legacy `uid` runtime/storage/schema usage and align identity mechanics to `userKey` plus jsmdma document UUID semantics while preserving multi-planner support.
-- Why it matters: `uid` is confusing and out of line with current jsmdma document and ownership model.
-- Source: user
-- Primary owning slice: M013/S01
-- Supporting slices: M013/S04
-- Validation: unmapped
-- Notes: No backward-compat migration required (greenfield). Multi-planner remains explicit and unchanged as a capability.
-
 ### R105 — Remove legacy share surface and URL/LZ import-export behavior (`?share=` and compressed payload path) from runtime and UI.
 - Class: continuity
 - Status: active
@@ -80,17 +69,6 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M013/S04
 - Validation: unmapped
 - Notes: Use media query change events for live system updates while in `system` mode.
-
-### R109 — Require strict regression proof for cleanup: existing smoke and E2E suites plus new targeted tests and grep gates for removed legacy surfaces.
-- Class: quality-attribute
-- Status: active
-- Description: Require strict regression proof for cleanup: existing smoke and E2E suites plus new targeted tests and grep gates for removed legacy surfaces.
-- Why it matters: Cleanup milestones must prove behavioral integrity and complete removal of deprecated mechanisms.
-- Source: user
-- Primary owning slice: M013/S04
-- Supporting slices: M013/S01,M013/S02,M013/S03
-- Validation: unmapped
-- Notes: Includes grep gate for uid removal and checks for removed share/feature paths.
 
 ## Validated
 
@@ -230,6 +208,28 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: validated
 - Notes: Verified in codebase and test runs during M011 completion.
 
+### R104 — Remove legacy `uid` runtime/storage/schema usage and align identity mechanics to `userKey` plus jsmdma document UUID semantics while preserving multi-planner support.
+- Class: data-model
+- Status: validated
+- Description: Remove legacy `uid` runtime/storage/schema usage and align identity mechanics to `userKey` plus jsmdma document UUID semantics while preserving multi-planner support.
+- Why it matters: `uid` is confusing and out of line with current jsmdma document and ownership model.
+- Source: user
+- Primary owning slice: M013/S01
+- Supporting slices: M013/S04
+- Validation: S01 refactored storage contract from numeric uid keys to userKey (UUID) persistence; Application.js bootstrap resolves userKey early and uses it for all preference reads/writes; all planner metadata carries meta.userKey; multi-planner switching uses active document UUID; 25+ regression tests pass validating behavior under new contract.
+- Notes: No backward-compat migration required (greenfield). Multi-planner remains explicit and unchanged as a capability.
+
+### R109 — Require strict regression proof for cleanup: existing smoke and E2E suites plus new targeted tests and grep gates for removed legacy surfaces.
+- Class: quality-attribute
+- Status: validated
+- Description: Require strict regression proof for cleanup: existing smoke and E2E suites plus new targeted tests and grep gates for removed legacy surfaces.
+- Why it matters: Cleanup milestones must prove behavioral integrity and complete removal of deprecated mechanisms.
+- Source: user
+- Primary owning slice: M013/S04
+- Supporting slices: M013/S01,M013/S02,M013/S03
+- Validation: S01 achieved strict regression proof via: (1) 8 new contract tests covering fresh boot, migration, error paths; (2) 9 new navigation tests confirming in-app state mutations and clean URLs; (3) 5 updated E2E specs validating sync/lifecycle under new identity contract; (4) grep gate script validating zero uid navigation surfaces in runtime code; (5) full 25+ test regression suite passes with no behavioral regressions.
+- Notes: Includes grep gate for uid removal and checks for removed share/feature paths.
+
 ### SYNC-04 — Untitled
 - Status: validated
 - Primary owning slice: M011/S02
@@ -345,12 +345,12 @@ This file is the explicit capability and coverage contract for the project.
 | R101 | continuity | validated | M011/S01 | none | validated |
 | R102 | operability | validated | M011/S03 | none | validated |
 | R103 | continuity | active | M013/S02 | M013/S04 | unmapped |
-| R104 | data-model | active | M013/S01 | M013/S04 | unmapped |
+| R104 | data-model | validated | M013/S01 | M013/S04 | S01 refactored storage contract from numeric uid keys to userKey (UUID) persistence; Application.js bootstrap resolves userKey early and uses it for all preference reads/writes; all planner metadata carries meta.userKey; multi-planner switching uses active document UUID; 25+ regression tests pass validating behavior under new contract. |
 | R105 | continuity | active | M013/S03 | M013/S04 | unmapped |
 | R106 | operability | active | M013/S03 | M013/S04 | unmapped |
 | R107 | primary-user-loop | active | M013/S02 | M013/S04 | unmapped |
 | R108 | quality-attribute | active | M013/S02 | M013/S04 | unmapped |
-| R109 | quality-attribute | active | M013/S04 | M013/S01,M013/S02,M013/S03 | unmapped |
+| R109 | quality-attribute | validated | M013/S04 | M013/S01,M013/S02,M013/S03 | S01 achieved strict regression proof via: (1) 8 new contract tests covering fresh boot, migration, error paths; (2) 9 new navigation tests confirming in-app state mutations and clean URLs; (3) 5 updated E2E specs validating sync/lifecycle under new identity contract; (4) grep gate script validating zero uid navigation surfaces in runtime code; (5) full 25+ test regression suite passes with no behavioral regressions. |
 | R110 | integration | deferred | none | none | unmapped |
 | SYNC-04 |  | validated | M011/S02 | none | markEdited() wired in entries.js updateEntry() for all 5 day fields (tp, tl, col, notes, emoji); hlc-write.spec.js Playwright test confirms rev:{uuid} localStorage key contains dot-path keys matching days.YYYY-MM-DD.{field} with non-empty HLC strings after any edit; all 18 tests pass. M011/S02 complete 2026-04-10. |
 | SYNC-05 |  | validated | M011/S01 | none | POST /year-planner/sync endpoint wired end-to-end: SyncClient builds payload, Api.sync() calls it, all 9 Vue/Storage call sites updated. sync-payload.spec.js Playwright mock test verifies payload shape (D007). All 17 tests pass. M011/S01 complete 2026-04-09. |
@@ -359,7 +359,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 8
-- Mapped to slices: 8
-- Validated: 18 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R005, R006, R100, R101, R102, SYNC-04, SYNC-05, SYNC-06)
+- Active requirements: 6
+- Mapped to slices: 6
+- Validated: 20 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R005, R006, R100, R101, R102, R104, R109, SYNC-04, SYNC-05, SYNC-06)
 - Unmapped active requirements: 0

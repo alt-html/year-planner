@@ -20,4 +20,6 @@ export const plannerState = {
     pageLoadTime : null,
     lang : null,
     theme : null,
+    langMode : null,   // 'system' | 'explicit' — follows navigator language vs user override
+    themeMode : null,  // 'system' | 'explicit' — follows OS color scheme vs user override
 }

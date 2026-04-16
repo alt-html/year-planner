@@ -26,30 +26,42 @@ export default class StorageLocal {
 
     setLocalPreferences(userKey, preferences) {
         const prefs = preferences['0'] !== undefined ? {
-            year:  preferences['0'],
-            lang:  preferences['1'],
-            theme: (preferences['2'] == 1 ? 'dark' : 'light'),
-            dark:  (preferences['2'] == 1),
-            names: preferences['3'] || null,
+            year:      preferences['0'],
+            lang:      preferences['1'],
+            theme:     (preferences['2'] == 1 ? 'dark' : 'light'),
+            dark:      (preferences['2'] == 1),
+            names:     preferences['3'] || null,
+            langMode:  preferences.langMode  || null,
+            themeMode: preferences.themeMode || null,
         } : preferences;
 
         this.model.preferences = preferences;
-        this.model.lang  = prefs.lang  || preferences['1'] || 'en';
-        this.model.theme = prefs.theme || (preferences['2'] == 1 ? 'dark' : 'light');
+        this.model.lang      = prefs.lang  || preferences['1'] || 'en';
+        this.model.theme     = prefs.theme || (preferences['2'] == 1 ? 'dark' : 'light');
+        if (prefs.langMode)  this.model.langMode  = prefs.langMode;
+        if (prefs.themeMode) this.model.themeMode = prefs.themeMode;
 
         PreferencesStore.set(String(userKey), prefs);
     }
 
     getLocalPreferences(userKey) {
-        this.migrate();
-        const prefs = PreferencesStore.get(String(userKey));
+        try { this.migrate(); } catch (e) { /* skip corrupt migration state */ }
+        let prefs;
+        try {
+            prefs = PreferencesStore.get(String(userKey));
+        } catch (e) {
+            this.logger?.debug?.('[StorageLocal.getLocalPreferences] corrupt prefs — returning null');
+            return null;
+        }
         if (!prefs || Object.keys(prefs).length === 0) return null;
         if (prefs.year !== undefined && prefs['0'] === undefined) {
             return {
-                0: prefs.year,
-                1: prefs.lang || 'en',
-                2: prefs.dark ? 1 : 0,
-                3: prefs.names || null,
+                0:         prefs.year,
+                1:         prefs.lang || 'en',
+                2:         prefs.dark ? 1 : 0,
+                3:         prefs.names || null,
+                langMode:  prefs.langMode  || null,
+                themeMode: prefs.themeMode || null,
             };
         }
         return prefs;
