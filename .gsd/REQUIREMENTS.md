@@ -4,17 +4,6 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Active
 
-### R005 — Generate `.ico` and `.icns` packaging assets from the canonical source set for future Windows/macOS desktop bundling.
-- Class: integration
-- Status: active
-- Description: Generate `.ico` and `.icns` packaging assets from the canonical source set for future Windows/macOS desktop bundling.
-- Why it matters: Avoids rework when Electron packaging starts.
-- Source: user
-- Primary owning slice: M012/S05
-- Supporting slices: M012/S03
-- Validation: mapped
-- Notes: Electron runtime implementation itself is out of scope for M012.
-
 ### R006 — Prove icon integration using existing project test flow plus explicit visual spot checks on key sizes/surfaces.
 - Class: quality-attribute
 - Status: active
@@ -119,6 +108,17 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M012/S03
 - Validation: S04 integration complete: index.html head links and manifest.json icons[] wired to canonical ./icons/* outputs from S03. All 57 smoke tests pass (icon-live-wiring.spec.js: 28 tests, compose.spec.js: 5 tests, icon-export-matrix.spec.js: 24 tests). Negative-boundary assertions confirm legacy paths are rejected and canonical structure is enforced.
 - Notes: Wiring must remain backward-safe until full asset matrix exists.
+
+### R005 — Generate `.ico` and `.icns` packaging assets from the canonical source set for future Windows/macOS desktop bundling.
+- Class: integration
+- Status: validated
+- Description: Generate `.ico` and `.icns` packaging assets from the canonical source set for future Windows/macOS desktop bundling.
+- Why it matters: Avoids rework when Electron packaging starts.
+- Source: user
+- Primary owning slice: M012/S05
+- Supporting slices: M012/S03
+- Validation: M012/S05 delivered: bash scripts/export-desktop-packaging-assets.sh generates site/icons/desktop/year-planner.ico (7 frames: 16,24,32,48,64,128,256) and site/icons/desktop/year-planner.icns (iconset: 16,32,64,128,256,512,1024) from canonical.json winner metadata (C2). site/icons/desktop-matrix.json contract records platform (windows/macos), format (ico/icns), sizes, src paths, and output locations. All 34 desktop-packaging smoke tests pass; all 52 existing icon-export-matrix and icon-live-wiring regression tests pass (86 total). Web/PWA matrix.json remains untouched with 9 entries. candidateId alignment verified (C2 → C2). Python ICO packer and bash exporter implement path safety validation (rejects ../ and absolute paths). Deterministic export and contract enabled by purpose-specific SVG metadata in canonical.json. Desktop assets ready for future Windows/macOS Electron bundling.
+- Notes: Electron runtime implementation itself is out of scope for M012.
 
 ### R100 — Client sync stack was rewritten to jsmdma protocol (`POST /year-planner/sync`) with HLC field revisions.
 - Class: integration
@@ -246,7 +246,7 @@ This file is the explicit capability and coverage contract for the project.
 | R002 | primary-user-loop | validated | M012/S02 | none | C2 Nordic Clarity explicitly selected as canonical winner based on visual review applying tie-breaker criteria (small-size legibility at 16×16, cross-size coherence). Selection locked in canonical.json with full metadata and alternatives.json documenting archived alternatives (C1, C3). Gallery (icon-comparison.html) updated with data-selection-state attributes. Decision D016 recorded. All selection smoke tests pass enforcing winner uniqueness, alternative completeness, and metadata/gallery agreement." |
 | R003 | integration | validated | M012/S03 | M012/S05 | S03 delivered: bash scripts/export-canonical-icon-matrix.sh produces 9 platform-specific PNG variants (favicon-16x16, favicon-32x32, apple-touch-180x180, pwa-any-{192,512}, pwa-maskable-{192,512}, pwa-monochrome-{192,512}) in site/icons/. matrix.json enumerates all entries with platform, purpose (any/maskable/monochrome), size, src paths, and output locations. All 24 matrix export smoke tests pass; all 80 S01/S02 regression tests pass. Export matrix is deterministic and read-only from canonical.json winner metadata. Platform coverage: web (2 sizes), iOS (1 size), PWA (6 sizes across 3 purposes). |
 | R004 | launchability | validated | M012/S04 | M012/S03 | S04 integration complete: index.html head links and manifest.json icons[] wired to canonical ./icons/* outputs from S03. All 57 smoke tests pass (icon-live-wiring.spec.js: 28 tests, compose.spec.js: 5 tests, icon-export-matrix.spec.js: 24 tests). Negative-boundary assertions confirm legacy paths are rejected and canonical structure is enforced. |
-| R005 | integration | active | M012/S05 | M012/S03 | mapped |
+| R005 | integration | validated | M012/S05 | M012/S03 | M012/S05 delivered: bash scripts/export-desktop-packaging-assets.sh generates site/icons/desktop/year-planner.ico (7 frames: 16,24,32,48,64,128,256) and site/icons/desktop/year-planner.icns (iconset: 16,32,64,128,256,512,1024) from canonical.json winner metadata (C2). site/icons/desktop-matrix.json contract records platform (windows/macos), format (ico/icns), sizes, src paths, and output locations. All 34 desktop-packaging smoke tests pass; all 52 existing icon-export-matrix and icon-live-wiring regression tests pass (86 total). Web/PWA matrix.json remains untouched with 9 entries. candidateId alignment verified (C2 → C2). Python ICO packer and bash exporter implement path safety validation (rejects ../ and absolute paths). Deterministic export and contract enabled by purpose-specific SVG metadata in canonical.json. Desktop assets ready for future Windows/macOS Electron bundling. |
 | R006 | quality-attribute | active | M012/S06 | M012/S04, M012/S05 | mapped |
 | R007 | continuity | active | none yet | none | unmapped |
 | R020 | quality-attribute | deferred | none | none | unmapped |
@@ -263,7 +263,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 3
-- Mapped to slices: 3
-- Validated: 16 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R100, R101, R102, SYNC-04, SYNC-05, SYNC-06)
+- Active requirements: 2
+- Mapped to slices: 2
+- Validated: 17 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R005, R100, R101, R102, SYNC-04, SYNC-05, SYNC-06)
 - Unmapped active requirements: 0
