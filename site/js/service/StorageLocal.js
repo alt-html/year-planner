@@ -1,6 +1,5 @@
 import {
     KEY_DEV, KEY_IDS,
-    keyPrefs, keyPlnr, keyRev, keyBase, keySync, HLC_ZERO,
 } from './storage-schema.js';
 import { ClientAuthSession, DeviceSession, PreferencesStore } from '../vendor/jsmdma-auth-client.esm.js';
 
@@ -39,7 +38,7 @@ export default class StorageLocal {
         if (normalized.langMode)  this.model.langMode  = normalized.langMode;
         if (normalized.themeMode) this.model.themeMode = normalized.themeMode;
 
-        const persisted = { ...this._withoutLegacyPreferenceAliases(existing), ...normalized };
+        const persisted = { ...existing, ...normalized };
         PreferencesStore.set(String(userKey), persisted);
     }
 
@@ -55,18 +54,14 @@ export default class StorageLocal {
         if (!prefs || Object.keys(prefs).length === 0) return null;
 
         const normalized = this._normalizePreferences(prefs, prefs);
-        const canonical = { ...this._withoutLegacyPreferenceAliases(prefs), ...normalized };
-        const hasLegacyAliases = ['0', '1', '2', '3', 'dark'].some((k) =>
-            Object.prototype.hasOwnProperty.call(prefs, k)
-        );
         const missingNamedShape =
             prefs.year === undefined ||
             prefs.lang === undefined ||
             prefs.theme === undefined ||
             prefs.names === undefined;
 
-        if (hasLegacyAliases || missingNamedShape) {
-            PreferencesStore.set(String(userKey), canonical);
+        if (missingNamedShape) {
+            PreferencesStore.set(String(userKey), { ...prefs, ...normalized });
         }
         return normalized;
     }
@@ -77,22 +72,15 @@ export default class StorageLocal {
     }
 
     _normalizePreferences(preferences = {}, fallback = {}) {
-        const year = preferences.year ?? preferences['0'] ?? fallback.year ?? fallback['0'] ?? new Date().getFullYear();
-        const langRaw = preferences.lang ?? preferences['1'] ?? fallback.lang ?? fallback['1'] ?? 'en';
+        const year = preferences.year ?? fallback.year ?? new Date().getFullYear();
+        const langRaw = preferences.lang ?? fallback.lang ?? 'en';
         const supportedLangs = ['en','zh','hi','ar','es','pt','fr','ru','id','ja'];
         const lang2 = String(langRaw || '').substring(0, 2).toLowerCase();
         const lang = supportedLangs.includes(lang2) ? lang2 : 'en';
 
-        const rawTheme = preferences.theme
-            ?? (preferences['2'] !== undefined ? (preferences['2'] == 1 ? 'dark' : 'light') : undefined)
-            ?? fallback.theme
-            ?? (fallback['2'] !== undefined ? (fallback['2'] == 1 ? 'dark' : 'light') : undefined)
-            ?? (preferences.dark !== undefined ? (preferences.dark ? 'dark' : 'light') : undefined)
-            ?? (fallback.dark !== undefined ? (fallback.dark ? 'dark' : 'light') : undefined)
-            ?? 'light';
-
+        const rawTheme = preferences.theme ?? fallback.theme ?? 'light';
         const theme = (rawTheme === 'dark' ? 'dark' : 'light');
-        const names = preferences.names ?? preferences['3'] ?? fallback.names ?? fallback['3'] ?? null;
+        const names = preferences.names ?? fallback.names ?? null;
         const langMode = preferences.langMode ?? fallback.langMode ?? null;
         const themeMode = preferences.themeMode ?? fallback.themeMode ?? null;
 
@@ -106,15 +94,6 @@ export default class StorageLocal {
         };
     }
 
-    _withoutLegacyPreferenceAliases(prefs = {}) {
-        const cleaned = {};
-        for (const [k, v] of Object.entries(prefs)) {
-            if (k === '0' || k === '1' || k === '2' || k === '3' || k === 'dark') continue;
-            cleaned[k] = v;
-        }
-        return cleaned;
-    }
-
     // ── Identities ───────────────────────────────────────────────────────────
 
     setLocalIdentities(identities) {
@@ -125,9 +104,6 @@ export default class StorageLocal {
                 if (uid) map[String(uid)] = { uid, agent: id['1'] || id.agent || '', remote: id['2'] || 0 };
             }
             localStorage.setItem(KEY_IDS, JSON.stringify(map));
-            if (!localStorage.getItem(KEY_DEV)) {
-                localStorage.setItem('0', JSON.stringify(identities));
-            }
         } else {
             localStorage.setItem(KEY_IDS, JSON.stringify(identities));
         }
@@ -141,8 +117,7 @@ export default class StorageLocal {
             if (Array.isArray(parsed)) return parsed;
             return Object.values(parsed).map(v => ({ 0: v.uid, 1: v.agent || '', 2: v.remote || 0, 3: 0 }));
         }
-        const legacy = localStorage.getItem('0');
-        return legacy ? JSON.parse(legacy) : null;
+        return null;
     }
 
     getLocalUid() {
@@ -192,7 +167,7 @@ export default class StorageLocal {
 
     initialised() {
         this.migrate();
-        return localStorage.getItem(KEY_DEV) !== null || localStorage.getItem('0') !== null;
+        return localStorage.getItem(KEY_DEV) !== null;
     }
 
     // ── Wipe / reset ─────────────────────────────────────────────────────────
@@ -231,100 +206,38 @@ export default class StorageLocal {
     // ── Migration ────────────────────────────────────────────────────────────
 
     migrate() {
-        const devExists = !!localStorage.getItem(KEY_DEV);
-        const legacyRaw = localStorage.getItem('0');
+        // Legacy numeric preference/day migration has been removed.
+        // Keep lightweight metadata cleanup and prune unsupported legacy keys.
+        this._migrateUserKey();
+        this._pruneLegacyStorageKeys();
+    }
 
-        if (devExists && !legacyRaw) {
-            // Already on M009 schema — lightweight cleanup only.
-            this._migrateUserKey();
-            this._migratePrefsKey();
-            return;
-        }
-        if (!legacyRaw) return;
-
-        let identities;
-        try { identities = JSON.parse(legacyRaw); } catch (e) { return; }
-        if (!Array.isArray(identities) || identities.length === 0) return;
-
-        this.getDevId();
-
-        // Resolve the current user's identity key once — used for all writes in this migration pass.
-        const userKey = ClientAuthSession.getUserUuid() || DeviceSession.getDeviceId();
-        const oldKeysToRemove = new Set(['0']);
-
-        for (const identity of identities) {
-            const uid = identity['0'];
-            if (!uid) continue;
-            const prefKey = String(uid);
-            oldKeysToRemove.add(prefKey);
-            let oldPrefs = {};
-            try { oldPrefs = JSON.parse(localStorage.getItem(prefKey)) || {}; } catch (e) { /* skip */ }
-
-            const year  = oldPrefs['0'] || new Date().getFullYear();
-            const lang  = oldPrefs['1'] || 'en';
-            const dark  = oldPrefs['2'] == 1;
-            const names = oldPrefs['3'] || null;
-
-            // Write prefs under userKey (UUID), not the legacy numeric uid.
-            localStorage.setItem(keyPrefs(userKey), JSON.stringify({
-                year,
-                lang,
-                theme: dark ? 'dark' : 'light',
-                names,
-                langMode: null,
-                themeMode: null,
-            }));
-
-            const yearSet = new Set();
-            for (let i = 0; i < localStorage.length; i++) {
-                const k = localStorage.key(i);
-                if (!k || !k.startsWith(String(uid) + '-')) continue;
-                oldKeysToRemove.add(k);
-                const suffix = k.slice(String(uid).length + 1);
-                const yr = parseInt(suffix.slice(0, 4), 10);
-                if (yr >= 1900 && yr <= 2100) yearSet.add(yr);
+    _pruneLegacyStorageKeys() {
+        const toRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key) continue;
+            // Legacy identity array key
+            if (key === '0') {
+                toRemove.push(key);
+                continue;
             }
-
-            for (const yr of yearSet) {
-                const months = Array.from({ length: 12 }, () => ({}));
-                for (let m = 1; m <= 12; m++) {
-                    const raw = localStorage.getItem(`${uid}-${yr}${m}`);
-                    if (!raw) continue;
-                    let monthObj;
-                    try { monthObj = JSON.parse(raw); } catch (e) { continue; }
-                    if (!monthObj || typeof monthObj !== 'object') continue;
-                    for (const [day, dayObj] of Object.entries(monthObj)) {
-                        if (!dayObj || typeof dayObj !== 'object') continue;
-                        months[m - 1][day] = {
-                            tp:    dayObj['0'] !== undefined ? dayObj['0']  : (dayObj.tp    || 0),
-                            tl:    dayObj['1'] !== undefined ? dayObj['1']  : (dayObj.tl    || ''),
-                            col:   dayObj['2'] !== undefined ? dayObj['2']  : (dayObj.col   || 0),
-                            notes: dayObj['3'] !== undefined ? dayObj['3']  : (dayObj.notes || ''),
-                            emoji: dayObj['4'] !== undefined ? dayObj['4']  : (dayObj.emoji || ''),
-                        };
-                    }
-                }
-                const uuid = crypto.randomUUID();
-                const days = {};
-                for (let m = 0; m < 12; m++) {
-                    for (const [day, dayObj] of Object.entries(months[m] || {})) {
-                        const month = String(m + 1).padStart(2, '0');
-                        const d = String(day).padStart(2, '0');
-                        days[`${yr}-${month}-${d}`] = dayObj;
-                    }
-                }
-                const doc = {
-                    meta: { userKey, year: yr, lang, theme: dark ? 'dark' : 'light', dark, uid, created: Date.now() },
-                    days,
-                };
-                localStorage.setItem(keyPlnr(uuid), JSON.stringify(doc));
-                localStorage.setItem(keyRev(uuid),  JSON.stringify({}));
-                localStorage.setItem(keyBase(uuid), JSON.stringify({}));
-                localStorage.setItem(keySync(uuid), HLC_ZERO);
+            // Legacy numeric prefs key (e.g., '1234567890')
+            if (/^\d+$/.test(key)) {
+                toRemove.push(key);
+                continue;
+            }
+            // Legacy namespaced numeric prefs key (e.g., 'prefs:1234567890')
+            if (key.startsWith('prefs:') && /^\d+$/.test(key.slice(6))) {
+                toRemove.push(key);
+                continue;
+            }
+            // Legacy month key (e.g., '1234567890-20263')
+            if (/^\d+-\d{4}(1[0-2]|[1-9])$/.test(key)) {
+                toRemove.push(key);
             }
         }
-
-        for (const k of oldKeysToRemove) localStorage.removeItem(k);
+        for (const key of toRemove) localStorage.removeItem(key);
     }
 
     _migrateUserKey() {
@@ -339,34 +252,6 @@ export default class StorageLocal {
                     localStorage.setItem(key, JSON.stringify(doc));
                 }
             } catch (e) { /* skip corrupt */ }
-        }
-    }
-
-    // Migrate prefs stored under numeric uid (legacy) to prefs:${userKey} (UUID).
-    // Runs only when dev key exists (M009+) and the userKey-keyed prefs are absent.
-    _migratePrefsKey() {
-        const userKey = ClientAuthSession.getUserUuid() || DeviceSession.getDeviceId();
-        const newKey = keyPrefs(userKey);
-        if (localStorage.getItem(newKey)) return; // already on new schema
-        for (let i = 0; i < localStorage.length; i++) {
-            const k = localStorage.key(i);
-            if (!k?.startsWith('prefs:')) continue;
-            const keyPart = k.slice(6); // strip 'prefs:'
-            if (/^\d+$/.test(keyPart)) {
-                const val = localStorage.getItem(k);
-                if (val) {
-                    let parsed = null;
-                    try {
-                        parsed = JSON.parse(val);
-                    } catch (e) {
-                        parsed = null;
-                    }
-                    const normalized = this._normalizePreferences(parsed || {}, {});
-                    localStorage.setItem(newKey, JSON.stringify(normalized));
-                    localStorage.removeItem(k);
-                }
-                return; // migrate first numeric prefs key found
-            }
         }
     }
 

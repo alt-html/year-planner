@@ -1,30 +1,19 @@
 /**
- * migration.spec.js — E2E test for one-time schema migration (M009)
+ * migration.spec.js — E2E test for legacy-key pruning behavior.
  *
- * Seeds old-schema localStorage data, reloads the app, and verifies:
- *  - Old keys ('0', uid, uid-yearM) are removed
- *  - New keys (dev, plnr:uuid, prefs:uid) are present
- *  - All day entry data is intact with new field names (tl, col, emoji, notes)
+ * Legacy numeric schema parsing/migration has been removed.
+ * The app now prunes unsupported old keys and bootstraps fresh modern state.
  */
 const { test, expect } = require('../fixtures/cdn');
 
-test('migration: old-schema data survives upgrade to M009 schema', async ({ page, context }) => {
+test('legacy numeric schema is pruned and app reinitializes modern state', async ({ page, context }) => {
 
   // ── 1. Seed old-schema data before navigation ────────────────────────────
-  // addInitScript runs on every navigation including redirects.
-  // Use a sessionStorage flag to run the seed only on the first navigation.
   await context.addInitScript(() => {
     if (sessionStorage.getItem('_migration_seeded')) return;
     sessionStorage.setItem('_migration_seeded', '1');
 
-    // Clear M009 state from consent.json to simulate a genuine old-schema install
-    localStorage.removeItem('dev');
-    // Remove any plnr:, rev:, base:, sync:, ids, prefs: keys
-    const toRemove = Object.keys(localStorage).filter(k =>
-      k.startsWith('plnr:') || k.startsWith('rev:') || k.startsWith('base:') ||
-      k.startsWith('sync:') || k.startsWith('prefs:') || k === 'ids'
-    );
-    toRemove.forEach(k => localStorage.removeItem(k));
+    localStorage.clear();
 
     const uid  = 1234567890;
     const year = 2026;
@@ -40,22 +29,21 @@ test('migration: old-schema data survives upgrade to M009 schema', async ({ page
       3: { [String(year)]: { en: 'My Migrated Planner' } },
     }));
 
-    // Old month 3 (March) planner with an entry on day 15
+    // Old month keys (uid-yearMonth)
     const march = {};
     march['15'] = { '0': 0, '1': 'test entry', '2': 2, '3': 'some notes', '4': '😀' };
     localStorage.setItem(`${uid}-${year}3`, JSON.stringify(march));
 
-    // Old month 7 (July) planner with an entry on day 4
     const july = {};
     july['4'] = { '0': 1, '1': 'july fourth', '2': 3, '3': '', '4': '🎉' };
     localStorage.setItem(`${uid}-${year}7`, JSON.stringify(july));
   });
 
-  // ── 2. Navigate — migration fires in initialised() ───────────────────────
+  // ── 2. Navigate — app should boot cleanly ────────────────────────────────
   await page.goto('http://localhost:8080');
   await page.waitForSelector('[data-app-ready]');
 
-  // ── 3. Old keys must be gone ─────────────────────────────────────────────
+  // ── 3. Legacy keys are pruned ────────────────────────────────────────────
   const oldIdentitiesKey = await page.evaluate(() => localStorage.getItem('0'));
   expect(oldIdentitiesKey).toBeNull();
 
@@ -65,75 +53,39 @@ test('migration: old-schema data survives upgrade to M009 schema', async ({ page
   const oldMarchKey = await page.evaluate(() => localStorage.getItem('1234567890-20263'));
   expect(oldMarchKey).toBeNull();
 
-  // ── 4. New keys must exist ────────────────────────────────────────────────
+  const oldJulyKey = await page.evaluate(() => localStorage.getItem('1234567890-20267'));
+  expect(oldJulyKey).toBeNull();
+
+  // ── 4. Modern keys are initialized ───────────────────────────────────────
   const devKey = await page.evaluate(() => localStorage.getItem('dev'));
   expect(devKey).toBeTruthy();
   expect(devKey).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
 
-  const prefKeys = await page.evaluate(() =>
-    Object.keys(localStorage).filter(k => k.startsWith('prefs:'))
-  );
-  expect(prefKeys.length).toBeGreaterThan(0);
+  const prefPayload = await page.evaluate((dk) => {
+    try {
+      return JSON.parse(localStorage.getItem(`prefs:${dk}`));
+    } catch (e) {
+      return null;
+    }
+  }, devKey);
 
-  // ── 4a. Prefs key must use UUID format (not numeric uid) ─────────────────
-  for (const pk of prefKeys) {
-    const part = pk.slice('prefs:'.length);
-    expect(part).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
-  }
-  // Prefs must be stored under the device UUID specifically
-  expect(prefKeys).toContain(`prefs:${devKey}`);
+  expect(prefPayload).toBeTruthy();
+  expect(prefPayload.year).toBeDefined();
+  expect(prefPayload.lang).toMatch(/^(en|zh|hi|ar|es|pt|fr|ru|id|ja)$/);
+  expect(prefPayload.theme).toMatch(/^(light|dark)$/);
+  expect(prefPayload.names).toBeDefined();
 
-  // ── 5. Planner data migrated ──────────────────────────────────────────────
-  const planners = await page.evaluate(() => {
-    return Object.keys(localStorage)
-      .filter(k => k.startsWith('plnr:'))
-      .map(k => JSON.parse(localStorage.getItem(k)));
-  });
-  expect(planners.length).toBeGreaterThan(0);
-
-  // ── 5a. All planner docs must carry meta.userKey (UUID format) ───────────
-  for (const p of planners) {
-    expect(p.meta?.userKey).toBeDefined();
-    expect(p.meta.userKey).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
-  }
-
-  // ── 6. March 15 entry intact with new field names ─────────────────────────
-  const marchEntry = await page.evaluate(() => {
+  // ── 5. Old day entries are not migrated into planner docs ────────────────
+  const hasOldEntries = await page.evaluate(() => {
     const planners = Object.keys(localStorage)
       .filter(k => k.startsWith('plnr:'))
-      .map(k => JSON.parse(localStorage.getItem(k)));
-    for (const p of planners) {
-      for (const [isoDate, day] of Object.entries(p.days || {})) {
-        if (isoDate === '2026-03-15') return day;
-      }
-    }
-    return null;
+      .map(k => {
+        try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; }
+      })
+      .filter(Boolean);
+
+    return planners.some((p) => (p?.days && (p.days['2026-03-15'] || p.days['2026-07-04'])));
   });
 
-  expect(marchEntry).not.toBeNull();
-  expect(marchEntry.tl).toBe('test entry');
-  expect(marchEntry.col).toBe(2);
-  expect(marchEntry.notes).toBe('some notes');
-  expect(marchEntry.emoji).toBe('😀');
-  // Old numeric keys must NOT be present
-  expect(marchEntry['1']).toBeUndefined();
-  expect(marchEntry['2']).toBeUndefined();
-
-  // ── 7. July 4 entry intact ────────────────────────────────────────────────
-  const julyEntry = await page.evaluate(() => {
-    const planners = Object.keys(localStorage)
-      .filter(k => k.startsWith('plnr:'))
-      .map(k => JSON.parse(localStorage.getItem(k)));
-    for (const p of planners) {
-      for (const [isoDate, day] of Object.entries(p.days || {})) {
-        if (isoDate === '2026-07-04') return day;
-      }
-    }
-    return null;
-  });
-
-  expect(julyEntry).not.toBeNull();
-  expect(julyEntry.tl).toBe('july fourth');
-  expect(julyEntry.tp).toBe(1);
-  expect(julyEntry.emoji).toBe('🎉');
+  expect(hasOldEntries).toBe(false);
 });

@@ -104,9 +104,9 @@ test('fresh boot: no numeric uid key required for app start', async ({ page, con
   expect(numericPrefKeys).toHaveLength(0);
 });
 
-// ── Migration: numeric prefs key is migrated to UUID key ────────────────────
+// ── Legacy numeric prefs are pruned, modern prefs are reinitialized ──────────
 
-test('_migratePrefsKey: prefs:${numericUid} is migrated to prefs:${deviceUUID}', async ({ page, context }) => {
+test('legacy numeric prefs key is removed and prefs:${deviceUUID} is reinitialized', async ({ page, context }) => {
   await context.addInitScript(() => {
     if (sessionStorage.getItem('_contract_cleared')) return;
     sessionStorage.setItem('_contract_cleared', '1');
@@ -127,7 +127,7 @@ test('_migratePrefsKey: prefs:${numericUid} is migrated to prefs:${deviceUUID}',
   const oldKey = await page.evaluate(() => localStorage.getItem('prefs:9876543210'));
   expect(oldKey).toBeNull();
 
-  // New UUID key must exist and be normalized to named fields
+  // UUID key prefs should exist in canonical named shape
   const newPrefs = await page.evaluate(() => {
     try {
       return JSON.parse(localStorage.getItem('prefs:12345678-abcd-4000-8000-000000000001'));
@@ -136,9 +136,9 @@ test('_migratePrefsKey: prefs:${numericUid} is migrated to prefs:${deviceUUID}',
     }
   });
   expect(newPrefs).toBeTruthy();
-  expect(newPrefs.year).toBe(2025);
-  expect(newPrefs.lang).toBe('fr');
-  expect(newPrefs.theme).toBe('dark');
+  expect(newPrefs.year).toBeDefined();
+  expect(newPrefs.lang).toMatch(/^(en|zh|hi|ar|es|pt|fr|ru|id|ja)$/);
+  expect(newPrefs.theme).toMatch(/^(light|dark)$/);
   expect(newPrefs['0']).toBeUndefined();
   expect(newPrefs['1']).toBeUndefined();
   expect(newPrefs['2']).toBeUndefined();
