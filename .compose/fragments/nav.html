@@ -12,9 +12,9 @@
 
             <!-- Year chevron navigation (mockup style) -->
             <div class="yp-nav-year">
-                <a class="yp-nav-year-btn" v-bind:href="'/?uid='+uid+'&year='+(year-1)+'&lang='+lang+'&theme='+theme" title="Previous year"><i class="ph ph-caret-left"></i></a>
+                <a class="yp-nav-year-btn" href="#" v-on:click.prevent="jumpToYear(year-1)" title="Previous year"><i class="ph ph-caret-left"></i></a>
                 <span class="yp-nav-year-btn current">{{year}}</span>
-                <a class="yp-nav-year-btn" v-bind:href="'/?uid='+uid+'&year='+(year+1)+'&lang='+lang+'&theme='+theme" title="Next year"><i class="ph ph-caret-right"></i></a>
+                <a class="yp-nav-year-btn" href="#" v-on:click.prevent="jumpToYear(year+1)" title="Next year"><i class="ph ph-caret-right"></i></a>
             </div>
 
             <!-- Theme label in nav (right-aligned) -->

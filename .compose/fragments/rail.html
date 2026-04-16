@@ -287,8 +287,8 @@
         <!-- Settings flyout -->
         <div class="rail-flyout settings-flyout" v-bind:class="{open: railFlyout === 'settings'}" v-show="railFlyout === 'settings'">
             <div class="rail-flyout-header">{{$t('label.theme')}}</div>
-            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='light'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=light'" v-on:click="toggleFlyout(null)">{{$t('label.light')}}</a>
-            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='dark'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=dark'" v-on:click="toggleFlyout(null)">{{$t('label.dark')}}</a>
+            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='light'}" href="#" v-on:click.prevent="setTheme('light'); toggleFlyout(null)">{{$t('label.light')}}</a>
+            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='dark'}" href="#" v-on:click.prevent="setTheme('dark'); toggleFlyout(null)">{{$t('label.dark')}}</a>
             <div class="rail-flyout-divider"></div>
             <a v-if="!signedin" class="rail-flyout-item" href="#" v-on:click.prevent="showSignin(); toggleFlyout(null)">{{$t('label.signin')}}…</a>
             <a v-if="signedin" class="rail-flyout-item" href="#" v-on:click.prevent="signout(); toggleFlyout(null)">{{$t('label.signout')}}…</a>

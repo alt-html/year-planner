@@ -77,7 +77,7 @@
   - Files: `scripts/verify-m013-cleanup.sh`, `.github/workflows/e2e.yml`, `.tests/package.json`
   - Verify: bash -lc 'bash -n scripts/verify-m013-cleanup.sh && test -x scripts/verify-m013-cleanup.sh && rg -n "verify-m013-cleanup\\.sh|test:m013-cleanup" .tests/package.json .github/workflows/e2e.yml'
 
-- [ ] **T02: Run integrated gate and close requirement debt (R007/R109 evidence refresh)** `est:55m`
+- [x] **T02: Run integrated gate and close requirement debt (R007/R109 evidence refresh)** `est:55m`
   Why: The slice is not complete until integrated proof is green and requirement debt is formally closed in the registry with concrete, reproducible evidence.
 
 ## Skills Used

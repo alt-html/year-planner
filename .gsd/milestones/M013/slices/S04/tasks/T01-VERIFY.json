@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M013/S04/T01",
+  "timestamp": 1776321788261,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "bash -lc 'bash -n scripts/verify-m013-cleanup.sh",
+      "exitCode": 2,
+      "durationMs": 4,
+      "verdict": "fail"
+    },
+    {
+      "command": "test -x scripts/verify-m013-cleanup.sh",
+      "exitCode": 0,
+      "durationMs": 3,
+      "verdict": "pass"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2
+}

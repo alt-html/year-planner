@@ -2,19 +2,6 @@
 
 This file is the explicit capability and coverage contract for the project.
 
-## Active
-
-### R007 — Close or re-scope the prior unresolved MOD-09 requirement so active requirement debt is not silently carried forward.
-- Class: continuity
-- Status: active
-- Description: Close or re-scope the prior unresolved MOD-09 requirement so active requirement debt is not silently carried forward.
-- Why it matters: The project should not retain ambiguous active requirements across completed milestones.
-- Source: execution
-- Primary owning slice: M013/S04
-- Supporting slices: M013/S01,M013/S02,M013/S03
-- Validation: unmapped
-- Notes: M013 explicitly closes/re-scopes prior unresolved MOD-09 debt via verification gates: clean URL state flow, uid removal, feature/share legacy cleanup, and regression proof.
-
 ## Validated
 
 ### AUTH-06 — Rewrite the client-side sync layer (Api.js, retire StorageRemote.js) to use the jsmdma sync protocol: `POST /year-planner/sync` with HLC-clocked dot-path fieldRevs, `clientClock`, `changes` array, and `serverChanges` response. Replace the current raw-localStorage-dump push/pull pattern entirely.
@@ -119,6 +106,17 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M012/S04, M012/S05
 - Validation: S06 complete with 8-stage integrated sign-off runner: (1) icon export matrix generation, (2) desktop packaging assets, (3–5) existing smoke contracts (export, live-wiring, desktop-packaging), (6) S06 visual sign-off spec (29 tests validating matrix contracts and generating deterministic HTML/PNG/JSON artifacts), (7) full Playwright suite, (8) artifact assertions. All stages pass (exit 0). Visual sign-off sheet validates 16/32/180/192/512 web/PWA/desktop surfaces with base64-embedded PNGs and ICC rendering. S06-sign-off-report.json records all stage verdicts and artifact paths. Negative-boundary tests prove path safety (rejects absolute paths, .. traversal, missing files). No blockers discovered across S06 execution.
 - Notes: Key checks include 16/32/180/192/512 and desktop launch surfaces.
+
+### R007 — Close or re-scope the prior unresolved MOD-09 requirement so active requirement debt is not silently carried forward.
+- Class: continuity
+- Status: validated
+- Description: Close or re-scope the prior unresolved MOD-09 requirement so active requirement debt is not silently carried forward.
+- Why it matters: The project should not retain ambiguous active requirements across completed milestones.
+- Source: execution
+- Primary owning slice: M013/S04
+- Supporting slices: M013/S01,M013/S02,M013/S03
+- Validation: M013/S04 unified gate (scripts/verify-m013-cleanup.sh) exits 0: all four stages pass — verify-no-legacy-uid, verify-no-url-state-params, verify-no-legacy-share-features, playwright-smoke-e2e (263 tests, 9 skipped). All prior MOD-09 debt resolved: legacy uid/share/feature surfaces removed in S01–S03 and reproduced clean by final integrated gate. Artifact: .tests/test-results/m013-cleanup/M013-cleanup-report.json (overall:pass, failedStage:null).
+- Notes: M013 explicitly closes/re-scopes prior unresolved MOD-09 debt via verification gates: clean URL state flow, uid removal, feature/share legacy cleanup, and regression proof.
 
 ### R100 — Client sync stack was rewritten to jsmdma protocol (`POST /year-planner/sync`) with HLC field revisions.
 - Class: integration
@@ -227,7 +225,7 @@ This file is the explicit capability and coverage contract for the project.
 - Source: user
 - Primary owning slice: M013/S04
 - Supporting slices: M013/S01,M013/S02,M013/S03
-- Validation: S01 achieved strict regression proof via: (1) 8 new contract tests covering fresh boot, migration, error paths; (2) 9 new navigation tests confirming in-app state mutations and clean URLs; (3) 5 updated E2E specs validating sync/lifecycle under new identity contract; (4) grep gate script validating zero uid navigation surfaces in runtime code; (5) full 25+ test regression suite passes with no behavioral regressions.
+- Validation: S04 delivers final integrated regression proof: (1) scripts/verify-m013-cleanup.sh unified gate runner exits 0 — all four stages pass; (2) three grep gates confirm zero uid/url-state-params/share-feature legacy surfaces in runtime source (site/index.html + site/js/); (3) 263 Playwright smoke+e2e tests pass (9 skipped — server-side contract tests require live server); (4) .tests/test-results/m013-cleanup/M013-cleanup-report.json records per-stage verdicts and overall:pass. Prior slice proof: S01 25+ tests, S02 45 tests, S03 12 tests — all confirmed clean by the final integrated run.
 - Notes: Includes grep gate for uid removal and checks for removed share/feature paths.
 
 ### SYNC-04 — Untitled
@@ -336,7 +334,7 @@ This file is the explicit capability and coverage contract for the project.
 | R004 | launchability | validated | M012/S04 | M012/S03 | S04 integration complete: index.html head links and manifest.json icons[] wired to canonical ./icons/* outputs from S03. All 57 smoke tests pass (icon-live-wiring.spec.js: 28 tests, compose.spec.js: 5 tests, icon-export-matrix.spec.js: 24 tests). Negative-boundary assertions confirm legacy paths are rejected and canonical structure is enforced. |
 | R005 | integration | validated | M012/S05 | M012/S03 | M012/S05 delivered: bash scripts/export-desktop-packaging-assets.sh generates site/icons/desktop/year-planner.ico (7 frames: 16,24,32,48,64,128,256) and site/icons/desktop/year-planner.icns (iconset: 16,32,64,128,256,512,1024) from canonical.json winner metadata (C2). site/icons/desktop-matrix.json contract records platform (windows/macos), format (ico/icns), sizes, src paths, and output locations. All 34 desktop-packaging smoke tests pass; all 52 existing icon-export-matrix and icon-live-wiring regression tests pass (86 total). Web/PWA matrix.json remains untouched with 9 entries. candidateId alignment verified (C2 → C2). Python ICO packer and bash exporter implement path safety validation (rejects ../ and absolute paths). Deterministic export and contract enabled by purpose-specific SVG metadata in canonical.json. Desktop assets ready for future Windows/macOS Electron bundling. |
 | R006 | quality-attribute | validated | M012/S06 | M012/S04, M012/S05 | S06 complete with 8-stage integrated sign-off runner: (1) icon export matrix generation, (2) desktop packaging assets, (3–5) existing smoke contracts (export, live-wiring, desktop-packaging), (6) S06 visual sign-off spec (29 tests validating matrix contracts and generating deterministic HTML/PNG/JSON artifacts), (7) full Playwright suite, (8) artifact assertions. All stages pass (exit 0). Visual sign-off sheet validates 16/32/180/192/512 web/PWA/desktop surfaces with base64-embedded PNGs and ICC rendering. S06-sign-off-report.json records all stage verdicts and artifact paths. Negative-boundary tests prove path safety (rejects absolute paths, .. traversal, missing files). No blockers discovered across S06 execution. |
-| R007 | continuity | active | M013/S04 | M013/S01,M013/S02,M013/S03 | unmapped |
+| R007 | continuity | validated | M013/S04 | M013/S01,M013/S02,M013/S03 | M013/S04 unified gate (scripts/verify-m013-cleanup.sh) exits 0: all four stages pass — verify-no-legacy-uid, verify-no-url-state-params, verify-no-legacy-share-features, playwright-smoke-e2e (263 tests, 9 skipped). All prior MOD-09 debt resolved: legacy uid/share/feature surfaces removed in S01–S03 and reproduced clean by final integrated gate. Artifact: .tests/test-results/m013-cleanup/M013-cleanup-report.json (overall:pass, failedStage:null). |
 | R020 | quality-attribute | deferred | none | none | unmapped |
 | R021 | admin/support | deferred | none | none | unmapped |
 | R030 | constraint | out-of-scope | none | none | n/a |
@@ -350,7 +348,7 @@ This file is the explicit capability and coverage contract for the project.
 | R106 | operability | validated | M013/S03 | M013/S04 | S03 T02/T03 removed feature-flag system completely: deleted model-features.js file, removed feature object from Vue model and CDI context, removed all feature.* conditionals from compose/runtime, removed showFeatureModal state and closeFeatureModal() method, removed hidden feature trigger from footer and debug block from grid. Verification: T02 grep gate (no feature.*, showFeatureModal, featureModal, etc.) exit 0; scripts/verify-no-legacy-share-features.sh exit 0; T03 verification suite 12/12 tests pass including legacy-surface-removal.spec.js asserting no feature controls in DOM. Auth controls (sign-in button) remain functional via direct signedin checks instead of feature.signin gate. |
 | R107 | primary-user-loop | validated | M013/S02 | M013/S04 | S02 T02 implemented language preference modes: langMode 'system' (live-follow navigator.languages) and explicit locale selection. Users can set language in footer language dropdown with System option that reacts live to OS languagechange events. setLang('system') returns to system mode; setLang(locale) sets explicit mode. 9 live-follow E2E tests verify mode switching, OS event propagation, and URL remains clean. 25 total system-follow-preferences tests pass. Covers R107 and integration surfaces in lifecycle.js, rail.js, index.html, lang.js. |
 | R108 | quality-attribute | validated | M013/S02 | M013/S04 | S02 T02 implemented light/dark preference modes: themeMode 'system' (live-follow OS prefers-color-scheme) and explicit light/dark selection. Users control theme via settings flyout with System/Light/Dark options that react live to matchMedia change events. setTheme('system') returns to OS mode; setTheme('light'/'dark') sets explicit mode with visual feedback. Dark toggle (doDarkToggle) switches to explicit dark mode. 9 live-follow E2E tests verify mode switching, OS event propagation, round-trip coherence, and URL remains clean. 3 smoke tests for dark-mode regression. All 45 verification tests pass. |
-| R109 | quality-attribute | validated | M013/S04 | M013/S01,M013/S02,M013/S03 | S01 achieved strict regression proof via: (1) 8 new contract tests covering fresh boot, migration, error paths; (2) 9 new navigation tests confirming in-app state mutations and clean URLs; (3) 5 updated E2E specs validating sync/lifecycle under new identity contract; (4) grep gate script validating zero uid navigation surfaces in runtime code; (5) full 25+ test regression suite passes with no behavioral regressions. |
+| R109 | quality-attribute | validated | M013/S04 | M013/S01,M013/S02,M013/S03 | S04 delivers final integrated regression proof: (1) scripts/verify-m013-cleanup.sh unified gate runner exits 0 — all four stages pass; (2) three grep gates confirm zero uid/url-state-params/share-feature legacy surfaces in runtime source (site/index.html + site/js/); (3) 263 Playwright smoke+e2e tests pass (9 skipped — server-side contract tests require live server); (4) .tests/test-results/m013-cleanup/M013-cleanup-report.json records per-stage verdicts and overall:pass. Prior slice proof: S01 25+ tests, S02 45 tests, S03 12 tests — all confirmed clean by the final integrated run. |
 | R110 | integration | deferred | none | none | unmapped |
 | SYNC-04 |  | validated | M011/S02 | none | markEdited() wired in entries.js updateEntry() for all 5 day fields (tp, tl, col, notes, emoji); hlc-write.spec.js Playwright test confirms rev:{uuid} localStorage key contains dot-path keys matching days.YYYY-MM-DD.{field} with non-empty HLC strings after any edit; all 18 tests pass. M011/S02 complete 2026-04-10. |
 | SYNC-05 |  | validated | M011/S01 | none | POST /year-planner/sync endpoint wired end-to-end: SyncClient builds payload, Api.sync() calls it, all 9 Vue/Storage call sites updated. sync-payload.spec.js Playwright mock test verifies payload shape (D007). All 17 tests pass. M011/S01 complete 2026-04-09. |
@@ -359,7 +357,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 1
-- Mapped to slices: 1
-- Validated: 25 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R005, R006, R100, R101, R102, R103, R104, R105, R106, R107, R108, R109, SYNC-04, SYNC-05, SYNC-06)
+- Active requirements: 0
+- Mapped to slices: 0
+- Validated: 26 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R005, R006, R007, R100, R101, R102, R103, R104, R105, R106, R107, R108, R109, SYNC-04, SYNC-05, SYNC-06)
 - Unmapped active requirements: 0

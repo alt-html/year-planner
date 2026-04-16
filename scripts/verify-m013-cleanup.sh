@@ -39,6 +39,9 @@ write_report() {
     local ts
     ts=$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || printf "unknown")
 
+    # Playwright clears test-results/ during its run; re-create the output directory.
+    mkdir -p "$REPORT_DIR"
+
     printf '{"runTimestamp":"%s","overall":"%s","failedStage":%s,"stages":[%s]}\n' \
         "$ts" "$overall" "$failed_json" "$STAGES_JSON" \
         > "$REPORT"
