@@ -30,3 +30,19 @@ test('sync failure shows visible error alert (SEC-04)', async ({ page }) => {
   await expect(alert).toBeVisible({ timeout: 3000 });
   await expect(page.locator('.yp-error-alert')).toBeVisible({ timeout: 3000 });
 });
+
+test('network failure shows visible sync error alert (SEC-04)', async ({ page }) => {
+  await page.addInitScript((token) => {
+    localStorage.setItem('auth_token', token);
+  }, makeFakeJwt('test-network-failure'));
+
+  await page.route('**/year-planner/sync', (route) => route.abort('failed'));
+
+  await page.goto('/');
+  await page.waitForSelector('[data-app-ready]');
+  await page.waitForTimeout(1000);
+
+  const alert = page.locator('.yp-error-alert');
+  await expect(alert).toBeVisible({ timeout: 3000 });
+  await expect(alert.locator('.yp-error-copy')).toHaveText(/\S+/, { timeout: 3000 });
+});

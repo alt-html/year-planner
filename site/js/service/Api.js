@@ -50,7 +50,8 @@ export default class Api {
             if (results) this.model.error = '';
         } catch (err) {
             this.logger?.error?.(`[Api.sync] failed status=${err.status} message=${err.message}`);
-            if (err.status === 404) {
+            const isNetworkFailure = !err?.status || err?.name === 'TypeError' || /failed to fetch|networkerror/i.test(String(err?.message || ''));
+            if (err.status === 404 || isNetworkFailure) {
                 this.model.error = 'error.apinotavailable';
             } else if (err.status === 401) {
                 this.authProvider?.signOut?.();
