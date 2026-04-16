@@ -1,13 +1,4 @@
-import { ProfileAwareConfig, BrowserProfileResolver } from 'https://cdn.jsdelivr.net/npm/@alt-javascript/config@3/dist/alt-javascript-config-esm.js';
-
-const activeProfiles = BrowserProfileResolver.resolve({
-    urlMappings: {
-        'localhost:8080': 'dev',
-        '127.0.0.1:8080': 'dev',
-    }
-});
-
-export default new ProfileAwareConfig({
+export default {
     api: {
         url: 'http://127.0.0.1:8081/'
     },
@@ -17,6 +8,10 @@ export default new ProfileAwareConfig({
         }
     },
     profiles: {
+        urls: {
+            'localhost:8080':  'dev',
+            '127.0.0.1:8080': 'dev',
+        },
         dev: {
             logging: {
                 format: 'text',
@@ -26,4 +21,4 @@ export default new ProfileAwareConfig({
             }
         }
     }
-}, activeProfiles);
+};
