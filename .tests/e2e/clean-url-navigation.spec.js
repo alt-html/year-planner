@@ -16,9 +16,15 @@ test.describe('clean-url navigation', () => {
         expect(url.searchParams.has('id')).toBe(false);
     });
 
-    test('dark theme URL param sets dark mode without adding uid', async ({ page }) => {
-        await page.goto('/?theme=dark');
+    test('setTheme dark in-app does not add uid or id to URL', async ({ page }) => {
+        // Verify that applying dark theme via in-app method leaves URL clean (no uid/id added)
+        await page.goto('/');
         await page.waitForSelector('[data-app-ready]');
+        await page.evaluate(() => {
+            const vm = document.getElementById('app')?._vnode?.component?.proxy;
+            if (vm) vm.setTheme('dark');
+        });
+        await page.waitForTimeout(200);
         const url = new URL(page.url());
         expect(url.searchParams.has('uid')).toBe(false);
         expect(url.searchParams.has('id')).toBe(false);
@@ -26,7 +32,15 @@ test.describe('clean-url navigation', () => {
     });
 
     test('doDarkToggle keeps URL clean and toggles theme in-app', async ({ page }) => {
-        await page.goto('/?theme=light');
+        // Start from a clean light state — fresh install with OS light → system-follow → light
+        await page.emulateMedia({ colorScheme: 'light' });
+        await page.addInitScript(() => {
+            for (let i = localStorage.length - 1; i >= 0; i--) {
+                const k = localStorage.key(i);
+                if (k && k.startsWith('prefs:')) localStorage.removeItem(k);
+            }
+        });
+        await page.goto('/');
         await page.waitForSelector('[data-app-ready]');
         const urlBefore = page.url();
 
@@ -44,10 +58,26 @@ test.describe('clean-url navigation', () => {
     });
 
     test('toggling theme back to light removes dark styles without URL change', async ({ page }) => {
-        await page.goto('/?theme=dark');
+        // Start from clean light state, set dark explicitly, then toggle back to light
+        await page.emulateMedia({ colorScheme: 'light' });
+        await page.addInitScript(() => {
+            for (let i = localStorage.length - 1; i >= 0; i--) {
+                const k = localStorage.key(i);
+                if (k && k.startsWith('prefs:')) localStorage.removeItem(k);
+            }
+        });
+        await page.goto('/');
         await page.waitForSelector('[data-app-ready]');
-        const urlBefore = page.url();
 
+        // Set explicit dark via in-app method
+        await page.evaluate(() => {
+            const vm = document.getElementById('app')?._vnode?.component?.proxy;
+            if (vm) vm.setTheme('dark');
+        });
+        await page.waitForTimeout(100);
+        await expect(page.locator('body')).toHaveClass(/yp-dark/);
+
+        const urlBefore = page.url();
         await page.click('.float-btn[title="Toggle dark mode"]');
         await page.waitForTimeout(300);
 

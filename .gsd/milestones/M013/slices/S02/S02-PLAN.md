@@ -142,7 +142,7 @@ Why this task exists
   - Files: `site/js/vue/methods/lifecycle.js`, `site/js/vue/methods/rail.js`, `site/index.html`, `site/js/vue/i18n/lang.js`, `.tests/e2e/system-follow-preferences.spec.js`
   - Verify: npm --prefix .tests run test -- --reporter=line e2e/system-follow-preferences.spec.js smoke/dark-mode.spec.js
 
-- [ ] **T03: Harden clean-URL regression coverage and add query-state grep gate** `est:1h15m`
+- [x] **T03: Harden clean-URL regression coverage and add query-state grep gate** `est:1h15m`
   ## Skills Used
 
 - `test`
