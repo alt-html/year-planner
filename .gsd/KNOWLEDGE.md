@@ -160,3 +160,26 @@ S01's `setLang(lang)` method uses `this.$i18n.locale = normalized` to update the
 
 ### E2E test seeds: active-planner key in localStorage controls which planner loads at startup
 S01 discovered that E2E specs testing sync or write-path side effects (rev:, base:, sync: keys) must seed both a planner document AND the `active-planner` key pointing to its UUID. Without the active-planner seed, `PlannerStore.restoreActive()` returns null, the app creates an empty default planner, and any write-path assertions fail (e.g., no rev: writes because getActivePlnrUuid returns null). When writing E2E specs that verify storage mutations, always include: `localStorage.setItem('active-planner', plannerUuid)` alongside the planner document seed. This ensures the app loads your seeded planner rather than creating a new empty one.
+
+---
+
+## M013 — Legacy Alignment Cleanup, S02–S04 (2026-04-16)
+
+### System-follow modes should persist mode + effective value atomically
+S02 established that language/theme behavior is most reliable when setters update both mode (`system` vs `explicit`) and effective value in one call. This prevents transient mismatch between displayed state, stored prefs, and DOM application logic. Keep this atomic mode+value update pattern for future preference systems.
+
+### Use emulateMedia + one-time prefs clear for deterministic system-follow tests
+URL params are no longer valid setup surfaces for theme/lang tests. The stable pattern is: `context.emulateMedia({ colorScheme })` plus a guarded `addInitScript` that clears prefs once per context (`sessionStorage` flag). This gives deterministic baseline behavior without coupling tests to deprecated URL state.
+
+### Removing feature flags is not the same as removing functionality
+S03 showed that removing feature scaffolding (`feature.*`, feature modal/trigger, model-features module) should preserve intended user capabilities via direct checks (e.g., `signedin()` logic for auth controls). During cleanup, explicitly separate gate/plumbing removal from behavior removal.
+
+### Maintain dual verification: static grep gate + runtime E2E assertions
+Static grep gates are excellent for preventing symbol/path regressions, but they must be paired with runtime assertions that validate user-visible behavior (e.g., no share/feature controls in DOM). Keep both layers for any future removal/refactor milestones.
+
+### Unified milestone verifier should own local+CI proof paths
+S04’s `verify-m013-cleanup.sh` established a reusable pattern: one orchestrator runs fast gates first, then full regression, and emits stage-level JSON diagnostics. Reuse this pattern to avoid local/CI drift and speed up failure localization.
+
+### Verification scripts that write into test-results must re-create output dirs at write time
+Playwright can clear `test-results/` during execution. If a script writes structured artifacts there, it must `mkdir -p` in the report-write function (not just at script start), or artifacts can disappear mid-run.
+

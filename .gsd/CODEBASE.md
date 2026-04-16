@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-16T06:28:36Z | Files: 180 | Described: 0/180
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T06:28:36Z","fingerprint":"9eda14289d7ced53cb43d11e42a5302000d5cb1e","fileCount":180,"truncated":false} -->
+Generated: 2026-04-16T08:00:31Z | Files: 181 | Described: 0/181
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T08:00:31Z","fingerprint":"4c846c90a0e3595d0d203a1fb57b837bb21fda85","fileCount":181,"truncated":false} -->
 
 ### (root)/
 - `.gitignore`
@@ -149,6 +149,7 @@ Generated: 2026-04-16T06:28:36Z | Files: 180 | Described: 0/180
 - `scripts/export-desktop-packaging-assets.sh`
 - `scripts/export-icon-candidates.sh`
 - `scripts/verify-icon-integration-signoff.sh`
+- `scripts/verify-m013-cleanup.sh`
 - `scripts/verify-no-legacy-share-features.sh`
 - `scripts/verify-no-legacy-uid.sh`
 - `scripts/verify-no-url-state-params.sh`
