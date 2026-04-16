@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-16T05:19:24Z | Files: 179 | Described: 0/179
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T05:19:24Z","fingerprint":"94ace12543407bbd33c30bf4de02a03553ce02c0","fileCount":179,"truncated":false} -->
+Generated: 2026-04-16T05:27:03Z | Files: 180 | Described: 0/180
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T05:27:03Z","fingerprint":"5c379a3a17b05181350dbd6120ce6e86987f58b5","fileCount":180,"truncated":false} -->
 
 ### (root)/
 - `.gitignore`
@@ -95,6 +95,7 @@ Generated: 2026-04-16T05:19:24Z | Files: 179 | Described: 0/179
 - `.tests/e2e/signout-wipe.spec.js`
 - `.tests/e2e/sync-error.spec.js`
 - `.tests/e2e/sync-payload.spec.js`
+- `.tests/e2e/system-follow-preferences.spec.js`
 - `.tests/e2e/tooltip-xss.spec.js`
 - `.tests/e2e/tp-col-coercion.spec.js`
 

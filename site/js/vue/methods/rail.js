@@ -262,6 +262,7 @@ export const railMethods = {
     },
 
     doDarkToggle() {
+        // Always sets themeMode to 'explicit' via setTheme — deterministic even in system mode
         this.setTheme(this.theme === 'dark' ? 'light' : 'dark');
     },
 

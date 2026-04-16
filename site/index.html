@@ -337,8 +337,9 @@
         <!-- Settings flyout -->
         <div class="rail-flyout settings-flyout" v-bind:class="{open: railFlyout === 'settings'}" v-show="railFlyout === 'settings'">
             <div class="rail-flyout-header">{{$t('label.theme')}}</div>
-            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='light'}" href="#" v-on:click.prevent="setTheme('light'); toggleFlyout(null)">{{$t('label.light')}}</a>
-            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='dark'}" href="#" v-on:click.prevent="setTheme('dark'); toggleFlyout(null)">{{$t('label.dark')}}</a>
+            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': themeMode==='system'}" href="#" v-on:click.prevent="setTheme('system'); toggleFlyout(null)">System</a>
+            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='light' && themeMode==='explicit'}" href="#" v-on:click.prevent="setTheme('light'); toggleFlyout(null)">{{$t('label.light')}}</a>
+            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='dark' && themeMode==='explicit'}" href="#" v-on:click.prevent="setTheme('dark'); toggleFlyout(null)">{{$t('label.dark')}}</a>
             <div class="rail-flyout-divider"></div>
             <a v-if="feature.signin && !signedin" class="rail-flyout-item" href="#" v-on:click.prevent="showSignin(); toggleFlyout(null)">{{$t('label.signin')}}…</a>
             <a v-if="feature.signin && signedin" class="rail-flyout-item" href="#" v-on:click.prevent="signout(); toggleFlyout(null)">{{$t('label.signout')}}…</a>
@@ -641,16 +642,17 @@
                                     {{$t('lang.'+lang)}}
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='en'}" href="#" v-on:click.prevent="setLang('en')">English</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='zh'}" href="#" v-on:click.prevent="setLang('zh')">中國人</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='hi'}" href="#" v-on:click.prevent="setLang('hi')">हिन्दी</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='es'}" href="#" v-on:click.prevent="setLang('es')">español</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='fr'}" href="#" v-on:click.prevent="setLang('fr')">français</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ar'}" href="#" v-on:click.prevent="setLang('ar')">عربى</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ru'}" href="#" v-on:click.prevent="setLang('ru')">русский</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='pt'}" href="#" v-on:click.prevent="setLang('pt')">português</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ja'}" href="#" v-on:click.prevent="setLang('ja')">日本語</a>
-                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='id'}" href="#" v-on:click.prevent="setLang('id')">Bahasa Indonesia</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':langMode==='system'}" href="#" v-on:click.prevent="setLang('system')">System</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='en' && langMode==='explicit'}" href="#" v-on:click.prevent="setLang('en')">English</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='zh' && langMode==='explicit'}" href="#" v-on:click.prevent="setLang('zh')">中國人</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='hi' && langMode==='explicit'}" href="#" v-on:click.prevent="setLang('hi')">हिन्दी</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='es' && langMode==='explicit'}" href="#" v-on:click.prevent="setLang('es')">español</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='fr' && langMode==='explicit'}" href="#" v-on:click.prevent="setLang('fr')">français</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ar' && langMode==='explicit'}" href="#" v-on:click.prevent="setLang('ar')">عربى</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ru' && langMode==='explicit'}" href="#" v-on:click.prevent="setLang('ru')">русский</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='pt' && langMode==='explicit'}" href="#" v-on:click.prevent="setLang('pt')">português</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='ja' && langMode==='explicit'}" href="#" v-on:click.prevent="setLang('ja')">日本語</a>
+                                    <a class="dropdown-item" v-bind:class="{'dropdown-item-checked':lang=='id' && langMode==='explicit'}" href="#" v-on:click.prevent="setLang('id')">Bahasa Indonesia</a>
                                 </div>
                             </div>
                         </div>

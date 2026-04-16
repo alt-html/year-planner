@@ -1,4 +1,5 @@
 export default {
+    system: 'System',
     en: 'English',
     zh: '中國人',
     hi: 'हिन्दी',

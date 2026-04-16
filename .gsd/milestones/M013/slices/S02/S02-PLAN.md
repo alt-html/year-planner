@@ -96,7 +96,7 @@ Why this task exists
   - Files: `site/js/service/StorageLocal.js`, `site/js/Application.js`, `site/js/vue/i18n.js`, `site/js/vue/model/planner.js`, `.tests/e2e/system-follow-preferences.spec.js`, `.tests/e2e/clean-url-navigation.spec.js`
   - Verify: npm --prefix .tests run test -- --reporter=line e2e/system-follow-preferences.spec.js
 
-- [ ] **T02: Wire live system-follow listeners and UI controls for theme/language override + return-to-system** `est:1h25m`
+- [x] **T02: Wire live system-follow listeners and UI controls for theme/language override + return-to-system** `est:1h25m`
   ## Skills Used
 
 - `best-practices`
