@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "milestoneId": "M013",
+  "sliceId": "S04",
+  "timestamp": 1776320916940,
+  "status": "fail",
+  "durationMs": 0,
+  "checks": [
+    {
+      "category": "file",
+      "target": ".tests/test-results/m013-cleanup/M013-cleanup-report.json",
+      "passed": false,
+      "message": "Task T02 references '.tests/test-results/m013-cleanup/M013-cleanup-report.json' which doesn't exist and isn't created by prior tasks",
+      "blocking": true
+    }
+  ]
+}

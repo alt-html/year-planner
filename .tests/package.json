@@ -10,6 +10,7 @@
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:smoke": "playwright test smoke/ --reporter=line",
-    "test:icon-signoff": "bash ../scripts/verify-icon-integration-signoff.sh"
+    "test:icon-signoff": "bash ../scripts/verify-icon-integration-signoff.sh",
+    "test:m013-cleanup": "bash ../scripts/verify-m013-cleanup.sh"
   }
 }

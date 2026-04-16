@@ -15,28 +15,6 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: unmapped
 - Notes: M013 explicitly closes/re-scopes prior unresolved MOD-09 debt via verification gates: clean URL state flow, uid removal, feature/share legacy cleanup, and regression proof.
 
-### R105 — Remove legacy share surface and URL/LZ import-export behavior (`?share=` and compressed payload path) from runtime and UI.
-- Class: continuity
-- Status: active
-- Description: Remove legacy share surface and URL/LZ import-export behavior (`?share=` and compressed payload path) from runtime and UI.
-- Why it matters: Current share behavior is legacy and should not remain as an architectural artifact.
-- Source: user
-- Primary owning slice: M013/S03
-- Supporting slices: M013/S04
-- Validation: unmapped
-- Notes: Replacement sharing semantics are deferred to a future requirement.
-
-### R106 — Remove feature-flag system completely, including hidden feature modal, trigger paths, and flag plumbing.
-- Class: operability
-- Status: active
-- Description: Remove feature-flag system completely, including hidden feature modal, trigger paths, and flag plumbing.
-- Why it matters: Hidden/legacy flagging adds confusion and drift with no product value.
-- Source: user
-- Primary owning slice: M013/S03
-- Supporting slices: M013/S04
-- Validation: unmapped
-- Notes: Cleanup must remove dead affordances and dead state/method wiring, not just hide UI.
-
 ## Validated
 
 ### AUTH-06 — Rewrite the client-side sync layer (Api.js, retire StorageRemote.js) to use the jsmdma sync protocol: `POST /year-planner/sync` with HLC-clocked dot-path fieldRevs, `clientClock`, `changes` array, and `serverChanges` response. Replace the current raw-localStorage-dump push/pull pattern entirely.
@@ -197,6 +175,28 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: S01 refactored storage contract from numeric uid keys to userKey (UUID) persistence; Application.js bootstrap resolves userKey early and uses it for all preference reads/writes; all planner metadata carries meta.userKey; multi-planner switching uses active document UUID; 25+ regression tests pass validating behavior under new contract.
 - Notes: No backward-compat migration required (greenfield). Multi-planner remains explicit and unchanged as a capability.
 
+### R105 — Remove legacy share surface and URL/LZ import-export behavior (`?share=` and compressed payload path) from runtime and UI.
+- Class: continuity
+- Status: validated
+- Description: Remove legacy share surface and URL/LZ import-export behavior (`?share=` and compressed payload path) from runtime and UI.
+- Why it matters: Current share behavior is legacy and should not remain as an architectural artifact.
+- Source: user
+- Primary owning slice: M013/S03
+- Supporting slices: M013/S04
+- Validation: S03 T01/T02/T03 removed all share URL/LZ runtime contract from Application.js, Storage.js, and Vue planner state/methods (7 files modified, all grep gates pass). Removed share modal/UI surfaces from compose fragments and Vue bindings (11 files modified). Re-composed site/index.html (625 lines, down from 695). Verification: T01 grep gate (no ?share=, getExportString, setModelFromImportString, etc.) exit 0; T02 grep gate (no shareModal, sharePlanner, etc.) exit 0; T03 verification suite 12/12 Playwright tests pass including legacy-surface-removal.spec.js asserting no share controls in DOM or rail. No share import/export runtime path remains.
+- Notes: Replacement sharing semantics are deferred to a future requirement.
+
+### R106 — Remove feature-flag system completely, including hidden feature modal, trigger paths, and flag plumbing.
+- Class: operability
+- Status: validated
+- Description: Remove feature-flag system completely, including hidden feature modal, trigger paths, and flag plumbing.
+- Why it matters: Hidden/legacy flagging adds confusion and drift with no product value.
+- Source: user
+- Primary owning slice: M013/S03
+- Supporting slices: M013/S04
+- Validation: S03 T02/T03 removed feature-flag system completely: deleted model-features.js file, removed feature object from Vue model and CDI context, removed all feature.* conditionals from compose/runtime, removed showFeatureModal state and closeFeatureModal() method, removed hidden feature trigger from footer and debug block from grid. Verification: T02 grep gate (no feature.*, showFeatureModal, featureModal, etc.) exit 0; scripts/verify-no-legacy-share-features.sh exit 0; T03 verification suite 12/12 tests pass including legacy-surface-removal.spec.js asserting no feature controls in DOM. Auth controls (sign-in button) remain functional via direct signedin checks instead of feature.signin gate.
+- Notes: Cleanup must remove dead affordances and dead state/method wiring, not just hide UI.
+
 ### R107 — Implement language preference modes with `system` live-follow and explicit override, including ability to return to system-follow.
 - Class: primary-user-loop
 - Status: validated
@@ -346,8 +346,8 @@ This file is the explicit capability and coverage contract for the project.
 | R102 | operability | validated | M011/S03 | none | validated |
 | R103 | continuity | validated | M013/S02 | M013/S04 | S02 T01 removed year/lang/theme URL bootstrap inputs entirely from this.url.parameters. Application.js now derives startup state exclusively from stored preferences + system defaults. 16-test regression spec in system-follow-preferences.spec.js verifies URL params (year/lang/theme) do not drive bootstrap state. All 45 slice verification tests pass including clean-url-navigation.spec.js regression suite confirming no URL-param surfaces remain. |
 | R104 | data-model | validated | M013/S01 | M013/S04 | S01 refactored storage contract from numeric uid keys to userKey (UUID) persistence; Application.js bootstrap resolves userKey early and uses it for all preference reads/writes; all planner metadata carries meta.userKey; multi-planner switching uses active document UUID; 25+ regression tests pass validating behavior under new contract. |
-| R105 | continuity | active | M013/S03 | M013/S04 | unmapped |
-| R106 | operability | active | M013/S03 | M013/S04 | unmapped |
+| R105 | continuity | validated | M013/S03 | M013/S04 | S03 T01/T02/T03 removed all share URL/LZ runtime contract from Application.js, Storage.js, and Vue planner state/methods (7 files modified, all grep gates pass). Removed share modal/UI surfaces from compose fragments and Vue bindings (11 files modified). Re-composed site/index.html (625 lines, down from 695). Verification: T01 grep gate (no ?share=, getExportString, setModelFromImportString, etc.) exit 0; T02 grep gate (no shareModal, sharePlanner, etc.) exit 0; T03 verification suite 12/12 Playwright tests pass including legacy-surface-removal.spec.js asserting no share controls in DOM or rail. No share import/export runtime path remains. |
+| R106 | operability | validated | M013/S03 | M013/S04 | S03 T02/T03 removed feature-flag system completely: deleted model-features.js file, removed feature object from Vue model and CDI context, removed all feature.* conditionals from compose/runtime, removed showFeatureModal state and closeFeatureModal() method, removed hidden feature trigger from footer and debug block from grid. Verification: T02 grep gate (no feature.*, showFeatureModal, featureModal, etc.) exit 0; scripts/verify-no-legacy-share-features.sh exit 0; T03 verification suite 12/12 tests pass including legacy-surface-removal.spec.js asserting no feature controls in DOM. Auth controls (sign-in button) remain functional via direct signedin checks instead of feature.signin gate. |
 | R107 | primary-user-loop | validated | M013/S02 | M013/S04 | S02 T02 implemented language preference modes: langMode 'system' (live-follow navigator.languages) and explicit locale selection. Users can set language in footer language dropdown with System option that reacts live to OS languagechange events. setLang('system') returns to system mode; setLang(locale) sets explicit mode. 9 live-follow E2E tests verify mode switching, OS event propagation, and URL remains clean. 25 total system-follow-preferences tests pass. Covers R107 and integration surfaces in lifecycle.js, rail.js, index.html, lang.js. |
 | R108 | quality-attribute | validated | M013/S02 | M013/S04 | S02 T02 implemented light/dark preference modes: themeMode 'system' (live-follow OS prefers-color-scheme) and explicit light/dark selection. Users control theme via settings flyout with System/Light/Dark options that react live to matchMedia change events. setTheme('system') returns to OS mode; setTheme('light'/'dark') sets explicit mode with visual feedback. Dark toggle (doDarkToggle) switches to explicit dark mode. 9 live-follow E2E tests verify mode switching, OS event propagation, round-trip coherence, and URL remains clean. 3 smoke tests for dark-mode regression. All 45 verification tests pass. |
 | R109 | quality-attribute | validated | M013/S04 | M013/S01,M013/S02,M013/S03 | S01 achieved strict regression proof via: (1) 8 new contract tests covering fresh boot, migration, error paths; (2) 9 new navigation tests confirming in-app state mutations and clean URLs; (3) 5 updated E2E specs validating sync/lifecycle under new identity contract; (4) grep gate script validating zero uid navigation surfaces in runtime code; (5) full 25+ test regression suite passes with no behavioral regressions. |
@@ -359,7 +359,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 3
-- Mapped to slices: 3
-- Validated: 23 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R005, R006, R100, R101, R102, R103, R104, R107, R108, R109, SYNC-04, SYNC-05, SYNC-06)
+- Active requirements: 1
+- Mapped to slices: 1
+- Validated: 25 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R005, R006, R100, R101, R102, R103, R104, R105, R106, R107, R108, R109, SYNC-04, SYNC-05, SYNC-06)
 - Unmapped active requirements: 0

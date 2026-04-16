@@ -30,6 +30,13 @@ jobs:
         working-directory: .tests
         run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright E2E tests
-        working-directory: .tests
-        run: npx playwright test --reporter=line
+      - name: Run M013 verification (legacy gates + smoke + e2e)
+        run: bash scripts/verify-m013-cleanup.sh
+
+      - name: Upload M013 verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m013-cleanup-report
+          path: .tests/test-results/m013-cleanup/M013-cleanup-report.json
+          if-no-files-found: warn
