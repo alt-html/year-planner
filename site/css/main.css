@@ -530,6 +530,49 @@ body.emoji-dragging {
     max-width: 3em;
 }
 
+/* Error alerts (global + auth modal): Bootstrap 5 subtle palette + custom structure */
+.yp-error-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    border: 1px solid var(--bs-danger-border-subtle);
+    border-left: 4px solid var(--bs-danger);
+    background: var(--bs-danger-bg-subtle);
+    color: var(--bs-danger-text-emphasis);
+    border-radius: 0.75rem;
+    padding: 0.75rem 0.85rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 0.35rem 0.9rem rgba(0,0,0,0.08);
+}
+
+.yp-error-alert.alert-dismissible {
+    padding-right: 0.85rem;
+}
+
+.yp-error-icon {
+    color: var(--bs-danger);
+    font-size: 1.1rem;
+    line-height: 1;
+    margin-top: 0.12rem;
+}
+
+.yp-error-copy {
+    flex: 1;
+    min-width: 0;
+}
+
+.yp-error-alert.alert-dismissible .btn-close {
+    position: static;
+    padding: 0.2rem;
+    margin: 0;
+    opacity: 0.75;
+    background-size: 0.75rem;
+}
+
+.yp-error-alert.alert-dismissible .btn-close:hover {
+    opacity: 1;
+}
+
 .alert-primary {
     background-color: var(--yp-c2);
     border-color: var(--yp-accent);

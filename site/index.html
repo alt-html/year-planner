@@ -404,8 +404,11 @@
        <main v-bind:class="{'d-none':!loaded}">
             <div class="yp-jumbotron">
                 <div class="container">
-                    <div class="fade" v-if="error" v-bind:class="{'alert alert-danger alert-dismissible show': error != ''}" role="alert" >
-                        <p>{{$t(error)}}</p>
+                    <div class="fade" v-if="error" v-bind:class="{'alert alert-danger alert-dismissible show yp-error-alert': error != ''}" role="alert" aria-live="polite">
+                        <div class="yp-error-icon" aria-hidden="true"><i class="ph ph-warning-circle"></i></div>
+                        <div class="yp-error-copy">
+                            <p class="mb-0">{{$t(error)}}</p>
+                        </div>
                         <button type="button" class="btn-close" v-on:click="clearError" aria-label="Close"></button>
                     </div>
 
@@ -525,8 +528,11 @@
                         <button type="button" class="btn-close" v-on:click="closeAuthModal()" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show': modalError != ''}" role="alert">
-                            <p class="mb-0">{{$t(modalError)}}</p>
+                        <div class="fade" v-if="modalError" v-bind:class="{'alert alert-danger alert-dismissible show yp-error-alert': modalError != ''}" role="alert" aria-live="polite">
+                            <div class="yp-error-icon" aria-hidden="true"><i class="ph ph-warning-circle"></i></div>
+                            <div class="yp-error-copy">
+                                <p class="mb-0">{{$t(modalError)}}</p>
+                            </div>
                             <button type="button" class="btn-close" v-on:click="clearModalAlert" aria-label="Close"></button>
                         </div>
                         <div class="d-grid gap-2">

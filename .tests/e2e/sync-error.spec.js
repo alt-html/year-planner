@@ -28,4 +28,5 @@ test('sync failure shows visible error alert (SEC-04)', async ({ page }) => {
 
   const alert = page.locator('.alert-danger');
   await expect(alert).toBeVisible({ timeout: 3000 });
+  await expect(page.locator('.yp-error-alert')).toBeVisible({ timeout: 3000 });
 });
