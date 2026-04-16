@@ -50,7 +50,6 @@
     <nav class="yp-rail" id="rail">
         <div class="yp-rail-logo">YP</div>
         <button class="active" title="Calendar" v-on:click="toggleFlyout('calendar')"><i class="ph ph-calendar-dots"></i></button>
-        <button title="Share" v-on:click="sharePlanner()"><i class="ph ph-share-network"></i></button>
         <button title="Highlighter" v-on:click="toggleMarkerMode()" v-bind:class="{active: markerActive}"><i class="ph ph-highlighter-circle"></i></button>
         <button title="Emoji stamp" v-on:click="toggleEmojiMode()" v-bind:class="{active: emojiActive}"><i class="ph ph-smiley-sticker"></i></button>
         <div class="yp-rail-spacer"></div>
@@ -107,7 +106,6 @@
                   </a>
                 </template>
                 <div class="rail-flyout-divider"></div>
-                <a class="rail-flyout-item" href="#" v-on:click.prevent="sharePlanner(); toggleFlyout(null)">{{$t('label.share')}}…</a>
                 <a class="rail-flyout-item" href="#" v-on:click.prevent="showRenamePlanner(); toggleFlyout(null)">{{$t('label.rename')}}</a>
                 <a class="rail-flyout-item" href="#" v-on:click.prevent="createPlanner(); toggleFlyout(null)">{{$t('label.new')}}</a>
                 <a class="rail-flyout-item" href="#" v-if="activeDocUuid" v-on:click.prevent="deletePlannerByUuid(activeDocUuid); toggleFlyout(null)">{{$t('label.delete')}}…</a>
@@ -340,17 +338,17 @@
             <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='light'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=light'" v-on:click="toggleFlyout(null)">{{$t('label.light')}}</a>
             <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='dark'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=dark'" v-on:click="toggleFlyout(null)">{{$t('label.dark')}}</a>
             <div class="rail-flyout-divider"></div>
-            <a v-if="feature.signin && !signedin" class="rail-flyout-item" href="#" v-on:click.prevent="showSignin(); toggleFlyout(null)">{{$t('label.signin')}}…</a>
-            <a v-if="feature.signin && signedin" class="rail-flyout-item" href="#" v-on:click.prevent="signout(); toggleFlyout(null)">{{$t('label.signout')}}…</a>
-            <div class="rail-flyout-divider" v-if="feature.signin && signedin"></div>
-            <div class="rail-flyout-header" v-if="feature.signin && signedin">{{$t('label.connectedAccounts')}}</div>
-            <div v-if="feature.signin && signedin" v-for="provider in linkedProviders" :key="provider" class="rail-flyout-item d-flex justify-content-between align-items-center small">
+            <a v-if="!signedin" class="rail-flyout-item" href="#" v-on:click.prevent="showSignin(); toggleFlyout(null)">{{$t('label.signin')}}…</a>
+            <a v-if="signedin" class="rail-flyout-item" href="#" v-on:click.prevent="signout(); toggleFlyout(null)">{{$t('label.signout')}}…</a>
+            <div class="rail-flyout-divider" v-if="signedin"></div>
+            <div class="rail-flyout-header" v-if="signedin">{{$t('label.connectedAccounts')}}</div>
+            <div v-if="signedin" v-for="provider in linkedProviders" :key="provider" class="rail-flyout-item d-flex justify-content-between align-items-center small">
                 <span><i :class="'ph ph-' + provider + '-logo me-1'"></i>{{ provider }}</span>
                 <a href="#" class="small text-decoration-none" style="color: inherit; opacity: 0.7"
                         v-if="linkedProviders.length > 1"
                         v-on:click.prevent="doUnlinkProvider(provider)">{{$t('label.unlink')}}</a>
             </div>
-            <a v-if="feature.signin && signedin && availableProviders.length > linkedProviders.length"
+            <a v-if="signedin && availableProviders.length > linkedProviders.length"
                class="rail-flyout-item small" href="#"
                v-on:click.prevent="doLinkProvider()">{{$t('label.addAccount')}}…</a>
         </div>
@@ -410,20 +408,6 @@
                         <p>{{$t(error)}}</p>
                         <button type="button" class="btn-close" v-on:click="clearError" aria-label="Close"></button>
                     </div>
-
-                    <div v-if="feature.debug">
-                            <div>&nbsp</div>
-                            <div class="row g-0">
-                                <div class="col-12">
-                                    <div class="row tst-cell d-sm-none">Extra Small (xs) < 576px</div>
-                                    <div class="row tst-cell d-none d-sm-inline d-md-none">Small (sm) >= 576</div>
-                                    <div class="row tst-cell d-none d-md-inline d-lg-none">Medium (md) >= 768px</div>
-                                    <div class="row tst-cell d-none d-lg-inline d-xl-none">Large (lg) >= 992px</div>
-                                    <div class="row tst-cell d-none d-xl-inline">Extra Large (xl) >= 1200px</div>
-                                </div>
-                            </div>
-                    </div>
-
 
                     <div id="yp-table" class="row g-0">
                         <div id="yp-weekdays" class="col-4 col-sm-3 col-md-2 col-lg-2 col-xl-1">
@@ -512,31 +496,6 @@
         </div>
         <div class="modal-backdrop fade show" v-if="showEntryModal" v-on:click="closeEntryModal()"></div>
 
-        <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel" v-bind:aria-hidden="!showShareModal"
-             v-bind:class="{ show: showShareModal, 'd-block': showShareModal }">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="shareModalLabel">{{$t('label.yearplanner')+' '+DateTime.local(year, 1, 1).setLocale(lang).toLocaleString({year:'numeric'})}}</h5>
-                        <button type="button" class="btn-close" v-on:click="closeShareModal()" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="mb-3">
-                                <label for="copyUrl" class="col-form-label">{{$t('label.sharecopy')}}</label>
-                                <input  type="text" class="form-control" v-model="shareUrl" id="copyUrl">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" v-on:click="closeShareModal()">{{$t('label.close')}}</button>
-                        <button type="button" class="btn btn-primary"  v-on:click="copyUrl()">{{$t('label.copy')}}</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-backdrop fade show" v-if="showShareModal" v-on:click="closeShareModal()"></div>
-
         <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" v-bind:aria-hidden="!showDeleteModal"
              v-bind:class="{ show: showDeleteModal, 'd-block': showDeleteModal }">
             <div class="modal-dialog" role="document">
@@ -601,35 +560,6 @@
         </div>
         <div class="modal-backdrop fade show" v-if="showAuthModal" v-on:click="closeAuthModal()"></div>
 
-        <div class="modal fade" id="featureModal" tabindex="-1" role="dialog" aria-labelledby="featureModalLabel" v-bind:aria-hidden="!showFeatureModal"
-             v-bind:class="{ show: showFeatureModal, 'd-block': showFeatureModal }">
-            <div id="feature-dialog"  class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="featureModalLabel">Feature Toggles</h5>
-                        <button type="button" class="btn-close" v-on:click="closeFeatureModal()" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox"  id="debug" v-model="feature['debug']">
-                                <label class="form-check-label" for="debug">Debug</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox"  id="signin" v-model="feature['signin']">
-                                <label class="form-check-label" for="signin">{{$t('label.signin')}}</label>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" v-on:click="reset(); closeFeatureModal()">{{$t('label.reset')}}</button>
-                        <button type="button" class="btn btn-secondary" v-on:click="closeFeatureModal()">{{$t('label.close')}}</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-backdrop fade show" v-if="showFeatureModal" v-on:click="closeFeatureModal()"></div>
-
         <footer class="footer fixed-bottom" v-bind:class="{'d-none':!loaded}">
             <div id ="footer-container" class="container">
                 <div class="row">
@@ -659,7 +589,7 @@
 
                     <div class="col-10">
 
-                        <div id="footer-text-right" class="text-body-secondary text-end">© 2021-2026, C<span class="d-none d-sm-inline">raig</span><span class="d-sm-none">.</span><span v-on:click="showFeatureModal = true">&nbsp;</span>Parravicini&nbsp;&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" style="display:inline-flex;align-items:center;gap:2px;">
+                        <div id="footer-text-right" class="text-body-secondary text-end">© 2021-2026, Craig Parravicini&nbsp;&nbsp; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" style="display:inline-flex;align-items:center;gap:2px;">
                             <svg class="cc-icon" viewBox="0 0 24 24"><path d="M11.983 0c-3.292 0-6.19 1.217-8.428 3.485C1.25 5.819 0 8.844 0 12c0 3.189 1.217 6.148 3.522 8.45C5.827 22.75 8.822 24 11.983 24c3.16 0 6.222-1.25 8.593-3.583C22.815 18.214 24 15.287 24 12c0-3.255-1.186-6.214-3.458-8.483C18.238 1.217 15.275 0 11.983 0zm.033 2.17c2.7 0 5.103 1.02 6.98 2.893 1.843 1.841 2.83 4.274 2.83 6.937 0 2.696-.954 5.063-2.798 6.872-1.943 1.906-4.444 2.926-7.012 2.926-2.601 0-5.038-1.019-6.914-2.893-1.877-1.875-2.93-4.34-2.93-6.905 0-2.597 1.053-5.063 2.93-6.97 1.844-1.874 4.214-2.86 6.914-2.86zM8.68 8.278C6.723 8.278 5.165 9.66 5.165 12c0 2.38 1.465 3.722 3.581 3.722 1.358 0 2.516-.744 3.155-1.874l-1.491-.758c-.333.798-.839 1.037-1.478 1.037-1.105 0-1.61-.917-1.61-2.126 0-1.21.426-2.127 1.61-2.127.32 0 .96.173 1.332.97l1.597-.838c-.68-1.236-1.837-1.728-3.181-1.728zm6.932 0c-1.957 0-3.514 1.382-3.514 3.722 0 2.38 1.464 3.722 3.58 3.722 1.359 0 2.516-.744 3.155-1.874l-1.49-.758c-.333.798-.84 1.037-1.478 1.037-1.105 0-1.611-.917-1.611-2.126 0-1.21.426-2.127 1.61-2.127.32 0 .96.173 1.332.97l1.597-.838c-.68-1.236-1.837-1.728-3.181-1.728z"/></svg><svg class="cc-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 3a3 3 0 100 6 3 3 0 000-6zm-4.5 8.5c0-1.5 2-2.5 4.5-2.5s4.5 1 4.5 2.5V17h-9v-3.5z"/></svg><svg class="cc-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm-2.5 5.5L7 12l2.5 4.5h2L9 12l2.5-4.5h-2zm5 0L12 12l2.5 4.5h2L14 12l2.5-4.5h-2z"/></svg>
                         </a>&nbsp;&nbsp; <a href="https://github.com/alt-html/year-planner" target="_blank"><i class="ph ph-github-logo"></i><span class="d-none d-sm-inline">&nbsp;README.md</span></a>
                         </div>

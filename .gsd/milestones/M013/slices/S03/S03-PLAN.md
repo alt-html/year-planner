@@ -83,7 +83,7 @@ This slice removes legacy surfaces across Application bootstrap, Vue state/metho
   - Files: `site/js/Application.js`, `site/js/service/Storage.js`, `site/js/vue/model/planner.js`, `site/js/vue/model/ui.js`, `site/js/vue/methods/planner.js`, `site/js/vue/methods/lifecycle.js`, `site/js/config/contexts.js`, `site/js/vue/model.js`
   - Verify: bash -lc '! rg -n "urlParam\(\x27share\x27\)|\?share=|getExportString|setModelFromImportString|sharePlanner\(|showShareModal|shareUrl|_pendingImport" site/js/Application.js site/js/service/Storage.js site/js/vue site/js/config/contexts.js'
 
-- [ ] **T02: Remove feature-flag and share UI surfaces from compose fragments and Vue bindings** `est:1h20m`
+- [x] **T02: Remove feature-flag and share UI surfaces from compose fragments and Vue bindings** `est:1h20m`
   Why: R105/R106 require visible surface removal, not just hidden runtime plumbing; compose fragments and Vue bindings must no longer expose share/feature controls.
 
 ## Skills Used

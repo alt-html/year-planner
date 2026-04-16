@@ -1,4 +1,3 @@
-import { feature } from './model-features.js'
 import { calendarState } from './model/calendar.js';
 import { plannerState } from './model/planner.js';
 import { authState } from './model/auth.js';
@@ -14,8 +13,6 @@ const model = {
     storageLocal : null,
     plannerStore : null,
     syncScheduler : null,
-
-    feature : feature,
 
     ...calendarState,
     ...plannerState,

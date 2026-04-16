@@ -7,7 +7,6 @@ import PlannerStore from '../service/PlannerStore.js';
 import Storage from '../service/Storage.js';
 import StorageLocal from '../service/StorageLocal.js';
 import SyncScheduler from '../service/SyncScheduler.js';
-import { feature } from '../vue/model-features.js';
 import { messages } from '../vue/i18n/messages.js';
 import { model } from '../vue/model.js';
 import { i18n } from '../vue/i18n.js';
@@ -21,7 +20,6 @@ export default new Context([
     new Singleton(StorageLocal),
     new Singleton(SyncScheduler),
 
-    { name: 'feature',  Reference: feature },
     { name: 'messages', Reference: messages },
     { name: 'model',    Reference: model },
     { name: 'i18n',     Reference: i18n },

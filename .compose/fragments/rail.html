@@ -2,7 +2,6 @@
     <nav class="yp-rail" id="rail">
         <div class="yp-rail-logo">YP</div>
         <button class="active" title="Calendar" v-on:click="toggleFlyout('calendar')"><i class="ph ph-calendar-dots"></i></button>
-        <button title="Share" v-on:click="sharePlanner()"><i class="ph ph-share-network"></i></button>
         <button title="Highlighter" v-on:click="toggleMarkerMode()" v-bind:class="{active: markerActive}"><i class="ph ph-highlighter-circle"></i></button>
         <button title="Emoji stamp" v-on:click="toggleEmojiMode()" v-bind:class="{active: emojiActive}"><i class="ph ph-smiley-sticker"></i></button>
         <div class="yp-rail-spacer"></div>
@@ -59,7 +58,6 @@
                   </a>
                 </template>
                 <div class="rail-flyout-divider"></div>
-                <a class="rail-flyout-item" href="#" v-on:click.prevent="sharePlanner(); toggleFlyout(null)">{{$t('label.share')}}…</a>
                 <a class="rail-flyout-item" href="#" v-on:click.prevent="showRenamePlanner(); toggleFlyout(null)">{{$t('label.rename')}}</a>
                 <a class="rail-flyout-item" href="#" v-on:click.prevent="createPlanner(); toggleFlyout(null)">{{$t('label.new')}}</a>
                 <a class="rail-flyout-item" href="#" v-if="activeDocUuid" v-on:click.prevent="deletePlannerByUuid(activeDocUuid); toggleFlyout(null)">{{$t('label.delete')}}…</a>
@@ -292,17 +290,17 @@
             <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='light'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=light'" v-on:click="toggleFlyout(null)">{{$t('label.light')}}</a>
             <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='dark'}" v-bind:href="'/?uid='+uid+'&year='+year+'&lang='+lang+'&theme=dark'" v-on:click="toggleFlyout(null)">{{$t('label.dark')}}</a>
             <div class="rail-flyout-divider"></div>
-            <a v-if="feature.signin && !signedin" class="rail-flyout-item" href="#" v-on:click.prevent="showSignin(); toggleFlyout(null)">{{$t('label.signin')}}…</a>
-            <a v-if="feature.signin && signedin" class="rail-flyout-item" href="#" v-on:click.prevent="signout(); toggleFlyout(null)">{{$t('label.signout')}}…</a>
-            <div class="rail-flyout-divider" v-if="feature.signin && signedin"></div>
-            <div class="rail-flyout-header" v-if="feature.signin && signedin">{{$t('label.connectedAccounts')}}</div>
-            <div v-if="feature.signin && signedin" v-for="provider in linkedProviders" :key="provider" class="rail-flyout-item d-flex justify-content-between align-items-center small">
+            <a v-if="!signedin" class="rail-flyout-item" href="#" v-on:click.prevent="showSignin(); toggleFlyout(null)">{{$t('label.signin')}}…</a>
+            <a v-if="signedin" class="rail-flyout-item" href="#" v-on:click.prevent="signout(); toggleFlyout(null)">{{$t('label.signout')}}…</a>
+            <div class="rail-flyout-divider" v-if="signedin"></div>
+            <div class="rail-flyout-header" v-if="signedin">{{$t('label.connectedAccounts')}}</div>
+            <div v-if="signedin" v-for="provider in linkedProviders" :key="provider" class="rail-flyout-item d-flex justify-content-between align-items-center small">
                 <span><i :class="'ph ph-' + provider + '-logo me-1'"></i>{{ provider }}</span>
                 <a href="#" class="small text-decoration-none" style="color: inherit; opacity: 0.7"
                         v-if="linkedProviders.length > 1"
                         v-on:click.prevent="doUnlinkProvider(provider)">{{$t('label.unlink')}}</a>
             </div>
-            <a v-if="feature.signin && signedin && availableProviders.length > linkedProviders.length"
+            <a v-if="signedin && availableProviders.length > linkedProviders.length"
                class="rail-flyout-item small" href="#"
                v-on:click.prevent="doLinkProvider()">{{$t('label.addAccount')}}…</a>
         </div>

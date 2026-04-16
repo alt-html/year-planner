@@ -23,7 +23,6 @@ export const uiState = {
     authLinkMode : false,
     showEntryModal : false,
     showDeleteModal : false,
-    showFeatureModal : false,
     // Rename form visibility (replace jQuery $('#rename').show()/hide())
     renameVisible : false,
     // Nav menu dropdown

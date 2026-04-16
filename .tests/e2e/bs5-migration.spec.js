@@ -1,7 +1,6 @@
 // E2E tests for Bootstrap 5.3.8 migration
 // MIG-01: SRI integrity check
-// MIG-04: btn-close visibility in modal header
-// MIG-12: featureModal open and close
+// MIG-04: btn-close visibility in modal header (entry modal — share/feature modals removed in M013/S03)
 
 const { test, expect } = require('../fixtures/cdn');
 
@@ -20,49 +19,19 @@ test('BS5 CSS loads without SRI integrity error (MIG-01)', async ({ page }) => {
     expect(sriErrors).toHaveLength(0);
 });
 
-test('.btn-close renders visibly in modal header (MIG-04)', async ({ page }) => {
+test('.btn-close renders visibly in delete modal header (MIG-04)', async ({ page }) => {
     await page.goto('/');
-    await page.waitForSelector('#app');
-    // Open shareModal via Vue to check btn-close
+    await page.waitForSelector('[data-app-ready]');
+    // Open deleteModal via Vue to check btn-close (shareModal was removed in M013/S03)
     await page.evaluate(() => {
         const appEl = document.getElementById('app');
         if (appEl && appEl._vnode && appEl._vnode.component) {
-            appEl._vnode.component.proxy.showShareModal = true;
+            appEl._vnode.component.proxy.showDeleteModal = true;
         }
     });
-    await page.waitForSelector('#shareModal.show');
-    const btnClose = page.locator('#shareModal .btn-close');
+    await page.waitForSelector('#deleteModal.show');
+    const btnClose = page.locator('#deleteModal .btn-close');
     await expect(btnClose).toBeVisible();
     const opacity = await btnClose.evaluate(el => getComputedStyle(el).opacity);
     expect(Number(opacity)).toBeGreaterThan(0);
-});
-
-test('clicking footer trigger opens featureModal (MIG-12)', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForSelector('#app');
-    // Open featureModal via Vue state (footer trigger is a tiny click target)
-    await page.evaluate(() => {
-        const appEl = document.getElementById('app');
-        if (appEl && appEl._vnode && appEl._vnode.component) {
-            appEl._vnode.component.proxy.showFeatureModal = true;
-        }
-    });
-    await page.waitForSelector('#featureModal.show');
-    await expect(page.locator('#featureModal .modal-title')).toContainText(/feature/i);
-});
-
-test('featureModal closes via btn-close click (MIG-12)', async ({ page }) => {
-    await page.goto('/');
-    await page.waitForSelector('#app');
-    // Open featureModal
-    await page.evaluate(() => {
-        const appEl = document.getElementById('app');
-        if (appEl && appEl._vnode && appEl._vnode.component) {
-            appEl._vnode.component.proxy.showFeatureModal = true;
-        }
-    });
-    await page.waitForSelector('#featureModal.show');
-    // Click btn-close
-    await page.locator('#featureModal .btn-close').click();
-    await expect(page.locator('#featureModal')).not.toHaveClass(/show/);
 });
