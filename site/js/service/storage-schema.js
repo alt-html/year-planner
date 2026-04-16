@@ -8,7 +8,7 @@ export const KEY_TOK = 'tok';  // JWT auth token
 export const KEY_IDS = 'ids';  // identities map { [uid]: { name, provider, email } }
 
 // ---- Namespaced key builders ----
-export const keyPrefs = (uid)  => `prefs:${uid}`;
+export const keyPrefs = (userKey) => `prefs:${userKey}`;
 export const keyPlnr  = (uuid) => `plnr:${uuid}`;
 export const keyRev   = (uuid) => `rev:${uuid}`;
 export const keyBase  = (uuid) => `base:${uuid}`;

@@ -4,27 +4,93 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Active
 
-### R006 — Prove icon integration using existing project test flow plus explicit visual spot checks on key sizes/surfaces.
-- Class: quality-attribute
-- Status: active
-- Description: Prove icon integration using existing project test flow plus explicit visual spot checks on key sizes/surfaces.
-- Why it matters: Prevents shipping broken or illegible icons despite correct file presence.
-- Source: user
-- Primary owning slice: M012/S06
-- Supporting slices: M012/S04, M012/S05
-- Validation: mapped
-- Notes: Key checks include 16/32/180/192/512 and desktop launch surfaces.
-
 ### R007 — Close or re-scope the prior unresolved MOD-09 requirement so active requirement debt is not silently carried forward.
 - Class: continuity
 - Status: active
 - Description: Close or re-scope the prior unresolved MOD-09 requirement so active requirement debt is not silently carried forward.
 - Why it matters: The project should not retain ambiguous active requirements across completed milestones.
 - Source: execution
-- Primary owning slice: none yet
-- Supporting slices: none
+- Primary owning slice: M013/S04
+- Supporting slices: M013/S01,M013/S02,M013/S03
 - Validation: unmapped
-- Notes: This requirement is tracked but not planned inside M012 unless user explicitly expands scope.
+- Notes: M013 explicitly closes/re-scopes prior unresolved MOD-09 debt via verification gates: clean URL state flow, uid removal, feature/share legacy cleanup, and regression proof.
+
+### R103 — Remove app-state URL params (`uid`,`year`,`lang`,`theme`) from normal navigation and keep URLs clean except required OAuth/callback parameters.
+- Class: continuity
+- Status: active
+- Description: Remove app-state URL params (`uid`,`year`,`lang`,`theme`) from normal navigation and keep URLs clean except required OAuth/callback parameters.
+- Why it matters: URL-coupled state is redundant with current architecture and causes reload-driven behavior that conflicts with in-app state mechanics.
+- Source: user
+- Primary owning slice: M013/S02
+- Supporting slices: M013/S04
+- Validation: unmapped
+- Notes: Applies to nav/year/language/theme interactions; callback params remain allowed for auth flows only.
+
+### R104 — Remove legacy `uid` runtime/storage/schema usage and align identity mechanics to `userKey` plus jsmdma document UUID semantics while preserving multi-planner support.
+- Class: data-model
+- Status: active
+- Description: Remove legacy `uid` runtime/storage/schema usage and align identity mechanics to `userKey` plus jsmdma document UUID semantics while preserving multi-planner support.
+- Why it matters: `uid` is confusing and out of line with current jsmdma document and ownership model.
+- Source: user
+- Primary owning slice: M013/S01
+- Supporting slices: M013/S04
+- Validation: unmapped
+- Notes: No backward-compat migration required (greenfield). Multi-planner remains explicit and unchanged as a capability.
+
+### R105 — Remove legacy share surface and URL/LZ import-export behavior (`?share=` and compressed payload path) from runtime and UI.
+- Class: continuity
+- Status: active
+- Description: Remove legacy share surface and URL/LZ import-export behavior (`?share=` and compressed payload path) from runtime and UI.
+- Why it matters: Current share behavior is legacy and should not remain as an architectural artifact.
+- Source: user
+- Primary owning slice: M013/S03
+- Supporting slices: M013/S04
+- Validation: unmapped
+- Notes: Replacement sharing semantics are deferred to a future requirement.
+
+### R106 — Remove feature-flag system completely, including hidden feature modal, trigger paths, and flag plumbing.
+- Class: operability
+- Status: active
+- Description: Remove feature-flag system completely, including hidden feature modal, trigger paths, and flag plumbing.
+- Why it matters: Hidden/legacy flagging adds confusion and drift with no product value.
+- Source: user
+- Primary owning slice: M013/S03
+- Supporting slices: M013/S04
+- Validation: unmapped
+- Notes: Cleanup must remove dead affordances and dead state/method wiring, not just hide UI.
+
+### R107 — Implement language preference modes with `system` live-follow and explicit override, including ability to return to system-follow.
+- Class: primary-user-loop
+- Status: active
+- Description: Implement language preference modes with `system` live-follow and explicit override, including ability to return to system-follow.
+- Why it matters: Language behavior should align with user environment by default while still supporting explicit user choice.
+- Source: user
+- Primary owning slice: M013/S02
+- Supporting slices: M013/S04
+- Validation: unmapped
+- Notes: When mode is `system`, app follows browser language changes; explicit mode must be authoritative until reset to system.
+
+### R108 — Implement light/dark preference modes with `system` live-follow and explicit light/dark override, including ability to return to system-follow.
+- Class: quality-attribute
+- Status: active
+- Description: Implement light/dark preference modes with `system` live-follow and explicit light/dark override, including ability to return to system-follow.
+- Why it matters: Theme should follow system by default and remain controllable by explicit user preference.
+- Source: user
+- Primary owning slice: M013/S02
+- Supporting slices: M013/S04
+- Validation: unmapped
+- Notes: Use media query change events for live system updates while in `system` mode.
+
+### R109 — Require strict regression proof for cleanup: existing smoke and E2E suites plus new targeted tests and grep gates for removed legacy surfaces.
+- Class: quality-attribute
+- Status: active
+- Description: Require strict regression proof for cleanup: existing smoke and E2E suites plus new targeted tests and grep gates for removed legacy surfaces.
+- Why it matters: Cleanup milestones must prove behavioral integrity and complete removal of deprecated mechanisms.
+- Source: user
+- Primary owning slice: M013/S04
+- Supporting slices: M013/S01,M013/S02,M013/S03
+- Validation: unmapped
+- Notes: Includes grep gate for uid removal and checks for removed share/feature paths.
 
 ## Validated
 
@@ -120,6 +186,17 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: M012/S05 delivered: bash scripts/export-desktop-packaging-assets.sh generates site/icons/desktop/year-planner.ico (7 frames: 16,24,32,48,64,128,256) and site/icons/desktop/year-planner.icns (iconset: 16,32,64,128,256,512,1024) from canonical.json winner metadata (C2). site/icons/desktop-matrix.json contract records platform (windows/macos), format (ico/icns), sizes, src paths, and output locations. All 34 desktop-packaging smoke tests pass; all 52 existing icon-export-matrix and icon-live-wiring regression tests pass (86 total). Web/PWA matrix.json remains untouched with 9 entries. candidateId alignment verified (C2 → C2). Python ICO packer and bash exporter implement path safety validation (rejects ../ and absolute paths). Deterministic export and contract enabled by purpose-specific SVG metadata in canonical.json. Desktop assets ready for future Windows/macOS Electron bundling.
 - Notes: Electron runtime implementation itself is out of scope for M012.
 
+### R006 — Prove icon integration using existing project test flow plus explicit visual spot checks on key sizes/surfaces.
+- Class: quality-attribute
+- Status: validated
+- Description: Prove icon integration using existing project test flow plus explicit visual spot checks on key sizes/surfaces.
+- Why it matters: Prevents shipping broken or illegible icons despite correct file presence.
+- Source: user
+- Primary owning slice: M012/S06
+- Supporting slices: M012/S04, M012/S05
+- Validation: S06 complete with 8-stage integrated sign-off runner: (1) icon export matrix generation, (2) desktop packaging assets, (3–5) existing smoke contracts (export, live-wiring, desktop-packaging), (6) S06 visual sign-off spec (29 tests validating matrix contracts and generating deterministic HTML/PNG/JSON artifacts), (7) full Playwright suite, (8) artifact assertions. All stages pass (exit 0). Visual sign-off sheet validates 16/32/180/192/512 web/PWA/desktop surfaces with base64-embedded PNGs and ICC rendering. S06-sign-off-report.json records all stage verdicts and artifact paths. Negative-boundary tests prove path safety (rejects absolute paths, .. traversal, missing files). No blockers discovered across S06 execution.
+- Notes: Key checks include 16/32/180/192/512 and desktop launch surfaces.
+
 ### R100 — Client sync stack was rewritten to jsmdma protocol (`POST /year-planner/sync`) with HLC field revisions.
 - Class: integration
 - Status: validated
@@ -203,6 +280,17 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: unmapped
 - Notes: Cosmetic-only; explicitly deferred from earlier milestones.
 
+### R110 — Design and implement replacement sharing semantics (jsmdma-native share and/or redesigned export/import flow) after legacy share removal.
+- Class: integration
+- Status: deferred
+- Description: Design and implement replacement sharing semantics (jsmdma-native share and/or redesigned export/import flow) after legacy share removal.
+- Why it matters: Legacy share is removed now, but replacement requires separate product/architecture decision.
+- Source: user
+- Primary owning slice: none
+- Supporting slices: none
+- Validation: unmapped
+- Notes: Explicitly deferred from M013 by user direction.
+
 ### SYNC-08 — Untitled
 - Status: deferred
 - Notes: Deferred from M011 — user confirmed pruning can come later. No primary owning slice until a future milestone is planned.
@@ -247,8 +335,8 @@ This file is the explicit capability and coverage contract for the project.
 | R003 | integration | validated | M012/S03 | M012/S05 | S03 delivered: bash scripts/export-canonical-icon-matrix.sh produces 9 platform-specific PNG variants (favicon-16x16, favicon-32x32, apple-touch-180x180, pwa-any-{192,512}, pwa-maskable-{192,512}, pwa-monochrome-{192,512}) in site/icons/. matrix.json enumerates all entries with platform, purpose (any/maskable/monochrome), size, src paths, and output locations. All 24 matrix export smoke tests pass; all 80 S01/S02 regression tests pass. Export matrix is deterministic and read-only from canonical.json winner metadata. Platform coverage: web (2 sizes), iOS (1 size), PWA (6 sizes across 3 purposes). |
 | R004 | launchability | validated | M012/S04 | M012/S03 | S04 integration complete: index.html head links and manifest.json icons[] wired to canonical ./icons/* outputs from S03. All 57 smoke tests pass (icon-live-wiring.spec.js: 28 tests, compose.spec.js: 5 tests, icon-export-matrix.spec.js: 24 tests). Negative-boundary assertions confirm legacy paths are rejected and canonical structure is enforced. |
 | R005 | integration | validated | M012/S05 | M012/S03 | M012/S05 delivered: bash scripts/export-desktop-packaging-assets.sh generates site/icons/desktop/year-planner.ico (7 frames: 16,24,32,48,64,128,256) and site/icons/desktop/year-planner.icns (iconset: 16,32,64,128,256,512,1024) from canonical.json winner metadata (C2). site/icons/desktop-matrix.json contract records platform (windows/macos), format (ico/icns), sizes, src paths, and output locations. All 34 desktop-packaging smoke tests pass; all 52 existing icon-export-matrix and icon-live-wiring regression tests pass (86 total). Web/PWA matrix.json remains untouched with 9 entries. candidateId alignment verified (C2 → C2). Python ICO packer and bash exporter implement path safety validation (rejects ../ and absolute paths). Deterministic export and contract enabled by purpose-specific SVG metadata in canonical.json. Desktop assets ready for future Windows/macOS Electron bundling. |
-| R006 | quality-attribute | active | M012/S06 | M012/S04, M012/S05 | mapped |
-| R007 | continuity | active | none yet | none | unmapped |
+| R006 | quality-attribute | validated | M012/S06 | M012/S04, M012/S05 | S06 complete with 8-stage integrated sign-off runner: (1) icon export matrix generation, (2) desktop packaging assets, (3–5) existing smoke contracts (export, live-wiring, desktop-packaging), (6) S06 visual sign-off spec (29 tests validating matrix contracts and generating deterministic HTML/PNG/JSON artifacts), (7) full Playwright suite, (8) artifact assertions. All stages pass (exit 0). Visual sign-off sheet validates 16/32/180/192/512 web/PWA/desktop surfaces with base64-embedded PNGs and ICC rendering. S06-sign-off-report.json records all stage verdicts and artifact paths. Negative-boundary tests prove path safety (rejects absolute paths, .. traversal, missing files). No blockers discovered across S06 execution. |
+| R007 | continuity | active | M013/S04 | M013/S01,M013/S02,M013/S03 | unmapped |
 | R020 | quality-attribute | deferred | none | none | unmapped |
 | R021 | admin/support | deferred | none | none | unmapped |
 | R030 | constraint | out-of-scope | none | none | n/a |
@@ -256,6 +344,14 @@ This file is the explicit capability and coverage contract for the project.
 | R100 | integration | validated | M011/S01 | M011/S02 | validated |
 | R101 | continuity | validated | M011/S01 | none | validated |
 | R102 | operability | validated | M011/S03 | none | validated |
+| R103 | continuity | active | M013/S02 | M013/S04 | unmapped |
+| R104 | data-model | active | M013/S01 | M013/S04 | unmapped |
+| R105 | continuity | active | M013/S03 | M013/S04 | unmapped |
+| R106 | operability | active | M013/S03 | M013/S04 | unmapped |
+| R107 | primary-user-loop | active | M013/S02 | M013/S04 | unmapped |
+| R108 | quality-attribute | active | M013/S02 | M013/S04 | unmapped |
+| R109 | quality-attribute | active | M013/S04 | M013/S01,M013/S02,M013/S03 | unmapped |
+| R110 | integration | deferred | none | none | unmapped |
 | SYNC-04 |  | validated | M011/S02 | none | markEdited() wired in entries.js updateEntry() for all 5 day fields (tp, tl, col, notes, emoji); hlc-write.spec.js Playwright test confirms rev:{uuid} localStorage key contains dot-path keys matching days.YYYY-MM-DD.{field} with non-empty HLC strings after any edit; all 18 tests pass. M011/S02 complete 2026-04-10. |
 | SYNC-05 |  | validated | M011/S01 | none | POST /year-planner/sync endpoint wired end-to-end: SyncClient builds payload, Api.sync() calls it, all 9 Vue/Storage call sites updated. sync-payload.spec.js Playwright mock test verifies payload shape (D007). All 17 tests pass. M011/S01 complete 2026-04-09. |
 | SYNC-06 |  | validated | M011/S01 | none | SyncClient.js implemented with markEdited(plannerId, dotPath), async sync(plannerId, plannerDoc, authHeaders), and prune(plannerId). Manages rev:{uuid}, base:{uuid}, sync:{uuid} per planner. Uses HLC and flatten/merge from data-api-core.esm.js vendor bundle. CDI-registered as syncClient singleton. M011/S01 complete 2026-04-09. |
@@ -263,7 +359,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 2
-- Mapped to slices: 2
-- Validated: 17 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R005, R100, R101, R102, SYNC-04, SYNC-05, SYNC-06)
+- Active requirements: 8
+- Mapped to slices: 8
+- Validated: 18 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R005, R006, R100, R101, R102, SYNC-04, SYNC-05, SYNC-06)
 - Unmapped active requirements: 0

@@ -24,7 +24,7 @@ export default class StorageLocal {
 
     // ── Preferences ──────────────────────────────────────────────────────────
 
-    setLocalPreferences(uid, preferences) {
+    setLocalPreferences(userKey, preferences) {
         const prefs = preferences['0'] !== undefined ? {
             year:  preferences['0'],
             lang:  preferences['1'],
@@ -37,12 +37,12 @@ export default class StorageLocal {
         this.model.lang  = prefs.lang  || preferences['1'] || 'en';
         this.model.theme = prefs.theme || (preferences['2'] == 1 ? 'dark' : 'light');
 
-        PreferencesStore.set(String(uid), prefs);
+        PreferencesStore.set(String(userKey), prefs);
     }
 
-    getLocalPreferences(uid) {
+    getLocalPreferences(userKey) {
         this.migrate();
-        const prefs = PreferencesStore.get(String(uid));
+        const prefs = PreferencesStore.get(String(userKey));
         if (!prefs || Object.keys(prefs).length === 0) return null;
         if (prefs.year !== undefined && prefs['0'] === undefined) {
             return {
@@ -56,7 +56,8 @@ export default class StorageLocal {
     }
 
     getDefaultLocalPreferences() {
-        return this.getLocalPreferences(this.model.uid || this.getLocalUid());
+        const userKey = this.model.userKey || ClientAuthSession.getUserUuid() || DeviceSession.getDeviceId();
+        return this.getLocalPreferences(userKey);
     }
 
     // ── Identities ───────────────────────────────────────────────────────────
@@ -167,7 +168,8 @@ export default class StorageLocal {
 
     setLocalFromModel() {
         this.setLocalIdentities(this.model.identities);
-        this.setLocalPreferences(this.model.uid, this.model.preferences);
+        const userKey = this.model.userKey || ClientAuthSession.getUserUuid() || DeviceSession.getDeviceId();
+        this.setLocalPreferences(userKey, this.model.preferences);
         // Planner persistence is owned by PlannerStore
     }
 
@@ -180,6 +182,7 @@ export default class StorageLocal {
         if (devExists) {
             if (legacyRaw) localStorage.removeItem('0');
             this._migrateUserKey();
+            this._migratePrefsKey();
             return;
         }
         if (!legacyRaw) return;
@@ -190,6 +193,8 @@ export default class StorageLocal {
 
         this.getDevId();
 
+        // Resolve the current user's identity key once — used for all writes in this migration pass.
+        const userKey = ClientAuthSession.getUserUuid() || DeviceSession.getDeviceId();
         const oldKeysToRemove = new Set(['0']);
 
         for (const identity of identities) {
@@ -205,7 +210,8 @@ export default class StorageLocal {
             const dark  = oldPrefs['2'] == 1;
             const names = oldPrefs['3'] || null;
 
-            localStorage.setItem(keyPrefs(uid), JSON.stringify({
+            // Write prefs under userKey (UUID), not the legacy numeric uid.
+            localStorage.setItem(keyPrefs(userKey), JSON.stringify({
                 year, lang, theme: dark ? 'dark' : 'light', dark, names,
             }));
 
@@ -239,7 +245,6 @@ export default class StorageLocal {
                     }
                 }
                 const uuid = crypto.randomUUID();
-                const userKey = ClientAuthSession.getUserUuid() || DeviceSession.getDeviceId();
                 const days = {};
                 for (let m = 0; m < 12; m++) {
                     for (const [day, dayObj] of Object.entries(months[m] || {})) {
@@ -274,6 +279,27 @@ export default class StorageLocal {
                     localStorage.setItem(key, JSON.stringify(doc));
                 }
             } catch (e) { /* skip corrupt */ }
+        }
+    }
+
+    // Migrate prefs stored under numeric uid (legacy) to prefs:${userKey} (UUID).
+    // Runs only when dev key exists (M009+) and the userKey-keyed prefs are absent.
+    _migratePrefsKey() {
+        const userKey = ClientAuthSession.getUserUuid() || DeviceSession.getDeviceId();
+        const newKey = keyPrefs(userKey);
+        if (localStorage.getItem(newKey)) return; // already on new schema
+        for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (!k?.startsWith('prefs:')) continue;
+            const keyPart = k.slice(6); // strip 'prefs:'
+            if (/^\d+$/.test(keyPart)) {
+                const val = localStorage.getItem(k);
+                if (val) {
+                    localStorage.setItem(newKey, val);
+                    localStorage.removeItem(k);
+                }
+                return; // migrate first numeric prefs key found
+            }
         }
     }
 

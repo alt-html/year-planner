@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "projectName": "year-planner",
+  "projectPath": "/Users/craig/src/github/alt-html/year-planner",
+  "gsdVersion": "2.74.0",
+  "entries": [
+    {
+      "filename": "M012-2026-04-16T04-10-07.html",
+      "generatedAt": "2026-04-16T04:10:07.218Z",
+      "milestoneId": "M012",
+      "milestoneTitle": "Brand/Icon System Overhaul",
+      "label": "M012: Brand/Icon System Overhaul",
+      "kind": "milestone",
+      "totalCost": 41.60421358,
+      "totalTokens": 83122322,
+      "totalDuration": 16667485,
+      "doneSlices": 37,
+      "totalSlices": 41,
+      "doneMilestones": 12,
+      "totalMilestones": 13,
+      "phase": "planning"
+    }
+  ]
+}

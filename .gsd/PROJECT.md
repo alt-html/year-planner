@@ -2,32 +2,30 @@
 
 ## What This Is
 
-A multi-lingual, offline-first progressive web app (PWA) year planner. It renders a weeks-by-months calendar grid and lets users keep per-day diary entries (type, tagline, colour, notes, emoji) in localStorage, with optional account-based sync.
+A multi-lingual, offline-first progressive web app (PWA) year planner. It renders a weeks-by-months calendar grid and stores per-day entries (type, tagline, colour, notes, emoji) locally, with optional account-based sync using jsmdma document mechanics.
 
 Live app: https://d1uamxeylh4qir.cloudfront.net/
 
 ## Core Value
 
-A planner that works immediately offline with no account friction, while still supporting reliable sync when the user signs in.
+A planner that works immediately offline with low friction, while supporting reliable multi-document sync when signed in.
 
 ## Current State
 
-- Vanilla ES module browser app (no bundler), static assets under `site/`
-- Vue 3 app mounted through CDI boot wiring (`@alt-javascript/boot-vue`)
-- localStorage M009 schema and jsmdma/HLC sync contract implemented
-- M011 completed: sync rewrite + MOD cleanup completed and verified in Playwright
-- M012 in progress: Branding/icon system overhaul
-  - S01, S02 completed: Three candidate icon systems designed and evaluated; C2 (Nordic Clarity) selected as canonical winner
-  - S03 completed: Cross-platform export matrix generated (9 PNG variants for web/PWA/iOS/Android with any/maskable/monochrome purposes); matrix.json export contract ready for S04 wiring
-  - S04–S06 pending: Production wiring, desktop packaging, and verification
+- Static ES-module app under `site/` (no bundler)
+- Vue 3 app mounted via CDI boot wiring
+- Multi-planner jsmdma document model with `userKey` ownership and per-document UUIDs
+- M011 complete: sync protocol rewrite + legacy MOD cleanup
+- M012 complete: brand/icon overhaul delivered and ratified
+- M013 planned: legacy architecture cleanup (URL state removal, uid removal, feature/share legacy removal, system-follow language/theme modes)
 
 ## Architecture / Key Patterns
 
 - Entry: `site/index.html` → `site/js/main.js` → CDI contexts → Vue app
-- Services in `site/js/service/` (`Storage`, `StorageLocal`, `Api`, `SyncClient`, etc.)
-- Planner data model keyed by ISO date (`days[YYYY-MM-DD]`)
-- PWA metadata through `site/manifest.json` and `<head>` icon links in `site/index.html`
-- Existing mock exploration assets in `mockups/` (used as prior art for M012)
+- Service layer in `site/js/service/` (`PlannerStore`, `StorageLocal`, `Api`, etc.)
+- Planner data modeled by ISO day keys (`days[YYYY-MM-DD]`) inside jsmdma planner documents
+- PWA metadata served from composed HTML + `site/manifest.json`
+- Tests in `.tests/` with Playwright smoke + e2e coverage and fixture-based CDN interception
 
 ## Capability Contract
 
@@ -46,4 +44,5 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 - [x] M009: localStorage Schema Redesign — schema redesign for sync-readiness
 - [x] M010: Planner Ownership/Identity Alignment — ownership/identity alignment work
 - [x] M011: jsmdma Sync Protocol & MOD Cleanup — sync protocol rewrite and legacy cleanup
-- [ ] M012: Brand/Icon System Overhaul — select and integrate a full cross-platform icon set with live wiring and desktop packaging assets
+- [x] M012: Brand/Icon System Overhaul — cross-platform icon system integration and sign-off
+- [ ] M013: Legacy Alignment Cleanup — remove legacy URL/uid/share/feature drift and add system-follow language/theme behavior

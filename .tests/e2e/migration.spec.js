@@ -75,6 +75,14 @@ test('migration: old-schema data survives upgrade to M009 schema', async ({ page
   );
   expect(prefKeys.length).toBeGreaterThan(0);
 
+  // ── 4a. Prefs key must use UUID format (not numeric uid) ─────────────────
+  for (const pk of prefKeys) {
+    const part = pk.slice('prefs:'.length);
+    expect(part).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+  }
+  // Prefs must be stored under the device UUID specifically
+  expect(prefKeys).toContain(`prefs:${devKey}`);
+
   // ── 5. Planner data migrated ──────────────────────────────────────────────
   const planners = await page.evaluate(() => {
     return Object.keys(localStorage)
@@ -82,6 +90,12 @@ test('migration: old-schema data survives upgrade to M009 schema', async ({ page
       .map(k => JSON.parse(localStorage.getItem(k)));
   });
   expect(planners.length).toBeGreaterThan(0);
+
+  // ── 5a. All planner docs must carry meta.userKey (UUID format) ───────────
+  for (const p of planners) {
+    expect(p.meta?.userKey).toBeDefined();
+    expect(p.meta.userKey).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+  }
 
   // ── 6. March 15 entry intact with new field names ─────────────────────────
   const marchEntry = await page.evaluate(() => {

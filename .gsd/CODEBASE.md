@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-16T00:34:15Z | Files: 174 | Described: 0/174
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T00:34:15Z","fingerprint":"e4413452a9460b0a9c03013742c7c07b67a18644","fileCount":174,"truncated":false} -->
+Generated: 2026-04-16T04:23:40Z | Files: 176 | Described: 0/176
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T04:23:40Z","fingerprint":"b61804f29dcfcaa6af9c9c29e23bd1ee9d6e13be","fileCount":176,"truncated":false} -->
 
 ### (root)/
 - `.gitignore`
@@ -131,6 +131,7 @@ Generated: 2026-04-16T00:34:15Z | Files: 174 | Described: 0/174
 - `.tests/smoke/icon-live-wiring.spec.js`
 
 ### .tests/verification/
+- `.tests/verification/S06-sign-off-checklist.md`
 - `.tests/verification/S06-visual-sign-off.spec.js`
 
 ### api/
@@ -165,6 +166,7 @@ Generated: 2026-04-16T00:34:15Z | Files: 174 | Described: 0/174
 - `scripts/export-canonical-icon-matrix.sh`
 - `scripts/export-desktop-packaging-assets.sh`
 - `scripts/export-icon-candidates.sh`
+- `scripts/verify-icon-integration-signoff.sh`
 
 ### scripts/lib/
 - `scripts/lib/pack-ico.py`

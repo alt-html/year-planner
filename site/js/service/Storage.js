@@ -31,10 +31,8 @@ export default class Storage {
     setModelFromImportString(importUrlParam) {
         if ('' != importUrlParam) {
             let importer = JSON.parse(LZString.decompressFromEncodedURIComponent(importUrlParam));
-            this.model.uid = importer[0]['0'];
-            if (!this.storageLocal.getLocalIdentity(this.model.uid)) {
-                this.model.identities.push(importer[0]);
-            }
+            // importer[0] was a legacy identity object with numeric uid — uid is no longer
+            // set on the model from shared URLs; identity is owned by the receiving device.
             this.model.preferences = importer[1];
             this.model.year = importer[2];
             // Store raw imported data — PlannerStore.importDays applies it after activateDoc

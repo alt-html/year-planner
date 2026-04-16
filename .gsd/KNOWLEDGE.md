@@ -128,3 +128,13 @@ S03 emits site/icons/matrix.json as the canonical source of truth for all export
 
 ### Relative path safety validation in exporter prevents traversal attacks
 The exporter validates that svgSources paths in canonical.json are relative (no `../`, no absolute paths starting with `/`) before joining them with the CANDIDATES_DIR base path. This prevents path-traversal attacks where a malicious canonical.json could force reads from outside the candidate folder hierarchy. Always validate untrusted path inputs before filesystem operations, even when they come from repo-local JSON files that are mutable by developers.
+
+---
+
+## M012 — Brand/Icon System Overhaul, S06 Sign-off (2026-04-16)
+
+### Integrated runner pattern writes JSON report on both success and failure for stable diagnostics
+The `scripts/verify-icon-integration-signoff.sh` runner uses `|| { write_report; exit 1; }` pattern on every stage, ensuring the JSON report is written whether the run succeeds or fails. This means the failing stage name and command are always identifiable from the artifact alone — no log parsing needed, and failure context is preserved in `.tests/test-results/icon-visual-signoff/S06-sign-off-report.json` for diagnostic review. When building multi-stage runners in future slices, always write the report/verdict unconditionally so the failure path is discoverable.
+
+### Negative-boundary test coverage for icon matrix contracts prevents silent export failures downstream
+S06's Playwright spec validates that all required surfaces exist in the matrix contracts (site/icons/matrix.json and site/icons/desktop-matrix.json) and that all referenced files exist on disk with non-zero size before generating visual artifacts. Negative-boundary tests explicitly verify rejection of: missing required purpose-size entries, missing desktop format fields, absolute/traversal paths, and zero-byte files. Without this validation, S03 export logic or S04 wiring could silently fail on missing inputs, producing incomplete icon deliverables. Always validate metadata structure and referenced paths at contract boundaries (sign-off points where downstream slices consume the output).
