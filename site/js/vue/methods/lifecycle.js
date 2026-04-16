@@ -22,10 +22,6 @@ export const lifecycleMethods = {
             this.activeDocUuid = uuid;
         }
 
-        if (this._pendingImport && this.activeDocUuid) {
-            this.plannerStore.importDays(this.year, this._pendingImport);
-            this._pendingImport = null;
-        }
         this.storageLocal.setLocalFromModel();
         this._applyThemeDom(this.theme);
         this.loaded = true;

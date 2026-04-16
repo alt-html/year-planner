@@ -13,10 +13,9 @@ export default class Application {
         this.pageLoadTime = DateTime.now();
         this.url = {
             parameters : {
-                // Only OAuth callback params and share/name are read from URL.
+                // Only OAuth callback params and name are read from URL.
                 // year / lang / theme are no longer bootstrap inputs (R103).
-                name : urlParam('name'),
-                share : urlParam('share')
+                name : urlParam('name')
             }
         }
         this.i18n = i18n || null;
@@ -114,7 +113,6 @@ export default class Application {
             || (this.model.preferences['2'] !== undefined ? 'explicit' : 'system');
 
         this.model.name = this.url.parameters.name || (this.model.preferences['3']?.[''+this.model.year]?.[this.model.lang]) || '';
-        this.model.share = this.url.parameters.share || '';
 
         this.model.preferences['0'] = this.model.year;
         this.model.preferences['1'] = this.model.lang;
@@ -143,8 +141,6 @@ export default class Application {
         this.model.linkedProviders = payload?.providers ?? [];
 
         this.logger?.debug?.(`[Application.init] userKey=${this.model.userKey} uuid=${this.model.uuid} year=${this.model.year} lang=${this.model.lang} langMode=${this.model.langMode} theme=${this.model.theme} themeMode=${this.model.themeMode} signedin=${this.model.signedin} registered=${this.model.registered} url=${window.location.href}`);
-
-        this.storage.setModelFromImportString(this.model.share);
 
         this.messages[this.model.lang]['label']['name_'+this.model.year] = this.model.name;
 

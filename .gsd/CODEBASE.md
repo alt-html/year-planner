@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-16T05:27:03Z | Files: 180 | Described: 0/180
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T05:27:03Z","fingerprint":"5c379a3a17b05181350dbd6120ce6e86987f58b5","fileCount":180,"truncated":false} -->
+Generated: 2026-04-16T06:00:49Z | Files: 181 | Described: 0/181
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T06:00:49Z","fingerprint":"63d6be5e7dde6b672a71891f2482744b60067b6f","fileCount":181,"truncated":false} -->
 
 ### (root)/
 - `.gitignore`
@@ -171,6 +171,7 @@ Generated: 2026-04-16T05:27:03Z | Files: 180 | Described: 0/180
 - `scripts/export-icon-candidates.sh`
 - `scripts/verify-icon-integration-signoff.sh`
 - `scripts/verify-no-legacy-uid.sh`
+- `scripts/verify-no-url-state-params.sh`
 
 ### scripts/lib/
 - `scripts/lib/pack-ico.py`

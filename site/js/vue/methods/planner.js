@@ -74,19 +74,4 @@ export const plannerMethods = {
         return this.plannerStore.listPlanners();
     },
 
-    sharePlanner() {
-        this.showShareModal = true;
-        this.shareUrl = window.location.origin + '?share=' + this.storage.getExportString();
-        this.$nextTick(() => {
-            const copyText = document.getElementById('copyUrl');
-            if (copyText) { copyText.select(); copyText.setSelectionRange(0, 99999); }
-        });
-    },
-
-    copyUrl() {
-        const copyText = document.getElementById('copyUrl');
-        copyText.select();
-        copyText.setSelectionRange(0, 99999);
-        document.execCommand('copy');
-    },
 }

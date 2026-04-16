@@ -90,10 +90,6 @@ export const railMethods = {
         this.authLinkMode = false;
     },
 
-    closeShareModal() {
-        this.showShareModal = false;
-    },
-
     closeEntryModal() {
         this.showEntryModal = false;
     },

@@ -17,13 +17,19 @@ A planner that works immediately offline with low friction, while supporting rel
 - Multi-planner jsmdma document model with `userKey` ownership and per-document UUIDs
 - M011 complete: sync protocol rewrite + legacy MOD cleanup
 - M012 complete: brand/icon overhaul delivered and ratified
-- M013 planned: legacy architecture cleanup (URL state removal, uid removal, feature/share legacy removal, system-follow language/theme modes)
+- **M013 in progress**: Legacy alignment cleanup
+  - **S01 complete**: App identity/state surfaces operate without uid mechanics, multi-planner document flows stable
+  - **S02 complete**: Clean URLs (no year/lang/theme params), language/theme system-follow modes with explicit override, live reactivity, 45 regression tests passing
+  - S03 pending: Remove legacy share and feature-flag surfaces
+  - S04 pending: Verification hardening and requirement closure
 
 ## Architecture / Key Patterns
 
 - Entry: `site/index.html` → `site/js/main.js` → CDI contexts → Vue app
 - Service layer in `site/js/service/` (`PlannerStore`, `StorageLocal`, `Api`, etc.)
 - Planner data modeled by ISO day keys (`days[YYYY-MM-DD]`) inside jsmdma planner documents
+- Preferences (year, lang, langMode, theme, themeMode) persisted in localStorage with intelligent defaults
+- System-follow language/theme modes: listen to `navigator.languages` and `matchMedia('(prefers-color-scheme: dark)')`, react live without reload
 - PWA metadata served from composed HTML + `site/manifest.json`
 - Tests in `.tests/` with Playwright smoke + e2e coverage and fixture-based CDN interception
 
@@ -45,4 +51,4 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 - [x] M010: Planner Ownership/Identity Alignment — ownership/identity alignment work
 - [x] M011: jsmdma Sync Protocol & MOD Cleanup — sync protocol rewrite and legacy cleanup
 - [x] M012: Brand/Icon System Overhaul — cross-platform icon system integration and sign-off
-- [ ] M013: Legacy Alignment Cleanup — remove legacy URL/uid/share/feature drift and add system-follow language/theme behavior
+- [🟨] M013: Legacy Alignment Cleanup — S01✅ S02✅ S03⬜ S04⬜

@@ -15,17 +15,6 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: unmapped
 - Notes: M013 explicitly closes/re-scopes prior unresolved MOD-09 debt via verification gates: clean URL state flow, uid removal, feature/share legacy cleanup, and regression proof.
 
-### R103 — Remove app-state URL params (`uid`,`year`,`lang`,`theme`) from normal navigation and keep URLs clean except required OAuth/callback parameters.
-- Class: continuity
-- Status: active
-- Description: Remove app-state URL params (`uid`,`year`,`lang`,`theme`) from normal navigation and keep URLs clean except required OAuth/callback parameters.
-- Why it matters: URL-coupled state is redundant with current architecture and causes reload-driven behavior that conflicts with in-app state mechanics.
-- Source: user
-- Primary owning slice: M013/S02
-- Supporting slices: M013/S04
-- Validation: unmapped
-- Notes: Applies to nav/year/language/theme interactions; callback params remain allowed for auth flows only.
-
 ### R105 — Remove legacy share surface and URL/LZ import-export behavior (`?share=` and compressed payload path) from runtime and UI.
 - Class: continuity
 - Status: active
@@ -47,28 +36,6 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M013/S04
 - Validation: unmapped
 - Notes: Cleanup must remove dead affordances and dead state/method wiring, not just hide UI.
-
-### R107 — Implement language preference modes with `system` live-follow and explicit override, including ability to return to system-follow.
-- Class: primary-user-loop
-- Status: active
-- Description: Implement language preference modes with `system` live-follow and explicit override, including ability to return to system-follow.
-- Why it matters: Language behavior should align with user environment by default while still supporting explicit user choice.
-- Source: user
-- Primary owning slice: M013/S02
-- Supporting slices: M013/S04
-- Validation: unmapped
-- Notes: When mode is `system`, app follows browser language changes; explicit mode must be authoritative until reset to system.
-
-### R108 — Implement light/dark preference modes with `system` live-follow and explicit light/dark override, including ability to return to system-follow.
-- Class: quality-attribute
-- Status: active
-- Description: Implement light/dark preference modes with `system` live-follow and explicit light/dark override, including ability to return to system-follow.
-- Why it matters: Theme should follow system by default and remain controllable by explicit user preference.
-- Source: user
-- Primary owning slice: M013/S02
-- Supporting slices: M013/S04
-- Validation: unmapped
-- Notes: Use media query change events for live system updates while in `system` mode.
 
 ## Validated
 
@@ -208,6 +175,17 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: validated
 - Notes: Verified in codebase and test runs during M011 completion.
 
+### R103 — Remove app-state URL params (`uid`,`year`,`lang`,`theme`) from normal navigation and keep URLs clean except required OAuth/callback parameters.
+- Class: continuity
+- Status: validated
+- Description: Remove app-state URL params (`uid`,`year`,`lang`,`theme`) from normal navigation and keep URLs clean except required OAuth/callback parameters.
+- Why it matters: URL-coupled state is redundant with current architecture and causes reload-driven behavior that conflicts with in-app state mechanics.
+- Source: user
+- Primary owning slice: M013/S02
+- Supporting slices: M013/S04
+- Validation: S02 T01 removed year/lang/theme URL bootstrap inputs entirely from this.url.parameters. Application.js now derives startup state exclusively from stored preferences + system defaults. 16-test regression spec in system-follow-preferences.spec.js verifies URL params (year/lang/theme) do not drive bootstrap state. All 45 slice verification tests pass including clean-url-navigation.spec.js regression suite confirming no URL-param surfaces remain.
+- Notes: Applies to nav/year/language/theme interactions; callback params remain allowed for auth flows only.
+
 ### R104 — Remove legacy `uid` runtime/storage/schema usage and align identity mechanics to `userKey` plus jsmdma document UUID semantics while preserving multi-planner support.
 - Class: data-model
 - Status: validated
@@ -218,6 +196,28 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M013/S04
 - Validation: S01 refactored storage contract from numeric uid keys to userKey (UUID) persistence; Application.js bootstrap resolves userKey early and uses it for all preference reads/writes; all planner metadata carries meta.userKey; multi-planner switching uses active document UUID; 25+ regression tests pass validating behavior under new contract.
 - Notes: No backward-compat migration required (greenfield). Multi-planner remains explicit and unchanged as a capability.
+
+### R107 — Implement language preference modes with `system` live-follow and explicit override, including ability to return to system-follow.
+- Class: primary-user-loop
+- Status: validated
+- Description: Implement language preference modes with `system` live-follow and explicit override, including ability to return to system-follow.
+- Why it matters: Language behavior should align with user environment by default while still supporting explicit user choice.
+- Source: user
+- Primary owning slice: M013/S02
+- Supporting slices: M013/S04
+- Validation: S02 T02 implemented language preference modes: langMode 'system' (live-follow navigator.languages) and explicit locale selection. Users can set language in footer language dropdown with System option that reacts live to OS languagechange events. setLang('system') returns to system mode; setLang(locale) sets explicit mode. 9 live-follow E2E tests verify mode switching, OS event propagation, and URL remains clean. 25 total system-follow-preferences tests pass. Covers R107 and integration surfaces in lifecycle.js, rail.js, index.html, lang.js.
+- Notes: When mode is `system`, app follows browser language changes; explicit mode must be authoritative until reset to system.
+
+### R108 — Implement light/dark preference modes with `system` live-follow and explicit light/dark override, including ability to return to system-follow.
+- Class: quality-attribute
+- Status: validated
+- Description: Implement light/dark preference modes with `system` live-follow and explicit light/dark override, including ability to return to system-follow.
+- Why it matters: Theme should follow system by default and remain controllable by explicit user preference.
+- Source: user
+- Primary owning slice: M013/S02
+- Supporting slices: M013/S04
+- Validation: S02 T02 implemented light/dark preference modes: themeMode 'system' (live-follow OS prefers-color-scheme) and explicit light/dark selection. Users control theme via settings flyout with System/Light/Dark options that react live to matchMedia change events. setTheme('system') returns to OS mode; setTheme('light'/'dark') sets explicit mode with visual feedback. Dark toggle (doDarkToggle) switches to explicit dark mode. 9 live-follow E2E tests verify mode switching, OS event propagation, round-trip coherence, and URL remains clean. 3 smoke tests for dark-mode regression. All 45 verification tests pass.
+- Notes: Use media query change events for live system updates while in `system` mode.
 
 ### R109 — Require strict regression proof for cleanup: existing smoke and E2E suites plus new targeted tests and grep gates for removed legacy surfaces.
 - Class: quality-attribute
@@ -344,12 +344,12 @@ This file is the explicit capability and coverage contract for the project.
 | R100 | integration | validated | M011/S01 | M011/S02 | validated |
 | R101 | continuity | validated | M011/S01 | none | validated |
 | R102 | operability | validated | M011/S03 | none | validated |
-| R103 | continuity | active | M013/S02 | M013/S04 | unmapped |
+| R103 | continuity | validated | M013/S02 | M013/S04 | S02 T01 removed year/lang/theme URL bootstrap inputs entirely from this.url.parameters. Application.js now derives startup state exclusively from stored preferences + system defaults. 16-test regression spec in system-follow-preferences.spec.js verifies URL params (year/lang/theme) do not drive bootstrap state. All 45 slice verification tests pass including clean-url-navigation.spec.js regression suite confirming no URL-param surfaces remain. |
 | R104 | data-model | validated | M013/S01 | M013/S04 | S01 refactored storage contract from numeric uid keys to userKey (UUID) persistence; Application.js bootstrap resolves userKey early and uses it for all preference reads/writes; all planner metadata carries meta.userKey; multi-planner switching uses active document UUID; 25+ regression tests pass validating behavior under new contract. |
 | R105 | continuity | active | M013/S03 | M013/S04 | unmapped |
 | R106 | operability | active | M013/S03 | M013/S04 | unmapped |
-| R107 | primary-user-loop | active | M013/S02 | M013/S04 | unmapped |
-| R108 | quality-attribute | active | M013/S02 | M013/S04 | unmapped |
+| R107 | primary-user-loop | validated | M013/S02 | M013/S04 | S02 T02 implemented language preference modes: langMode 'system' (live-follow navigator.languages) and explicit locale selection. Users can set language in footer language dropdown with System option that reacts live to OS languagechange events. setLang('system') returns to system mode; setLang(locale) sets explicit mode. 9 live-follow E2E tests verify mode switching, OS event propagation, and URL remains clean. 25 total system-follow-preferences tests pass. Covers R107 and integration surfaces in lifecycle.js, rail.js, index.html, lang.js. |
+| R108 | quality-attribute | validated | M013/S02 | M013/S04 | S02 T02 implemented light/dark preference modes: themeMode 'system' (live-follow OS prefers-color-scheme) and explicit light/dark selection. Users control theme via settings flyout with System/Light/Dark options that react live to matchMedia change events. setTheme('system') returns to OS mode; setTheme('light'/'dark') sets explicit mode with visual feedback. Dark toggle (doDarkToggle) switches to explicit dark mode. 9 live-follow E2E tests verify mode switching, OS event propagation, round-trip coherence, and URL remains clean. 3 smoke tests for dark-mode regression. All 45 verification tests pass. |
 | R109 | quality-attribute | validated | M013/S04 | M013/S01,M013/S02,M013/S03 | S01 achieved strict regression proof via: (1) 8 new contract tests covering fresh boot, migration, error paths; (2) 9 new navigation tests confirming in-app state mutations and clean URLs; (3) 5 updated E2E specs validating sync/lifecycle under new identity contract; (4) grep gate script validating zero uid navigation surfaces in runtime code; (5) full 25+ test regression suite passes with no behavioral regressions. |
 | R110 | integration | deferred | none | none | unmapped |
 | SYNC-04 |  | validated | M011/S02 | none | markEdited() wired in entries.js updateEntry() for all 5 day fields (tp, tl, col, notes, emoji); hlc-write.spec.js Playwright test confirms rev:{uuid} localStorage key contains dot-path keys matching days.YYYY-MM-DD.{field} with non-empty HLC strings after any edit; all 18 tests pass. M011/S02 complete 2026-04-10. |
@@ -359,7 +359,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 6
-- Mapped to slices: 6
-- Validated: 20 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R005, R006, R100, R101, R102, R104, R109, SYNC-04, SYNC-05, SYNC-06)
+- Active requirements: 3
+- Mapped to slices: 3
+- Validated: 23 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R005, R006, R100, R101, R102, R103, R104, R107, R108, R109, SYNC-04, SYNC-05, SYNC-06)
 - Unmapped active requirements: 0
