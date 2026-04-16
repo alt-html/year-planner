@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-15T23:49:00Z | Files: 168 | Described: 0/168
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-15T23:49:00Z","fingerprint":"aad244c8ed1ef5459a89baab4ab74c80b75a1fd1","fileCount":168,"truncated":false} -->
+Generated: 2026-04-16T00:10:18Z | Files: 173 | Described: 0/173
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T00:10:18Z","fingerprint":"350851f12cf79198ccba50ace71e0f2305e77916","fileCount":173,"truncated":false} -->
 
 ### (root)/
 - `.gitignore`
@@ -126,6 +126,7 @@ Generated: 2026-04-15T23:49:00Z | Files: 168 | Described: 0/168
 - `.tests/smoke/icon-candidates-assets.spec.js`
 - `.tests/smoke/icon-candidates-gallery.spec.js`
 - `.tests/smoke/icon-candidates-selection.spec.js`
+- `.tests/smoke/icon-desktop-packaging.spec.js`
 - `.tests/smoke/icon-export-matrix.spec.js`
 - `.tests/smoke/icon-live-wiring.spec.js`
 
@@ -159,7 +160,11 @@ Generated: 2026-04-15T23:49:00Z | Files: 168 | Described: 0/168
 
 ### scripts/
 - `scripts/export-canonical-icon-matrix.sh`
+- `scripts/export-desktop-packaging-assets.sh`
 - `scripts/export-icon-candidates.sh`
+
+### scripts/lib/
+- `scripts/lib/pack-ico.py`
 
 ### site/
 - `site/index.html`
@@ -175,7 +180,11 @@ Generated: 2026-04-15T23:49:00Z | Files: 168 | Described: 0/168
 - `site/css/yp-dark.css`
 
 ### site/icons/
+- `site/icons/desktop-matrix.json`
 - `site/icons/matrix.json`
+
+### site/icons/desktop/
+- `site/icons/desktop/year-planner.icns`
 
 ### site/js/
 - `site/js/Application.js`

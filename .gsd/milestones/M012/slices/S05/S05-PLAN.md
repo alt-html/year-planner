@@ -73,7 +73,7 @@
   - Files: `scripts/export-desktop-packaging-assets.sh`, `scripts/lib/pack-ico.py`, `mockups/icon-candidates/canonical.json`, `site/icons/desktop/year-planner.ico`, `site/icons/desktop/year-planner.icns`, `site/icons/desktop-matrix.json`, `site/icons/matrix.json`
   - Verify: bash scripts/export-canonical-icon-matrix.sh && bash scripts/export-desktop-packaging-assets.sh && node -e "const fs=require('fs');const p='site/icons/desktop';if(!fs.existsSync(p+'/year-planner.ico'))throw new Error('missing ico');if(!fs.existsSync(p+'/year-planner.icns'))throw new Error('missing icns');const m=JSON.parse(fs.readFileSync('site/icons/desktop-matrix.json','utf8'));if(!Array.isArray(m.entries)||m.entries.length<2)throw new Error('desktop matrix entries missing');"
 
-- [ ] **T02: Add desktop packaging smoke contract and run icon regression suite** `est:55m`
+- [x] **T02: Add desktop packaging smoke contract and run icon regression suite** `est:55m`
   - Why: Desktop packaging is only complete when binary integrity and contract consistency are mechanically verified, and existing web/PWA icon guarantees remain intact.
 - Do: Add a focused smoke spec for `.ico`/`.icns` and desktop matrix integrity, including negative boundary checks and targeted regressions against S03/S04 icon specs.
 - Done when: the new smoke suite passes with clear diagnostics and the existing icon matrix/live wiring smoke suites still pass in the same run.
