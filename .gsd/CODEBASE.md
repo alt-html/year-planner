@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-04-16T00:26:30Z | Files: 173 | Described: 0/173
-<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T00:26:30Z","fingerprint":"350851f12cf79198ccba50ace71e0f2305e77916","fileCount":173,"truncated":false} -->
+Generated: 2026-04-16T00:34:15Z | Files: 174 | Described: 0/174
+<!-- gsd:codebase-meta {"generatedAt":"2026-04-16T00:34:15Z","fingerprint":"e4413452a9460b0a9c03013742c7c07b67a18644","fileCount":174,"truncated":false} -->
 
 ### (root)/
 - `.gitignore`
@@ -129,6 +129,9 @@ Generated: 2026-04-16T00:26:30Z | Files: 173 | Described: 0/173
 - `.tests/smoke/icon-desktop-packaging.spec.js`
 - `.tests/smoke/icon-export-matrix.spec.js`
 - `.tests/smoke/icon-live-wiring.spec.js`
+
+### .tests/verification/
+- `.tests/verification/S06-visual-sign-off.spec.js`
 
 ### api/
 - `api/openapi.yaml`

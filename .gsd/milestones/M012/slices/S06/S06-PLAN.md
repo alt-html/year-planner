@@ -90,7 +90,7 @@
   - Files: `.tests/verification/S06-visual-sign-off.spec.js`, `site/icons/matrix.json`, `site/icons/desktop-matrix.json`, `.tests/test-results/icon-visual-signoff/S06-visual-sign-off-sheet.png`
   - Verify: npm --prefix .tests run test -- --reporter=line verification/S06-visual-sign-off.spec.js && test -s .tests/test-results/icon-visual-signoff/S06-visual-sign-off.html && test -s .tests/test-results/icon-visual-signoff/S06-visual-sign-off-sheet.png
 
-- [ ] **T02: Add an integrated sign-off runner and checklist that proves existing test flow + visual evidence** `est:55m`
+- [x] **T02: Add an integrated sign-off runner and checklist that proves existing test flow + visual evidence** `est:55m`
   - Skills expected: `test`, `technical-writing`.
 - Why: R006 is only complete when existing verification and visual evidence run together from one reproducible command.
 - Do: Add a runner script (plus npm alias) that executes export preconditions, icon smoke contracts, the S06 visual spec, and full Playwright flow, then writes a structured report + checklist.

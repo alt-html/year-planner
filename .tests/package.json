@@ -9,6 +9,7 @@
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
-    "test:smoke": "playwright test smoke/ --reporter=line"
+    "test:smoke": "playwright test smoke/ --reporter=line",
+    "test:icon-signoff": "bash ../scripts/verify-icon-integration-signoff.sh"
   }
 }

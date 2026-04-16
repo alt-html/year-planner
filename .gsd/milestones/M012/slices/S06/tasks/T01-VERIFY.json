@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M012/S06/T01",
+  "timestamp": 1776299651271,
+  "passed": true,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "npm --prefix .tests run test -- --reporter=line verification/S06-visual-sign-off.spec.js",
+      "exitCode": 0,
+      "durationMs": 4012,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -s .tests/test-results/icon-visual-signoff/S06-visual-sign-off.html",
+      "exitCode": 0,
+      "durationMs": 4,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -s .tests/test-results/icon-visual-signoff/S06-visual-sign-off-sheet.png",
+      "exitCode": 0,
+      "durationMs": 3,
+      "verdict": "pass"
+    }
+  ]
+}
