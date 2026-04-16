@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1.0",
+  "candidateId": "C2",
+  "candidateName": "Nordic Clarity",
+  "generatedAt": "2026-04-16T00:06:53Z",
+  "entries": [
+    {
+      "platform": "windows",
+      "format": "ico",
+      "candidateId": "C2",
+      "src": "mockups/icon-candidates/C2-nordic-clarity/icon.svg",
+      "output": "site/icons/desktop/year-planner.ico",
+      "sizes": [
+        16,
+        24,
+        32,
+        48,
+        64,
+        128,
+        256
+      ]
+    },
+    {
+      "platform": "macos",
+      "format": "icns",
+      "candidateId": "C2",
+      "src": "mockups/icon-candidates/C2-nordic-clarity/icon.svg",
+      "output": "site/icons/desktop/year-planner.icns",
+      "sizes": [
+        16,
+        32,
+        64,
+        128,
+        256,
+        512,
+        1024
+      ]
+    }
+  ]
+}

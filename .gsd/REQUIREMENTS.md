@@ -4,17 +4,6 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Active
 
-### R004 — Replace existing icon references in the app (`index.html`, `manifest.json`, favicon/apple/android files) with the chosen set.
-- Class: launchability
-- Status: active
-- Description: Replace existing icon references in the app (`index.html`, `manifest.json`, favicon/apple/android files) with the chosen set.
-- Why it matters: The milestone must ship integrated assets, not just a design pack.
-- Source: user
-- Primary owning slice: M012/S04
-- Supporting slices: M012/S03
-- Validation: mapped
-- Notes: Wiring must remain backward-safe until full asset matrix exists.
-
 ### R005 — Generate `.ico` and `.icns` packaging assets from the canonical source set for future Windows/macOS desktop bundling.
 - Class: integration
 - Status: active
@@ -119,6 +108,17 @@ This file is the explicit capability and coverage contract for the project.
 - Supporting slices: M012/S05
 - Validation: S03 delivered: bash scripts/export-canonical-icon-matrix.sh produces 9 platform-specific PNG variants (favicon-16x16, favicon-32x32, apple-touch-180x180, pwa-any-{192,512}, pwa-maskable-{192,512}, pwa-monochrome-{192,512}) in site/icons/. matrix.json enumerates all entries with platform, purpose (any/maskable/monochrome), size, src paths, and output locations. All 24 matrix export smoke tests pass; all 80 S01/S02 regression tests pass. Export matrix is deterministic and read-only from canonical.json winner metadata. Platform coverage: web (2 sizes), iOS (1 size), PWA (6 sizes across 3 purposes).
 - Notes: Include manifest purposes where applicable (`any`, `maskable`, `monochrome`).
+
+### R004 — Replace existing icon references in the app (`index.html`, `manifest.json`, favicon/apple/android files) with the chosen set.
+- Class: launchability
+- Status: validated
+- Description: Replace existing icon references in the app (`index.html`, `manifest.json`, favicon/apple/android files) with the chosen set.
+- Why it matters: The milestone must ship integrated assets, not just a design pack.
+- Source: user
+- Primary owning slice: M012/S04
+- Supporting slices: M012/S03
+- Validation: S04 integration complete: index.html head links and manifest.json icons[] wired to canonical ./icons/* outputs from S03. All 57 smoke tests pass (icon-live-wiring.spec.js: 28 tests, compose.spec.js: 5 tests, icon-export-matrix.spec.js: 24 tests). Negative-boundary assertions confirm legacy paths are rejected and canonical structure is enforced.
+- Notes: Wiring must remain backward-safe until full asset matrix exists.
 
 ### R100 — Client sync stack was rewritten to jsmdma protocol (`POST /year-planner/sync`) with HLC field revisions.
 - Class: integration
@@ -245,7 +245,7 @@ This file is the explicit capability and coverage contract for the project.
 | R001 | core-capability | validated | M012/S01 | none | Three structurally distinct icon/logo candidate systems delivered as canonical SVG masters with complete preview PNG matrix (16/32/180/192/512) and side-by-side gallery ready for S02 winner selection. All 52 smoke tests pass. Manual legibility review confirms all candidates are visually distinguishable at 16×16 and 32×32. Contract enforced via README and automated assertions. |
 | R002 | primary-user-loop | validated | M012/S02 | none | C2 Nordic Clarity explicitly selected as canonical winner based on visual review applying tie-breaker criteria (small-size legibility at 16×16, cross-size coherence). Selection locked in canonical.json with full metadata and alternatives.json documenting archived alternatives (C1, C3). Gallery (icon-comparison.html) updated with data-selection-state attributes. Decision D016 recorded. All selection smoke tests pass enforcing winner uniqueness, alternative completeness, and metadata/gallery agreement." |
 | R003 | integration | validated | M012/S03 | M012/S05 | S03 delivered: bash scripts/export-canonical-icon-matrix.sh produces 9 platform-specific PNG variants (favicon-16x16, favicon-32x32, apple-touch-180x180, pwa-any-{192,512}, pwa-maskable-{192,512}, pwa-monochrome-{192,512}) in site/icons/. matrix.json enumerates all entries with platform, purpose (any/maskable/monochrome), size, src paths, and output locations. All 24 matrix export smoke tests pass; all 80 S01/S02 regression tests pass. Export matrix is deterministic and read-only from canonical.json winner metadata. Platform coverage: web (2 sizes), iOS (1 size), PWA (6 sizes across 3 purposes). |
-| R004 | launchability | active | M012/S04 | M012/S03 | mapped |
+| R004 | launchability | validated | M012/S04 | M012/S03 | S04 integration complete: index.html head links and manifest.json icons[] wired to canonical ./icons/* outputs from S03. All 57 smoke tests pass (icon-live-wiring.spec.js: 28 tests, compose.spec.js: 5 tests, icon-export-matrix.spec.js: 24 tests). Negative-boundary assertions confirm legacy paths are rejected and canonical structure is enforced. |
 | R005 | integration | active | M012/S05 | M012/S03 | mapped |
 | R006 | quality-attribute | active | M012/S06 | M012/S04, M012/S05 | mapped |
 | R007 | continuity | active | none yet | none | unmapped |
@@ -263,7 +263,7 @@ This file is the explicit capability and coverage contract for the project.
 
 ## Coverage Summary
 
-- Active requirements: 4
-- Mapped to slices: 4
-- Validated: 15 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R100, R101, R102, SYNC-04, SYNC-05, SYNC-06)
+- Active requirements: 3
+- Mapped to slices: 3
+- Validated: 16 (AUTH-06, MOD-03, MOD-05, MOD-06, MOD-07, MOD-09, R001, R002, R003, R004, R100, R101, R102, SYNC-04, SYNC-05, SYNC-06)
 - Unmapped active requirements: 0
