@@ -59,3 +59,14 @@ test('modals.html demonstrates nesting — includes sub-fragments (COMP-02)', ()
   expect(modalsContent).not.toContain('modals/feature.html');
   expect(modalsContent).not.toContain('modals/share.html');
 });
+
+test('rail no longer duplicates language button and includes System theme option', () => {
+  const railContent = fs.readFileSync(path.join(ROOT, '.compose', 'fragments', 'rail.html'), 'utf8');
+  expect(railContent).not.toContain('ph-globe-simple');
+  expect(railContent).toContain("setTheme('system')");
+  expect(railContent).toContain("$t('lang.system')");
+
+  const indexContent = fs.readFileSync(path.join(ROOT, 'site', 'index.html'), 'utf8');
+  expect(indexContent).not.toContain('ph-globe-simple');
+  expect(indexContent).toContain("setTheme('system')");
+});

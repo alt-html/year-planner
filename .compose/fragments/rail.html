@@ -6,7 +6,6 @@
         <button title="Emoji stamp" v-on:click="toggleEmojiMode()" v-bind:class="{active: emojiActive}"><i class="ph ph-smiley-sticker"></i></button>
         <div class="yp-rail-spacer"></div>
         <div class="yp-rail-bottom">
-            <button title="Language"><i class="ph ph-globe-simple"></i></button>
             <button title="Settings" v-on:click="toggleFlyout('settings')"><i class="ph ph-gear-six"></i></button>
             <button v-if="!signedin" title="Sign in" v-on:click="showSignin()"><i class="ph ph-sign-in"></i></button>
             <button v-if="signedin" title="Sign out" v-on:click="signout()"><i class="ph ph-sign-out"></i></button>
@@ -287,8 +286,9 @@
         <!-- Settings flyout -->
         <div class="rail-flyout settings-flyout" v-bind:class="{open: railFlyout === 'settings'}" v-show="railFlyout === 'settings'">
             <div class="rail-flyout-header">{{$t('label.theme')}}</div>
-            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='light'}" href="#" v-on:click.prevent="setTheme('light'); toggleFlyout(null)">{{$t('label.light')}}</a>
-            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': theme==='dark'}" href="#" v-on:click.prevent="setTheme('dark'); toggleFlyout(null)">{{$t('label.dark')}}</a>
+            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': themeMode==='system'}" href="#" v-on:click.prevent="setTheme('system'); toggleFlyout(null)">{{$t('lang.system')}}</a>
+            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': themeMode!=='system' && theme==='light'}" href="#" v-on:click.prevent="setTheme('light'); toggleFlyout(null)">{{$t('label.light')}}</a>
+            <a class="rail-flyout-item" v-bind:class="{'rail-flyout-item-active': themeMode!=='system' && theme==='dark'}" href="#" v-on:click.prevent="setTheme('dark'); toggleFlyout(null)">{{$t('label.dark')}}</a>
             <div class="rail-flyout-divider"></div>
             <a v-if="!signedin" class="rail-flyout-item" href="#" v-on:click.prevent="showSignin(); toggleFlyout(null)">{{$t('label.signin')}}…</a>
             <a v-if="signedin" class="rail-flyout-item" href="#" v-on:click.prevent="signout(); toggleFlyout(null)">{{$t('label.signout')}}…</a>
